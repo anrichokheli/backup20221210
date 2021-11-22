@@ -15,7 +15,7 @@
                 </h1>
             </div>
             <br>
-            <form action="uploadphotovideo.php" method="post" enctype="multipart/form-data">
+            <form action="uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off">
                 <label for="photovideo">
                     <img width="64" height="64" src="images/ic_photovideo.svg">
                     &nbsp;
@@ -25,16 +25,18 @@
                 <input type="file" accept="image/*,video/*" id="photovideo" name="file" required>
                 <input type="submit" id="upload" name="submit">
                 <br><br>
-                <label for="upload">
+                <label for="upload" id="filelabel">
                     <img width="64" height="64" src="images/uploadicon.svg">
                     &nbsp;
                     Upload
                 </label>
+                <span id="notice"></span>
             </form>
             <br>
             maximum file size is 25MB.
             <br>
             allowed extensions are: bmp, gif, ico, jpg, png, tif, webp, avi, mpeg, ogv, ts, webm, 3gp, 3g2, mp4.
         </div>
+        <script src="scripts/index.js"></script>
     </body>
 </html>
