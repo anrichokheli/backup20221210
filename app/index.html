@@ -22,7 +22,9 @@
                     Choose Photo/Video
                 </label>
                 <br>
-                <input type="file" accept="image/*,video/*" id="photovideo" name="file" required>
+                <input type="file" accept=".bmp, .gif, .ico, .jpg, .png, .tif, .webp, .avi, .mpeg, .ogv, .ts, .webm, .3gp, .3g2, .mp4" id="photovideo" name="file" required>
+                <br>
+                maximum file size is 25MB.
                 <input type="submit" id="upload" name="submit">
                 <br><br>
                 <label for="upload" id="filelabel">
@@ -32,10 +34,6 @@
                 </label>
                 <span id="notice"></span>
             </form>
-            <br>
-            maximum file size is 25MB.
-            <br>
-            allowed extensions are: bmp, gif, ico, jpg, png, tif, webp, avi, mpeg, ogv, ts, webm, 3gp, 3g2, mp4.
         </div>
         <script src="scripts/index.js"></script>
     </body>

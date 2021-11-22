@@ -1,9 +1,9 @@
 <?php
-    define("uploads", "uploads/");
+    define("uploadfiles", "uploads/files/");
     define("maxFilesQuantity", 100);
-    if(!file_exists(uploads))
-            mkdir(uploads);
-    $filesQuantity = count(scandir(uploads)) - 2;
+    if(!file_exists(uploadfiles))
+            mkdir(uploadfiles);
+    $filesQuantity = count(scandir(uploadfiles)) - 2;
     if($filesQuantity >= maxFilesQuantity)    {
         exit("server total files quantity limit: " . maxFilesQuantity);
     }
@@ -20,9 +20,12 @@
         if(!in_array($extension, $allowedExtensions))    {
             exit("allowed extensions are: " . implode(", ", $allowedExtensions) . '.');
         }
-        $path = uploads . $filesQuantity . '.' . $extension;
+        //$folderPath = uploads . $filesQuantity . '/';
+        //mkdir($folderPath);
+        //file_put_contents($folderPath . "index.php", "<?php include dirname(dirname(getcwd())).\"/v.php\";");
+        $path = uploadfiles . $filesQuantity . '.' . $extension;
         if(move_uploaded_file($_FILES["file"]["tmp_name"], $path))  {
-            header("Location: " . $path);
+            header("Location: view.php?n=" . $filesQuantity);
         }
     }
 ?>
