@@ -17,10 +17,10 @@ body    {
 #sos    {
     color: #ec0400;
 }
-#top h1, #main label {
+#top h1, #main label, #main a {
     font-family: sans-serif;
 }
-#main label {
+#main label, #main a {
     color: #256aff;
     font-size: 25px;
     font-weight: bold;
@@ -32,8 +32,11 @@ body    {
     padding: 4px;
     cursor: pointer;
 }
-#main label:hover   {
+#main label:hover, #main a:hover   {
     box-shadow: 0 0 10px 4px #256aff;
+}
+#main a {
+    text-decoration: none;
 }
 #upload {
     display: none;
