@@ -1,8 +1,14 @@
 <?php
-    define("uploadfiles", "../uploads/files/");
+    define("upload", "../uploads/");
+    define("uploadfiles", upload . "files/");
+    define("uploadstrings", upload . "strings/");
     define("maxFilesQuantity", 100);
-    if(!file_exists(uploadfiles))
-            mkdir(uploadfiles, 0777, true);
+    function createDirectoryIfNotExists($path)    {
+        if(!file_exists($path))
+            mkdir($path, 0777, true);
+    }
+    createDirectoryIfNotExists(uploadfiles);
+    createDirectoryIfNotExists(uploadstrings);
     $filesQuantity = count(scandir(uploadfiles)) - 2;
     if($filesQuantity >= maxFilesQuantity)    {
         exit("server total files quantity limit: " . maxFilesQuantity);
@@ -25,6 +31,8 @@
         //file_put_contents($folderPath . "index.php", "<?php include dirname(dirname(getcwd())).\"/v.php\";");
         $path = uploadfiles . $filesQuantity . '.' . $extension;
         if(move_uploaded_file($_FILES["file"]["tmp_name"], $path))  {
+            $t = time();
+            file_put_contents(uploadstrings . $filesQuantity . ".txt", $t);
             header("Location: view.php?n=" . $filesQuantity);
         }
     }
