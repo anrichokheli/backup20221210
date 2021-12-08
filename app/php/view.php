@@ -7,6 +7,21 @@
     define("upload", "../uploads/");
     define("uploadfiles", upload . "files/");
     define("uploadstrings", upload . "strings/");
+    define("filetimes", uploadstrings . "filetimes/");
+    define("descriptiontimes", uploadstrings . "descriptiontimes/");
+    define("descriptions", uploadstrings . "descriptions/");
+    define("locations", uploadstrings . "locations/");
+    define("locationtimes", uploadstrings . "locationtimes/");
+    function echoString($dataPath, $timePath, $n)  {
+        $localTimePath = $timePath . $n . ".txt";
+        if(file_exists($localTimePath))    {
+            $path = $dataPath . $n . ".txt";
+            echo "<br><br>";
+            echo "<a href=\"" . $path . "\" target=\"_blank\">" . basename($path) . "</a>";
+            echo "<br><br>";
+            echo date("Y-m-d H:i:s", file_get_contents($timePath . $n . ".txt"));
+        }
+    }
     function getData($n, $a)  {
         echo "<div class=\"a\">";
         if($a)
@@ -23,7 +38,9 @@
             exit("not exists");
         }
         echo "<br><br>";
-        echo date("Y-m-d H:i:s", file_get_contents(uploadstrings . $n . ".txt"));
+        echo date("Y-m-d H:i:s", file_get_contents(filetimes . $n . ".txt"));
+        echoString(descriptions, descriptiontimes, $n);
+        echoString(locations, locationtimes, $n);
         //echo "<a href=\"../\" target=\"_blank\">open main page</a>";
         echo "</div>";
     }
@@ -37,7 +54,10 @@
     }
     else    {
         $filesQuantity = count(scandir(uploadfiles)) - 2;
-        for ($i=0; $i < $filesQuantity; $i++) {
+        /*for ($i = 0; $i < $filesQuantity; $i++) {
+            echo getData($i, 1);
+        }*/
+        for ($i = $filesQuantity - 1; $i >= 0; $i--) {
             echo getData($i, 1);
         }
     }
