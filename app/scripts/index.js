@@ -35,6 +35,7 @@ function uploadLocation(n, key)   {
 }
 function uploadDescription(n, key)    {
     uploadString(n, key, "&description="+document.getElementById(n).value);
+    document.getElementById('q'+n).innerText = "1";
 }
 fileInput.oninput = function(){
     var formData = new FormData();
@@ -42,11 +43,13 @@ fileInput.oninput = function(){
     fetch("php/uploadphotovideo.php", {method: "POST", body: formData})
     .then(Response => Response.text())
     .then(Response => {
-        var responseArray = Response.split('|');
-        var n = responseArray[0];
-        var key = responseArray[1];
-        afterUpload.innerHTML += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
-        uploadLocation(n, key);
-        afterUpload.innerHTML += "<br><input type=\"text\" id=\""+n+"\"><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button>";
+        if(Response.includes('|'))    {
+            var responseArray = Response.split('|');
+            var n = responseArray[0];
+            var key = responseArray[1];
+            afterUpload.innerHTML += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
+            uploadLocation(n, key);
+            afterUpload.innerHTML += "<br><input type=\"text\" id=\""+n+"\"><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button><div id=\"q"+n+"\"></div>";
+        }
     });
 };
