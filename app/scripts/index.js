@@ -21,21 +21,32 @@ function afterLocation(position)  {
     locationDiv.innerText = "current location: " + latitude + ", " + longitude;
 }
 getLocation();
-function uploadString(n, key, post) {
+function uploadString(n, key, post, location) {
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
-        console.log(this.responseText);
+        if(this.responseText === "1")    {
+            var text;
+            if(location == true)    {
+                text = "location";
+            }
+            else    {
+                text = "description";
+            }
+            text += " uploaded";
+            const element = document.getElementById('q'+n);
+            element.innerText += text;
+            element.innerHTML += "<br>";
+        }
     };
     ajax.open("POST", "php/uploadstring.php");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send("n="+n+"&key="+key+post);
 }
 function uploadLocation(n, key)   {
-    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude);
+    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude, true);
 }
 function uploadDescription(n, key)    {
     uploadString(n, key, "&description="+document.getElementById(n).value);
-    document.getElementById('q'+n).innerText = "1";
 }
 fileInput.oninput = function(){
     var formData = new FormData();
