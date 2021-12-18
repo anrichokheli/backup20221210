@@ -48,6 +48,7 @@ function uploadLocation(n, key)   {
 function uploadDescription(n, key)    {
     uploadString(n, key, "&description="+document.getElementById(n).value);
 }
+afterUpload.hidden = true;
 fileInput.oninput = function(){
     var formData = new FormData();
     formData.append("file", fileInput.files[0]);
@@ -58,9 +59,14 @@ fileInput.oninput = function(){
             var responseArray = Response.split('|');
             var n = responseArray[0];
             var key = responseArray[1];
-            afterUpload.innerHTML += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
+            var html = "<div class=\"boxs\">";
+            html += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
             uploadLocation(n, key);
-            afterUpload.innerHTML += "<br><input type=\"text\" id=\""+n+"\"><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button><div id=\"q"+n+"\"></div>";
+            html += "<br><input type=\"text\" id=\""+n+"\"><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button><div id=\"q"+n+"\"></div>";
+            html += "</div>";
+            afterUpload.innerHTML += html;
+            if(afterUpload.hidden)afterUpload.hidden = false;
+            fileInput.value = null;
         }
     });
 };
