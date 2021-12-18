@@ -18,7 +18,7 @@
             </div>
             <br>
             <form action="php/uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off">
-                <label for="photovideo">
+                <label class="buttons" for="photovideo">
                     <img width="64" height="64" src="images/ic_photovideo.svg">
                     &nbsp;
                     Choose Photo/Video
@@ -26,26 +26,27 @@
                 <br>
                 <input type="file" accept=".bmp, .gif, .ico, .jpg, .png, .tif, .webp, .avi, .mpeg, .ogv, .ts, .webm, .3gp, .3g2, .mp4" id="photovideo" name="file" required>
                 <br>
-                maximum file size is 25MB.
+                <span class="texts">maximum file size is 25MB.</span>
                 <input type="submit" id="upload" name="submit">
                 <br><br>
-                <label for="upload" id="filelabel">
+                <label class="buttons" for="upload" id="filelabel">
                     <img width="64" height="64" src="images/uploadicon.svg">
                     &nbsp;
-                    Upload
+                    <span class="texts">Upload</span>
                 </label>
-                <span id="notice"></span>
+                <span id="notice" class="texts"></span>
             </form>
             <br>
-            <div id="location"></div>
+            <div id="location" class="texts"></div>
             <br>
-            <div id="afterupload"></div>
+            <div id="afterupload" class="texts"></div>
             <br><br>
-            <a href="php/view.php" target="_blank">
+            <a class="buttons" href="php/view.php" target="_blank">
                 <img width="64" height="64" src="images/viewicon.svg">
                 &nbsp;
                 View Uploads
             </a>
+            <div id="darkmodediv"></div>
         </div>
         <script src="scripts/index.js"></script>
     </body>

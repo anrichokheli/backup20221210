@@ -19,6 +19,7 @@ function afterLocation(position)  {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
     locationDiv.innerText = "current location: " + latitude + ", " + longitude;
+    locationDiv.style.display = "block";
 }
 getLocation();
 function uploadString(n, key, post, location) {
@@ -48,7 +49,7 @@ function uploadLocation(n, key)   {
 function uploadDescription(n, key)    {
     uploadString(n, key, "&description="+document.getElementById(n).value);
 }
-afterUpload.hidden = true;
+afteruploaddisplayed = 0;
 fileInput.oninput = function(){
     var formData = new FormData();
     formData.append("file", fileInput.files[0]);
@@ -65,8 +66,33 @@ fileInput.oninput = function(){
             html += "<br><input type=\"text\" id=\""+n+"\"><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button><div id=\"q"+n+"\"></div>";
             html += "</div>";
             afterUpload.innerHTML += html;
-            if(afterUpload.hidden)afterUpload.hidden = false;
+            if(!afteruploaddisplayed) {
+                afterUpload.style.display = "block";
+                afteruploaddisplayed = 1;
+            }
             fileInput.value = null;
         }
     });
 };
+const mainDiv = document.getElementById("main");
+var darkModeEnabled;
+function setDarkMode(enabled) {
+    var color = "#000000";
+    var backgroundColor = "#ffffff";
+    if(enabled)    {
+        var temp = color;
+        color = backgroundColor;
+        backgroundColor = temp;
+    }
+    mainDiv.style.backgroundColor = backgroundColor;
+    var elements = document.getElementsByClassName("texts");
+    for(var i = 0; i < elements.length; i++)   {
+        elements[i].style.color = color;
+    }
+    darkModeEnabled = enabled;
+}
+const darkmodediv = document.getElementById("darkmodediv");
+darkmodediv.innerHTML = "<br><input type=\"checkbox\" id=\"darkmode\" checked><label for=\"darkmode\" class=\"texts\">dark mode</label><br>";
+darkmodediv.style.display = "block";
+document.getElementById("darkmode").addEventListener("click", function(){setDarkMode(!darkModeEnabled);});
+setDarkMode(true);
