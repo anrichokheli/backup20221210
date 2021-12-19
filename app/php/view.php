@@ -7,11 +7,14 @@
     define("upload", "../uploads/");
     define("uploadfiles", upload . "files/");
     define("uploadstrings", upload . "strings/");
-    define("filetimes", uploadstrings . "filetimes/");
+    define("photovideos", uploadfiles . "photovideos/");
+    define("photovideotimes", uploadstrings . "photovideotimes/");
     define("descriptiontimes", uploadstrings . "descriptiontimes/");
     define("descriptions", uploadstrings . "descriptions/");
     define("locations", uploadstrings . "locations/");
     define("locationtimes", uploadstrings . "locationtimes/");
+    define("voices", uploadfiles . "voices/");
+    define("voicetimes", uploadstrings . "voicetimes/");
     function echoString($dataPath, $timePath, $n)  {
         $localTimePath = $timePath . $n . ".txt";
         if(file_exists($localTimePath))    {
@@ -22,6 +25,18 @@
             echo date("Y-m-d H:i:s", file_get_contents($timePath . $n . ".txt"));
         }
     }
+    function echoFile($filePath, $timePath, $n) {
+        $path = glob($filePath . $n . ".*")[0];
+        echo "<br><br>";
+        if(file_exists($path))    {
+            echo "<a href=\"" . $path . "\" target=\"_blank\">" . basename($path) . "</a>";
+            echo "<br><br>";
+            echo date("Y-m-d H:i:s", file_get_contents($timePath . $n . ".txt"));
+        }
+        else    {
+            echo("not exists");
+        }
+    }
     function getData($n, $a)  {
         echo "<div class=\"a\">";
         if($a)
@@ -29,18 +44,10 @@
         echo "#: " . $n;
         if($a)
             echo "</a>";
-        $path = glob(uploadfiles . $n . ".*")[0];
-        echo "<br><br>";
-        if(file_exists($path))    {
-            echo "<a href=\"" . $path . "\" target=\"_blank\">" . basename($path) . "</a>";
-        }
-        else    {
-            exit("not exists");
-        }
-        echo "<br><br>";
-        echo date("Y-m-d H:i:s", file_get_contents(filetimes . $n . ".txt"));
+        echoFile(photovideos, photovideotimes, $n);
         echoString(descriptions, descriptiontimes, $n);
         echoString(locations, locationtimes, $n);
+        echoFile(voices, voicetimes, $n);
         //echo "<a href=\"../\" target=\"_blank\">open main page</a>";
         echo "</div>";
     }
@@ -53,7 +60,7 @@
         echo getData($_GET["n"], 0);
     }
     else    {
-        $filesQuantity = count(scandir(uploadfiles)) - 2;
+        $filesQuantity = count(scandir(photovideos)) - 2;
         /*for ($i = 0; $i < $filesQuantity; $i++) {
             echo getData($i, 1);
         }*/

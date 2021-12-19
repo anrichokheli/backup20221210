@@ -2,11 +2,14 @@
     define("upload", "../uploads/");
     define("uploadfiles", upload . "files/");
     define("uploadstrings", upload . "strings/");
-    define("filetimes", uploadstrings . "filetimes/");
+    define("photovideos", uploadfiles . "photovideos/");
+    define("photovideotimes", uploadstrings . "photovideotimes/");
     define("descriptiontimes", uploadstrings . "descriptiontimes/");
     define("locationtimes", uploadstrings . "locationtimes/");
+    define("voicetimes", uploadstrings . "voicetimes/");
     define("descriptions", uploadstrings . "descriptions/");
     define("locations", uploadstrings . "locations/");
+    define("voices", uploadfiles . "voices/");
     define("maxFilesQuantity", 100);
     define("protectedPrivateKeysPath", dirname($_SERVER["DOCUMENT_ROOT"]) . "/protected/private/keys/");
     function createDirectoryIfNotExists($path)    {
@@ -21,14 +24,16 @@
         }
         return $key;
     }
-    createDirectoryIfNotExists(uploadfiles);
-    createDirectoryIfNotExists(filetimes);
+    createDirectoryIfNotExists(photovideos);
+    createDirectoryIfNotExists(photovideotimes);
     createDirectoryIfNotExists(descriptiontimes);
     createDirectoryIfNotExists(locationtimes);
+    createDirectoryIfNotExists(voicetimes);
     createDirectoryIfNotExists(descriptions);
     createDirectoryIfNotExists(locations);
+    createDirectoryIfNotExists(voices);
     createDirectoryIfNotExists(protectedPrivateKeysPath);
-    $filesQuantity = count(scandir(uploadfiles)) - 2;
+    $filesQuantity = count(scandir(photovideos)) - 2;
     if($filesQuantity >= maxFilesQuantity)    {
         exit("server total files quantity limit: " . maxFilesQuantity);
     }
@@ -48,10 +53,10 @@
         //$folderPath = uploads . $filesQuantity . '/';
         //mkdir($folderPath);
         //file_put_contents($folderPath . "index.php", "<?php include dirname(dirname(getcwd())).\"/v.php\";");
-        $path = uploadfiles . $filesQuantity . '.' . $extension;
+        $path = photovideos . $filesQuantity . '.' . $extension;
         if(move_uploaded_file($_FILES["file"]["tmp_name"], $path))  {
             $t = time();
-            file_put_contents(filetimes . $filesQuantity . ".txt", $t);
+            file_put_contents(photovideotimes . $filesQuantity . ".txt", $t);
             $key = getKey(1000);
             file_put_contents(protectedPrivateKeysPath . $filesQuantity, password_hash($key, PASSWORD_DEFAULT));
             //header("Location: view.php?n=" . $filesQuantity);

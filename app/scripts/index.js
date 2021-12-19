@@ -49,6 +49,20 @@ function uploadLocation(n, key)   {
 function uploadDescription(n, key)    {
     uploadString(n, key, "&description="+document.getElementById(n).value);
 }
+function uploadVoice(n, key)  {
+    var voiceinput = document.getElementById('v'+n);
+    var formData = new FormData();
+    formData.append("voice", voiceinput.files[0]);
+    formData.append("n", n);
+    formData.append("key", key);
+    fetch("php/uploadvoice.php", {method: "POST", body: formData})
+    .then(Response => Response.text())
+    .then(Response => {
+        if(Response === "1")    {
+            document.getElementById('q'+n).innerHTML += "voice uploaded<br>";
+        }
+    });
+}
 afteruploaddisplayed = 0;
 fileInput.oninput = function(){
     var formData = new FormData();
@@ -63,7 +77,9 @@ fileInput.oninput = function(){
             var html = "<div class=\"boxs\">";
             html += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
             uploadLocation(n, key);
-            html += "<br><input type=\"text\" id=\""+n+"\"><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button><div id=\"q"+n+"\"></div>";
+            html += "<br><input type=\"text\" id=\""+n+"\"><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button>";
+            html += "<br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><label for=\"v"+n+"\">upload voice</label>";
+            html += "<div id=\"q"+n+"\"></div>";
             html += "</div>";
             afterUpload.innerHTML += html;
             if(!afteruploaddisplayed) {
