@@ -29,10 +29,10 @@
         if(isset($_POST["description"]))    {
             saveData(descriptions, descriptiontimes, $_POST["description"]);
             if(isset($_POST["submit"]))    {
-                header("Location: view.php?n=" . $_POST["n"]);
+                echo str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("../html/uploadvoice.html")));
             }
             else    {
-                echo "1";
+                echo("1");
             }
         }
         else if(isset($_POST["latitude"]) && isset($_POST["longitude"]) && is_numeric($_POST["latitude"]) && is_numeric($_POST["longitude"]))   {

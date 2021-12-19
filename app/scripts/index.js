@@ -1,11 +1,15 @@
-const submitUpload = document.getElementById("upload");
-const fileInput = document.getElementById("photovideo");
+const formInputs = document.getElementsByClassName("forminputs");
 const afterUpload = document.getElementById("afterupload");
 const locationDiv = document.getElementById("location");
 const notice = document.getElementById("notice");
-fileInput.value = null;
-photovideo.style = "display:none;";
-document.getElementById("filelabel").style = "display:none;";
+for(var key in formInputs)   {
+    formInputs[key].value = null;
+    formInputs[key].style = "display:none;";
+}
+var uploadButtons = document.getElementsByClassName("uploadbuttons");
+for(var key in uploadButtons)   {
+    uploadButtons[key].style = "display:none;";
+}
 notice.innerText = "file upload will be started directly as soon as file will be chosen";
 var latitude;
 var longitude;
@@ -64,7 +68,7 @@ function uploadVoice(n, key)  {
     });
 }
 afteruploaddisplayed = 0;
-fileInput.oninput = function(){
+function fileUpload(fileInput){
     var formData = new FormData();
     formData.append("file", fileInput.files[0]);
     fetch("php/uploadphotovideo.php", {method: "POST", body: formData})
@@ -89,7 +93,15 @@ fileInput.oninput = function(){
             fileInput.value = null;
         }
     });
-};
+}
+const takePhoto = document.getElementById("takephoto");
+const recordVideo = document.getElementById("recordvideo");
+const choosePhoto = document.getElementById("choosephoto");
+const chooseVideo = document.getElementById("choosevideo");
+takePhoto.oninput = function(){fileUpload(takePhoto);};
+recordVideo.oninput = function(){fileUpload(recordVideo);};
+choosePhoto.oninput = function(){fileUpload(choosePhoto);};
+chooseVideo.oninput = function(){fileUpload(chooseVideo);};
 const mainDiv = document.getElementById("main");
 var darkModeEnabled;
 function setDarkMode(enabled) {

@@ -27,24 +27,19 @@ body    {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    border: 2px solid #256aff;
+    border: 2px dotted #256aff;
     border-radius: 8px;
     padding: 4px;
     cursor: pointer;
 }
 .buttons:hover   {
-    box-shadow: 0 0 10px 4px #256aff;
+    border: 2px solid #256aff;
 }
 #main a {
     text-decoration: none;
 }
 #upload {
     display: none;
-}
-#main form  {
-    border: 2px dotted #256aff;
-    border-radius: 8px;
-    padding: 16px;
 }
 #afterupload, #afterupload .boxs    {
     border: 2px solid #256aff;
@@ -56,4 +51,13 @@ body    {
 }
 #afterupload a  {
     background-color: #ffffff;
+}
+#location   {
+    padding: 1px;
+    border: 1px solid #256aff;
+}
+#info   {
+    border: 2px dotted #256aff;
+    border-radius: 8px;
+    padding: 16px;
 }

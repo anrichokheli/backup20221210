@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <form method="post" action="uploadstring.php">
+    <form method="post" enctype="multipart/form-data" action="uploadvoice.php">
         <input type="hidden" name="n" value="value_n">
         <input type="hidden" name="key" value="value_key">
-        <input type="text" name="description">
+        <input type="file" accept="audio/*" name="voice">
         <input type="submit" name="submit">
     </form>
 </body>

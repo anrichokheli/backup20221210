@@ -25,7 +25,12 @@
         if(move_uploaded_file($_FILES["voice"]["tmp_name"], $voicepath))  {
             $t = time();
             file_put_contents(voicetimes . $_POST["n"] . ".txt", $t);
-            echo("1");
+            if(isset($_POST["submit"]))    {
+                header("Location: view.php?n=" . $_POST["n"]);
+            }
+            else    {
+                echo("1");
+            }
         }
     }
     else    {
