@@ -109,6 +109,10 @@ function fileUpload(fileInput){
             uploadStatus.style.borderColor = "#ff0000";
         }
         fileInput.value = null;
+    })
+    .catch(Error => {
+        uploadStatus.innerText = "upload error (" + Error + ")";
+        uploadStatus.style.borderColor = "#ff0000";
     });
 }
 const takePhoto = document.getElementById("takephoto");
