@@ -46,7 +46,7 @@ body    {
     margin: 2%;
     padding: 2%;
 }
-#afterupload, #location, #darkmodediv {
+#afterupload, #location, #darkmodediv, #uploadstatus {
     display: none;
 }
 #afterupload a  {
@@ -60,4 +60,9 @@ body    {
     border: 2px dotted #256aff;
     border-radius: 8px;
     padding: 16px;
+}
+#uploadstatus   {
+    padding: 1px;
+    border: 1px;
+    border-style: solid;
 }

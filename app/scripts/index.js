@@ -2,6 +2,7 @@ const formInputs = document.getElementsByClassName("forminputs");
 const afterUpload = document.getElementById("afterupload");
 const locationDiv = document.getElementById("location");
 const notice = document.getElementById("notice");
+const uploadStatus = document.getElementById("uploadstatus");
 for(var key in formInputs)   {
     formInputs[key].value = null;
     formInputs[key].style = "display:none;";
@@ -26,7 +27,7 @@ function afterLocation(position)  {
     locationDiv.style.display = "block";
 }
 getLocation();
-function uploadString(n, key, post, location) {
+function uploadString(n, key, post, location, value) {
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
         if(this.responseText === "1")    {
@@ -40,6 +41,7 @@ function uploadString(n, key, post, location) {
             text += " uploaded";
             const element = document.getElementById('q'+n);
             element.innerText += text;
+            element.innerText += " (" + value + ")";
             element.innerHTML += "<br>";
         }
     };
@@ -48,10 +50,11 @@ function uploadString(n, key, post, location) {
     ajax.send("n="+n+"&key="+key+post);
 }
 function uploadLocation(n, key)   {
-    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude, true);
+    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude, true, latitude + ", " + longitude);
 }
 function uploadDescription(n, key)    {
-    uploadString(n, key, "&description="+document.getElementById(n).value);
+    var descriptionValue = document.getElementById(n).value;
+    uploadString(n, key, "&description="+descriptionValue, false, descriptionValue);
 }
 function uploadVoice(n, key)  {
     var voiceinput = document.getElementById('v'+n);
@@ -67,8 +70,15 @@ function uploadVoice(n, key)  {
         }
     });
 }
-afteruploaddisplayed = 0;
+var uploadstatusdisplayed = 0;
+var afteruploaddisplayed = 0;
 function fileUpload(fileInput){
+    uploadStatus.innerText = "uploading...";
+    uploadStatus.style.borderColor = "#ffff00";
+    if(!uploadstatusdisplayed) {
+        uploadStatus.style.display = "block";
+        uploadstatusdisplayed = 1;
+    }
     var formData = new FormData();
     formData.append("file", fileInput.files[0]);
     fetch("php/uploadphotovideo.php", {method: "POST", body: formData})
@@ -82,16 +92,23 @@ function fileUpload(fileInput){
             html += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
             uploadLocation(n, key);
             html += "<br><input type=\"text\" id=\""+n+"\"><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button>";
-            html += "<br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><label for=\"v"+n+"\">upload voice</label>";
+            html += "<br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\">upload voice</label></button>";
             html += "<div id=\"q"+n+"\"></div>";
             html += "</div>";
-            afterUpload.innerHTML += html;
+            html += afterUpload.innerHTML;
+            afterUpload.innerHTML = html;
             if(!afteruploaddisplayed) {
                 afterUpload.style.display = "block";
                 afteruploaddisplayed = 1;
             }
-            fileInput.value = null;
+            uploadStatus.innerText = "upload completed (#" + n + ")";
+            uploadStatus.style.borderColor = "#00ff00";
         }
+        else    {
+            uploadStatus.innerText = "upload failed (" + Response + ")";
+            uploadStatus.style.borderColor = "#ff0000";
+        }
+        fileInput.value = null;
     });
 }
 const takePhoto = document.getElementById("takephoto");
