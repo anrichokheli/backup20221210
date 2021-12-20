@@ -36,7 +36,19 @@
             }
         }
         else if(isset($_POST["latitude"]) && isset($_POST["longitude"]) && is_numeric($_POST["latitude"]) && is_numeric($_POST["longitude"]))   {
-            saveData(locations, locationtimes, $_POST["latitude"] . ", " . $_POST["longitude"]);
+            $location = $_POST["latitude"] . ", " . $_POST["longitude"];
+            function addLocationString($postname)    {
+                $GLOBALS["location"] .= "; ";
+                if($_POST[$postname] && is_numeric($_POST[$postname]))    {
+                    $GLOBALS["location"] .= $_POST[$postname];
+                }
+                else    {
+                    $GLOBALS["location"] .= '-';
+                }
+            }
+            addLocationString("altitude");
+            addLocationString("accuracy");
+            saveData(locations, locationtimes, $location);
             echo "1";
         }
     }

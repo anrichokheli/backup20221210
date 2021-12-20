@@ -14,6 +14,8 @@ for(var key in uploadButtons)   {
 notice.innerText = "file upload will be started directly as soon as file will be chosen";
 var latitude;
 var longitude;
+var altitude;
+var accuracy;
 function getLocation()  {
     if(navigator.geolocation)    {
         navigator.geolocation.getCurrentPosition(afterLocation);
@@ -23,7 +25,13 @@ function getLocation()  {
 function afterLocation(position)  {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
-    locationDiv.innerText = "current location: " + latitude + ", " + longitude;
+    altitude = position.coords.altitude;
+    accuracy = position.coords.accuracy;
+    if(latitude === null)latitude='-';
+    if(longitude === null)longitude='-';
+    if(altitude === null)altitude='-';
+    if(accuracy === null)accuracy='-';
+    locationDiv.innerText = "current location:\n" + latitude + ", " + longitude + ";\n" + altitude + ";\n" + accuracy;
     locationDiv.style.display = "block";
 }
 getLocation();
@@ -50,7 +58,7 @@ function uploadString(n, key, post, location, value) {
     ajax.send("n="+n+"&key="+key+post);
 }
 function uploadLocation(n, key)   {
-    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude, true, latitude + ", " + longitude);
+    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude+"&altitude="+altitude+"&accuracy="+accuracy, true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy);
 }
 function uploadDescription(n, key)    {
     var descriptionValue = document.getElementById(n).value;
@@ -59,7 +67,7 @@ function uploadDescription(n, key)    {
 function uploadVoice(n, key)  {
     var voiceinput = document.getElementById('v'+n);
     var formData = new FormData();
-    formData.append("voice", voiceinput.files[0]);
+    formData.append("file", voiceinput.files[0]);
     formData.append("n", n);
     formData.append("key", key);
     fetch("php/uploadvoice.php", {method: "POST", body: formData})

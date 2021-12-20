@@ -46,7 +46,42 @@
             exit("maximum file size is: " . (maxFileSize / 1000000) . "MB.");
         }
         $allowedExtensions = array(/*image*/"bmp", "gif", "ico", "jpg", "png",/* "svg",*/ "tif", "webp", /*video*/"avi", "mpeg", "ogv", "ts", "webm", "3gp", "3g2", "mp4");
-        $extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+        //$extension = pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION);
+        $mimeContentType = mime_content_type($_FILES["file"]["tmp_name"]);
+        if(!$mimeContentType || (strpos($mimeContentType, '/') === FALSE))exit("0");
+        $file_info_array = explode("/", $mimeContentType);
+        $type = $file_info_array[0];
+        $extension = $file_info_array[1];
+        if($extension === "vnd.microsoft.icon")	{
+	        $extension = "ico";
+        }
+        else if($extension === "jpeg")	{
+	        $extension = "jpg";
+        }
+        else if($extension === "svg+xml")	{
+	        $extension = "svg";
+        }
+        else if($extension === "tiff")	{
+	        $extension = "tif";
+        }
+        else if($extension === "x-msvideo")	{
+	        $extension = "avi";
+        }
+        else if($extension === "ogg")	{
+	        $extension = "ogv";
+        }
+        else if($extension === "mp2t")	{
+	        $extension = "ts";
+        }
+        else if($extension === "3gpp")	{
+	        $extension = "3gp";
+        }
+        else if($extension === "3gpp2")	{
+	        $extension = "3g2";
+        }
+        if(!(($type === "image") || ($type === "video")))    {
+            exit("only images and videos are allowed.");
+        }
         if(!in_array($extension, $allowedExtensions))    {
             exit("allowed extensions are: " . implode(", ", $allowedExtensions) . '.');
         }
