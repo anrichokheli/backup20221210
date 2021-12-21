@@ -37,21 +37,29 @@ function afterLocation(position)  {
 getLocation();
 function uploadString(n, key, post, location, value) {
     var ajax = new XMLHttpRequest();
+    var text;
+    if(location == true)    {
+        text = "location";
+    }
+    else    {
+        text = "description";
+    }
+    text += " upload";
+    const element = document.getElementById('q'+n);
+    element.innerText += text + "ing... (" + value + ")";
+    element.innerHTML += "<br>";
     ajax.onload = function(){
         if(this.responseText === "1")    {
-            var text;
-            if(location == true)    {
-                text = "location";
-            }
-            else    {
-                text = "description";
-            }
-            text += " uploaded";
-            const element = document.getElementById('q'+n);
-            element.innerText += text;
-            element.innerText += " (" + value + ")";
-            element.innerHTML += "<br>";
+            element.innerText += text + "ed";
         }
+        else    {
+            element.innerText += text + " failed (" + this.responseText + ")";
+        }
+        element.innerHTML += "<br>";
+    };
+    ajax.onerror = function(){
+        element.innerText += text + " error (" + this.Error + ")";
+        element.innerHTML += "<br>";
     };
     ajax.open("POST", "php/uploadstring.php");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -65,7 +73,10 @@ function uploadDescription(n, key)    {
     uploadString(n, key, "&description="+descriptionValue, false, descriptionValue);
 }
 function uploadVoice(n, key)  {
-    var voiceinput = document.getElementById('v'+n);
+    const statusElement = document.getElementById('q'+n);
+    const voiceinput = document.getElementById('v'+n);
+    statusElement.innerText += "voice uploading...";
+    statusElement.innerHTML += "<br>";
     var formData = new FormData();
     formData.append("file", voiceinput.files[0]);
     formData.append("n", n);
@@ -74,8 +85,16 @@ function uploadVoice(n, key)  {
     .then(Response => Response.text())
     .then(Response => {
         if(Response === "1")    {
-            document.getElementById('q'+n).innerHTML += "voice uploaded<br>";
+            statusElement.innerText += "voice uploaded";
         }
+        else    {
+            statusElement.innerText += "voice upload failed (" + Response + ")";
+        }
+        statusElement.innerHTML += "<br>";
+    })
+    .catch(Error => {
+        statusElement.innerText += "voice upload error (" + Error + ")";
+        statusElement.innerHTML += "<br>";
     });
 }
 var uploadstatusdisplayed = 0;
@@ -98,8 +117,7 @@ function fileUpload(fileInput){
             var key = responseArray[1];
             var html = "<div class=\"boxs\">";
             html += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
-            uploadLocation(n, key);
-            html += "<br><input type=\"text\" id=\""+n+"\"><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button>";
+            html += "<br><textarea id=\""+n+"\" rows=\"2\" cols=\"10\"></textarea><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button>";
             html += "<br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\">upload voice</label></button>";
             html += "<div id=\"q"+n+"\"></div>";
             html += "</div>";
@@ -111,6 +129,7 @@ function fileUpload(fileInput){
             }
             uploadStatus.innerText = "upload completed (#" + n + ")";
             uploadStatus.style.borderColor = "#00ff00";
+            uploadLocation(n, key);
         }
         else    {
             uploadStatus.innerText = "upload failed (" + Response + ")";
