@@ -1,15 +1,22 @@
-const formInputs = document.getElementsByClassName("forminputs");
 const afterUpload = document.getElementById("afterupload");
 const locationDiv = document.getElementById("location");
 const notice = document.getElementById("notice");
 const uploadStatus = document.getElementById("uploadstatus");
-for(var key in formInputs)   {
-    formInputs[key].value = null;
-    formInputs[key].style = "display:none;";
+const uploadForms = document.getElementsByClassName("uploadforms");
+function label2button(id) {
+    var divHTML = document.getElementById(id + "div").innerHTML;
+    divHTML = divHTML.replace("<label", "<button onclick=document.getElementById(\"" + id + "\").click();");
+    divHTML = divHTML.replace("</label>", "</button>");
+    divHTML = divHTML.replace("for=\"" + id + "\"", "");
+    divHTML = divHTML.replace("required", "required hidden");
+    document.getElementById(id + "div2").innerHTML = divHTML;
 }
-var uploadButtons = document.getElementsByClassName("uploadbuttons");
-for(var key in uploadButtons)   {
-    uploadButtons[key].style = "display:none;";
+label2button("takephoto");
+label2button("recordvideo");
+label2button("choosephoto");
+label2button("choosevideo");
+for(var key in uploadForms)   {
+    uploadForms[key].innerHTML = '';
 }
 notice.innerText = "file upload will be started directly as soon as file will be chosen";
 var latitude;
