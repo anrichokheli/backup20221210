@@ -158,6 +158,27 @@ recordVideo.oninput = function(){fileUpload(recordVideo);};
 choosePhoto.oninput = function(){fileUpload(choosePhoto);};
 chooseVideo.oninput = function(){fileUpload(chooseVideo);};
 const mainDiv = document.getElementById("main");
+function setCookie(cname, cvalue, exdays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+}
 var darkModeEnabled;
 function setDarkMode(enabled) {
     var color = "#000000";
@@ -173,9 +194,22 @@ function setDarkMode(enabled) {
         elements[i].style.color = color;
     }
     darkModeEnabled = enabled;
+    setCookie("darkmode", darkModeEnabled, 1000);
 }
 const darkmodediv = document.getElementById("darkmodediv");
 darkmodediv.innerHTML = "<br><input type=\"checkbox\" id=\"darkmode\" checked><label for=\"darkmode\" class=\"texts\">dark mode</label><br>";
 darkmodediv.style.display = "block";
-document.getElementById("darkmode").addEventListener("click", function(){setDarkMode(!darkModeEnabled);});
-setDarkMode(true);
+const darkmodecheckbox = document.getElementById("darkmode");
+darkmodecheckbox.addEventListener("click", function(){setDarkMode(!darkModeEnabled);});
+if(getCookie("darkmode") == "")    {
+    setDarkMode(true);
+}
+else    {
+    if(getCookie("darkmode") == "true")    {
+        setDarkMode(true);
+    }
+    else    {
+        setDarkMode(false);
+    }
+    darkmodecheckbox.checked = darkModeEnabled;
+}
