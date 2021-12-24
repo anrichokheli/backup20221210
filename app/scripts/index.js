@@ -197,10 +197,14 @@ function setDarkMode(enabled) {
     setCookie("darkmode", darkModeEnabled, 1000);
 }
 const darkmodediv = document.getElementById("darkmodediv");
-darkmodediv.innerHTML = "<br><input type=\"checkbox\" id=\"darkmode\" checked><label for=\"darkmode\" class=\"texts\">dark mode</label><br>";
+darkmodediv.innerHTML = "<div><label class=\"switch\"><input type=\"checkbox\" id=\"darkmode\" checked><span class=\"slider round\"><img width=\"26\" height=\"26\" src=\"images/darkmode0.png\"></span></label></div><span class=\"texts\">dark mode</span><br>";
 darkmodediv.style.display = "block";
 const darkmodecheckbox = document.getElementById("darkmode");
-darkmodecheckbox.addEventListener("click", function(){setDarkMode(!darkModeEnabled);});
+function changeDarkMode()   {
+    setDarkMode(!darkModeEnabled);
+}
+darkmodecheckbox.addEventListener("click", function(){changeDarkMode();});
+darkmodediv.addEventListener("click", function(){darkmodecheckbox.checked = !darkmodecheckbox.checked;changeDarkMode();});
 if(getCookie("darkmode") == "")    {
     setDarkMode(true);
 }
