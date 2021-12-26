@@ -130,3 +130,11 @@ input:checked + .slider:before, input:checked + .slider img {
 #darkmodediv *  {
     margin: 1%;
 }
+@media(prefers-color-scheme: dark)    {
+    #main   {
+        background-color: #000000;
+    }
+    .texts  {
+        color: #ffffff;
+    }
+}
