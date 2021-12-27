@@ -126,7 +126,7 @@ function fileUpload(fileInput){
             html += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
             html += "<br><textarea id=\""+n+"\" rows=\"2\" cols=\"10\"></textarea><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button>";
             html += "<br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\">upload voice</label></button>";
-            html += "<div id=\"q"+n+"\"></div>";
+            html += "<div id=\"q"+n+"\" class=\"uploadstatuses\"></div>";
             html += "</div>";
             html += afterUpload.innerHTML;
             afterUpload.innerHTML = html;
