@@ -107,6 +107,7 @@ function uploadVoice(n, key)  {
 var uploadstatusdisplayed = 0;
 var afteruploaddisplayed = 0;
 function fileUpload(fileInput){
+    unloadWarning = 1;
     uploadStatus.innerText = "uploading...";
     uploadStatus.style.borderColor = "#ffff00";
     if(!uploadstatusdisplayed) {
@@ -225,3 +226,10 @@ if(getCookie("darkmode") == "")    {
 else    {
     darkmodeifelse(getCookie("darkmode") == "true");
 }
+var unloadWarning = 0;
+window.addEventListener("beforeunload", function(e){
+    if(unloadWarning)    {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
