@@ -53,8 +53,8 @@ function uploadString(n, key, post, location, value) {
     }
     text += " upload";
     const element = document.getElementById('q'+n);
-    element.innerText += text + "ing... (" + value + ")";
-    element.innerHTML += "<br>";
+    element.innerText += text + "ing...\n(" + value + ")";
+    element.innerHTML += "<br><br>";
     ajax.onload = function(){
         if(this.responseText === "1")    {
             element.innerText += text + "ed";
@@ -62,11 +62,11 @@ function uploadString(n, key, post, location, value) {
         else    {
             element.innerText += text + " failed (" + this.responseText + ")";
         }
-        element.innerHTML += "<br>";
+        element.innerHTML += "<br><br>";
     };
     ajax.onerror = function(){
         element.innerText += text + " error (" + this.Error + ")";
-        element.innerHTML += "<br>";
+        element.innerHTML += "<br><br>";
     };
     ajax.open("POST", "php/uploadstring.php");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -125,8 +125,8 @@ function fileUpload(fileInput){
             var key = responseArray[1];
             var html = "<div class=\"boxs\">";
             html += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
-            html += "<br><textarea id=\""+n+"\" rows=\"2\" cols=\"10\"></textarea><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button>";
-            html += "<br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\">upload voice</label></button>";
+            html += "<br><br><textarea id=\""+n+"\" rows=\"2\" cols=\"10\"></textarea><br><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button>";
+            html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\">upload voice</label></button>";
             html += "<div id=\"q"+n+"\" class=\"uploadstatuses\"></div>";
             html += "</div>";
             html += afterUpload.innerHTML;
