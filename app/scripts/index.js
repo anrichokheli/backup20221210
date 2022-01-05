@@ -1,8 +1,7 @@
-const afterUpload = document.getElementById("afterupload");
+const uploadStatuses = document.getElementById("uploadstatuses");
 const locationDiv = document.getElementById("location");
 const notice = document.getElementById("notice");
 const uploadStatus = document.getElementById("uploadstatus");
-const uploadProgress = document.getElementById("uploadprogress");
 const uploadForms = document.getElementsByClassName("uploadforms");
 function label2button(id) {
     var divHTML = document.getElementById(id + "div").innerHTML;
@@ -107,21 +106,34 @@ function uploadVoice(n, key)  {
         statusElement.innerHTML += "<br>";
     });
 }
-var uploadstatusdisplayed = 0;
-var uploadprogressdisplayed = 0;
-var afteruploaddisplayed = 0;
+var uploads_id = 0;
+var uploadstatusesdisplayed = 0;
 function fileUpload(fileInput){
     unloadWarning = 1;
-    uploadStatus.innerText = "uploading...";
-    uploadStatus.style.borderColor = "#ffff00";
-    if(!uploadstatusdisplayed) {
-        uploadStatus.style.display = "block";
-        uploadstatusdisplayed = 1;
+    const subbox = document.createElement("div");
+    subbox.className = "boxs";
+    uploadStatuses.insertBefore(subbox, uploadStatuses.childNodes[0]);
+    const status = document.createElement("div");
+    const after = document.createElement("div");
+    subbox.appendChild(status);
+    subbox.appendChild(after);
+    var statusText = document.createElement("div");
+    statusText.innerText = "uploading...";
+    status.appendChild(statusText);
+    const progress = document.createElement("div");
+    status.appendChild(progress);
+    const progressBar0 = document.createElement("div");
+    progressBar0.className = "progressbar0";
+    status.appendChild(progressBar0);
+    const progressBar = document.createElement("div");
+    progressBar.className = "progressbar";
+    progressBar0.appendChild(progressBar);
+    status.appendChild(document.createElement("br"));
+    if(!uploadstatusesdisplayed) {
+        uploadStatuses.style.display = "block";
+        uploadstatusesdisplayed = 1;
     }
-    if(!uploadprogressdisplayed) {
-        uploadProgress.style.display = "block";
-        uploadprogressdisplayed = 1;
-    }
+    statusText = document.createElement("div");
     var formData = new FormData();
     formData.append("file", fileInput.files[0]);
     var ajax = new XMLHttpRequest();
@@ -132,16 +144,15 @@ function fileUpload(fileInput){
             var key = responseArray[1];
             var html = "<div class=\"boxs\">";
             html += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
-            html += "<br><br><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\"";
+            html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\"";
             if(darkModeEnabled)    {
                 html += " style=\"color:#ffffff;\"";
             }
-            html += "></textarea><br><button id=\"b"+n+"\" disabled>upload description</button>";
+            html += "></textarea></div><br><button id=\"b"+n+"\" disabled>upload description</button>";
             html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\">upload voice</label></button>";
-            html += "<div id=\"q"+n+"\" class=\"uploadstatuses\"></div>";
+            html += "<div id=\"q"+n+"\" class=\"uploadstatuses2\"></div>";
             html += "</div>";
-            html += afterUpload.innerHTML;
-            afterUpload.innerHTML = html;
+            after.innerHTML = html;
             var button = document.getElementById("b"+n);
             button.addEventListener("click", function(){
                 button.disabled = 1;
@@ -151,31 +162,30 @@ function fileUpload(fileInput){
             textarea.addEventListener("input", function(){
                 button.disabled = textarea.value == '';
             });
-            if(!afteruploaddisplayed) {
-                afterUpload.style.display = "block";
-                afteruploaddisplayed = 1;
-            }
-            uploadStatus.innerText = "upload completed (#" + n + ")";
-            uploadStatus.style.borderColor = "#00ff00";
+            statusText.innerText += "upload completed (#" + n + ")";
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);
             }
         }
         else    {
-            uploadStatus.innerText = "upload failed (" + Response + ")";
-            uploadStatus.style.borderColor = "#ff0000";
+            statusText.innerText += "upload failed\n(" + Response + ")";
         }
         fileInput.value = null;
+        status.appendChild(statusText);
     };
     ajax.onerror = function(){
-        uploadStatus.innerText = "upload error (" + this.Error + ")";
-        uploadStatus.style.borderColor = "#ff0000";
+        statusText.innerText += "upload error\n(" + this.Error + ")";
+        status.appendChild(statusText);
     };
+    var progressPercent;
     ajax.upload.onprogress = function(e){
-        uploadProgress.innerText = ((e.loaded / e.total) * 100).toFixed(2) + "% (" + e.loaded + " / " + e.total + ")";
+        progressPercent = ((e.loaded / e.total) * 100).toFixed(2) + '%';
+        progress.innerText = progressPercent + " (" + e.loaded + " / " + e.total + ")";
+        progressBar.style.width = progressPercent;
     };
     ajax.open("POST", "php/uploadphotovideo.php");
     ajax.send(formData);
+    uploads_id++;
 }
 const takePhoto = document.getElementById("takephoto");
 const recordVideo = document.getElementById("recordvideo");

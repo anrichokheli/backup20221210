@@ -42,15 +42,15 @@ body    {
 #upload {
     display: none;
 }
-#afterupload, .boxs, .uploadstatuses    {
+#uploadstatuses, .boxs, .uploadstatuses2    {
     border: 2px solid #256aff;
     margin: 2%;
     padding: 2%;
 }
-#afterupload, #location, #darkmodediv, #uploadstatus, #uploadprogress {
+#uploadstatuses, #location, #darkmodediv, #uploadstatus, #uploadprogress {
     display: none;
 }
-#afterupload a  {
+#uploadstatuses a  {
     background-color: #ffffff;
 }
 #location, #uploadprogress   {
@@ -67,7 +67,7 @@ body    {
     border: 1px;
     border-style: solid;
 }
-.uploadstatuses {
+.uploadstatuses2 {
     border-style: dotted;
     margin: 1%;
     padding: 1%;
@@ -143,8 +143,21 @@ input:checked + .slider:before, input:checked + .slider img {
         color: #ffffff;
     }
 }
-#afterupload textarea   {
-    width: 90%;
-    height: 10vh;
+.descriptioninput textarea   {
+    width: 99%;
+    max-width: 99%;
+    height: 15vh;
     background: none;
+}
+.progressbar0, .progressbar {
+    border-radius: 8px;
+}
+.progressbar0   {
+    width: 99%;
+    height: 2vh;
+    border: 2px solid #256aff;
+}
+.progressbar    {
+    background-color: #256aff;
+    height: 2vh;
 }
