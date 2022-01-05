@@ -58,12 +58,18 @@ function uploadString(n, key, post, location, value) {
         }
         else    {
             element.innerText += text + " failed (" + this.responseText + ")";
+            if(!location)    {
+                document.getElementById("b"+n).disabled = 0;
+            }
         }
         element.innerHTML += "<br><br>";
     };
     ajax.onerror = function(){
         element.innerText += text + " error (" + this.Error + ")";
         element.innerHTML += "<br><br>";
+        if(!location)    {
+            document.getElementById("b"+n).disabled = 0;
+        }
     };
     ajax.open("POST", "php/uploadstring.php");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -126,12 +132,25 @@ function fileUpload(fileInput){
             var key = responseArray[1];
             var html = "<div class=\"boxs\">";
             html += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
-            html += "<br><br><textarea id=\""+n+"\" rows=\"2\" cols=\"10\"></textarea><br><button onclick=uploadDescription(\""+n+"\",\""+key+"\")>upload description</button>";
+            html += "<br><br><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\"";
+            if(darkModeEnabled)    {
+                html += " style=\"color:#ffffff;\"";
+            }
+            html += "></textarea><br><button id=\"b"+n+"\" disabled>upload description</button>";
             html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\">upload voice</label></button>";
             html += "<div id=\"q"+n+"\" class=\"uploadstatuses\"></div>";
             html += "</div>";
             html += afterUpload.innerHTML;
             afterUpload.innerHTML = html;
+            var button = document.getElementById("b"+n);
+            button.addEventListener("click", function(){
+                button.disabled = 1;
+                uploadDescription(n,key);
+            });
+            var textarea = document.getElementById(n);
+            textarea.addEventListener("input", function(){
+                button.disabled = textarea.value == '';
+            });
             if(!afteruploaddisplayed) {
                 afterUpload.style.display = "block";
                 afteruploaddisplayed = 1;

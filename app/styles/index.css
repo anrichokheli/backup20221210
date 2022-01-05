@@ -143,3 +143,8 @@ input:checked + .slider:before, input:checked + .slider img {
         color: #ffffff;
     }
 }
+#afterupload textarea   {
+    width: 90%;
+    height: 10vh;
+    background: none;
+}
