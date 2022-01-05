@@ -2,6 +2,7 @@ const afterUpload = document.getElementById("afterupload");
 const locationDiv = document.getElementById("location");
 const notice = document.getElementById("notice");
 const uploadStatus = document.getElementById("uploadstatus");
+const uploadProgress = document.getElementById("uploadprogress");
 const uploadForms = document.getElementsByClassName("uploadforms");
 function label2button(id) {
     var divHTML = document.getElementById(id + "div").innerHTML;
@@ -34,10 +35,6 @@ function afterLocation(position)  {
     longitude = position.coords.longitude;
     altitude = position.coords.altitude;
     accuracy = position.coords.accuracy;
-    if(latitude === null)latitude='-';
-    if(longitude === null)longitude='-';
-    if(altitude === null)altitude='-';
-    if(accuracy === null)accuracy='-';
     locationDiv.innerText = "current location:\n" + latitude + ", " + longitude + ";\n" + altitude + ";\n" + accuracy;
     locationDiv.style.display = "block";
 }
@@ -105,6 +102,7 @@ function uploadVoice(n, key)  {
     });
 }
 var uploadstatusdisplayed = 0;
+var uploadprogressdisplayed = 0;
 var afteruploaddisplayed = 0;
 function fileUpload(fileInput){
     unloadWarning = 1;
@@ -114,13 +112,16 @@ function fileUpload(fileInput){
         uploadStatus.style.display = "block";
         uploadstatusdisplayed = 1;
     }
+    if(!uploadprogressdisplayed) {
+        uploadProgress.style.display = "block";
+        uploadprogressdisplayed = 1;
+    }
     var formData = new FormData();
     formData.append("file", fileInput.files[0]);
-    fetch("php/uploadphotovideo.php", {method: "POST", body: formData})
-    .then(Response => Response.text())
-    .then(Response => {
-        if(Response.includes('|'))    {
-            var responseArray = Response.split('|');
+    var ajax = new XMLHttpRequest();
+    ajax.onload = function(){
+        if(this.responseText.includes('|'))    {
+            var responseArray = this.responseText.split('|');
             var n = responseArray[0];
             var key = responseArray[1];
             var html = "<div class=\"boxs\">";
@@ -137,18 +138,25 @@ function fileUpload(fileInput){
             }
             uploadStatus.innerText = "upload completed (#" + n + ")";
             uploadStatus.style.borderColor = "#00ff00";
-            uploadLocation(n, key);
+            if(latitude != null && longitude != null)    {
+                uploadLocation(n, key);
+            }
         }
         else    {
             uploadStatus.innerText = "upload failed (" + Response + ")";
             uploadStatus.style.borderColor = "#ff0000";
         }
         fileInput.value = null;
-    })
-    .catch(Error => {
-        uploadStatus.innerText = "upload error (" + Error + ")";
+    };
+    ajax.onerror = function(){
+        uploadStatus.innerText = "upload error (" + this.Error + ")";
         uploadStatus.style.borderColor = "#ff0000";
-    });
+    };
+    ajax.upload.onprogress = function(e){
+        uploadProgress.innerText = ((e.loaded / e.total) * 100).toFixed(2) + "% (" + e.loaded + " / " + e.total + ")";
+    };
+    ajax.open("POST", "php/uploadphotovideo.php");
+    ajax.send(formData);
 }
 const takePhoto = document.getElementById("takephoto");
 const recordVideo = document.getElementById("recordvideo");

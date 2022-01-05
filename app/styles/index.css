@@ -47,13 +47,13 @@ body    {
     margin: 2%;
     padding: 2%;
 }
-#afterupload, #location, #darkmodediv, #uploadstatus {
+#afterupload, #location, #darkmodediv, #uploadstatus, #uploadprogress {
     display: none;
 }
 #afterupload a  {
     background-color: #ffffff;
 }
-#location   {
+#location, #uploadprogress   {
     padding: 1px;
     border: 1px solid #256aff;
 }
