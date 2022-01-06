@@ -161,3 +161,14 @@ input:checked + .slider:before, input:checked + .slider img {
     background-color: #256aff;
     height: 2vh;
 }
+#dragoverlay    {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #256aff80;
+}

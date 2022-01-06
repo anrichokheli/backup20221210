@@ -107,7 +107,15 @@ function uploadVoice(n, key)  {
     });
 }
 var uploadstatusesdisplayed = 0;
-function fileUpload(fileInput){
+const maxFileSize = 25000000;
+function fileUpload(file, fileInput){
+    if(file === null)  {
+        file = fileInput.files[0];
+    }
+    if(file.size > maxFileSize)    {
+        alert("maximum file size is " + (maxFileSize / 1000000) + "MB");
+        return;
+    }
     unloadWarning = 1;
     const subbox = document.createElement("div");
     subbox.className = "boxs";
@@ -134,7 +142,7 @@ function fileUpload(fileInput){
     }
     statusText = document.createElement("div");
     var formData = new FormData();
-    formData.append("file", fileInput.files[0]);
+    formData.append("file", file);
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
         if(this.responseText.includes('|'))    {
@@ -167,9 +175,9 @@ function fileUpload(fileInput){
             }
         }
         else    {
-            statusText.innerText += "upload failed\n(" + Response + ")";
+            statusText.innerText += "upload failed\n(" + this.responseText + ")";
         }
-        fileInput.value = null;
+        if(fileInput !== undefined)fileInput.value = null;
         status.appendChild(statusText);
     };
     ajax.onerror = function(){
@@ -189,10 +197,10 @@ const takePhoto = document.getElementById("takephoto");
 const recordVideo = document.getElementById("recordvideo");
 const choosePhoto = document.getElementById("choosephoto");
 const chooseVideo = document.getElementById("choosevideo");
-takePhoto.oninput = function(){fileUpload(takePhoto);};
-recordVideo.oninput = function(){fileUpload(recordVideo);};
-choosePhoto.oninput = function(){fileUpload(choosePhoto);};
-chooseVideo.oninput = function(){fileUpload(chooseVideo);};
+takePhoto.oninput = function(){fileUpload(null,takePhoto);};
+recordVideo.oninput = function(){fileUpload(null,recordVideo);};
+choosePhoto.oninput = function(){fileUpload(null,choosePhoto);};
+chooseVideo.oninput = function(){fileUpload(null,chooseVideo);};
 const mainDiv = document.getElementById("main");
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
@@ -266,5 +274,19 @@ window.addEventListener("beforeunload", function(e){
     if(unloadWarning)    {
         e.preventDefault();
         e.returnValue = '';
+    }
+});
+const dragOverlay = document.getElementById("dragoverlay");
+mainDiv.addEventListener("dragover", function(e){
+    e.preventDefault();
+    dragOverlay.style.display = "block";
+});
+mainDiv.addEventListener("dragleave", function(){
+    dragOverlay.style.display = "none";
+});
+mainDiv.addEventListener("drop", function(e){
+    e.preventDefault();
+    if(e.dataTransfer.items[0].kind == "file")    {
+        fileUpload(e.dataTransfer.items[0].getAsFile());
     }
 });
