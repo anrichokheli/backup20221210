@@ -342,3 +342,11 @@ mainDiv.addEventListener("dragenter", function(e){
 dragOverlay.addEventListener("dragleave", function(){
     dragOverlay.style.display = "none";
 });
+const openFullScreenButton = document.createElement("button");
+openFullScreenButton.innerText = "open fullscreen";
+openFullScreenButton.addEventListener("click", function(){document.documentElement.requestFullscreen();});
+mainDiv.appendChild(openFullScreenButton);
+const closeFullScreenButton = document.createElement("button");
+closeFullScreenButton.innerText = "close fullscreen";
+closeFullScreenButton.addEventListener("click", function(){document.exitFullscreen();});
+mainDiv.appendChild(closeFullScreenButton);
