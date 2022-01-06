@@ -106,7 +106,6 @@ function uploadVoice(n, key)  {
         statusElement.innerHTML += "<br>";
     });
 }
-var uploads_id = 0;
 var uploadstatusesdisplayed = 0;
 function fileUpload(fileInput){
     unloadWarning = 1;
@@ -185,7 +184,6 @@ function fileUpload(fileInput){
     };
     ajax.open("POST", "php/uploadphotovideo.php");
     ajax.send(formData);
-    uploads_id++;
 }
 const takePhoto = document.getElementById("takephoto");
 const recordVideo = document.getElementById("recordvideo");
