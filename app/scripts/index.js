@@ -145,7 +145,7 @@ function uploadVoice(n, key)  {
 }
 var uploadstatusesdisplayed = 0;
 const maxFileSize = 25000000;
-const allowedFileExtensions = ["bmp", "gif", "ico", "jpg", "png", "tif", "webp", "avi", "mpeg", "ogv", "ts", "webm", "3gp", "3g2", "mp4"];
+const allowedFileExtensions = ["bmp", "gif", "x-icon", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
 function fileUpload(file, fileInput){
     if(file === null)  {
         file = fileInput.files[0];
@@ -331,13 +331,13 @@ dragOverlay.addEventListener("dragover", function(e){
 });
 dragOverlay.addEventListener("drop", function(e){
     e.preventDefault();
-    if(e.dataTransfer.items[0].kind == "file")    {
-        fileUpload(e.dataTransfer.items[0].getAsFile());
-    }
+    fileUpload(e.dataTransfer.items[0].getAsFile());
     dragOverlay.style.display = "none";
 });
-mainDiv.addEventListener("dragenter", function(){
-    dragOverlay.style.display = "block";
+mainDiv.addEventListener("dragenter", function(e){
+    if(e.dataTransfer.items[0].kind == "file")    {
+        dragOverlay.style.display = "block";
+    }
 });
 dragOverlay.addEventListener("dragleave", function(){
     dragOverlay.style.display = "none";

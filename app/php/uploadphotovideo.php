@@ -52,7 +52,7 @@
         $file_info_array = explode("/", $mimeContentType);
         $type = $file_info_array[0];
         $extension = $file_info_array[1];
-        if($extension === "vnd.microsoft.icon")	{
+        if(($extension === "vnd.microsoft.icon") || ($extension === "x-icon"))	{
 	        $extension = "ico";
         }
         else if($extension === "jpeg")	{
