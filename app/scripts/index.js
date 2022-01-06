@@ -23,6 +23,42 @@ var latitude;
 var longitude;
 var altitude;
 var accuracy;
+var locationTop = document.createElement("div");
+locationTop.id = "locationtop";
+locationDiv.appendChild(locationTop);
+var locationImage = document.createElement("img");
+locationImage.src = "images/location.svg";
+locationImage.width = "32";
+locationImage.height = "32";
+locationTop.appendChild(locationImage);
+var locationTitle = document.createElement("span");
+locationTitle.innerText = "current location";
+locationTitle.style.fontSize = "20px";
+locationTop.appendChild(locationTitle);
+function addLocationElements(text)  {
+    var div = document.createElement("div");
+    locationDiv.appendChild(div);
+    var title = document.createElement("span");
+    title.innerText = text + ": ";
+    div.appendChild(title);
+    var data = document.createElement("span");
+    div.appendChild(data);
+    return data;
+}
+function showLocation(element, data)    {
+    if(data == null)    {
+        data = "no data";
+        element.style.backgroundColor = "#ff000080";
+    }
+    else    {
+        element.style.backgroundColor = "";
+    }
+    element.innerText = data;
+}
+const latitudeLongitudeData = addLocationElements("latitude, longitude");
+const altitudeData = addLocationElements("altitude");
+const accuracyData = addLocationElements("accuracy");
+locationDiv.style.display = "block";
 function getLocation()  {
     if(navigator.geolocation)    {
         navigator.geolocation.getCurrentPosition(afterLocation);
@@ -34,8 +70,9 @@ function afterLocation(position)  {
     longitude = position.coords.longitude;
     altitude = position.coords.altitude;
     accuracy = position.coords.accuracy;
-    locationDiv.innerText = "current location:\n" + latitude + ", " + longitude + ";\n" + altitude + ";\n" + accuracy;
-    locationDiv.style.display = "block";
+    showLocation(latitudeLongitudeData, latitude + ", " + longitude);
+    showLocation(altitudeData, altitude);
+    showLocation(accuracyData, accuracy);
 }
 getLocation();
 function uploadString(n, key, post, location, value) {
@@ -167,7 +204,7 @@ function fileUpload(file, fileInput){
             if(darkModeEnabled)    {
                 html += " style=\"color:#ffffff;\"";
             }
-            html += "></textarea></div><br><button id=\"b"+n+"\" disabled>upload description</button>";
+            html += "></textarea></div><br><button id=\"b"+n+"\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;upload description</button>";
             html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\">upload voice</label></button>";
             html += "<div id=\"q"+n+"\" class=\"uploadstatuses2\"></div>";
             html += "</div>";

@@ -10,15 +10,13 @@ body    {
 #main   {
     flex-direction: column;
     min-height: 100vh;
+    font-family: sans-serif;
 }
 #pedestrian {
     color: #256aff;
 }
 #sos    {
     color: #ec0400;
-}
-#top h1, #main label, #main a {
-    font-family: sans-serif;
 }
 .buttons {
     color: #256aff;
@@ -171,4 +169,17 @@ input:checked + .slider:before, input:checked + .slider img {
     right: 0;
     bottom: 0;
     background-color: #256aff80;
+}
+#location   {
+    border-radius: 8px;
+}
+#location *   {
+    margin: 2px;
+}
+#locationtop    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid #256aff;
+    margin-bottom: 2px;
 }
