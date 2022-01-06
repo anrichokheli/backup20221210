@@ -108,12 +108,24 @@ function uploadVoice(n, key)  {
 }
 var uploadstatusesdisplayed = 0;
 const maxFileSize = 25000000;
+const allowedFileExtensions = ["bmp", "gif", "ico", "jpg", "png", "tif", "webp", "avi", "mpeg", "ogv", "ts", "webm", "3gp", "3g2", "mp4"];
 function fileUpload(file, fileInput){
     if(file === null)  {
         file = fileInput.files[0];
     }
     if(file.size > maxFileSize)    {
-        alert("maximum file size is " + (maxFileSize / 1000000) + "MB");
+        alert("maximum file size is " + (maxFileSize / 1000000) + "MB.");
+        return;
+    }
+    var fileTypeArray = file.type.split('/');
+    var fileType = fileTypeArray[0];
+    var fileExtension = fileTypeArray[1];
+    if(fileType != "image" && fileType != "video")    {
+        alert("only images and videos are allowed.");
+        return;
+    }
+    if(!allowedFileExtensions.includes(fileExtension))    {
+        alert("allowed file extensions are: ." + allowedFileExtensions.join(", .") + ".");
         return;
     }
     unloadWarning = 1;
@@ -277,16 +289,19 @@ window.addEventListener("beforeunload", function(e){
     }
 });
 const dragOverlay = document.getElementById("dragoverlay");
-mainDiv.addEventListener("dragover", function(e){
+dragOverlay.addEventListener("dragover", function(e){
     e.preventDefault();
-    dragOverlay.style.display = "block";
 });
-mainDiv.addEventListener("dragleave", function(){
-    dragOverlay.style.display = "none";
-});
-mainDiv.addEventListener("drop", function(e){
+dragOverlay.addEventListener("drop", function(e){
     e.preventDefault();
     if(e.dataTransfer.items[0].kind == "file")    {
         fileUpload(e.dataTransfer.items[0].getAsFile());
     }
+    dragOverlay.style.display = "none";
+});
+mainDiv.addEventListener("dragenter", function(){
+    dragOverlay.style.display = "block";
+});
+dragOverlay.addEventListener("dragleave", function(){
+    dragOverlay.style.display = "none";
 });
