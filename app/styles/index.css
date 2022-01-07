@@ -144,8 +144,9 @@ input:checked + .slider:before, input:checked + .slider img {
 .descriptioninput textarea   {
     width: 99%;
     max-width: 99%;
-    height: 15vh;
+    height: 25vh;
     background: none;
+    resize: none;
 }
 .progressbar0, .progressbar {
     border-radius: 8px;
@@ -176,10 +177,18 @@ input:checked + .slider:before, input:checked + .slider img {
 #location *   {
     margin: 2px;
 }
+.locationDivs    {
+    border-bottom: 1px solid #256aff;
+}
+.locationTitles {
+    font-weight: 600;
+    border-right: 1px dotted #256aff;
+}
 #locationtop    {
     display: flex;
     justify-content: center;
     align-items: center;
     border-bottom: 2px solid #256aff;
     margin-bottom: 2px;
+    font-weight: bold;
 }

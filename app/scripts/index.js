@@ -23,22 +23,26 @@ var latitude;
 var longitude;
 var altitude;
 var accuracy;
-var locationTop = document.createElement("div");
+const locationTop = document.createElement("div");
 locationTop.id = "locationtop";
 locationDiv.appendChild(locationTop);
-var locationImage = document.createElement("img");
+const locationImage = document.createElement("img");
 locationImage.src = "images/location.svg";
 locationImage.width = "32";
 locationImage.height = "32";
 locationTop.appendChild(locationImage);
-var locationTitle = document.createElement("span");
+const locationTitle = document.createElement("span");
 locationTitle.innerText = "current location";
 locationTitle.style.fontSize = "20px";
 locationTop.appendChild(locationTitle);
+const locationData = document.createElement("div");
+locationDiv.appendChild(locationData);
 function addLocationElements(text)  {
     var div = document.createElement("div");
-    locationDiv.appendChild(div);
+    div.className = "locationDivs";
+    locationData.appendChild(div);
     var title = document.createElement("span");
+    title.className = "locationTitles";
     title.innerText = text + ": ";
     div.appendChild(title);
     var data = document.createElement("span");
@@ -59,13 +63,20 @@ const latitudeLongitudeData = addLocationElements("latitude, longitude");
 const altitudeData = addLocationElements("altitude");
 const accuracyData = addLocationElements("accuracy");
 locationDiv.style.display = "block";
+notice.innerHTML += "<br><br>if location coordinates detected,<br>it will be attached automatically as soon as file will be uploaded";
 function getLocation()  {
     if(navigator.geolocation)    {
-        navigator.geolocation.getCurrentPosition(afterLocation);
-        notice.innerHTML += "<br><br>if location coordinates detected,<br>it will be attached automatically as soon as file will be uploaded";
+        navigator.geolocation.watchPosition(afterLocation, locationError);
+    }
+    else    {
+        locationData.innerText = "Geolocation not supported by this browser.";
+        locationDiv.style.backgroundColor = "#ff000080";
     }
 }
 function afterLocation(position)  {
+    if(locationDiv.contains(locationErrorDiv))    {
+        locationDiv.removeChild(locationErrorDiv);
+    }
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
     altitude = position.coords.altitude;
@@ -73,6 +84,32 @@ function afterLocation(position)  {
     showLocation(latitudeLongitudeData, latitude + ", " + longitude);
     showLocation(altitudeData, altitude);
     showLocation(accuracyData, accuracy);
+}
+const locationErrorDiv = document.createElement("div");
+locationErrorDiv.style.border = "2px solid #ff0000";
+function locationError(error)    {
+    locationDiv.appendChild(locationErrorDiv);
+    switch(error.code)   {
+        case error.PERMISSION_DENIED:
+            locationErrorDiv.innerText = "permission denied. to detect location,";
+            locationErrorDiv.appendChild(document.createElement("br"));
+            var button = document.createElement("button");
+            button.innerText = "allow permission";
+            button.addEventListener("click", function(){
+                getLocation();
+            });
+            locationErrorDiv.appendChild(button);
+            break;
+        case error.POSITION_UNAVAILABLE:
+            locationErrorDiv.innerText = "location unavailable";
+            break;
+        case error.TIMEOUT:
+            locationErrorDiv.innerText = "request timed out";
+            break;
+        case error.UNKNOWN_ERROR:
+            locationErrorDiv.innerText = "unknown error";
+            break;
+    }
 }
 getLocation();
 function uploadString(n, key, post, location, value) {
