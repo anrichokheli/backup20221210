@@ -236,7 +236,8 @@ function fileUpload(file, fileInput){
             var n = responseArray[0];
             var key = responseArray[1];
             var html = "<div class=\"boxs\">";
-            html += "<a href=\"php/view.php?n=" + n + "\" target=\"_blank\">#" + n + "</a>";
+            html += "#" + n + "<br>";
+            html += "<button onclick=window.open(\"php/view.php?n=" + n + "\")><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;view upload</button>";
             html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\"";
             if(darkModeEnabled)    {
                 html += " style=\"color:#ffffff;\"";

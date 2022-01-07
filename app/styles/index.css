@@ -19,7 +19,7 @@ body    {
     color: #ec0400;
 }
 .buttons {
-    color: #256aff;
+    color: #000000;
     font-size: 25px;
     font-weight: bold;
     display: flex;
@@ -47,9 +47,6 @@ body    {
 }
 #uploadstatuses, #location, #darkmodediv, #uploadstatus, #uploadprogress {
     display: none;
-}
-#uploadstatuses a  {
-    background-color: #ffffff;
 }
 #location, #uploadprogress   {
     padding: 1px;
