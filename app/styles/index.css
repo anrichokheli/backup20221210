@@ -11,6 +11,8 @@ body    {
     flex-direction: column;
     min-height: 100vh;
     font-family: sans-serif;
+    max-width: 100%;
+    word-wrap: break-word;
 }
 #pedestrian {
     color: #256aff;
@@ -170,6 +172,7 @@ input:checked + .slider:before, input:checked + .slider img {
 }
 #location   {
     border-radius: 8px;
+    max-width: calc(100% - 8px);
 }
 #location *   {
     margin: 2px;
