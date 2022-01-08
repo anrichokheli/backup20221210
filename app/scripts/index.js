@@ -243,7 +243,7 @@ function fileUpload(file, fileInput){
                 html += " style=\"color:#ffffff;\"";
             }
             html += "></textarea></div><br><button id=\"b"+n+"\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;upload description</button>";
-            html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\">upload voice</label></button>";
+            html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\"><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;upload voice</label></button>";
             html += "<div id=\"q"+n+"\" class=\"uploadstatuses2\"></div>";
             html += "</div>";
             after.innerHTML = html;
