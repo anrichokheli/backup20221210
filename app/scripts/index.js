@@ -181,6 +181,21 @@ function uploadVoice(n, key)  {
         statusElement.innerHTML += "<br>";
     });
 }
+function bottomProgressVisible(visible)    {
+    if(visible)    {
+        uploadStatusBottom.style.display = "flex";
+        uploadStatusBottom.style.animation = "showbottom 1s forwards";
+    }
+    else    {
+        setTimeout(function(){
+            uploadStatusBottom.style.animation = "hidebottom 1s forwards";
+            setTimeout(function(){uploadStatusBottom.style.display = "none";}, 1000);
+        }, 3000);
+    }
+}
+const uploadStatusBottom = document.getElementById("uploadstatusbottom");
+const bottomProgressBar = document.createElement("div");
+uploadStatusBottom.appendChild(bottomProgressBar);
 var uploadstatusesdisplayed = 0;
 const maxFileSize = 25000000;
 const allowedFileExtensions = ["bmp", "gif", "x-icon", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
@@ -228,6 +243,9 @@ function fileUpload(file, fileInput){
         uploadstatusesdisplayed = 1;
     }
     statusText = document.createElement("div");
+    bottomProgressBar.style.backgroundColor = "#ffff00";
+    bottomProgressBar.style.width = "0%";
+    bottomProgressVisible(1);
     var formData = new FormData();
     formData.append("file", file);
     var ajax = new XMLHttpRequest();
@@ -255,6 +273,8 @@ function fileUpload(file, fileInput){
                 button.disabled = textarea.value == '';
             });
             statusText.innerText += "upload completed (#" + n + ")";
+            bottomProgressBar.style.backgroundColor = "#00ff00";
+            bottomProgressVisible(0);
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);
             }
@@ -264,12 +284,16 @@ function fileUpload(file, fileInput){
         }
         else    {
             statusText.innerText += "upload failed\n(" + this.responseText + ")";
+            bottomProgressBar.style.backgroundColor = "#ff0000";
+            bottomProgressVisible(0);
         }
         if(fileInput !== undefined)fileInput.value = null;
         status.appendChild(statusText);
     };
     ajax.onerror = function(){
         statusText.innerText += "upload error\n(" + this.Error + ")";
+        bottomProgressBar.style.backgroundColor = "#ff0000";
+        bottomProgressVisible(0);
         status.appendChild(statusText);
     };
     var progressPercent;
@@ -277,6 +301,7 @@ function fileUpload(file, fileInput){
         progressPercent = ((e.loaded / e.total) * 100).toFixed(2) + '%';
         progress.innerText = progressPercent + " (" + e.loaded + " / " + e.total + ")";
         progressBar.style.width = progressPercent;
+        bottomProgressBar.style.width = progressPercent;
     };
     ajax.open("POST", "php/uploadphotovideo.php");
     ajax.send(formData);

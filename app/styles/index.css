@@ -202,3 +202,27 @@ input:checked + .slider:before, input:checked + .slider img {
     margin-bottom: 2px;
     font-weight: bold;
 }
+#uploadstatusbottom {
+    width: 90%;
+    height: 0px;
+    background-color: #256aff80;
+    border-radius: 8px;
+    position: fixed;
+    bottom: 1%;
+    display: none;
+    align-items: center;
+    padding: 1%;
+}
+@keyframes showbottom   {
+    from{height: 0vh;}
+    to{height: 7vh;}
+}
+@keyframes hidebottom   {
+    from{height: 7vh;}
+    to{height: 0vh;}
+}
+#uploadstatusbottom div {
+    height: 50%;
+    border-radius: 8px;
+    transition: background-color 1s;
+}
