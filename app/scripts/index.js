@@ -17,7 +17,7 @@ label2button("recordvideo");
 label2button("choosephoto");
 label2button("choosevideo");
 for(var i = 0; (uploadForms[i] != undefined) && (i < uploadForms[i].length); i++)   {
-    mainDiv.removeChild(uploadForms[i--]);
+    uploadForms[i].parentElement.removeChild(uploadForms[i--]);
 }
 notice.innerText = "file upload will be started directly as soon as file will be chosen";
 var latitude;
@@ -181,15 +181,23 @@ function uploadVoice(n, key)  {
         statusElement.innerHTML += "<br>";
     });
 }
+var timeout1;
+var timeout2;
 function bottomProgressVisible(visible)    {
     if(visible)    {
+        if(timeout1 != undefined)    {
+            clearTimeout(timeout1);
+        }
+        if(timeout2 != undefined)    {
+            clearTimeout(timeout2);
+        }
         uploadStatusBottom.style.display = "flex";
         uploadStatusBottom.style.animation = "showbottom 1s forwards";
     }
     else    {
-        setTimeout(function(){
+        timeout1 = setTimeout(function(){
             uploadStatusBottom.style.animation = "hidebottom 1s forwards";
-            setTimeout(function(){uploadStatusBottom.style.display = "none";}, 1000);
+            timeout2 = setTimeout(function(){uploadStatusBottom.style.display = "none";}, 1000);
         }, 3000);
     }
 }
@@ -421,3 +429,6 @@ const closeFullScreenButton = document.createElement("button");
 closeFullScreenButton.innerText = "close fullscreen";
 closeFullScreenButton.addEventListener("click", function(){document.exitFullscreen();});
 mainDiv.appendChild(closeFullScreenButton);
+const bottomSpace = document.createElement("div");
+bottomSpace.style.height = "25vh";
+mainDiv.appendChild(bottomSpace);

@@ -20,6 +20,18 @@ body    {
 #sos    {
     color: #ec0400;
 }
+#buttons, .buttonsDivs    {
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.buttonsDivs div  {
+    margin: 2px;
+    display: inline-block;
+}
 .buttons {
     color: #000000;
     font-size: 25px;

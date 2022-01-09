@@ -18,77 +18,80 @@
                 </h1>
             </div>
             <br>
-            <form action="php/uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
-                <div id="takephotodiv">
-                    <label class="buttons texts" for="takephoto">
-                        <img width="64" height="64" src="images/take_photo.svg">
-                        &nbsp;
-                        Take Photo
-                    </label>
-                    <input type="file" accept="image/*" id="takephoto" name="file" capture="environment" required>
+            <div id="buttons">
+                <div class="buttonsDivs">
+                    <form action="php/uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
+                        <div id="takephotodiv">
+                            <label class="buttons texts" for="takephoto">
+                                <img width="64" height="64" src="images/take_photo.svg">
+                                &nbsp;
+                                Take Photo
+                            </label>
+                            <input type="file" accept="image/*" id="takephoto" name="file" capture="environment" required>
+                        </div>
+                        <input type="submit" id="upload_takephoto" name="submit">
+                        <label class="buttons uploadbuttons texts" for="upload_takephoto">
+                            <img width="64" height="64" src="images/uploadicon.svg">
+                            &nbsp;
+                            Upload
+                        </label>
+                    </form>
+                    <div id="takephotodiv2"></div>
+                    <form action="php/uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
+                        <div id="recordvideodiv">
+                            <label class="buttons texts" for="recordvideo">
+                                <img width="64" height="64" src="images/record_video.svg">
+                                &nbsp;
+                                Record Video
+                            </label>
+                            <input type="file" accept="video/*" id="recordvideo" name="file" capture="environment" required>
+                        </div>
+                        <input type="submit" id="upload_recordvideo" name="submit">
+                        <label class="buttons uploadbuttons texts" for="upload_recordvideo">
+                            <img width="64" height="64" src="images/uploadicon.svg">
+                            &nbsp;
+                            Upload
+                        </label>
+                    </form>
+                    <div id="recordvideodiv2"></div>
                 </div>
-                <input type="submit" id="upload_takephoto" name="submit">
-                <label class="buttons uploadbuttons texts" for="upload_takephoto">
-                    <img width="64" height="64" src="images/uploadicon.svg">
-                    &nbsp;
-                    Upload
-                </label>
-            </form>
-            <div id="takephotodiv2"></div>
-            <br>
-            <form action="php/uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
-                <div id="recordvideodiv">
-                    <label class="buttons texts" for="recordvideo">
-                        <img width="64" height="64" src="images/record_video.svg">
-                        &nbsp;
-                        Record Video
-                    </label>
-                    <input type="file" accept="video/*" id="recordvideo" name="file" capture="environment" required>
+                <div class="buttonsDivs">
+                    <form action="php/uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
+                        <div id="choosephotodiv">
+                            <label class="buttons texts" for="choosephoto">
+                                <img width="64" height="64" src="images/choose_photo.svg">
+                                &nbsp;
+                                Choose Photo
+                            </label>
+                            <input type="file" accept="image/*" id="choosephoto" name="file" required>
+                        </div>
+                        <input type="submit" id="upload_choosephoto" name="submit">
+                        <label class="buttons uploadbuttons texts" for="upload_choosephoto">
+                            <img width="64" height="64" src="images/uploadicon.svg">
+                            &nbsp;
+                            Upload
+                        </label>
+                    </form>
+                    <div id="choosephotodiv2"></div>
+                    <form action="php/uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
+                        <div id="choosevideodiv">
+                            <label class="buttons texts" for="choosevideo">
+                                <img width="64" height="64" src="images/choose_video.svg">
+                                &nbsp;
+                                Choose Video
+                            </label>
+                            <input type="file" accept="video/*" id="choosevideo" name="file" required>
+                        </div>
+                        <input type="submit" id="upload_choosevideo" name="submit">
+                        <label class="buttons uploadbuttons texts" for="upload_choosevideo">
+                            <img width="64" height="64" src="images/uploadicon.svg">
+                            &nbsp;
+                            Upload
+                        </label>
+                    </form>
+                    <div id="choosevideodiv2"></div>
                 </div>
-                <input type="submit" id="upload_recordvideo" name="submit">
-                <label class="buttons uploadbuttons texts" for="upload_recordvideo">
-                    <img width="64" height="64" src="images/uploadicon.svg">
-                    &nbsp;
-                    Upload
-                </label>
-            </form>
-            <div id="recordvideodiv2"></div>
-            <br>
-            <form action="php/uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
-                <div id="choosephotodiv">
-                    <label class="buttons texts" for="choosephoto">
-                        <img width="64" height="64" src="images/choose_photo.svg">
-                        &nbsp;
-                        Choose Photo
-                    </label>
-                    <input type="file" accept="image/*" id="choosephoto" name="file" required>
-                </div>
-                <input type="submit" id="upload_choosephoto" name="submit">
-                <label class="buttons uploadbuttons texts" for="upload_choosephoto">
-                    <img width="64" height="64" src="images/uploadicon.svg">
-                    &nbsp;
-                    Upload
-                </label>
-            </form>
-            <div id="choosephotodiv2"></div>
-            <br>
-            <form action="php/uploadphotovideo.php" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
-                <div id="choosevideodiv">
-                    <label class="buttons texts" for="choosevideo">
-                        <img width="64" height="64" src="images/choose_video.svg">
-                        &nbsp;
-                        Choose Video
-                    </label>
-                    <input type="file" accept="video/*" id="choosevideo" name="file" required>
-                </div>
-                <input type="submit" id="upload_choosevideo" name="submit">
-                <label class="buttons uploadbuttons texts" for="upload_choosevideo">
-                    <img width="64" height="64" src="images/uploadicon.svg">
-                    &nbsp;
-                    Upload
-                </label>
-            </form>
-            <div id="choosevideodiv2"></div>
+            </div>
             <br>
             <div id="location" class="texts"></div>
             <br>
