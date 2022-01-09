@@ -33,8 +33,16 @@ body    {
     cursor: pointer;
     background: none;
 }
+.buttons:disabled   {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #ec0400;
+}
+.afteruploadbuttons {
+    font-size: 20px;
+}
 .buttons:hover   {
-    border: 2px solid #256aff;
+    border-style: solid;
 }
 #main a {
     text-decoration: none;
@@ -169,6 +177,8 @@ input:checked + .slider:before, input:checked + .slider img {
     right: 0;
     bottom: 0;
     background-color: #256aff80;
+    justify-content: center;
+    align-items: center;
 }
 #location   {
     border-radius: 8px;

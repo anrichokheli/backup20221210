@@ -1,3 +1,4 @@
+const mainDiv = document.getElementById("main");
 const uploadStatuses = document.getElementById("uploadstatuses");
 const locationDiv = document.getElementById("location");
 const notice = document.getElementById("notice");
@@ -15,8 +16,8 @@ label2button("takephoto");
 label2button("recordvideo");
 label2button("choosephoto");
 label2button("choosevideo");
-for(var key in uploadForms)   {
-    uploadForms[key].innerHTML = '';
+for(var i = 0; (uploadForms[i] != undefined) && (i < uploadForms[i].length); i++)   {
+    mainDiv.removeChild(uploadForms[i--]);
 }
 notice.innerText = "file upload will be started directly as soon as file will be chosen";
 var latitude;
@@ -237,13 +238,10 @@ function fileUpload(file, fileInput){
             var key = responseArray[1];
             var html = "<div class=\"boxs\">";
             html += "#" + n + "<br>";
-            html += "<button onclick=window.open(\"php/view.php?n=" + n + "\")><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;view upload</button>";
-            html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\"";
-            if(darkModeEnabled)    {
-                html += " style=\"color:#ffffff;\"";
-            }
-            html += "></textarea></div><br><button id=\"b"+n+"\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;upload description</button>";
-            html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button><label for=\"v"+n+"\"><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;upload voice</label></button>";
+            html += "<button onclick=window.open(\"php/view.php?n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;view upload</button>";
+            html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\"write description...\"></textarea></div>";
+            html += "<br><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;upload description</button>";
+            html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;upload voice</button>";
             html += "<div id=\"q"+n+"\" class=\"uploadstatuses2\"></div>";
             html += "</div>";
             after.innerHTML = html;
@@ -259,6 +257,9 @@ function fileUpload(file, fileInput){
             statusText.innerText += "upload completed (#" + n + ")";
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);
+            }
+            if(darkModeEnabled)    {
+                setDarkMode(1);
             }
         }
         else    {
@@ -288,7 +289,6 @@ takePhoto.oninput = function(){fileUpload(null,takePhoto);};
 recordVideo.oninput = function(){fileUpload(null,recordVideo);};
 choosePhoto.oninput = function(){fileUpload(null,choosePhoto);};
 chooseVideo.oninput = function(){fileUpload(null,chooseVideo);};
-const mainDiv = document.getElementById("main");
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -364,6 +364,14 @@ window.addEventListener("beforeunload", function(e){
     }
 });
 const dragOverlay = document.getElementById("dragoverlay");
+var uploadImageDiv = document.createElement("div");
+uploadImageDiv.style.width = "50%";
+uploadImageDiv.style.height = "50%";
+uploadImageDiv.style.backgroundImage = "url(images/uploadicon.svg)";
+uploadImageDiv.style.backgroundRepeat = "no-repeat";
+uploadImageDiv.style.backgroundPosition = "center";
+uploadImageDiv.style.backgroundSize = "contain";
+dragOverlay.appendChild(uploadImageDiv);
 dragOverlay.addEventListener("dragover", function(e){
     e.preventDefault();
 });
@@ -374,7 +382,7 @@ dragOverlay.addEventListener("drop", function(e){
 });
 mainDiv.addEventListener("dragenter", function(e){
     if(e.dataTransfer.items[0].kind == "file")    {
-        dragOverlay.style.display = "block";
+        dragOverlay.style.display = "flex";
     }
 });
 dragOverlay.addEventListener("dragleave", function(){
