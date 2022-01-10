@@ -66,6 +66,7 @@ body    {
     border: 2px solid #256aff;
     margin: 2%;
     padding: 2%;
+    min-width: 90%;
 }
 #uploadstatuses, #location, #darkmodediv, #uploadstatus, #uploadprogress {
     display: none;
