@@ -192,12 +192,12 @@ function bottomProgressVisible(visible)    {
             clearTimeout(timeout2);
         }
         uploadStatusBottom.style.display = "flex";
-        uploadStatusBottom.style.animation = "showbottom 1s forwards";
+        uploadStatusBottom.style.animation = "showbottom 0.5s forwards";
     }
     else    {
         timeout1 = setTimeout(function(){
-            uploadStatusBottom.style.animation = "hidebottom 1s forwards";
-            timeout2 = setTimeout(function(){uploadStatusBottom.style.display = "none";}, 1000);
+            uploadStatusBottom.style.animation = "hidebottom 0.5s forwards";
+            timeout2 = setTimeout(function(){uploadStatusBottom.style.display = "none";}, 500);
         }, 3000);
     }
 }
@@ -232,26 +232,30 @@ function fileUpload(file, fileInput){
     uploadStatuses.insertBefore(subbox, uploadStatuses.childNodes[0]);
     const status = document.createElement("div");
     const after = document.createElement("div");
+    const statusDiv = document.createElement("div");
+    status.appendChild(statusDiv);
     subbox.appendChild(status);
     subbox.appendChild(after);
     var statusText = document.createElement("div");
     statusText.innerText = "uploading...";
-    status.appendChild(statusText);
+    statusDiv.appendChild(statusText);
     const progress = document.createElement("div");
-    status.appendChild(progress);
+    statusDiv.appendChild(progress);
     const progressBar0 = document.createElement("div");
     progressBar0.className = "progressbar0";
-    status.appendChild(progressBar0);
+    statusDiv.appendChild(progressBar0);
     const progressBar = document.createElement("div");
     progressBar.className = "progressbar";
     progressBar0.appendChild(progressBar);
-    status.appendChild(document.createElement("br"));
+    var color = "#ffff00";
+    statusDiv.className = "statusText";
+    statusDiv.style.borderColor = color;
     if(!uploadstatusesdisplayed) {
         uploadStatuses.style.display = "block";
         uploadstatusesdisplayed = 1;
     }
     statusText = document.createElement("div");
-    bottomProgressBar.style.backgroundColor = "#ffff00";
+    bottomProgressBar.style.backgroundColor = color;
     bottomProgressBar.style.width = "0%";
     bottomProgressVisible(1);
     var formData = new FormData();
@@ -280,8 +284,8 @@ function fileUpload(file, fileInput){
             textarea.addEventListener("input", function(){
                 button.disabled = textarea.value == '';
             });
-            statusText.innerText += "upload completed (#" + n + ")";
-            bottomProgressBar.style.backgroundColor = "#00ff00";
+            statusText.innerText += "upload completed\n(#" + n + ")";
+            color = "#00ff00";
             bottomProgressVisible(0);
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);
@@ -292,17 +296,23 @@ function fileUpload(file, fileInput){
         }
         else    {
             statusText.innerText += "upload failed\n(" + this.responseText + ")";
-            bottomProgressBar.style.backgroundColor = "#ff0000";
+            color = "#ff0000";
             bottomProgressVisible(0);
         }
         if(fileInput !== undefined)fileInput.value = null;
-        status.appendChild(statusText);
+        statusText.className = "statusText";
+        statusText.style.borderColor = color;
+        bottomProgressBar.style.backgroundColor = color;
+        status.insertBefore(statusText, status.childNodes[0]);
     };
     ajax.onerror = function(){
         statusText.innerText += "upload error\n(" + this.Error + ")";
-        bottomProgressBar.style.backgroundColor = "#ff0000";
+        statusText.className = "statusText";
+        color = "#ff0000";
+        statusText.style.borderColor = color;
+        bottomProgressBar.style.backgroundColor = color;
         bottomProgressVisible(0);
-        status.appendChild(statusText);
+        status.insertBefore(statusText, status.childNodes[0]);
     };
     var progressPercent;
     ajax.upload.onprogress = function(e){
