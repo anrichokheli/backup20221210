@@ -124,23 +124,32 @@ function uploadString(n, key, post, location, value) {
     }
     text += " upload";
     const element = document.getElementById('q'+n);
-    element.innerText += text + "ing...\n(" + value + ")";
-    element.innerHTML += "<br><br>";
+    var div = document.createElement("div");
+    div.className = "statusText";
+    div.innerText = text + "ing...\n(" + value + ")";
+    div.style.borderColor = "#ffff00";
+    element.prepend(div);
     ajax.onload = function(){
+        div = document.createElement("div");
+        div.className = "statusText";
         if(this.responseText === "1")    {
-            element.innerText += text + "ed";
+            div.innerText = text + "ed";
+            div.style.borderColor = "#00ff00";
         }
         else    {
-            element.innerText += text + " failed (" + this.responseText + ")";
+            div.innerText = text + " failed (" + this.responseText + ")";
+            div.style.borderColor = "#ff0000";
             if(!location)    {
                 document.getElementById("b"+n).disabled = 0;
             }
         }
-        element.innerHTML += "<br><br>";
+        element.prepend(div);
     };
     ajax.onerror = function(){
-        element.innerText += text + " error (" + this.Error + ")";
-        element.innerHTML += "<br><br>";
+        div = document.createElement("div");
+        div.className = "statusText";
+        div.innerText = text + " error (" + this.Error + ")";
+        div.style.borderColor = "#ff0000";
         if(!location)    {
             document.getElementById("b"+n).disabled = 0;
         }
@@ -159,8 +168,11 @@ function uploadDescription(n, key)    {
 function uploadVoice(n, key)  {
     const statusElement = document.getElementById('q'+n);
     const voiceinput = document.getElementById('v'+n);
-    statusElement.innerText += "voice uploading...";
-    statusElement.innerHTML += "<br>";
+    var div = document.createElement("div");
+    div.className = "statusText";
+    div.innerText = "voice uploading...";
+    div.style.borderColor = "#ffff00";
+    statusElement.prepend(div);
     var formData = new FormData();
     formData.append("file", voiceinput.files[0]);
     formData.append("n", n);
@@ -168,17 +180,24 @@ function uploadVoice(n, key)  {
     fetch("php/uploadvoice.php", {method: "POST", body: formData})
     .then(Response => Response.text())
     .then(Response => {
+        div = document.createElement("div");
+        div.className = "statusText";
         if(Response === "1")    {
-            statusElement.innerText += "voice uploaded";
+            div.innerText = "voice uploaded";
+            div.style.borderColor = "#00ff00";
         }
         else    {
-            statusElement.innerText += "voice upload failed (" + Response + ")";
+            div.innerText = "voice upload failed\n(" + Response + ")";
+            div.style.borderColor = "#ff0000";
         }
-        statusElement.innerHTML += "<br>";
+        statusElement.prepend(div);
     })
     .catch(Error => {
-        statusElement.innerText += "voice upload error (" + Error + ")";
-        statusElement.innerHTML += "<br>";
+        div = document.createElement("div");
+        div.className = "statusText";
+        div.innerText = "voice upload error\n(" + Error + ")";
+        div.style.borderColor = "#ff0000";
+        statusElement.prepend(div);
     });
 }
 var timeout1;
@@ -229,8 +248,9 @@ function fileUpload(file, fileInput){
     unloadWarning = 1;
     const subbox = document.createElement("div");
     subbox.className = "boxs";
-    uploadStatuses.insertBefore(subbox, uploadStatuses.childNodes[0]);
+    uploadStatuses.prepend(subbox);
     const status = document.createElement("div");
+    status.className = "uploadstatuses2";
     const after = document.createElement("div");
     const statusDiv = document.createElement("div");
     status.appendChild(statusDiv);
@@ -303,7 +323,7 @@ function fileUpload(file, fileInput){
         statusText.className = "statusText";
         statusText.style.borderColor = color;
         bottomProgressBar.style.backgroundColor = color;
-        status.insertBefore(statusText, status.childNodes[0]);
+        status.prepend(statusText);
     };
     ajax.onerror = function(){
         statusText.innerText += "upload error\n(" + this.Error + ")";
@@ -312,7 +332,7 @@ function fileUpload(file, fileInput){
         statusText.style.borderColor = color;
         bottomProgressBar.style.backgroundColor = color;
         bottomProgressVisible(0);
-        status.insertBefore(statusText, status.childNodes[0]);
+        status.prepend(statusText);
     };
     var progressPercent;
     ajax.upload.onprogress = function(e){
