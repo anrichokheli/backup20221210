@@ -253,9 +253,9 @@ function fileUpload(file, fileInput){
     status.className = "uploadstatuses2";
     const after = document.createElement("div");
     const statusDiv = document.createElement("div");
+    subbox.appendChild(after);
     status.appendChild(statusDiv);
     subbox.appendChild(status);
-    subbox.appendChild(after);
     var statusText = document.createElement("div");
     statusText.innerText = "uploading...";
     statusDiv.appendChild(statusText);
