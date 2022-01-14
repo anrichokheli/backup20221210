@@ -1,0 +1,69 @@
+<div id="top">
+    <img width="64" height="64" src="images/pedestriansos_64.png">
+    <h1>
+        <span id="pedestrian">Pedestrian</span>&nbsp;<span id="sos">SOS!</span>
+    </h1>
+</div>
+<br>
+<div id="buttons">
+    <div class="buttonsDivs">
+        <div>
+            <button id="takephotobutton" class="buttons texts">
+                <img width="64" height="64" src="images/take_photo.svg">
+                &nbsp;
+                Take Photo
+            </button>
+            <input type="file" accept="image/*" id="takephotoinput" name="file" capture="environment" required hidden>
+        </div>
+        <div>
+            <button id="recordvideobutton" class="buttons texts">
+                <img width="64" height="64" src="images/record_video.svg">
+                &nbsp;
+                Record Video
+            </button>
+            <input type="file" accept="video/*" id="recordvideoinput" name="file" capture="environment" required hidden>
+        </div>
+    </div>
+    <div class="buttonsDivs">
+        <div>
+            <button id="choosephotobutton" class="buttons texts">
+                <img width="64" height="64" src="images/choose_photo.svg">
+                &nbsp;
+                Choose Photo
+            </button>
+            <input type="file" accept="image/*" id="choosephotoinput" name="file" required hidden>
+        </div>
+        <div>
+            <button id="choosevideobutton" class="buttons texts">
+                <img width="64" height="64" src="images/choose_video.svg">
+                &nbsp;
+                Choose Video
+            </button>
+            <input type="file" accept="video/*" id="choosevideoinput" name="file" required hidden>
+        </div>
+    </div>
+</div>
+<br>
+<div id="location" class="texts"></div>
+<br>
+<div id="uploadstatus"></div>
+<div id="uploadstatuses" class="texts"></div>
+<br>
+<a class="buttons texts" href="php/view.php" target="_blank">
+    <img width="64" height="64" src="images/viewicon.svg">
+    &nbsp;
+    View Uploads
+</a>
+<div id="darkmodediv"></div>
+<br>
+<p id="info" class="texts">
+    maximum file size is 25MB.
+    <br><br>
+    only images and videos are allowed.
+    <br><br>
+    allowed file extensions are: .bmp, .gif, .ico, .jpg, .png, .tif, .webp, .avi, .mpeg, .ogv, .ts, .webm, .3gp, .3g2, .mp4.
+    <br><br>
+    <span id="notice" class="texts"></span>
+</p>
+<div id="dragoverlay"></div>
+<div id="uploadstatusbottom"></div>
