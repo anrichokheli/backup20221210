@@ -25,16 +25,19 @@
             echo date("Y-m-d H:i:s", file_get_contents($timePath . $n . ".txt"));
         }
     }
-    function echoFile($filePath, $timePath, $n) {
+    function echoFile($filePath, $timePath, $n, $echoNotExists) {
         $path = glob($filePath . $n . ".*")[0];
-        echo "<br><br>";
-        if(file_exists($path))    {
-            echo "<a href=\"" . $path . "\" target=\"_blank\">" . basename($path) . "</a>";
+        $fileExists = file_exists($path);
+        if($fileExists || $echoNotExists)    {
             echo "<br><br>";
-            echo date("Y-m-d H:i:s", file_get_contents($timePath . $n . ".txt"));
-        }
-        else    {
-            echo("not exists");
+            if($fileExists)    {
+                echo "<a href=\"" . $path . "\" target=\"_blank\">" . basename($path) . "</a>";
+                echo "<br><br>";
+                echo date("Y-m-d H:i:s", file_get_contents($timePath . $n . ".txt"));
+            }
+            else    {
+                echo("not exists");
+            }
         }
     }
     function getData($n, $a)  {
@@ -44,10 +47,10 @@
         echo "#: " . $n;
         if($a)
             echo "</a>";
-        echoFile(photovideos, photovideotimes, $n);
+        echoFile(photovideos, photovideotimes, $n, 1);
         echoString(descriptions, descriptiontimes, $n);
         echoString(locations, locationtimes, $n);
-        echoFile(voices, voicetimes, $n);
+        echoFile(voices, voicetimes, $n, 0);
         //echo "<a href=\"../\" target=\"_blank\">open main page</a>";
         echo "</div>";
     }

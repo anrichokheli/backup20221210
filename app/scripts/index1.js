@@ -127,40 +127,60 @@ function uploadString(n, key, post, location, value) {
     const element = document.getElementById('q'+n);
     var div = document.createElement("div");
     div.className = "statusText";
-    div.innerText = text + "ing...\n(" + value + ")";
-    div.style.borderColor = "#ffff00";
+    div.innerText = text + "ing...";
+    var color = "#ffff00";
+    div.style.borderColor = color;
+    var div2 = document.createElement("div");
+    div2.innerText = value;
+    var borderStyle = "1px dotted";
+    div2.style.border = borderStyle;
+    div2.borderColor = color;
+    div.appendChild(div2);
     element.prepend(div);
     ajax.onload = function(){
         div = document.createElement("div");
         div.className = "statusText";
         if(this.responseText === "1")    {
             div.innerText = text + "ed";
-            div.style.borderColor = "#00ff00";
+            color = "#00ff00";
         }
         else    {
-            div.innerText = text + " failed (" + this.responseText + ")";
-            div.style.borderColor = "#ff0000";
+            div.innerText = text + " failed";
+            color = "#ff0000";
             if(!location)    {
                 document.getElementById("b"+n).disabled = 0;
             }
+            var div2 = document.createElement("div");
+            div2.innerText = this.responseText;
+            div2.style.border = borderStyle;
+            div2.style.borderColor = color;
+            div.appendChild(div2);
         }
+        div.style.borderColor = color;
         element.prepend(div);
     };
     ajax.onerror = function(){
         div = document.createElement("div");
         div.className = "statusText";
-        div.innerText = text + " error (" + this.Error + ")";
-        div.style.borderColor = "#ff0000";
+        div.innerText = text + " error";
+        color = "#ff0000";
+        div.style.borderColor = color;
         if(!location)    {
             document.getElementById("b"+n).disabled = 0;
         }
+        div2 = document.createElement("div");
+        div2.innerText = this.Error;
+        div2.style.border = borderStyle;
+        div2.style.borderColor = color;
+        div.appendChild(div2);
+        element.prepend(div);
     };
     ajax.open("POST", "php/uploadstring.php");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send("n="+n+"&key="+key+post);
 }
 function uploadLocation(n, key)   {
-    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude+"&altitude="+altitude+"&accuracy="+accuracy+"&altitudeaccuracy="+altitudeAccuracy, true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy);
+    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude+"&altitude="+altitude+"&accuracy="+accuracy+"&altitudeaccuracy="+altitudeAccuracy, true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy);
 }
 function uploadDescription(n, key)    {
     var descriptionValue = document.getElementById(n).value;
