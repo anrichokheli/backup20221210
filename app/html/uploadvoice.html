@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        @media(prefers-color-scheme: dark){.texts{color:#ffffff;}}
-    </style>
-</head>
-<body>
-    <form method="post" enctype="multipart/form-data" action="uploadvoice.php">
-        <input type="hidden" name="n" value="value_n">
-        <input type="hidden" name="key" value="value_key">
-        <input type="file" accept="audio/*" name="file" class="texts">
-        <input type="submit" name="submit">
-    </form>
-</body>
-</html>
+<form method="post" enctype="multipart/form-data" action="uploadvoice.php" id="voiceform">
+    <input type="hidden" name="n" value="value_n">
+    <input type="hidden" name="key" value="value_key">
+    <input type="file" accept="audio/*" name="file" class="texts" id="voiceinput" required>
+</form>
+<label for="voiceinput" class="buttons afteruploadbuttons texts"><img width="32" height="32" src="../images/microphone.svg">&nbsp;choose voice</label>
+<br>
+<button name="submit" form="voiceform" class="buttons afteruploadbuttons texts"><img width="32" height="32" src="../images/microphone.svg">&nbsp;upload voice</button>

@@ -53,8 +53,25 @@ body    {
 .buttons:hover   {
     border-style: solid;
 }
+.afteruploadbuttons {
+    font-size: 20px;
+}
 #main a {
     text-decoration: none;
+}
+.boxs    {
+    border: 2px solid #256aff;
+    margin: 2%;
+    padding: 2%;
+    width: 90%;
+}
+#main textarea   {
+    width: 99%;
+    max-width: 99%;
+    height: 50vh;
+    background: none;
+    resize: none;
+    font-size: 16px;
 }
 @media(prefers-color-scheme: dark)    {
     #main   {

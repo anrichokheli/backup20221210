@@ -271,7 +271,7 @@ function fileUpload(file, fileInput){
     subbox.className = "boxs";
     uploadStatuses.prepend(subbox);
     const status = document.createElement("div");
-    status.className = "uploadstatuses2";
+    status.className = "uploadstatuses2 boxs";
     const after = document.createElement("div");
     const statusDiv = document.createElement("div");
     subbox.appendChild(after);
@@ -313,7 +313,7 @@ function fileUpload(file, fileInput){
             html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\"write description...\"></textarea></div>";
             html += "<br><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;upload description</button>";
             html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;upload voice</button>";
-            html += "<div id=\"q"+n+"\" class=\"uploadstatuses2\"></div>";
+            html += "<div id=\"q"+n+"\" class=\"uploadstatuses2 boxs\"></div>";
             html += "</div>";
             after.innerHTML = html;
             var button = document.getElementById("b"+n);

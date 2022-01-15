@@ -96,7 +96,14 @@
             file_put_contents(protectedPrivateKeysPath . $filesQuantity, password_hash($key, PASSWORD_DEFAULT));
             //header("Location: view.php?n=" . $filesQuantity);
             if(isset($_POST["submit"]))    {
-                echo str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("../html/uploaddescription.html")));
+                $html = "<div class=\"boxs\">";
+                $html .= "<div class=\"texts\">#: " . $filesQuantity . "</div><a href=\"../php/view.php?n=" . $filesQuantity . "\" target=\"_blank\" class=\"buttons afteruploadbuttons texts\"><img width=\"32\" height=\"32\" src=\"../images/viewicon.svg\">&nbsp;view upload</a><br>";
+                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("../html/uploaddescription.html")));
+                $html .= "<br><br>";
+                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("../html/uploadvoice.html")));
+                $html .= "</div>";
+                $html = str_replace("<!--AFTER_UPLOAD-->", $html, file_get_contents("../html/index0.html"));
+                echo $html;
             }
             else    {
                 echo $filesQuantity . '|' . $key;

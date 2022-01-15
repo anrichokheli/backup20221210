@@ -58,7 +58,25 @@
             $t = time();
             file_put_contents(voicetimes . $_POST["n"] . ".txt", $t);
             if(isset($_POST["submit"]))    {
-                header("Location: view.php?n=" . $_POST["n"]);
+                //header("Location: view.php?n=" . $_POST["n"]);
+                $html = "<div class=\"boxs texts\">";
+                $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><a href=\"../php/view.php?n=" . $_POST["n"] . "\" target=\"_blank\" class=\"buttons afteruploadbuttons texts\"><img width=\"32\" height=\"32\" src=\"../images/viewicon.svg\">&nbsp;view upload</a><br>";
+                if(!file_exists(uploadstrings . "descriptions/" . $_POST["n"] . ".txt"))    {
+                    $html .= str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("../html/uploaddescription.html")));
+                }
+                else    {
+                    $html .= "description uploaded";
+                }
+                $html .= "<br><br>";
+                if(!file_exists(glob(voices . $_POST["n"] . ".*")[0]))    {
+                    $html .= str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("../html/uploadvoice.html")));
+                }
+                else    {
+                    $html .= "voice uploaded";
+                }
+                $html .= "</div>";
+                $html = str_replace("<!--AFTER_UPLOAD-->", $html, file_get_contents("../html/index0.html"));
+                echo $html;
             }
             else    {
                 echo("1");

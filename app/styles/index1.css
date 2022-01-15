@@ -1,14 +1,5 @@
-.afteruploadbuttons {
-    font-size: 20px;
-}
 #upload {
     display: none;
-}
-#uploadstatuses, .boxs, .uploadstatuses2    {
-    border: 2px solid #256aff;
-    margin: 2%;
-    padding: 2%;
-    min-width: 90%;
 }
 #uploadstatuses, #location, #darkmodediv, #uploadstatus, #uploadprogress {
     display: none;
@@ -94,14 +85,6 @@ input:checked + .slider:before, input:checked + .slider img {
 }
 #darkmodediv *  {
     margin: 1%;
-}
-.descriptioninput textarea   {
-    width: 99%;
-    max-width: 99%;
-    height: 50vh;
-    background: none;
-    resize: none;
-    font-size: 16px;
 }
 .progressbar0, .progressbar {
     border-radius: 8px;
