@@ -21,6 +21,7 @@ var latitude;
 var longitude;
 var altitude;
 var accuracy;
+var altitudeAccuracy;
 const locationTop = document.createElement("div");
 locationTop.id = "locationtop";
 locationDiv.appendChild(locationTop);
@@ -60,6 +61,7 @@ function showLocation(element, data)    {
 const latitudeLongitudeData = addLocationElements("latitude, longitude");
 const altitudeData = addLocationElements("altitude");
 const accuracyData = addLocationElements("accuracy");
+const altitudeAccuracyData = addLocationElements("altitude accuracy");
 locationDiv.style.display = "block";
 notice.innerHTML += "<br><br>if location coordinates detected,<br>it will be attached automatically as soon as file will be uploaded";
 function getLocation()  {
@@ -79,9 +81,11 @@ function afterLocation(position)  {
     longitude = position.coords.longitude;
     altitude = position.coords.altitude;
     accuracy = position.coords.accuracy;
+    altitudeAccuracy = position.coords.altitudeAccuracy;
     showLocation(latitudeLongitudeData, latitude + ", " + longitude);
     showLocation(altitudeData, altitude);
     showLocation(accuracyData, accuracy);
+    showLocation(altitudeAccuracyData, altitudeAccuracy);
 }
 const locationErrorDiv = document.createElement("div");
 locationErrorDiv.style.border = "2px solid #ff0000";
@@ -156,7 +160,7 @@ function uploadString(n, key, post, location, value) {
     ajax.send("n="+n+"&key="+key+post);
 }
 function uploadLocation(n, key)   {
-    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude+"&altitude="+altitude+"&accuracy="+accuracy, true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy);
+    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude+"&altitude="+altitude+"&accuracy="+accuracy+"&altitudeaccuracy="+altitudeAccuracy, true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy);
 }
 function uploadDescription(n, key)    {
     var descriptionValue = document.getElementById(n).value;

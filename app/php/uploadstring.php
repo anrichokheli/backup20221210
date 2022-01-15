@@ -48,6 +48,7 @@
             }
             addLocationString("altitude");
             addLocationString("accuracy");
+            addLocationString("altitudeAccuracy");
             saveData(locations, locationtimes, $location);
             echo "1";
         }
