@@ -475,3 +475,6 @@ mainDiv.appendChild(closeFullScreenButton);
 const bottomSpace = document.createElement("div");
 bottomSpace.style.height = "25vh";
 mainDiv.appendChild(bottomSpace);
+window.onload = function(){
+    document.getElementById("splashscreen").remove();
+};
