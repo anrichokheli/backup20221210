@@ -102,7 +102,7 @@
                 $html .= "<br><br>";
                 $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("../html/uploadvoice.html")));
                 $html .= "</div>";
-                $html = str_replace("<!--AFTER_UPLOAD-->", $html, file_get_contents("../html/index0.html"));
+                $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\">file uploaded</div><br>", file_get_contents("../html/index0.html")));
                 echo $html;
             }
             else    {

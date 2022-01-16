@@ -1,6 +1,7 @@
 var ajax = new XMLHttpRequest();
 ajax.open("GET", "html/index1.html");
 ajax.onload = function(){
+    document.head.getElementsByTagName("link")[1].href = "styles/index0.css";
     var style = document.createElement("link");
     style.rel = "stylesheet";
     style.href = "styles/index1.css";
