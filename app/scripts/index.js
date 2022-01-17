@@ -195,7 +195,7 @@ function uploadVoice(n, key)  {
     div.style.borderColor = "#ffff00";
     statusElement.prepend(div);
     var formData = new FormData();
-    formData.append("file", voiceinput.files[0]);
+    formData.append("voice", voiceinput.files[0]);
     formData.append("n", n);
     formData.append("key", key);
     fetch("php/uploadvoice.php", {method: "POST", body: formData})
@@ -300,7 +300,7 @@ function fileUpload(file, fileInput){
     bottomProgressBar.style.width = "0%";
     bottomProgressVisible(1);
     var formData = new FormData();
-    formData.append("file", file);
+    formData.append("photovideo", file);
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
         if(this.responseText.includes('|'))    {
@@ -475,3 +475,5 @@ mainDiv.appendChild(closeFullScreenButton);
 const bottomSpace = document.createElement("div");
 bottomSpace.style.height = "25vh";
 mainDiv.appendChild(bottomSpace);
+document.getElementById("buttons").style.opacity = "1";
+document.getElementById("noscript").remove();

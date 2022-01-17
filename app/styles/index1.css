@@ -1,3 +1,6 @@
+#buttons    {
+    opacity: 0.5;
+}
 #upload {
     display: none;
 }
