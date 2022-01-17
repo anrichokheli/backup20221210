@@ -1,10 +1,88 @@
-*    {
+body    {
     margin: 0;
     padding: 0;
 }
-iframe   {
-    width: 100%;
-    height: 99vh;
-    border: 0;
-    background-color: #ffffff;
+#main, #top {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#main   {
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: sans-serif;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+#pedestrian {
+    color: #256aff;
+}
+#sos    {
+    color: #ec0400;
+}
+#buttons, .buttonsDivs    {
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.buttonsDivs div  {
+    margin: 2px;
+    display: inline-block;
+}
+.buttons {
+    color: #000000;
+    font-size: 25px;
+    font-weight: bold;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 2px dotted #256aff;
+    border-radius: 8px;
+    padding: 4px;
+    cursor: pointer;
+    background: none;
+}
+.buttons:disabled   {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #ec0400;
+}
+.buttons:hover   {
+    border-style: solid;
+}
+.afteruploadbuttons {
+    font-size: 20px;
+}
+#main a {
+    text-decoration: none;
+}
+.boxs    {
+    border: 2px solid #256aff;
+    margin: 2%;
+    padding: 2%;
+    width: 90%;
+}
+#main textarea   {
+    width: 99%;
+    max-width: 99%;
+    height: 50vh;
+    background: none;
+    resize: none;
+    font-size: 16px;
+}
+@media(prefers-color-scheme: dark)    {
+    #main   {
+        background-color: #000000;
+    }
+    .texts  {
+        color: #ffffff;
+    }
+}
+#info   {
+    border: 2px dotted #256aff;
+    border-radius: 8px;
+    padding: 16px;
 }

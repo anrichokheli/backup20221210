@@ -1,11 +1,11 @@
 <?php
-    define("upload", "../uploads/");
-    define("uploadfiles", upload . "files/");
-    define("uploadstrings", upload . "strings/");
-    define("voices", uploadfiles . "voices/");
-    define("voicetimes", uploadstrings . "voicetimes/");
-    define("protectedPrivateKeysPath", dirname($_SERVER["DOCUMENT_ROOT"]) . "/protected/private/keys/");
-    if(!empty($_FILES["file"]["tmp_name"]) && isset($_POST["n"]) && isset($_POST["key"]) && ctype_digit($_POST["n"]) && ctype_digit($_POST["key"]))    {
+    if(!empty($_FILES["voice"]["tmp_name"]) && isset($_POST["n"]) && isset($_POST["key"]) && ctype_digit($_POST["n"]) && ctype_digit($_POST["key"]))    {
+        define("upload", "../uploads/");
+        define("uploadfiles", upload . "files/");
+        define("uploadstrings", upload . "strings/");
+        define("voices", uploadfiles . "voices/");
+        define("voicetimes", uploadstrings . "voicetimes/");
+        define("protectedPrivateKeysPath", dirname($_SERVER["DOCUMENT_ROOT"]) . "/protected/private/keys/");
         $keyPath = protectedPrivateKeysPath . $_POST["n"];
         if(!file_exists($keyPath))    {
             exit("-1");
@@ -15,7 +15,7 @@
         }
         $allowedExtensions = array("avi", "mpeg", "ogv", "ts", "webm", "3gp", "3g2", "aac", "mp3", "oga", "opus", "wav", "weba", "mp4");
         //$extension = pathinfo($_FILES["voice"]["name"], PATHINFO_EXTENSION);
-        $mimeContentType = mime_content_type($_FILES["file"]["tmp_name"]);
+        $mimeContentType = mime_content_type($_FILES["voice"]["tmp_name"]);
         if(!$mimeContentType || (strpos($mimeContentType, '/') === FALSE))exit("-4");
         $file_info_array = explode("/", $mimeContentType);
         $type = $file_info_array[0];
@@ -54,7 +54,7 @@
         if(file_exists($voicepath))    {
             exit("-3");
         }
-        if(move_uploaded_file($_FILES["file"]["tmp_name"], $voicepath))  {
+        if(move_uploaded_file($_FILES["voice"]["tmp_name"], $voicepath))  {
             $t = time();
             file_put_contents(voicetimes . $_POST["n"] . ".txt", $t);
             if(isset($_POST["submit"]))    {
@@ -75,15 +75,13 @@
                     $html .= "voice uploaded";
                 }
                 $html .= "</div>";
-                $html = str_replace("<!--AFTER_UPLOAD-->", $html, file_get_contents("../html/index0.html"));
+                $html = str_replace("<!--AFTER_UPLOAD-->", $html, file_get_contents("../html/indexnoscript.html"));
                 echo $html;
             }
             else    {
                 echo("1");
             }
         }
-    }
-    else    {
-        echo("0");
+        exit;
     }
 ?>

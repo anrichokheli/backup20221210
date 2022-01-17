@@ -2,6 +2,8 @@
     if(isset($_POST["n"]) && isset($_POST["key"])
     &&
     ctype_digit($_POST["n"]) && ctype_digit($_POST["key"])/* && ctype_digit($_POST["string"]) && ctype_digit($_POST["type"])*/
+    &&
+    (isset($_POST["description"]) || (isset($_POST["latitude"]) && isset($_POST["longitude"])))
     )    {
         define("protectedPrivateKeysPath", dirname($_SERVER["DOCUMENT_ROOT"]) . "/protected/private/keys/");
         define("upload", "../uploads/");
@@ -46,7 +48,7 @@
                     $html .= "voice uploaded";
                 }
                 $html .= "</div>";
-                $html = str_replace("<!--AFTER_UPLOAD-->", $html, file_get_contents("../html/index0.html"));
+                $html = str_replace("<!--AFTER_UPLOAD-->", $html, file_get_contents("../html/indexnoscript.html"));
                 echo $html;
             }
             else    {
@@ -70,8 +72,6 @@
             saveData(locations, locationtimes, $location);
             echo "1";
         }
-    }
-    else    {
-        exit("0");
+        exit;
     }
 ?>
