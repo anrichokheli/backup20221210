@@ -2,7 +2,6 @@ const mainDiv = document.getElementById("main");
 const uploadStatuses = document.getElementById("uploadstatuses");
 const locationDiv = document.getElementById("location");
 const notice = document.getElementById("notice");
-const uploadStatus = document.getElementById("uploadstatus");
 function buttonSetup(id0) {
     const input = document.getElementById(id0 + "input");
     input.oninput = function(){
@@ -269,11 +268,12 @@ function fileUpload(file, fileInput){
     }
     unloadWarning = 1;
     const subbox = document.createElement("div");
-    subbox.className = "boxs";
+    subbox.className = "boxs backgrounds";
     uploadStatuses.prepend(subbox);
     const status = document.createElement("div");
     status.className = "uploadstatuses2 boxs";
     const after = document.createElement("div");
+    after.classList.add("uploadstatuses2", "boxs");
     const statusDiv = document.createElement("div");
     subbox.appendChild(after);
     status.appendChild(statusDiv);
@@ -308,14 +308,12 @@ function fileUpload(file, fileInput){
             var responseArray = this.responseText.split('|');
             var n = responseArray[0];
             var key = responseArray[1];
-            var html = "<div class=\"boxs\">";
-            html += "#" + n + "<br>";
+            var html = "#" + n + "<br>";
             html += "<button onclick=window.open(\"php/view.php?n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;view upload</button>";
             html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\"write description...\"></textarea></div>";
             html += "<br><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;upload description</button>";
             html += "<br><br><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;upload voice</button>";
             html += "<div id=\"q"+n+"\" class=\"uploadstatuses2 boxs\"></div>";
-            html += "</div>";
             after.innerHTML = html;
             var button = document.getElementById("b"+n);
             button.addEventListener("click", function(){
@@ -400,6 +398,10 @@ function setDarkMode(enabled) {
     var elements = document.getElementsByClassName("texts");
     for(var i = 0; i < elements.length; i++)   {
         elements[i].style.color = color;
+    }
+    var elements = document.getElementsByClassName("backgrounds");
+    for(var i = 0; i < elements.length; i++)   {
+        elements[i].style.backgroundColor = backgroundColor;
     }
     darkModeEnabled = enabled;
     setCookie("darkmode", darkModeEnabled, 1000);

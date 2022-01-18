@@ -16,10 +16,11 @@
     border-radius: 8px;
     padding: 16px;
 }
-#uploadstatus   {
-    padding: 1px;
-    border: 1px;
-    border-style: solid;
+#uploadstatuses {
+    background-color: #256aff80;
+}
+#uploadstatuses .boxs:not(.uploadstatuses2)    {
+    background-color: #ffffff;
 }
 .uploadstatuses2 {
     border-style: dotted;
