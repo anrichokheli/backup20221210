@@ -241,6 +241,11 @@ function bottomProgressVisible(visible)    {
         }, 3000);
     }
 }
+function flexCenter(element) {
+    element.style.display = "flex";
+    element.style.alignItems = "center";
+    element.style.flexDirection = "column";
+}
 const uploadStatusBottom = document.getElementById("uploadstatusbottom");
 const bottomProgressBar = document.createElement("div");
 uploadStatusBottom.appendChild(bottomProgressBar);
@@ -268,6 +273,7 @@ function fileUpload(file, fileInput){
     }
     unloadWarning = 1;
     const subbox = document.createElement("div");
+    flexCenter(subbox);
     subbox.className = "boxs";
     uploadStatuses.prepend(subbox);
     const status = document.createElement("div");
@@ -293,7 +299,7 @@ function fileUpload(file, fileInput){
     statusDiv.className = "statusText";
     statusDiv.style.borderColor = color;
     if(!uploadstatusesdisplayed) {
-        uploadStatuses.style.display = "flex";
+        flexCenter(uploadStatuses);
         uploadstatusesdisplayed = 1;
     }
     statusText = document.createElement("div");
@@ -330,9 +336,7 @@ function fileUpload(file, fileInput){
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);
             }
-            if(darkModeEnabled)    {
-                setDarkMode(1);
-            }
+            setDarkMode(darkModeEnabled);
         }
         else    {
             statusText.innerText += "upload failed\n(" + this.responseText + ")";

@@ -24,13 +24,6 @@
 .descriptioninput  {
     width: 99%;
 }
-#uploadstatuses .boxs   {
-    display: flex;
-}
-#uploadstatuses, #uploadstatuses .boxs  {
-    flex-direction: column;
-    align-items: center;
-}
 .uploadstatuses2 {
     border-style: dotted;
     margin: 1%;
