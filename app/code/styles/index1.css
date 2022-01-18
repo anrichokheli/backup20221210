@@ -17,8 +17,19 @@
     padding: 16px;
 }
 #uploadstatuses {
+    margin: 0;
     border-width: 4px;
     border-image: linear-gradient(#0000ff, #0080ff) 1;
+}
+.descriptioninput  {
+    width: 99%;
+}
+#uploadstatuses .boxs   {
+    display: flex;
+}
+#uploadstatuses, #uploadstatuses .boxs  {
+    flex-direction: column;
+    align-items: center;
 }
 .uploadstatuses2 {
     border-style: dotted;
