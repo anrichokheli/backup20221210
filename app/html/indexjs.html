@@ -19,12 +19,9 @@
                 </h1>
             </div>
             <br>
-            <script>var a=document.createElement("style");a.id="a";a.innerHTML="#noscript{display:none;}";document.head.appendChild(a);</script>
-            <div id="noscript" style="font-size: 32px;text-align: center;background-color: #ffffff;">
-                <div style="color: #ff0000;"><del>JavaScript</del></div>
-                JavaScript not working<br>(your browser does not support or disabled..)<br>
-                <a href="noscript/">open noscript</a>
-            </div>
+            <script>var a=document.createElement("style");a.id="a";a.innerHTML="#nojs{display:none;}";document.head.appendChild(a);</script>
+            <div id="nojs" style="font-size:32px;text-align:center;background-color:#ffffff;"><div style="color:#ff0000;"><del>JavaScript</del></div>JavaScript not working<br>(your browser does not support or disabled..)<br><a href="noscript/">open noscript</a></div>
+            <script>document.getElementById("nojs").remove();document.getElementById("a").remove();</script>
             <div id="buttons">
                 <div class="buttonsDivs">
                     <div>
