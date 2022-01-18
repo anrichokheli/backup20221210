@@ -477,3 +477,4 @@ bottomSpace.style.height = "25vh";
 mainDiv.appendChild(bottomSpace);
 document.getElementById("buttons").style.opacity = "1";
 document.getElementById("noscript").remove();
+document.getElementById("a").remove();
