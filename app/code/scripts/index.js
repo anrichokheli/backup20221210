@@ -446,6 +446,8 @@ uploadImageDiv.style.backgroundImage = "url(images/uploadicon.svg)";
 uploadImageDiv.style.backgroundRepeat = "no-repeat";
 uploadImageDiv.style.backgroundPosition = "center";
 uploadImageDiv.style.backgroundSize = "contain";
+uploadImageDiv.style.backgroundColor = "#ffffff80";
+uploadImageDiv.style.borderRadius = "8px";
 dragOverlay.appendChild(uploadImageDiv);
 const dragOverlay2 = document.createElement("div");
 dragOverlay2.className = "overlay";
