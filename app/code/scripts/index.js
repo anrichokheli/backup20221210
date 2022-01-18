@@ -268,7 +268,7 @@ function fileUpload(file, fileInput){
     }
     unloadWarning = 1;
     const subbox = document.createElement("div");
-    subbox.className = "boxs backgrounds";
+    subbox.className = "boxs";
     uploadStatuses.prepend(subbox);
     const status = document.createElement("div");
     status.className = "uploadstatuses2 boxs";
@@ -398,10 +398,6 @@ function setDarkMode(enabled) {
     var elements = document.getElementsByClassName("texts");
     for(var i = 0; i < elements.length; i++)   {
         elements[i].style.color = color;
-    }
-    var elements = document.getElementsByClassName("backgrounds");
-    for(var i = 0; i < elements.length; i++)   {
-        elements[i].style.backgroundColor = backgroundColor;
     }
     darkModeEnabled = enabled;
     setCookie("darkmode", darkModeEnabled, 1000);
