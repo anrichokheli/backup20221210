@@ -18,7 +18,7 @@
 }
 #uploadstatuses {
     margin: 0;
-    border-width: 4px;
+    border-width: 2px;
     border-image: linear-gradient(#0000ff, #0080ff) 1;
 }
 .descriptioninput  {
