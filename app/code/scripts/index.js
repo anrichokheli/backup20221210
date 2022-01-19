@@ -278,10 +278,7 @@ function fileUpload(file, fileInput){
     uploadStatuses.prepend(subbox);
     const status = document.createElement("div");
     status.className = "uploadstatuses2 boxs";
-    const after = document.createElement("div");
-    after.classList.add("uploadstatuses2", "boxs");
     const statusDiv = document.createElement("div");
-    subbox.appendChild(after);
     status.appendChild(statusDiv);
     subbox.appendChild(status);
     var statusText = document.createElement("div");
@@ -306,10 +303,13 @@ function fileUpload(file, fileInput){
     bottomProgressBar.style.backgroundColor = color;
     bottomProgressBar.style.width = "0%";
     bottomProgressVisible(1);
+    const after = document.createElement("div");
+    after.classList.add("uploadstatuses2", "boxs");
     var formData = new FormData();
     formData.append("photovideo", file);
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
+        subbox.prepend(after);
         if(this.responseText.includes('|'))    {
             var responseArray = this.responseText.split('|');
             var n = responseArray[0];
@@ -350,6 +350,7 @@ function fileUpload(file, fileInput){
         status.prepend(statusText);
     };
     ajax.onerror = function(){
+        subbox.prepend(after);
         statusText.innerText += "upload error\n(" + this.Error + ")";
         statusText.className = "statusText";
         color = "#ff0000";
