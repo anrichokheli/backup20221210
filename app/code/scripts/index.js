@@ -416,7 +416,11 @@ const darkmodediv = document.getElementById("darkmodediv");
 darkmodediv.innerHTML = "<div><label class=\"switch\"><input type=\"checkbox\" id=\"darkmode\"><span class=\"slider round\"><img width=\"26\" height=\"26\" src=\"images/darkmode0.png\"></span></label></div><span class=\"texts\">dark mode</span><br>";
 darkmodediv.style.display = "block";
 const darkmodecheckbox = document.getElementById("darkmode");
+const defaultTheme = document.getElementById("defaulttheme");
+const matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
 function changeDarkMode()   {
+    if(defaultTheme.checked)defaultTheme.checked=0;
+    matchmedia.onchange=function(){};
     setDarkMode(!darkModeEnabled);
 }
 darkmodecheckbox.addEventListener("click", function(){changeDarkMode();});
@@ -431,15 +435,17 @@ function darkmodeifelse(condition)   {
     darkmodecheckbox.checked = darkModeEnabled;
 }
 function defaultdarkmode()  {
-    var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
     darkmodeifelse(matchmedia.matches);
     matchmedia.onchange = function(e){darkmodeifelse(e.matches)};
 }
+defaultTheme.onchange = function(){if(this.checked)defaultdarkmode();else matchmedia.onchange=function(){};};
 if(getCookie("darkmode") == "")    {
     defaultdarkmode();
+    defaultTheme.checked = 1;
 }
 else    {
     darkmodeifelse(getCookie("darkmode") == "true");
+    matchmedia.onchange=function(){};
 }
 var unloadWarning = 0;
 window.addEventListener("beforeunload", function(e){
