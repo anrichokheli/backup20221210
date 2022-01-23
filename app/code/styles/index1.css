@@ -11,11 +11,6 @@
     padding: 1px;
     border: 1px solid #256aff;
 }
-#info   {
-    border: 2px dotted #256aff;
-    border-radius: 8px;
-    padding: 16px;
-}
 #uploadstatuses {
     margin: 0;
     border-width: 2px;
@@ -170,4 +165,10 @@ input:checked + .slider:before, input:checked + .slider img {
     border: 2px solid;
     margin: 2px;
     padding: 2px;
+}
+#themediv {
+    border: 2px dotted #256aff;
+    border-radius: 8px;
+    margin: 1%;
+    padding: 1%;
 }
