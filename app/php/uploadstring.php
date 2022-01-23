@@ -33,7 +33,7 @@
             if(isset($_POST["submit"]))    {
                 //echo str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("../html/uploadvoice.html")));
                 $html = "<div class=\"boxs texts\">";
-                $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><a href=\"../php/view.php?n=" . $_POST["n"] . "\" target=\"_blank\" class=\"buttons afteruploadbuttons texts\"><img width=\"32\" height=\"32\" src=\"../images/viewicon.svg\">&nbsp;view upload</a><br>";
+                $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><a href=\"../?" . $_POST["n"] . "\" target=\"_blank\" class=\"buttons afteruploadbuttons texts\"><img width=\"32\" height=\"32\" src=\"../images/viewicon.svg\">&nbsp;view upload</a><br>";
                 if(!file_exists(descriptions . $_POST["n"] . ".txt"))    {
                     $html .= str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("../html/uploaddescription.html")));
                 }
