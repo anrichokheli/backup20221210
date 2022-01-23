@@ -75,7 +75,7 @@ input:checked + .slider:before, input:checked + .slider img {
 }
 #darkmodediv    {
     border: 2px solid #256aff80;
-    border-radius: 10%;
+    border-radius: 8px;
     margin: 1%;
     padding: 1%;
     text-align: center;
@@ -169,6 +169,5 @@ input:checked + .slider:before, input:checked + .slider img {
 #themediv {
     border: 2px dotted #256aff;
     border-radius: 8px;
-    margin: 1%;
     padding: 1%;
 }
