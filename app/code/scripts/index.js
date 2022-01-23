@@ -410,7 +410,6 @@ function setDarkMode(enabled) {
         elements[i].style.color = color;
     }
     darkModeEnabled = enabled;
-    setCookie("darkmode", darkModeEnabled, 1000);
 }
 const darkmodediv = document.getElementById("darkmodediv");
 darkmodediv.innerHTML = "<div><label class=\"switch\"><input type=\"checkbox\" id=\"darkmode\"><span class=\"slider round\"><img width=\"26\" height=\"26\" src=\"images/darkmode0.png\"></span></label></div><span class=\"texts\">dark mode</span><br>";
@@ -422,6 +421,7 @@ function changeDarkMode()   {
     if(defaultTheme.checked)defaultTheme.checked=0;
     matchmedia.onchange=function(){};
     setDarkMode(!darkModeEnabled);
+    setCookie("darkmode", darkModeEnabled, 1000);
 }
 darkmodecheckbox.addEventListener("click", function(){changeDarkMode();});
 darkmodediv.addEventListener("click", function(){darkmodecheckbox.checked = !darkmodecheckbox.checked;changeDarkMode();});
@@ -438,7 +438,7 @@ function defaultdarkmode()  {
     darkmodeifelse(matchmedia.matches);
     matchmedia.onchange = function(e){darkmodeifelse(e.matches)};
 }
-defaultTheme.onchange = function(){if(this.checked)defaultdarkmode();else matchmedia.onchange=function(){};};
+defaultTheme.onchange = function(){if(this.checked){defaultdarkmode();setCookie("darkmode","",1)}else matchmedia.onchange=function(){};};
 if(getCookie("darkmode") == "")    {
     defaultdarkmode();
     defaultTheme.checked = 1;
