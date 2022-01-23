@@ -47,13 +47,18 @@ body    {
 .boxs div   {
     border: 1px dotted #256aff;
     padding: 1px;
-    text-align: center;
 }
 .boxs div:not(:first-child) {
     margin-top: 1%;
 }
+.voice  {
+    text-align: center;
+}
 @media(prefers-color-scheme: dark)    {
     :root   {
         color-scheme: dark;
+    }
+    #main   {
+        background-color: #000000;
     }
 }
