@@ -4,7 +4,7 @@
     echo "<a href=\"" . glob("f.*")[0] . "\" target=\"_blank\">view uploaded file</a>";
     echo "<br><br>";
     echo "<a href=\"../../\" target=\"_blank\">open main page</a>";*/
-    define("upload", "../uploads/");
+    define("upload", "uploads/");
     define("uploadfiles", upload . "files/");
     define("uploadstrings", upload . "strings/");
     define("photovideos", uploadfiles . "photovideos/");
@@ -40,7 +40,7 @@
             }
         }
     }
-    function getData($n, $a)  {
+    /*function getData($n, $a)  {
         echo "<div class=\"a\">";
         if($a)
             echo "<a href=\"view.php?n=" . $n . "\" target=\"_blank\">";
@@ -53,14 +53,79 @@
         echoFile(voices, voicetimes, $n, 0);
         //echo "<a href=\"../\" target=\"_blank\">open main page</a>";
         echo "</div>";
+    }*/
+    function setValue($name, $value, $html) {
+        return str_replace("<php>" . $name . "</php>", $value, $html);
     }
-    echo "<!DOCTYPE html><html><head><style>#main{display:flex;flex-direction:column;align-items:center;}</style><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"></head><body><div id=\"main\">";
-    echo "<style>.a{font-size:25px;border:solid 2px #0000ff;border-radius:4px;padding:1%;margin:1%;width:90%;text-align:center;}</style>";
+    function getData($n)  {
+        $pvtimePath = photovideotimes . $n . ".txt";
+        if(!file_exists($pvtimePath))    {
+            echo "#: " . $n . "<br>not exists";
+            return;
+        }
+        $html = file_get_contents("html/view.html");
+        $html = setValue("N", $n, $html);
+        $path = glob(photovideos . $n . ".*")[0];
+        if(file_exists($path))    {
+            $fileType = explode("/", mime_content_type($path))[0];
+            if($fileType == "image")    {
+                $tagName = "img";
+                $attributes = "";
+            }
+            else/* if($fileType == "video")*/   {
+                $tagName = "video";
+                $attributes = " controls";
+            }
+            $photovideoTag = "<" . $tagName . $attributes . " src=\"" . $path . "\"></" . $tagName . ">";
+            $html = setValue("PHOTOVIDEO", $photovideoTag, $html);
+            $html = setValue("PVTIME", date("Y-m-d H:i:s", file_get_contents($pvtimePath)), $html);
+            $locationPath = locations . $n . ".txt";
+            if(file_exists($locationPath))    {
+                $locationData = file_get_contents($locationPath);
+                $locationTime = date("Y-m-d H:i:s", file_get_contents(locationtimes . $n . ".txt"));
+            }
+            else    {
+                $locationData = "no data";
+                $locationTime = "no data";
+            }
+            $html = setValue("LOCATION", $locationData, $html);
+            $html = setValue("LTIME", $locationTime, $html);
+            $descriptionPath = descriptions . $n . ".txt";
+            if(file_exists($descriptionPath))    {
+                $descriptionData = htmlspecialchars(file_get_contents($descriptionPath));
+                $descriptionTime = date("Y-m-d H:i:s", file_get_contents(descriptiontimes . $n . ".txt"));
+                
+            }
+            else    {
+                $descriptionData = "no data";
+                $descriptionTime = "no data";
+            }
+            $html = setValue("DESCRIPTION", $descriptionData, $html);
+            $html = setValue("DTIME", $descriptionTime, $html);
+            $vtimePath = voicetimes . $n . ".txt";
+            if(file_exists($vtimePath))    {
+                $voicePath = glob(voices . $n . ".*")[0];
+                $voiceTag = "<audio controls src=\"" . $voicePath . "\"></audio>";
+                $voiceTime = date("Y-m-d H:i:s", file_get_contents(voicetimes . $n . ".txt"));
+            }
+            else    {
+                $voiceTag = "no data";
+                $voiceTime = "no data";
+            }
+            $html = setValue("VOICE", $voiceTag, $html);
+            $html = setValue("VTIME", $voiceTime, $html);
+        }
+        return $html;
+    }
+    echo "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title>PedestrianSOS!</title><link rel=\"icon\" href=\"images/pedestriansos_16.png\"></head>";
+    echo "<body><div id=\"main\"><div id=\"top\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos_64.png\"><h1><span id=\"pedestrian\">Pedestrian</span>&nbsp;<span id=\"sos\">SOS!</span></h1></div><h2>all uploaded data</h2>";
+    //echo "<style>.a{font-size:25px;border:solid 2px #0000ff;border-radius:4px;padding:1%;margin:1%;width:90%;text-align:center;}</style>";
     if(isset($_GET["n"]) && ctype_digit($_GET["n"]))    {
         /*if(!ctype_digit($n))    {
             exit("parameter is not id");
         }*/
-        echo getData($_GET["n"], 0);
+        //echo getData($_GET["n"], 0);
+        echo getData($_GET["n"]);
     }
     else    {
         $filesQuantity = count(scandir(photovideos)) - 2;
@@ -68,7 +133,8 @@
             echo getData($i, 1);
         }*/
         for ($i = $filesQuantity - 1; $i >= 0; $i--) {
-            echo getData($i, 1);
+            //echo getData($i, 1);
+            echo getData($i);
         }
     }
     echo "</div></body></html>";
