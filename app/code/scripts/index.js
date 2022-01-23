@@ -438,7 +438,7 @@ function defaultdarkmode()  {
     darkmodeifelse(matchmedia.matches);
     matchmedia.onchange = function(e){darkmodeifelse(e.matches)};
 }
-defaultTheme.onchange = function(){if(this.checked){defaultdarkmode();setCookie("darkmode","",1)}else matchmedia.onchange=function(){};};
+defaultTheme.onchange = function(){if(this.checked){defaultdarkmode();setCookie("darkmode","",1)}else {matchmedia.onchange=function(){};setCookie("darkmode",darkModeEnabled,1000)}};
 if(getCookie("darkmode") == "")    {
     defaultdarkmode();
     defaultTheme.checked = 1;
