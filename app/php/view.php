@@ -85,8 +85,8 @@
                 $locationTime = date("Y-m-d H:i:s", file_get_contents(locationtimes . $n . ".txt"));
             }
             else    {
-                $locationData = "no data";
-                $locationTime = "no data";
+                $locationData = "";
+                $locationTime = "";
             }
             $html = setValue("LOCATION", $locationData, $html);
             $html = setValue("LTIME", $locationTime, $html);
@@ -97,8 +97,8 @@
                 
             }
             else    {
-                $descriptionData = "no data";
-                $descriptionTime = "no data";
+                $descriptionData = "";
+                $descriptionTime = "";
             }
             $html = setValue("DESCRIPTION", $descriptionData, $html);
             $html = setValue("DTIME", $descriptionTime, $html);
@@ -109,8 +109,8 @@
                 $voiceTime = date("Y-m-d H:i:s", file_get_contents(voicetimes . $n . ".txt"));
             }
             else    {
-                $voiceTag = "no data";
-                $voiceTime = "no data";
+                $voiceTag = "";
+                $voiceTime = "";
             }
             $html = setValue("VOICE", $voiceTag, $html);
             $html = setValue("VTIME", $voiceTime, $html);

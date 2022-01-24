@@ -47,7 +47,7 @@ body    {
 .boxs:not(:first-child) {
     margin-top: 1%;
 }
-.boxs div   {
+.boxs div:not(:empty)   {
     border: 1px dotted #256aff;
     padding: 1px;
 }
