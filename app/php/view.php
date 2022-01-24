@@ -128,14 +128,37 @@
         echo getData($_GET["n"]);
     }
     else    {
-        echo "<h2>all uploaded data</h2>";
-        $filesQuantity = count(scandir(photovideos)) - 2;
+        define("maxQuantity", 10);
+        //$filesQuantity = count(scandir(photovideos)) - 2;
         /*for ($i = 0; $i < $filesQuantity; $i++) {
             echo getData($i, 1);
-        }*/
+        }
         for ($i = $filesQuantity - 1; $i >= 0; $i--) {
             //echo getData($i, 1);
             echo getData($i);
+        }*/
+        $files = array_slice(scandir(photovideotimes), 2);
+        for($i = 0; $i < count($files); $i++)   {
+            $files[$i] = str_replace(".txt", "", $files[$i]);
+        }
+        rsort($files);
+        if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
+            $topN = $_GET["t"];
+            $files = array_slice($files, array_search($topN, $files));
+        }
+        else    {
+            $topN = $files[0];
+        }
+        $page = 0;
+        if(isset($_GET["p"]) && ctype_digit($_GET["p"]))    {
+            $page = $_GET["p"];
+        }
+        $files = array_slice($files, maxQuantity * $page, maxQuantity);
+        foreach($files as $n)    {
+            echo getData($n);
+        }
+        if(count($files) == maxQuantity)    {
+            echo "<a href=\"?p=" . ($page + 1) . "&t=" . $topN . "\">>></a>";
         }
     }
     echo "</div></body></html>";
