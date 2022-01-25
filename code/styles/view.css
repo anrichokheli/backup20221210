@@ -65,6 +65,9 @@ body    {
     max-height: 50vh;
     overflow-y: scroll;
 }
+.boxs div:not(.photovideo)  {
+    display: flex;
+}
 @media(prefers-color-scheme: dark)    {
     :root   {
         color-scheme: dark;
