@@ -427,10 +427,10 @@ darkmodecheckbox.addEventListener("click", function(){changeDarkMode();});
 darkmodediv.addEventListener("click", function(){darkmodecheckbox.checked = !darkmodecheckbox.checked;changeDarkMode();});
 function darkmodeifelse(condition)   {
     if(condition)    {
-        setDarkMode(true);
+        setDarkMode(1);
     }
     else    {
-        setDarkMode(false);
+        setDarkMode(0);
     }
     darkmodecheckbox.checked = darkModeEnabled;
 }
