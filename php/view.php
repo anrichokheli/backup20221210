@@ -85,13 +85,17 @@
                 if($fileType == "image")    {
                     $tagName = "img";
                     $attributes = "";
+                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/photo.svg\">photo";
                 }
                 else/* if($fileType == "video")*/   {
                     $tagName = "video";
                     $attributes = " controls";
+                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/video.svg\">video";
                 }
                 $photovideoTag = "<" . $tagName . $attributes . " src=\"" . $path . "\"></" . $tagName . ">";
+                $html = setValue("FILETYPE", $fileTypeTag, $html);
                 $html = setValue("PHOTOVIDEO", $photovideoTag, $html);
+                $html = setValue("FILEPATH", $path, $html);
                 $html = setValue("PVTIME", date("Y-m-d H:i:s", file_get_contents($pvtimePath)), $html);
             }
             $locationPath = locations . $n . ".txt";

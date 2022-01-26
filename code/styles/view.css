@@ -35,7 +35,8 @@ body    {
 }
 .photovideo *   {
     width: 90%;
-    max-height: 90vh;
+    min-height: 25vh;
+    max-height: 75vh;
 }
 .photovideo img {
     object-fit: cover;
@@ -65,8 +66,9 @@ body    {
     max-height: 50vh;
     overflow-y: scroll;
 }
-.boxs div:not(.photovideo)  {
+.boxs div:not(.photovideo), .boxs a  {
     display: flex;
+    align-items: center;
 }
 @media(prefers-color-scheme: dark)    {
     :root   {
