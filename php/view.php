@@ -111,7 +111,11 @@
                 array_push($dataArray, $locationData, $locationTime);
             }
             else    {
-                $html = setValue("LOCATION", $locationData, $html);
+                $locationArray = explode("; ", $locationData);
+                $html = setValue("LATLONG", $locationArray[0], $html);
+                $html = setValue("Z", $locationArray[1], $html);
+                $html = setValue("ACCURACY", $locationArray[2], $html);
+                $html = setValue("ACCURACYZ", $locationArray[3], $html);
                 $html = setValue("LTIME", $locationTime, $html);
             }
             $descriptionPath = descriptions . $n . ".txt";
@@ -205,7 +209,7 @@
             echo getData($n, $rawData);
         }
         if(!$rawData && (count($files) == maxQuantity))    {
-            echo "<a href=\"?p=" . ($page + 1) . "&t=" . $topN . "\">>></a>";
+            echo "<a href=\"?p=" . ($page + 1) . "&t=" . $topN . "\">>><br>next</a><br>";
         }
     }
     if(!$rawData)    {
