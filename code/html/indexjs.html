@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="<htmllang>lang</htmllang>">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
         <title>PedestrianSOS!</title>
         <link rel="icon" href="images/pedestriansos_16.png">
         <link rel="stylesheet" href="styles/index.css">
         <link rel="stylesheet" href="styles/index1.css">
-        <meta property="og:title" content="ქვეითი SOS! / Pedestrian SOS!">
-        <meta property="og:description" content="web application">
+        <meta property="og:title" content="<string>pedestrian</string> SOS!">
+        <meta property="og:description" content="<string>webapp</string>">
         <meta property="og:image" content="images/pedestriansos_256.png">
     </head>
     <body>
@@ -15,12 +16,12 @@
             <div id="top">
                 <img width="64" height="64" src="images/pedestriansos_64.png">
                 <h1>
-                    <span id="pedestrian">Pedestrian</span>&nbsp;<span id="sos">SOS!</span>
+                    <span id="pedestrian"><string>pedestrian</string></span>&nbsp;<span id="sos">SOS!</span>
                 </h1>
             </div>
             <br>
             <script>var a=document.createElement("style");a.id="a";a.innerHTML="#nojs{display:none;}";document.head.appendChild(a);</script>
-            <div id="nojs" style="font-size:32px;text-align:center;background-color:#ffffff;border:2px solid #ff0000;margin:2px;padding:2px;"><div style="color:#ff0000;"><del>JavaScript</del></div>JavaScript not working<br>(your browser does not support or disabled..)<br><a href="noscript/">open noscript</a></div>
+            <div id="nojs" style="font-size:32px;text-align:center;background-color:#ffffff;border:2px solid #ff0000;margin:2px;padding:2px;"><div style="color:#ff0000;"><del>JavaScript</del></div><string>jsnotworking</string><br>(<string>nojstext</string>..)<br><a href="noscript/"><string>opennojs</string></a></div>
             <script>document.getElementById("nojs").remove();document.getElementById("a").remove();</script>
             <div id="buttons">
                 <div class="buttonsDivs">
@@ -28,7 +29,7 @@
                         <button id="takephotobutton" class="buttons texts">
                             <img width="64" height="64" src="images/take_photo.svg">
                             &nbsp;
-                            Take Photo
+                            <span id="takephoto"><string>takephoto</string></span>
                         </button>
                         <input type="file" accept="image/*" id="takephotoinput" name="file" capture="environment" required hidden>
                     </div>
@@ -36,7 +37,7 @@
                         <button id="recordvideobutton" class="buttons texts">
                             <img width="64" height="64" src="images/record_video.svg">
                             &nbsp;
-                            Record Video
+                            <span id="recordvideo"><string>recordvideo</string></span>
                         </button>
                         <input type="file" accept="video/*" id="recordvideoinput" name="file" capture="environment" required hidden>
                     </div>
@@ -46,7 +47,7 @@
                         <button id="choosephotobutton" class="buttons texts">
                             <img width="64" height="64" src="images/photo.svg">
                             &nbsp;
-                            Choose Photo
+                            <span id="choosephoto"><string>choosephoto</string></span>
                         </button>
                         <input type="file" accept="image/*" id="choosephotoinput" name="file" required hidden>
                     </div>
@@ -54,7 +55,7 @@
                         <button id="choosevideobutton" class="buttons texts">
                             <img width="64" height="64" src="images/video.svg">
                             &nbsp;
-                            Choose Video
+                            <span id="choosevideo"><string>choosevideo</string></span>
                         </button>
                         <input type="file" accept="video/*" id="choosevideoinput" name="file" required hidden>
                     </div>
@@ -65,10 +66,10 @@
             <br>
             <div id="uploadstatuses" class="texts boxs"></div>
             <br>
-            <a class="buttons texts" href="?" target="_blank">
+            <a class="buttons texts" href="?view" target="_blank">
                 <img width="64" height="64" src="images/viewicon.svg">
                 &nbsp;
-                View Uploads
+                <span id="viewuploads"><string>viewuploads</string></span>
             </a>
             <br>
             <div id="themediv">

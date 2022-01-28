@@ -45,6 +45,7 @@ body    {
     cursor: pointer;
     background: none;
     text-decoration: none;
+    justify-content: center;
 }
 .buttons:disabled   {
     opacity: 0.5;

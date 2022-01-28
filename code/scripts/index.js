@@ -495,3 +495,14 @@ mainDiv.appendChild(closeFullScreenButton);
 const bottomSpace = document.createElement("div");
 bottomSpace.style.height = "25vh";
 mainDiv.appendChild(bottomSpace);
+function setLanguage(lang)  {
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", "json/languages/" + lang + ".json");
+    ajax.onload = function()    {
+        var json = JSON.parse(this.responseText);
+        for(var key in json) {
+            document.getElementById(key).innerText = json[key];
+        }
+    };
+    ajax.send();
+}

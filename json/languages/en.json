@@ -1,0 +1,12 @@
+{
+    "pedestrian": "Pedestrian",
+    "webapp": "web application",
+    "takephoto": "Take Photo",
+    "recordvideo": "Record Video",
+    "choosephoto": "Choose Photo",
+    "choosevideo": "Choose Video",
+    "jsnotworking": "JavaScript not working",
+    "nojstext": "your browser does not support or disabled",
+    "opennojs": "open without javascript",
+    "viewuploads": "View Uploads"
+}
