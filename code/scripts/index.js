@@ -2,6 +2,11 @@ const mainDiv = document.getElementById("main");
 const uploadStatuses = document.getElementById("uploadstatuses");
 const locationDiv = document.getElementById("location");
 const notice = document.getElementById("notice");
+var strings = null;
+function getString(key)  {
+    if(strings!=null)return strings[key];
+    return "";
+}
 function buttonSetup(id0) {
     const input = document.getElementById(id0 + "input");
     input.oninput = function(){
@@ -31,7 +36,7 @@ locationImage.width = "32";
 locationImage.height = "32";
 locationTop.appendChild(locationImage);
 const locationTitle = document.createElement("span");
-locationTitle.innerText = "current location";
+locationTitle.id = "currentlocation";
 locationTitle.style.fontSize = "20px";
 locationTop.appendChild(locationTitle);
 const locationData = document.createElement("div");
@@ -42,7 +47,10 @@ function addLocationElements(text)  {
     locationData.appendChild(div);
     var title = document.createElement("span");
     title.className = "locationTitles";
-    title.innerText = text + ": ";
+    title.innerText = ": ";
+    var titleText = document.createElement("span");
+    titleText.id = text;
+    title.prepend(titleText);
     div.appendChild(title);
     var data = document.createElement("span");
     div.appendChild(data);
@@ -50,7 +58,8 @@ function addLocationElements(text)  {
 }
 function showLocation(element, data)    {
     if(data == null)    {
-        data = "no data";
+        data = getString("nodata");
+        if(data=="")data="-";
         element.style.backgroundColor = "#ff000080";
     }
     else    {
@@ -58,10 +67,10 @@ function showLocation(element, data)    {
     }
     element.innerText = data;
 }
-const latitudeLongitudeData = addLocationElements("latitude, longitude");
+const latitudeLongitudeData = addLocationElements("latitudelongitude");
 const altitudeData = addLocationElements("altitude");
 const accuracyData = addLocationElements("accuracy");
-const altitudeAccuracyData = addLocationElements("altitude accuracy");
+const altitudeAccuracyData = addLocationElements("altitudeaccuracy");
 locationDiv.style.display = "block";
 notice.innerHTML += "<br><br>if location coordinates detected,<br>it will be attached automatically as soon as file will be uploaded";
 function getLocation()  {
@@ -123,11 +132,11 @@ function uploadString(n, key, post, location, value) {
     else    {
         text = "description";
     }
-    text += " upload";
+    text += "; ";
     const element = document.getElementById('q'+n);
     var div = document.createElement("div");
     div.className = "statusText";
-    div.innerText = text + "ing...";
+    div.innerText = text+getString("uploading");
     var color = "#ffff00";
     div.style.borderColor = color;
     var div2 = document.createElement("div");
@@ -141,11 +150,11 @@ function uploadString(n, key, post, location, value) {
         div = document.createElement("div");
         div.className = "statusText";
         if(this.responseText === "1")    {
-            div.innerText = text + "ed";
+            div.innerText = text + getString("uploadcompleted");
             color = "#00ff00";
         }
         else    {
-            div.innerText = text + " failed";
+            div.innerText = text + getString("uploadfiled");
             color = "#ff0000";
             if(!location)    {
                 document.getElementById("b"+n).disabled = 0;
@@ -162,7 +171,7 @@ function uploadString(n, key, post, location, value) {
     ajax.onerror = function(){
         div = document.createElement("div");
         div.className = "statusText";
-        div.innerText = text + " error";
+        div.innerText = text + getString("uploaderror");
         color = "#ff0000";
         div.style.borderColor = color;
         if(!location)    {
@@ -191,7 +200,8 @@ function uploadVoice(n, key)  {
     const voiceinput = document.getElementById('v'+n);
     var div = document.createElement("div");
     div.className = "statusText";
-    div.innerText = "voice uploading...";
+    var text = "voice; ";
+    div.innerText = text+getString("uploading");
     div.style.borderColor = "#ffff00";
     statusElement.prepend(div);
     var formData = new FormData();
@@ -204,11 +214,11 @@ function uploadVoice(n, key)  {
         div = document.createElement("div");
         div.className = "statusText";
         if(Response === "1")    {
-            div.innerText = "voice uploaded";
+            div.innerText = text+getString("uploadcompleted");
             div.style.borderColor = "#00ff00";
         }
         else    {
-            div.innerText = "voice upload failed\n(" + Response + ")";
+            div.innerText = text+getString("uploadfailed")+"\n(" + Response + ")";
             div.style.borderColor = "#ff0000";
         }
         statusElement.prepend(div);
@@ -216,7 +226,7 @@ function uploadVoice(n, key)  {
     .catch(Error => {
         div = document.createElement("div");
         div.className = "statusText";
-        div.innerText = "voice upload error\n(" + Error + ")";
+        div.innerText = text+getString("uploaderror")+"\n(" + Error + ")";
         div.style.borderColor = "#ff0000";
         statusElement.prepend(div);
     });
@@ -282,7 +292,7 @@ function fileUpload(file, fileInput){
     status.appendChild(statusDiv);
     subbox.appendChild(status);
     var statusText = document.createElement("div");
-    statusText.innerText = "uploading...";
+    statusText.innerText = getString("uploading");
     statusDiv.appendChild(statusText);
     const progress = document.createElement("div");
     statusDiv.appendChild(progress);
@@ -332,7 +342,7 @@ function fileUpload(file, fileInput){
                 textarea.style.height = "0";
                 textarea.style.height = textarea.scrollHeight + "px";
             });
-            statusText.innerText += "upload completed\n(#" + n + ")";
+            statusText.innerText += getString("uploadcompleted")+"\n(#" + n + ")";
             color = "#00ff00";
             bottomProgressVisible(0);
             if(latitude != null && longitude != null)    {
@@ -341,7 +351,7 @@ function fileUpload(file, fileInput){
             setDarkMode(darkModeEnabled);
         }
         else    {
-            statusText.innerText += "upload failed\n(" + this.responseText + ")";
+            statusText.innerText += getString("uploadfiled")+"\n(" + this.responseText + ")";
             color = "#ff0000";
             bottomProgressVisible(0);
         }
@@ -352,7 +362,7 @@ function fileUpload(file, fileInput){
         status.prepend(statusText);
     };
     ajax.onerror = function(){
-        statusText.innerText += "upload error\n(" + this.Error + ")";
+        statusText.innerText += getString("uploaderror")+"\n(" + this.Error + ")";
         statusText.className = "statusText";
         color = "#ff0000";
         statusText.style.borderColor = color;
@@ -412,9 +422,7 @@ function setDarkMode(enabled) {
     darkModeEnabled = enabled;
 }
 const darkmodediv = document.getElementById("darkmodediv");
-darkmodediv.innerHTML = "<div><label class=\"switch\"><input type=\"checkbox\" id=\"darkmode\"><span class=\"slider round\"><img width=\"26\" height=\"26\" src=\"images/darkmode0.png\"></span></label></div><span class=\"texts\">dark mode</span><br>";
-darkmodediv.style.display = "block";
-const darkmodecheckbox = document.getElementById("darkmode");
+const darkmodecheckbox = document.getElementById("darkmodecheckbox");
 const defaultTheme = document.getElementById("defaulttheme");
 const matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
 function changeDarkMode()   {
@@ -500,9 +508,17 @@ function setLanguage(lang)  {
     ajax.open("GET", "json/languages/" + lang + ".json");
     ajax.onload = function()    {
         var json = JSON.parse(this.responseText);
+        strings = json;
         for(var key in json) {
-            document.getElementById(key).innerText = json[key];
+            var element = document.getElementById(key);
+            if(element!=null)element.innerText = json[key];
         }
     };
     ajax.send();
 }
+var lang = "en";
+var getlang = (new URL(window.location.href)).searchParams.get("lang");
+if(getlang != null)    {
+    lang = getlang;
+}
+setLanguage(lang);

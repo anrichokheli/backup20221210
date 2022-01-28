@@ -8,5 +8,17 @@
     "jsnotworking": "JavaScript not working",
     "nojstext": "your browser does not support or disabled",
     "opennojs": "open without javascript",
-    "viewuploads": "View Uploads"
+    "viewuploads": "View Uploads",
+    "darkmode": "dark mode",
+    "devicedefault": "device default",
+    "currentlocation": "current location",
+    "latitudelongitude": "latitude, longitude",
+    "altitude": "altitude",
+    "accuracy": "accuracy",
+    "altitudeaccuracy": "altitude accuracy",
+    "nodata": "no data",
+    "uploading": "uploading...",
+    "uploadcompleted": "upload completed",
+    "uploadfiled": "upload failed",
+    "uploaderror": "upload error"
 }

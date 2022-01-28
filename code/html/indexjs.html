@@ -3,7 +3,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="UTF-8">
-        <title>PedestrianSOS!</title>
+        <title><string>pedestrian</string>&nbsp;SOS!</title>
         <link rel="icon" href="images/pedestriansos_16.png">
         <link rel="stylesheet" href="styles/index.css">
         <link rel="stylesheet" href="styles/index1.css">
@@ -73,10 +73,18 @@
             </a>
             <br>
             <div id="themediv">
-                <div id="darkmodediv"></div>
+                <div id="darkmodediv">
+                    <div>
+                        <label class="switch">
+                            <input type="checkbox" id="darkmodecheckbox">
+                            <span class="slider round"><img width="26" height="26" src="images/darkmode0.png"></span>
+                        </label>
+                    </div>
+                    <span class="texts"><string>darkmode</string></span><br>
+                </div>
                 <div>
                     <input type="checkbox" id="defaulttheme">
-                    <label for="defaulttheme">default theme</label>
+                    <label for="defaulttheme"><string>devicedefault</string></label>
                 </div>
             </div>
             <br>
