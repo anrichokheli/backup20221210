@@ -6,7 +6,7 @@
     (isset($_POST["description"]) || (isset($_POST["latitude"]) && isset($_POST["longitude"])))
     )    {
         define("protectedPrivateKeysPath", dirname($_SERVER["DOCUMENT_ROOT"]) . "/protected/private/keys/");
-        define("upload", "../uploads/");
+        if(!defined("upload"))define("upload", "../uploads/");
         define("uploadstrings", upload . "strings/");
         define("descriptions", uploadstrings . "descriptions/");
         define("descriptiontimes", uploadstrings . "descriptiontimes/");
@@ -59,7 +59,7 @@
             $location = $_POST["latitude"] . ", " . $_POST["longitude"];
             function addLocationString($postname)    {
                 $GLOBALS["location"] .= "; ";
-                if($_POST[$postname] && is_numeric($_POST[$postname]))    {
+                if(isset($_POST[$postname]) && is_numeric($_POST[$postname]))    {
                     $GLOBALS["location"] .= $_POST[$postname];
                 }
                 else    {

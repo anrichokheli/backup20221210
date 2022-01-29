@@ -1,6 +1,6 @@
 <?php
     if(isset($_FILES["photovideo"]))    {
-        define("upload", "../uploads/");
+        if(!defined("upload"))define("upload", "../uploads/");
         define("uploadfiles", upload . "files/");
         define("uploadstrings", upload . "strings/");
         define("photovideos", uploadfiles . "photovideos/");
@@ -106,7 +106,7 @@
                 echo $html;
             }
             else    {
-                echo $filesQuantity . '|' . $key;
+                echo '#' . $filesQuantity . '|' . $key;
             }
         }
         exit;

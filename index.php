@@ -1,4 +1,5 @@
 <?php
+    define("upload", "uploads/");
     if(strpos($_SERVER["REQUEST_URI"], /*"/" . basename(getcwd()) . */"/?") === 0)    {
         if(strpos($_SERVER["REQUEST_URI"], "&") !== FALSE)    {
             $_GET["n"] = substr($_SERVER["REQUEST_URI"], /*6*/2, strpos($_SERVER["REQUEST_URI"], "&") - 2);

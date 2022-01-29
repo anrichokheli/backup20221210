@@ -184,7 +184,7 @@ function uploadString(n, key, post, location, value) {
         div.appendChild(div2);
         element.prepend(div);
     };
-    ajax.open("POST", "php/uploadstring.php");
+    ajax.open("POST", "/");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send("n="+n+"&key="+key+post);
 }
@@ -208,7 +208,7 @@ function uploadVoice(n, key)  {
     formData.append("voice", voiceinput.files[0]);
     formData.append("n", n);
     formData.append("key", key);
-    fetch("php/uploadvoice.php", {method: "POST", body: formData})
+    fetch("/", {method: "POST", body: formData})
     .then(Response => Response.text())
     .then(Response => {
         div = document.createElement("div");
@@ -319,9 +319,9 @@ function fileUpload(file, fileInput){
     formData.append("photovideo", file);
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
-        if(this.responseText.includes('|'))    {
+        if(this.responseText.charAt(0) == '#')    {
             subbox.prepend(after);
-            var responseArray = this.responseText.split('|');
+            var responseArray = this.responseText.substring(1).split('|');
             var n = responseArray[0];
             var key = responseArray[1];
             var html = "#" + n + "<br>";
@@ -377,7 +377,7 @@ function fileUpload(file, fileInput){
         progressBar.style.width = progressPercent;
         bottomProgressBar.style.width = progressPercent;
     };
-    ajax.open("POST", "php/uploadphotovideo.php");
+    ajax.open("POST", "/");
     ajax.send(formData);
 }
 function setCookie(cname, cvalue, exdays) {

@@ -1,6 +1,6 @@
 <?php
     if(!empty($_FILES["voice"]["tmp_name"]) && isset($_POST["n"]) && isset($_POST["key"]) && ctype_digit($_POST["n"]) && ctype_digit($_POST["key"]))    {
-        define("upload", "../uploads/");
+        if(!defined("upload"))define("upload", "../uploads/");
         define("uploadfiles", upload . "files/");
         define("uploadstrings", upload . "strings/");
         define("voices", uploadfiles . "voices/");

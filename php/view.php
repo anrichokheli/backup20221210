@@ -4,7 +4,7 @@
     echo "<a href=\"" . glob("f.*")[0] . "\" target=\"_blank\">view uploaded file</a>";
     echo "<br><br>";
     echo "<a href=\"../../\" target=\"_blank\">open main page</a>";*/
-    define("upload", "uploads/");
+    if(!defined("upload"))define("upload", "../uploads/");
     define("uploadfiles", upload . "files/");
     define("uploadstrings", upload . "strings/");
     define("photovideos", uploadfiles . "photovideos/");
@@ -166,7 +166,7 @@
     $rawData = isset($_GET["raw"]) && ($_GET["raw"] == 1);
     if(!$rawData)    {
         echo "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title>PedestrianSOS!</title><link rel=\"icon\" href=\"images/pedestriansos_16.png\"></head>";
-        echo "<body><div id=\"main\"><div id=\"top\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos_64.png\"><h1><span id=\"pedestrian\">Pedestrian</span>&nbsp;<span id=\"sos\">SOS!</span></h1></div>";
+        echo "<body><div id=\"main\"><div id=\"top\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos.svg\"><h1><span id=\"pedestrian\">Pedestrian</span>&nbsp;<span id=\"sos\">SOS!</span></h1></div>";
     }
     //echo "<style>.a{font-size:25px;border:solid 2px #0000ff;border-radius:4px;padding:1%;margin:1%;width:90%;text-align:center;}</style>";
     if(isset($_GET["n"]) && ctype_digit($_GET["n"]))    {

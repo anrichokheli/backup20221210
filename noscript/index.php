@@ -1,5 +1,4 @@
 <?php
-    include("../php/afterupload.php");
     include("../php/uploadphotovideo.php");
     include("../php/uploadstring.php");
     include("../php/uploadvoice.php");
