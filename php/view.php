@@ -209,7 +209,7 @@
             echo getData($n, $rawData);
         }
         if(!$rawData && (count($files) == maxQuantity))    {
-            echo "<a href=\"?p=" . ($page + 1) . "&t=" . $topN . "\">>><br>next</a><br>";
+            echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . "\">>><br>next</a><br>";
         }
     }
     if(!$rawData)    {
