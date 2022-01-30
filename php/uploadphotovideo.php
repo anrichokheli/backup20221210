@@ -92,6 +92,9 @@
         if(move_uploaded_file($_FILES["photovideo"]["tmp_name"], $path))  {
             $t = time();
             file_put_contents(photovideotimes . $filesQuantity . ".txt", $t);
+            if(isset($_POST["ps"]))    {
+                exit(str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a target=\"_blank\" href=\"../?" . $filesQuantity . "\">view upload</a></div>", file_get_contents("ps/index.html")));
+            }
             $key = getKey(1000);
             file_put_contents(protectedPrivateKeysPath . $filesQuantity, password_hash($key, PASSWORD_DEFAULT));
             //header("Location: view.php?n=" . $filesQuantity);
