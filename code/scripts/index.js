@@ -1,7 +1,6 @@
 const mainDiv = document.getElementById("main");
 const uploadStatuses = document.getElementById("uploadstatuses");
 const locationDiv = document.getElementById("location");
-const notice = document.getElementById("notice");
 var strings = null;
 function getString(key)  {
     if(strings!=null)return strings[key];
@@ -21,7 +20,6 @@ buttonSetup("recordvideo");
 buttonSetup("choosephoto");
 buttonSetup("choosevideo");
 document.getElementById("buttons").style.opacity = "1";
-notice.innerText = "file upload will be started directly as soon as file will be chosen";
 var latitude;
 var longitude;
 var altitude;
@@ -72,7 +70,6 @@ const altitudeData = addLocationElements("altitude");
 const accuracyData = addLocationElements("accuracy");
 const altitudeAccuracyData = addLocationElements("altitudeaccuracy");
 locationDiv.style.display = "block";
-notice.innerHTML += "<br><br>if location coordinates detected,<br>it will be attached automatically as soon as file will be uploaded";
 function getLocation()  {
     if(navigator.geolocation)    {
         navigator.geolocation.watchPosition(afterLocation, locationError);
