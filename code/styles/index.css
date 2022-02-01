@@ -33,7 +33,6 @@ body    {
     display: inline-block;
 }
 .buttons {
-    color: #000000;
     font-size: 25px;
     font-weight: bold;
     display: flex;

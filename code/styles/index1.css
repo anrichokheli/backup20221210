@@ -99,21 +99,9 @@ input:checked + .slider:before, input:checked + .slider img {
     background-color: #256aff;
     height: 2vh;
 }
-.overlay    {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
 #dragoverlay    {
-    display: none;
     background-color: #256aff80;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+    z-index: 999;
 }
 #location   {
     border-radius: 8px;
@@ -170,4 +158,26 @@ input:checked + .slider:before, input:checked + .slider img {
     border: 2px dotted #256aff;
     border-radius: 8px;
     padding: 1%;
+}
+#windowoverlay{
+    z-index: 1000;
+}
+#window{
+    width: 90%;
+    height: 90%;
+    border: 2px solid #256aff;
+    border-radius: 10px;
+    padding: 1%;
+}
+.overlay    {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+    align-items: center;
+    display: none;
 }

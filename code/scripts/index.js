@@ -500,6 +500,27 @@ mainDiv.appendChild(closeFullScreenButton);
 const bottomSpace = document.createElement("div");
 bottomSpace.style.height = "25vh";
 mainDiv.appendChild(bottomSpace);
+const windowOverlay = document.getElementById("windowoverlay");
+windowOverlay.addEventListener("click", function(e){
+    if(e.target == windowDiv){
+        return;
+    }
+    this.style.display = "none";
+});
+const windowDiv = document.getElementById("window");
+function openWindow(content){
+    if(darkModeEnabled){
+        windowOverlay.style.backgroundColor = "#ffffff80";
+        windowDiv.style.backgroundColor = "#000000";
+    }
+    else{
+        windowOverlay.style.backgroundColor = "#00000080";
+        windowDiv.style.backgroundColor = "#ffffff";
+    }
+    windowDiv.innerHTML = content;
+    windowOverlay.style.display = "flex";
+}
+document.getElementById("settingsbutton").addEventListener("click", function(){openWindow("test123")});
 function setLanguage(lang)  {
     var ajax = new XMLHttpRequest();
     ajax.open("GET", "json/languages/" + lang + ".json");

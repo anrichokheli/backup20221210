@@ -26,5 +26,6 @@
     "allowedext": "Allowed file extensions are",
     "directupload": "File upload will be started directly as soon as file will be chosen.",
     "directlocation": "If location coordinates detected, it will be attached automatically as soon as file will be uploaded.",
-    "upload": "Upload"
+    "upload": "Upload",
+    "settings": "Settings"
 }
