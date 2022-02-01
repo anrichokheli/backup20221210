@@ -108,6 +108,9 @@
                 $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents("../html/indexnoscript.html")));
                 $html = str_replace("<htmllang>lang</htmllang>", $language, $html);
                 $html = setLanguage($language, $html);
+                if($language != defaultlanguage)    {
+                    $html = str_replace("action=\"../noscript/\"", "action=\"../noscript/?lang=" . $language . "\"", $html);
+                }
                 echo $html;
             }
             else    {
