@@ -345,7 +345,6 @@ function fileUpload(file, fileInput){
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);
             }
-            setDarkMode(darkModeEnabled);
         }
         else    {
             statusText.innerText += getString("uploadfiled")+"\n(" + this.responseText + ")";
@@ -377,27 +376,6 @@ function fileUpload(file, fileInput){
     ajax.open("POST", "/");
     ajax.send(formData);
 }
-function setCookie(cname, cvalue, exdays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    let expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-function getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-}
 var darkModeEnabled;
 function setDarkMode(enabled) {
     var color = "#000000";
@@ -418,38 +396,16 @@ function setDarkMode(enabled) {
     }
     darkModeEnabled = enabled;
 }
-const darkmodediv = document.getElementById("darkmodediv");
-const darkmodecheckbox = document.getElementById("darkmodecheckbox");
-const defaultTheme = document.getElementById("defaulttheme");
 const matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
-function changeDarkMode()   {
-    if(defaultTheme.checked)defaultTheme.checked=0;
-    matchmedia.onchange=function(){};
-    setDarkMode(!darkModeEnabled);
-    setCookie("darkmode", darkModeEnabled, 1000);
-}
-darkmodecheckbox.addEventListener("click", function(){changeDarkMode();});
-darkmodediv.addEventListener("click", function(){darkmodecheckbox.checked = !darkmodecheckbox.checked;changeDarkMode();});
-function darkmodeifelse(condition)   {
-    if(condition)    {
-        setDarkMode(1);
-    }
-    else    {
-        setDarkMode(0);
-    }
-    darkmodecheckbox.checked = darkModeEnabled;
-}
 function defaultdarkmode()  {
-    darkmodeifelse(matchmedia.matches);
-    matchmedia.onchange = function(e){darkmodeifelse(e.matches)};
+    setDarkMode(matchmedia.matches);
+    matchmedia.onchange = function(e){setDarkMode(e.matches)};
 }
-defaultTheme.onchange = function(){if(this.checked){defaultdarkmode();setCookie("darkmode","",1)}else {matchmedia.onchange=function(){};setCookie("darkmode",darkModeEnabled,1000)}};
-if(getCookie("darkmode") == "")    {
+if(localStorage.getItem("darkmode") == null)    {
     defaultdarkmode();
-    defaultTheme.checked = 1;
 }
 else    {
-    darkmodeifelse(getCookie("darkmode") == "true");
+    setDarkMode(localStorage.getItem("darkmode")=="true");
     matchmedia.onchange=function(){};
 }
 var unloadWarning = 0;
@@ -514,7 +470,7 @@ settingsWindowOverlay.addEventListener("click", function(e){
     this.style.display = "none";
 });
 const settingsWindow = document.getElementById("settingswindow");
-function openWindow(windowOverlay, windowDiv, content){
+function setWindowDarkMode(windowOverlay, windowDiv){
     if(darkModeEnabled){
         windowOverlay.style.backgroundColor = "#ffffff80";
         windowDiv.style.backgroundColor = "#000000";
@@ -523,6 +479,9 @@ function openWindow(windowOverlay, windowDiv, content){
         windowOverlay.style.backgroundColor = "#00000080";
         windowDiv.style.backgroundColor = "#ffffff";
     }
+}
+function openWindow(windowOverlay, windowDiv, content){
+    setWindowDarkMode(windowOverlay, windowDiv);
     windowDiv.innerHTML = content;
     windowOverlay.style.display = "flex";
 }
@@ -535,6 +494,9 @@ document.getElementById("settingsbutton").addEventListener("click", function(){
     ajax.open("GET", "html/settings.html");
     ajax.onload = function(){
         openWindow(settingsWindowOverlay, settingsWindow, translateHTML(this.responseText));
+        var script = document.createElement("script");
+        script.src = "scripts/settings.js";
+        settingsWindow.appendChild(script);
     };
     ajax.send();
 });

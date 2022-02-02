@@ -66,7 +66,7 @@
             <br>
             <div id="uploadstatuses" class="texts boxs"></div>
             <br>
-            <a class="buttons texts" href="?view" target="_blank">
+            <a id="viewuploadsbutton" class="buttons texts" href="?view" target="_blank">
                 <img width="64" height="64" src="images/viewicon.svg">
                 &nbsp;
                 <span id="viewuploads"><string>viewuploads</string></span>
@@ -77,21 +77,6 @@
                 &nbsp;
                 <span id="settings"><string>settings</string></span>
             </button>
-            <div id="themediv">
-                <div id="darkmodediv">
-                    <div>
-                        <label class="switch">
-                            <input type="checkbox" id="darkmodecheckbox">
-                            <span class="slider round"><img width="26" height="26" src="images/darkmode0.png"></span>
-                        </label>
-                    </div>
-                    <span class="texts"><string>darkmode</string></span><br>
-                </div>
-                <div>
-                    <input type="checkbox" id="defaulttheme">
-                    <label for="defaulttheme"><string>devicedefault</string></label>
-                </div>
-            </div>
             <br>
             <p id="info" class="texts">
                 <string>maxfilesize</string> 25MB.
@@ -104,16 +89,16 @@
                 <br><br>
                 <string>directlocation</string>
             </p>
-            <div id="dragoverlay" class="overlay"></div>
             <div id="uploadstatusbottom"></div>
             <br>
             <a href="noscript">noscript</a>
             <br>
             <a href="ps">PS!</a>
             <br>
-        </div>
-        <div id="settingswindowoverlay" class="overlay">
-            <div id="settingswindow"></div>
+            <div id="settingswindowoverlay" class="overlay">
+                <div id="settingswindow"></div>
+            </div>
+            <div id="dragoverlay" class="overlay"></div>
         </div>
         <script src="scripts/index.js"></script>
     </body>

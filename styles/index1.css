@@ -24,69 +24,6 @@
     margin: 1%;
     padding: 1%;
 }
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-}
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .25s;
-    transition: .25s;
-}
-.slider:before, .slider img {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: #ffffff;
-    -webkit-transition: .25s;
-    transition: .25s;
-}
-input:checked + .slider {
-    background-color: #256aff;
-}
-input:checked + .slider:before, input:checked + .slider img {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-    background-color: #000000;
-    content: url("../images/darkmode1.png");
-}
-.slider.round, .slider img {
-    border-radius: 34px;
-}
-.slider.round:before {
-    border-radius: 50%;
-}
-#darkmodediv    {
-    border: 2px solid #256aff80;
-    border-radius: 8px;
-    margin: 1%;
-    padding: 1%;
-    text-align: center;
-    cursor: pointer;
-}
-#darkmodediv:hover  {
-    border-color: #256aff;
-}
-#darkmodediv *  {
-    margin: 1%;
-}
 .progressbar0, .progressbar {
     border-radius: 8px;
 }
@@ -99,9 +36,22 @@ input:checked + .slider:before, input:checked + .slider img {
     background-color: #256aff;
     height: 2vh;
 }
+#dragoverlay,#settingswindowoverlay{
+    display: none;
+}
+.overlay    {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+    align-items: center;
+}
 #dragoverlay    {
     background-color: #256aff80;
-    z-index: 999;
 }
 #location   {
     border-radius: 8px;
@@ -154,30 +104,9 @@ input:checked + .slider:before, input:checked + .slider img {
     margin: 2px;
     padding: 2px;
 }
-#themediv {
-    border: 2px dotted #256aff;
-    border-radius: 8px;
-    padding: 1%;
-}
-#settingswindowoverlay{
-    z-index: 1000;
-}
 #settingswindow{
     width: 90%;
     height: 90%;
     border: 2px solid #256aff;
     border-radius: 10px;
-    padding: 1%;
-}
-.overlay    {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    justify-content: center;
-    align-items: center;
-    display: none;
 }
