@@ -3,7 +3,22 @@
 }
 #settingstop{
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid #256aff;
+}
+#settingstop div{
+    display: flex;
+    align-items: center;
+}
+#settingsclosewindow{
+    background: none;
+    font-size: 25px;
+    border: 2px solid #ec040080;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#settingsclosewindow:hover{
+    border-color: #ec0400;
 }

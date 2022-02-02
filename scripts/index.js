@@ -506,15 +506,15 @@ function translateHTML(html){
     }
     return html;
 }
-const windowOverlay = document.getElementById("windowoverlay");
-windowOverlay.addEventListener("click", function(e){
-    if(e.target != windowOverlay){
+const settingsWindowOverlay = document.getElementById("settingswindowoverlay");
+settingsWindowOverlay.addEventListener("click", function(e){
+    if((e.target != settingsWindowOverlay) && (e.target.id != "settingsclosewindow")){
         return;
     }
     this.style.display = "none";
 });
-const windowDiv = document.getElementById("window");
-function openWindow(content){
+const settingsWindow = document.getElementById("settingswindow");
+function openWindow(windowOverlay, windowDiv, content){
     if(darkModeEnabled){
         windowOverlay.style.backgroundColor = "#ffffff80";
         windowDiv.style.backgroundColor = "#000000";
@@ -527,10 +527,14 @@ function openWindow(content){
     windowOverlay.style.display = "flex";
 }
 document.getElementById("settingsbutton").addEventListener("click", function(){
+    if(settingsWindow.innerHTML != '')    {
+        settingsWindowOverlay.style.display = "flex";
+        return;
+    }
     var ajax = new XMLHttpRequest();
     ajax.open("GET", "html/settings.html");
     ajax.onload = function(){
-        openWindow(translateHTML(this.responseText));
+        openWindow(settingsWindowOverlay, settingsWindow, translateHTML(this.responseText));
     };
     ajax.send();
 });
