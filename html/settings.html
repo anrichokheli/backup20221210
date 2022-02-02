@@ -4,7 +4,7 @@
         <div>
             <img width="32" height="32" src="images/settings.svg">
             &nbsp;
-            <h3><string>settings</string></h3>
+            <h3><span id="settingstitle"><string>settings</string></span></h3>
         </div>
         <button id="settingsclosewindow">&times;</button>
     </div>
@@ -12,7 +12,7 @@
     <div id="settingscontent">
         <div class="settingsbox">
             <div id="darkmodediv">
-                <span class="texts"><string>darkmode</string></span>
+                <span id="darkmode" class="texts"><string>darkmode</string></span>
                 <div>
                     <label class="switch">
                         <input type="checkbox" id="darkmodecheckbox">
@@ -22,8 +22,14 @@
             </div>
             <div>
                 <input type="checkbox" id="defaulttheme">
-                <label for="defaulttheme"><string>devicedefault</string></label>
+                <label id="devicedefault" for="defaulttheme"><string>devicedefault</string></label>
             </div>
+        </div>
+        <div class="settingsbox">
+            <select id="setlang">
+                <option value="en">English</option>
+                <option value="ka">ქართული</option>
+            </select>
         </div>
     </div>
 </div>

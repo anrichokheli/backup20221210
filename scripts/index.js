@@ -504,16 +504,30 @@ function setLanguage(lang)  {
     var ajax = new XMLHttpRequest();
     ajax.open("GET", "json/languages/" + lang + ".json");
     ajax.onload = function()    {
-        var json = JSON.parse(this.responseText);
-        strings = json;
-        for(var key in json) {
-            var element = document.getElementById(key);
-            if(element!=null)element.innerText = json[key];
+        if(this.status == 200){
+            localStorage.setItem("lang", lang);
+            document.documentElement.lang = lang;
+            var json = JSON.parse(this.responseText);
+            strings = json;
+            var element;
+            for(var key in json) {
+                element = document.getElementById(key);
+                if(element!=null)element.innerText = json[key];
+            }
+            if(typeof settingsTitle!=="undefined")settingsTitle.innerHTML = strings["settings"];
+            document.title = strings["title"];
+        }
+        else{
+            lang = "en";
+            setLanguage(lang);
         }
     };
     ajax.send();
 }
-var lang = "en";
+var lang = localStorage.getItem("lang");
+if(lang == null){
+    lang = navigator.language.substring(0, 2);
+}
 var getlang = (new URL(window.location.href)).searchParams.get("lang");
 if(getlang != null)    {
     lang = getlang;

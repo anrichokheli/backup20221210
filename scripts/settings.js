@@ -23,3 +23,10 @@ defaultTheme.onchange = function(){
 };
 darkmodecheckbox.checked=darkModeEnabled;
 if(localStorage.getItem("darkmode")==null)defaultTheme.checked=1;
+const languageSelect = document.getElementById("setlang");
+languageSelect.value = lang;
+const settingsTitle = document.getElementById("settingstitle");
+languageSelect.onchange = function(){
+    lang = this.value;
+    setLanguage(lang);
+};

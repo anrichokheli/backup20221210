@@ -40,6 +40,7 @@
     border: 1px dotted #256aff;
     border-radius: 4px;
     padding: 1%;
+    margin-top: 1%;
 }
 .switch {
     position: relative;
@@ -92,6 +93,8 @@ input:checked + .slider:before, input:checked + .slider img {
 }
 #darkmodediv    {
     display: flex;
+    justify-content: center;
+    align-items: center;
     border: 2px solid #256aff80;
     border-radius: 8px;
     margin: 1%;
