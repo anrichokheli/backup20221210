@@ -9,6 +9,7 @@
     "jsnotworking": "JavaScript not working",
     "nojstext": "your browser does not support or disabled",
     "opennojs": "open without javascript",
+    "viewupload": "View Upload",
     "viewuploads": "View Uploads",
     "darkmode": "dark mode",
     "devicedefault": "device default",
@@ -28,5 +29,10 @@
     "directupload": "File upload will be started directly as soon as file will be chosen.",
     "directlocation": "If location coordinates detected, it will be attached automatically as soon as file will be uploaded.",
     "upload": "Upload",
-    "settings": "Settings"
+    "settings": "Settings",
+    "locationcoordinates": "location coordinates",
+    "description": "description",
+    "writedescription": "Write description",
+    "uploaddescription": "Upload description",
+    "uploadvoice": "Upload voice"
 }
