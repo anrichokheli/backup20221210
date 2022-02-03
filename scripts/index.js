@@ -500,7 +500,7 @@ document.getElementById("settingsbutton").addEventListener("click", function(){
     };
     ajax.send();
 });
-function setLanguage(lang)  {
+function setLanguage(lang,get)  {
     var ajax = new XMLHttpRequest();
     ajax.open("GET", "json/languages/" + lang + ".json");
     ajax.onload = function()    {
@@ -519,12 +519,13 @@ function setLanguage(lang)  {
         }
         else{
             var getlang = (new URL(window.location.href)).searchParams.get("lang");
-            if(getlang != null){
+            if(getlang != null && get != 1){
                 lang = getlang;
+                setLanguage(lang,1);
             }else{
                 lang = "en";
+                setLanguage(lang);
             }
-            setLanguage(lang);
         }
     };
     ajax.send();
