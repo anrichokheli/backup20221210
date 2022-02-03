@@ -23,10 +23,33 @@ defaultTheme.onchange = function(){
 };
 darkmodecheckbox.checked=darkModeEnabled;
 if(localStorage.getItem("darkmode")==null)defaultTheme.checked=1;
+const defaultLang = document.getElementById("defaultlang");
+if(localStorage.getItem("lang") == null){
+    defaultLang.checked = 1;
+}
 const languageSelect = document.getElementById("setlang");
+defaultLang.onchange = function(){
+    if(this.checked){
+        localStorage.removeItem("lang");
+        lang = navigator.language.substring(0, 2);
+        setLanguage(lang);
+        languageSelect.value = lang;
+    }else{
+        localStorage.setItem("lang", lang);
+        window.onlanguagechange = function(){};
+    }
+};
 languageSelect.value = lang;
 const settingsTitle = document.getElementById("settingstitle");
+const langLabel = document.getElementById("langlabel");
 languageSelect.onchange = function(){
     lang = this.value;
     setLanguage(lang);
+    localStorage.setItem("lang", lang);
+    defaultLang.checked = 0;
+};
+window.onlanguagechange = function(){
+    lang = navigator.language.substring(0, 2);
+    setLanguage(lang);
+    languageSelect.value = lang;
 };

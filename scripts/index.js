@@ -505,7 +505,6 @@ function setLanguage(lang)  {
     ajax.open("GET", "json/languages/" + lang + ".json");
     ajax.onload = function()    {
         if(this.status == 200){
-            localStorage.setItem("lang", lang);
             document.documentElement.lang = lang;
             var json = JSON.parse(this.responseText);
             strings = json;
@@ -515,10 +514,16 @@ function setLanguage(lang)  {
                 if(element!=null)element.innerText = json[key];
             }
             if(typeof settingsTitle!=="undefined")settingsTitle.innerHTML = strings["settings"];
+            if(typeof langLabel!=="undefined")langLabel.innerHTML = strings["devicedefault"];
             document.title = strings["title"];
         }
         else{
-            lang = "en";
+            var getlang = (new URL(window.location.href)).searchParams.get("lang");
+            if(getlang != null){
+                lang = getlang;
+            }else{
+                lang = "en";
+            }
             setLanguage(lang);
         }
     };
@@ -527,9 +532,5 @@ function setLanguage(lang)  {
 var lang = localStorage.getItem("lang");
 if(lang == null){
     lang = navigator.language.substring(0, 2);
-}
-var getlang = (new URL(window.location.href)).searchParams.get("lang");
-if(getlang != null)    {
-    lang = getlang;
 }
 setLanguage(lang);
