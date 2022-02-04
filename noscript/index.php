@@ -1,7 +1,7 @@
 <?php
     define("jsonLanguagesPath", "../json/languages/");
     function setLanguage($lang, $html) {
-        $json = json_decode(file_get_contents(jsonLanguagesPath . $lang . ".json", 1));
+        $json = json_decode(file_get_contents(jsonLanguagesPath . $lang . ".json"), 1);
         foreach($json as $key => $val)   {
             $html = str_replace("<string>" . $key . "</string>", $val, $html);
         }

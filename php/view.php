@@ -74,6 +74,7 @@
         else    {
             $html = file_get_contents("html/view.html");
             $html = setValue("N", $n, $html);
+            $html = setValue("LINK", $n . $GLOBALS["langget"], $html);
         }
         $path = glob(photovideos . $n . ".*")[0];
         if(file_exists($path))    {
@@ -85,12 +86,12 @@
                 if($fileType == "image")    {
                     $tagName = "img";
                     $attributes = "";
-                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/photo.svg\">photo";
+                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/photo.svg\"><string>photo</string>";
                 }
                 else/* if($fileType == "video")*/   {
                     $tagName = "video";
                     $attributes = " controls";
-                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/video.svg\">video";
+                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/video.svg\"><string>video</string>";
                 }
                 $photovideoTag = "<" . $tagName . $attributes . " src=\"" . $path . "\"></" . $tagName . ">";
                 $html = setValue("FILETYPE", $fileTypeTag, $html);
@@ -160,13 +161,20 @@
             return json_encode($dataArray);
         }
         else    {
-            return $html;
+            return setLanguage($html);
         }
     }
     $rawData = isset($_GET["raw"]) && ($_GET["raw"] == 1);
     if(!$rawData)    {
-        echo "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title>PedestrianSOS!</title><link rel=\"icon\" href=\"images/pedestriansos_16.png\"></head>";
-        echo "<body><div id=\"main\"><div id=\"top\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos.svg\"><h1><span id=\"pedestrian\">Pedestrian</span>&nbsp;<span id=\"sos\">SOS!</span></h1></div>";
+        $topHTML = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title><string>pedestrian</string> SOS!</title><link rel=\"icon\" href=\"images/pedestriansos_16.png\"></head>";
+        $topHTML .= "<body><div id=\"main\"><div id=\"top\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos.svg\"><h1><span id=\"pedestrian\"><string>pedestrian</string></span>&nbsp;<span id=\"sos\">SOS!</span></h1></div>";
+        echo setLanguage($topHTML);
+        if($lang != defaultLang){
+            $langget = "&lang=" . $lang;
+        }
+        else{
+            $langget = "";
+        }
     }
     //echo "<style>.a{font-size:25px;border:solid 2px #0000ff;border-radius:4px;padding:1%;margin:1%;width:90%;text-align:center;}</style>";
     if(isset($_GET["n"]) && ctype_digit($_GET["n"]))    {
@@ -209,7 +217,7 @@
             echo getData($n, $rawData);
         }
         if(!$rawData && (count($files) == maxQuantity))    {
-            echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . "\">>><br>next</a><br>";
+            echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\">>><br>" . $langJSON["next"] . "</a><br>";
         }
     }
     if(!$rawData)    {

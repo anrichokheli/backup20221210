@@ -59,7 +59,7 @@ body    {
     margin-top: 1%;
 }
 .voice  {
-    text-align: center;
+    justify-content: center;
 }
 .description    {
     width: 90%;
