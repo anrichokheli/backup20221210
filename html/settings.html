@@ -11,7 +11,7 @@
     <div id="settingsbottomline"></div>
     <div id="settingscontent">
         <div class="settingsbox">
-            <div id="darkmodediv">
+            <div id="darkmodediv" class="xycenter">
                 <span id="darkmode" class="texts"><string>darkmode</string></span>
                 <div>
                     <label class="switch">
@@ -26,10 +26,17 @@
             </div>
         </div>
         <div class="settingsbox">
-            <select id="setlang">
-                <option value="en">English</option>
-                <option value="ka">ქართული</option>
-            </select>
+            <div class="xycenter">
+                <label for="setlang" class="xycenter">
+                    <img width="26" height="26" src="images/language.svg">
+                    &nbsp;
+                    <span id="language"><string>language</string></span>
+                </label>
+                <select id="setlang">
+                    <option value="en">English</option>
+                    <option value="ka">ქართული</option>
+                </select>
+            </div>
             <div>
                 <input type="checkbox" id="defaultlang">
                 <label id="langlabel" for="defaultlang"><string>devicedefault</string></label>

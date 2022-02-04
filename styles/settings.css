@@ -43,6 +43,11 @@
     margin-top: 1%;
     text-align: center;
 }
+.xycenter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .switch {
     position: relative;
     display: inline-block;
@@ -93,9 +98,6 @@ input:checked + .slider:before, input:checked + .slider img {
     border-radius: 50%;
 }
 #darkmodediv    {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     border: 2px solid #256aff80;
     border-radius: 8px;
     margin: 1%;
@@ -108,4 +110,9 @@ input:checked + .slider:before, input:checked + .slider img {
 }
 #darkmodediv *  {
     margin: 1%;
+}
+#setlang{
+    font-size: 16px;
+    margin: 1%;
+    padding: 1%;
 }

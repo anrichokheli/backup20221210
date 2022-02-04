@@ -34,5 +34,6 @@
     "description": "აღწერა",
     "writedescription": "დაწერეთ აღწერა",
     "uploaddescription": "აღწერის ატვირთვა",
-    "uploadvoice": "ხმის ატვირთვა"
+    "uploadvoice": "ხმის ატვირთვა",
+    "language": "ენა"
 }
