@@ -197,7 +197,7 @@ function uploadVoice(n, key)  {
     const voiceinput = document.getElementById('v'+n);
     var div = document.createElement("div");
     div.className = "statusText";
-    var text = "voice; ";
+    var text = strings["voice"] + "; ";
     div.innerText = text+getString("uploading");
     div.style.borderColor = "#ffff00";
     statusElement.prepend(div);

@@ -1,8 +1,8 @@
-<form method="post" enctype="multipart/form-data" action="../noscript/" id="voiceform">
+<form method="post" enctype="multipart/form-data" action="../noscript/">
     <input type="hidden" name="n" value="value_n">
     <input type="hidden" name="key" value="value_key">
     <input type="file" accept="audio/*" name="voice" class="texts" id="voiceinput" required>
+    <label for="voiceinput" class="buttons afteruploadbuttons texts"><img width="32" height="32" src="../images/microphone.svg">&nbsp;<string>choosevoice</string></label>
+    <br>
+    <button name="submit" type="submit" class="buttons afteruploadbuttons texts"><img width="32" height="32" src="../images/uploadicon.svg">&nbsp;<string>uploadvoice</string></button>
 </form>
-<label for="voiceinput" class="buttons afteruploadbuttons texts"><img width="32" height="32" src="../images/microphone.svg">&nbsp;choose voice</label>
-<br>
-<button name="submit" form="voiceform" class="buttons afteruploadbuttons texts"><img width="32" height="32" src="../images/microphone.svg">&nbsp;upload voice</button>

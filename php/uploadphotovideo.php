@@ -100,7 +100,7 @@
             //header("Location: view.php?n=" . $filesQuantity);
             if(isset($_POST["submit"]))    {
                 $html = "<div class=\"boxs\">";
-                $html .= "<div class=\"texts\">#: " . $filesQuantity . "</div><a href=\"../?" . $filesQuantity . "\" target=\"_blank\" class=\"buttons afteruploadbuttons texts\"><img width=\"32\" height=\"32\" src=\"../images/viewicon.svg\">&nbsp;view upload</a><br>";
+                $html .= "<div class=\"texts\">#: " . $filesQuantity . "</div><a href=\"../?" . $filesQuantity . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"../images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br>";
                 $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("../html/uploaddescription.html")));
                 $html .= "<br><br>";
                 $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("../html/uploadvoice.html")));

@@ -31,12 +31,11 @@
                             </label>
                             <input type="file" accept="image/*" id="takephoto" name="photovideo" capture="environment" required>
                         </div>
-                        <input type="submit" id="upload_takephoto" name="submit">
-                        <label class="buttons uploadbuttons texts" for="upload_takephoto">
+                        <button type="submit" name="submit" class="buttons uploadbuttons texts">
                             <img width="64" height="64" src="../images/uploadicon.svg">
                             &nbsp;
                             <string>upload</string>
-                        </label>
+                        </button>
                     </form>
                     <form action="../noscript/" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
                         <div>
@@ -47,12 +46,11 @@
                             </label>
                             <input type="file" accept="video/*" id="recordvideo" name="photovideo" capture="environment" required>
                         </div>
-                        <input type="submit" id="upload_recordvideo" name="submit">
-                        <label class="buttons uploadbuttons texts" for="upload_recordvideo">
+                        <button type="submit" name="submit" class="buttons uploadbuttons texts">
                             <img width="64" height="64" src="../images/uploadicon.svg">
                             &nbsp;
                             <string>upload</string>
-                        </label>
+                        </button>
                     </form>
                 </div>
                 <div class="buttonsDivs">
@@ -65,12 +63,11 @@
                             </label>
                             <input type="file" accept="image/*" id="choosephoto" name="photovideo" required>
                         </div>
-                        <input type="submit" id="upload_choosephoto" name="submit">
-                        <label class="buttons uploadbuttons texts" for="upload_choosephoto">
+                        <button type="submit" name="submit" class="buttons uploadbuttons texts">
                             <img width="64" height="64" src="../images/uploadicon.svg">
                             &nbsp;
                             <string>upload</string>
-                        </label>
+                        </button>
                     </form>
                     <form action="../noscript/" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
                         <div>
@@ -81,18 +78,17 @@
                             </label>
                             <input type="file" accept="video/*" id="choosevideo" name="photovideo" required>
                         </div>
-                        <input type="submit" id="upload_choosevideo" name="submit">
-                        <label class="buttons uploadbuttons texts" for="upload_choosevideo">
+                        <button type="submit" name="submit" class="buttons uploadbuttons texts">
                             <img width="64" height="64" src="../images/uploadicon.svg">
                             &nbsp;
                             <string>upload</string>
-                        </label>
+                        </button>
                     </form>
                 </div>
             </div>
             <!--AFTER_UPLOAD-->
             <br>
-            <a id="viewuploadsbutton" class="buttons texts" href="../?view" target="_blank">
+            <a id="viewuploadsbutton" class="buttons viewuploadsbuttons" href="../?view" target="_blank">
                 <img width="64" height="64" src="../images/viewicon.svg">
                 &nbsp;
                 <string>viewuploads</string>
@@ -106,14 +102,17 @@
                 <string>allowedext</string>: .bmp, .gif, .ico, .jpg, .png, .tif, .webp, .avi, .mpeg, .ogv, .ts, .webm, .3gp, .3g2, .mp4.
             </p>
             <br>
-            <form method="get">
-                <label for="lang">language</label>
-                <select name="lang">
-                    <option disabled selected>...</option>
+            <form style="border: 2px dotted #256aff;padding: 4px;" method="get">
+                <label for="lang">
+                    <img width="26" height="26" src="../images/language.svg">
+                    <string>language</string>
+                </label>
+                <select name="lang" id="lang" required>
+                    <option value="" disabled selected>...</option>
                     <option value="en">English</option>
                     <option value="ka">ქართული</option>
                 </select>
-                <button type="submit">open</button>
+                <button type="submit"><string>open</string></button>
             </form>
             <br>
         </div>

@@ -35,5 +35,8 @@
     "writedescription": "დაწერეთ აღწერა",
     "uploaddescription": "აღწერის ატვირთვა",
     "uploadvoice": "ხმის ატვირთვა",
-    "language": "ენა"
+    "language": "ენა",
+    "open": "გახსნა",
+    "choosevoice": "ხმის არჩევა",
+    "voice": "ხმის ჩანაწერი"
 }

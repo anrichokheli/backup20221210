@@ -39,8 +39,8 @@
 .settingsbox{
     border: 1px dotted #256aff;
     border-radius: 4px;
-    padding: 1%;
-    margin-top: 1%;
+    padding: 8px;
+    margin-top: 8px;
     text-align: center;
 }
 .xycenter{
@@ -115,4 +115,5 @@ input:checked + .slider:before, input:checked + .slider img {
     font-size: 16px;
     margin: 1%;
     padding: 1%;
+    cursor: pointer;
 }

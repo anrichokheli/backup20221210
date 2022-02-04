@@ -54,7 +54,7 @@ body    {
 .buttons:hover   {
     border-style: solid;
 }
-#viewuploadsbutton{
+.viewuploadsbuttons{
     color: inherit;
 }
 .afteruploadbuttons {

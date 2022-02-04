@@ -35,5 +35,8 @@
     "writedescription": "Write description",
     "uploaddescription": "Upload description",
     "uploadvoice": "Upload voice",
-    "language": "Language"
+    "language": "Language",
+    "open": "Open",
+    "choosevoice": "Choose voice",
+    "voice": "Voice"
 }
