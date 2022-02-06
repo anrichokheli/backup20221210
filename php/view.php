@@ -4,7 +4,7 @@
     echo "<a href=\"" . glob("f.*")[0] . "\" target=\"_blank\">view uploaded file</a>";
     echo "<br><br>";
     echo "<a href=\"../../\" target=\"_blank\">open main page</a>";*/
-    if(!defined("upload"))define("upload", "../uploads/");
+    define("upload", "uploads/");
     define("uploadfiles", upload . "files/");
     define("uploadstrings", upload . "strings/");
     define("photovideos", uploadfiles . "photovideos/");
@@ -72,7 +72,7 @@
             $dataArray = array();
         }
         else    {
-            $html = file_get_contents("html/view.html");
+            $html = file_get_contents("html/viewnoscript.html");
             $html = setValue("N", $n, $html);
             $html = setValue("LINK", $n . $GLOBALS["langget"], $html);
         }

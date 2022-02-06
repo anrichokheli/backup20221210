@@ -1,6 +1,6 @@
 <?php
     if(isset($_FILES["photovideo"]))    {
-        if(!defined("upload"))define("upload", "../uploads/");
+        define("upload", "uploads/");
         define("uploadfiles", upload . "files/");
         define("uploadstrings", upload . "strings/");
         define("photovideos", uploadfiles . "photovideos/");
@@ -93,24 +93,29 @@
             $t = time();
             file_put_contents(photovideotimes . $filesQuantity . ".txt", $t);
             if(isset($_POST["ps"]))    {
-                exit(str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a target=\"_blank\" href=\"../?" . $filesQuantity . "\">view upload</a></div>", file_get_contents("ps/index.html")));
+                exit(str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a target=\"_blank\" href=\"?" . $filesQuantity . "\">view upload</a></div>", file_get_contents("ps/index.html")));
             }
             $key = getKey(1000);
             file_put_contents(protectedPrivateKeysPath . $filesQuantity, password_hash($key, PASSWORD_DEFAULT));
             //header("Location: view.php?n=" . $filesQuantity);
             if(isset($_POST["submit"]))    {
                 $html = "<div class=\"boxs\">";
-                $html .= "<div class=\"texts\">#: " . $filesQuantity . "</div><a href=\"../?" . $filesQuantity . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"../images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br>";
-                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("../html/uploaddescription.html")));
+                $html .= "<div class=\"texts\">#: " . $filesQuantity . "</div><a href=\"?" . $filesQuantity . "&noscript\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br>";
+                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("html/uploaddescription.html")));
                 $html .= "<br><br>";
-                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("../html/uploadvoice.html")));
+                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("html/uploadvoice.html")));
                 $html .= "</div>";
-                $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents("../html/indexnoscript.html")));
-                $html = str_replace("<htmllang>lang</htmllang>", $language, $html);
-                $html = setLanguage($language, $html);
-                if($language != defaultlanguage)    {
-                    $html = str_replace("action=\"../noscript/\"", "action=\"../noscript/?lang=" . $language . "\"", $html);
+                $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents("html/indexnoscript.html")));
+                $html = str_replace("<htmllang>lang</htmllang>", $lang, $html);
+                $html = setLanguage($html);
+                if($lang != defaultLang)    {
+                    $html = str_replace("action=\"?noscript\"", "action=\"?noscript&lang=" . $lang . "\"", $html);
+                    $html = str_replace("&noscript", "&noscript&lang=" . $lang, $html);
+                    $langget = "&lang=" . $lang;
+                }else{
+                    $langget = "";
                 }
+                $html = str_replace("<php>LANG</php>", $langget, $html);
                 echo $html;
             }
             else    {

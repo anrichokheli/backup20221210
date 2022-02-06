@@ -6,7 +6,7 @@
     (isset($_POST["description"]) || (isset($_POST["latitude"]) && isset($_POST["longitude"])))
     )    {
         define("protectedPrivateKeysPath", dirname($_SERVER["DOCUMENT_ROOT"]) . "/protected/private/keys/");
-        if(!defined("upload"))define("upload", "../uploads/");
+        define("upload", "uploads/");
         define("uploadstrings", upload . "strings/");
         define("descriptions", uploadstrings . "descriptions/");
         define("descriptiontimes", uploadstrings . "descriptiontimes/");
@@ -31,29 +31,33 @@
         if(isset($_POST["description"]))    {
             saveData(descriptions, descriptiontimes, $_POST["description"]);
             if(isset($_POST["submit"]))    {
-                //echo str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("../html/uploadvoice.html")));
                 $html = "<div class=\"boxs texts\">";
-                $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><a href=\"../?" . $_POST["n"] . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"../images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br>";
+                $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><a href=\"?" . $_POST["n"] . "&noscript\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br>";
                 if(!file_exists(descriptions . $_POST["n"] . ".txt"))    {
-                    $html .= str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("../html/uploaddescription.html")));
+                    $html .= str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("html/uploaddescription.html")));
                 }
                 else    {
-                    $html .= "<string>description</string>; <string>uploadcompleted</string>";
+                    $html .= "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"images/description.svg\"> <string>description</string>; <string>uploadcompleted</string></div>";
                 }
                 $html .= "<br><br>";
-                if(!file_exists(glob("../uploads/files/voices/" . $_POST["n"] . ".*")[0]))    {
-                    $html .= str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("../html/uploadvoice.html")));
+                if(!file_exists(glob("uploads/files/voices/" . $_POST["n"] . ".*")[0]))    {
+                    $html .= str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("html/uploadvoice.html")));
                 }
                 else    {
-                    $html .= "<string>voice</string>; <string>uploadcompleted</string>";
+                    $html .= "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"images/microphone.svg\"> <string>voice</string>; <string>uploadcompleted</string></div>";
                 }
                 $html .= "</div>";
-                $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents("../html/indexnoscript.html")));
-                $html = str_replace("<htmllang>lang</htmllang>", $language, $html);
-                $html = setLanguage($language, $html);
-                if($language != defaultlanguage)    {
-                    $html = str_replace("action=\"../noscript/\"", "action=\"../noscript/?lang=" . $language . "\"", $html);
+                $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents("html/indexnoscript.html")));
+                $html = str_replace("<htmllang>lang</htmllang>", $lang, $html);
+                $html = setLanguage($html);
+                if($lang != defaultLang)    {
+                    $html = str_replace("action=\"?noscript\"", "action=\"?noscript&lang=" . $lang . "\"", $html);
+                    $html = str_replace("&noscript", "&noscript&lang=" . $lang, $html);
+                    $langget = "&lang=" . $lang;
+                }else{
+                    $langget = "";
                 }
+                $html = str_replace("<php>LANG</php>", $langget, $html);
                 echo $html;
             }
             else    {

@@ -21,7 +21,7 @@
     "nodata": "no data",
     "uploading": "uploading...",
     "uploadcompleted": "upload completed",
-    "uploadfiled": "upload failed",
+    "uploadfailed": "upload failed",
     "uploaderror": "upload error",
     "maxfilesize": "Maximum file size is",
     "onlyimgvid": "Only images and videos are allowed.",
@@ -42,5 +42,6 @@
     "next": "Next",
     "photo": "Photo",
     "video": "Video",
-    "download": "Download"
+    "download": "Download",
+    "uploadedid": "Unique ID of upload"
 }

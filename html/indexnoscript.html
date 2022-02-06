@@ -4,16 +4,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="UTF-8">
         <title><string>pedestrian</string>&nbsp;SOS!</title>
-        <link rel="icon" href="../images/pedestriansos_16.png">
-        <link rel="stylesheet" href="../styles/index.css">
+        <link rel="icon" href="images/pedestriansos_16.png">
+        <link rel="stylesheet" href="styles/index.css">
         <meta property="og:title" content="<string>pedestrian</string> SOS!">
         <meta property="og:description" content="<string>webapp</string>">
-        <meta property="og:image" content="../images/pedestriansos_256.png">
+        <meta property="og:image" content="images/pedestriansos_256.png">
     </head>
     <body>
         <div id="main">
             <div id="top">
-                <img width="64" height="64" src="../images/pedestriansos.svg">
+                <img width="64" height="64" src="images/pedestriansos.svg">
                 <h1>
                     <span id="pedestrian"><string>pedestrian</string></span>&nbsp;<span id="sos">SOS!</span>
                 </h1>
@@ -22,64 +22,64 @@
             <!--UPLOAD_RESPONSE-->
             <div id="buttons" class="texts">
                 <div class="buttonsDivs">
-                    <form action="../noscript/" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
+                    <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <div>
                             <label class="buttons texts" for="takephoto">
-                                <img width="64" height="64" src="../images/take_photo.svg">
+                                <img width="64" height="64" src="images/take_photo.svg">
                                 &nbsp;
                                 <string>takephoto</string>
                             </label>
                             <input type="file" accept="image/*" id="takephoto" name="photovideo" capture="environment" required>
                         </div>
                         <button type="submit" name="submit" class="buttons uploadbuttons texts">
-                            <img width="64" height="64" src="../images/uploadicon.svg">
+                            <img width="64" height="64" src="images/uploadicon.svg">
                             &nbsp;
                             <string>upload</string>
                         </button>
                     </form>
-                    <form action="../noscript/" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
+                    <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <div>
                             <label class="buttons texts" for="recordvideo">
-                                <img width="64" height="64" src="../images/record_video.svg">
+                                <img width="64" height="64" src="images/record_video.svg">
                                 &nbsp;
                                 <string>recordvideo</string>
                             </label>
                             <input type="file" accept="video/*" id="recordvideo" name="photovideo" capture="environment" required>
                         </div>
                         <button type="submit" name="submit" class="buttons uploadbuttons texts">
-                            <img width="64" height="64" src="../images/uploadicon.svg">
+                            <img width="64" height="64" src="images/uploadicon.svg">
                             &nbsp;
                             <string>upload</string>
                         </button>
                     </form>
                 </div>
                 <div class="buttonsDivs">
-                    <form action="../noscript/" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
+                    <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <div>
                             <label class="buttons texts" for="choosephoto">
-                                <img width="64" height="64" src="../images/photo.svg">
+                                <img width="64" height="64" src="images/photo.svg">
                                 &nbsp;
                                 <string>choosephoto</string>
                             </label>
                             <input type="file" accept="image/*" id="choosephoto" name="photovideo" required>
                         </div>
                         <button type="submit" name="submit" class="buttons uploadbuttons texts">
-                            <img width="64" height="64" src="../images/uploadicon.svg">
+                            <img width="64" height="64" src="images/uploadicon.svg">
                             &nbsp;
                             <string>upload</string>
                         </button>
                     </form>
-                    <form action="../noscript/" method="post" enctype="multipart/form-data" autocomplete="off" class="uploadforms">
+                    <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <div>
                             <label class="buttons texts" for="choosevideo">
-                                <img width="64" height="64" src="../images/video.svg">
+                                <img width="64" height="64" src="images/video.svg">
                                 &nbsp;
                                 <string>choosevideo</string>
                             </label>
                             <input type="file" accept="video/*" id="choosevideo" name="photovideo" required>
                         </div>
                         <button type="submit" name="submit" class="buttons uploadbuttons texts">
-                            <img width="64" height="64" src="../images/uploadicon.svg">
+                            <img width="64" height="64" src="images/uploadicon.svg">
                             &nbsp;
                             <string>upload</string>
                         </button>
@@ -88,8 +88,8 @@
             </div>
             <!--AFTER_UPLOAD-->
             <br>
-            <a id="viewuploadsbutton" class="buttons viewuploadsbuttons" href="../?view<php>LANG</php>" target="_blank">
-                <img width="64" height="64" src="../images/viewicon.svg">
+            <a id="viewuploadsbutton" class="buttons viewuploadsbuttons" href="?noscript&view<php>LANG</php>" target="_blank">
+                <img width="64" height="64" src="images/viewicon.svg">
                 &nbsp;
                 <string>viewuploads</string>
             </a>
@@ -103,8 +103,9 @@
             </p>
             <br>
             <form style="border: 2px dotted #256aff;padding: 4px;" method="get">
+                <input type="hidden" name="noscript">
                 <label for="lang">
-                    <img width="26" height="26" src="../images/language.svg">
+                    <img width="26" height="26" src="images/language.svg">
                     <string>language</string>
                 </label>
                 <select name="lang" id="lang" required>

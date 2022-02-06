@@ -14,7 +14,6 @@
         }
         return $html;
     }
-    define("upload", "uploads/");
     if(strpos($_SERVER["REQUEST_URI"], /*"/" . basename(getcwd()) . */"/?") === 0)    {
         if(strpos($_SERVER["REQUEST_URI"], "&") !== FALSE)    {
             $_GET["n"] = substr($_SERVER["REQUEST_URI"], /*6*/2, strpos($_SERVER["REQUEST_URI"], "&") - 2);
@@ -30,8 +29,23 @@
     include("php/uploadphotovideo.php");
     include("php/uploadstring.php");
     include("php/uploadvoice.php");
-    $indexHTML = file_get_contents("html/indexjs.html");
-    $indexHTML = str_replace("<htmllang>lang</htmllang>", $language, $indexHTML);
+    if(isset($_GET["noscript"])){
+        $indexHTML = file_get_contents("html/indexnoscript.html");
+        if($lang != defaultLang)    {
+            $indexHTML = str_replace("action=\"?noscript/\"", "action=\"?noscript&lang=" . $lang . "\"", $indexHTML);
+        }
+        $indexHTML = setLanguage($indexHTML);
+        if($lang != defaultLang){
+            $langget = "&lang=" . $lang;
+        }
+        else{
+            $langget = "";
+        }
+        $indexHTML = str_replace("<php>LANG</php>", $langget, $indexHTML);
+    }else{
+        $indexHTML = file_get_contents("html/indexjs.html");
+    }
+    $indexHTML = str_replace("<htmllang>lang</htmllang>", $lang, $indexHTML);
     $indexHTML = setLanguage($indexHTML);
     echo $indexHTML;
 ?>

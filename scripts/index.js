@@ -123,17 +123,21 @@ getLocation();
 function uploadString(n, key, post, location, value) {
     var ajax = new XMLHttpRequest();
     var text;
+    var img = "<img width=\"16\" height=\"16\" src=\"images/";
     if(location == true)    {
         text = strings["locationcoordinates"];
+        img += "location";
     }
     else    {
         text = strings["description"];
+        img += "description";
     }
     text += "; ";
+    img += ".svg\"> ";
     const element = document.getElementById('q'+n);
     var div = document.createElement("div");
     div.className = "statusText";
-    div.innerText = text+getString("uploading");
+    div.innerHTML = img+text+getString("uploading");
     var color = "#ffff00";
     div.style.borderColor = color;
     var div2 = document.createElement("div");
@@ -147,13 +151,14 @@ function uploadString(n, key, post, location, value) {
         div = document.createElement("div");
         div.className = "statusText";
         if(this.responseText === "1")    {
-            div.innerText = text + getString("uploadcompleted");
+            div.innerHTML = img + text + getString("uploadcompleted");
             color = "#00ff00";
         }
         else    {
-            div.innerText = text + getString("uploadfiled");
+            div.innerHTML = img + text + getString("uploadfailed");
             color = "#ff0000";
             if(!location)    {
+                document.getElementById(n).disabled = 0;
                 document.getElementById("b"+n).disabled = 0;
             }
             var div2 = document.createElement("div");
@@ -168,10 +173,11 @@ function uploadString(n, key, post, location, value) {
     ajax.onerror = function(){
         div = document.createElement("div");
         div.className = "statusText";
-        div.innerText = text + getString("uploaderror");
+        div.innerHTML = img + text + getString("uploaderror");
         color = "#ff0000";
         div.style.borderColor = color;
         if(!location)    {
+            document.getElementById(n).disabled = 0;
             document.getElementById("b"+n).disabled = 0;
         }
         div2 = document.createElement("div");
@@ -195,10 +201,13 @@ function uploadDescription(n, key)    {
 function uploadVoice(n, key)  {
     const statusElement = document.getElementById('q'+n);
     const voiceinput = document.getElementById('v'+n);
+    const button = document.getElementById("vb"+n);
+    button.disabled = 1;
     var div = document.createElement("div");
     div.className = "statusText";
     var text = strings["voice"] + "; ";
-    div.innerText = text+getString("uploading");
+    var img = "<img width=\"16\" height=\"16\" src=\"images/microphone.svg\"> ";
+    div.innerHTML = img+text+getString("uploading");
     div.style.borderColor = "#ffff00";
     statusElement.prepend(div);
     var formData = new FormData();
@@ -211,21 +220,23 @@ function uploadVoice(n, key)  {
         div = document.createElement("div");
         div.className = "statusText";
         if(Response === "1")    {
-            div.innerText = text+getString("uploadcompleted");
+            div.innerHTML = img+text+getString("uploadcompleted");
             div.style.borderColor = "#00ff00";
         }
         else    {
-            div.innerText = text+getString("uploadfailed")+"\n(" + Response + ")";
+            div.innerHTML = img+text+getString("uploadfailed")+"\n(" + Response + ")";
             div.style.borderColor = "#ff0000";
+            button.disabled = 0;
         }
         statusElement.prepend(div);
     })
     .catch(Error => {
         div = document.createElement("div");
         div.className = "statusText";
-        div.innerText = text+getString("uploaderror")+"\n(" + Error + ")";
+        div.innerHTML = img+text+getString("uploaderror")+"\n(" + Error + ")";
         div.style.borderColor = "#ff0000";
         statusElement.prepend(div);
+        button.disabled = 0;
     });
 }
 var timeout1;
@@ -284,12 +295,23 @@ function fileUpload(file, fileInput){
     subbox.className = "boxs";
     uploadStatuses.prepend(subbox);
     const status = document.createElement("div");
-    status.className = "uploadstatuses2 boxs";
+    status.className = "boxs boxs2";
     const statusDiv = document.createElement("div");
     status.appendChild(statusDiv);
     subbox.appendChild(status);
     var statusText = document.createElement("div");
-    statusText.innerText = getString("uploading");
+    var typeString;
+    var typeImg = "<img width=\"16\" height=\"16\" src=\"images/";
+    if(fileType == "image"){
+        typeString = getString("photo");
+        typeImg += "photo";
+    }else{
+        typeString = getString("video");
+        typeImg += "video";
+    }
+    typeImg += ".svg\">";
+    typeString += "; ";
+    statusText.innerHTML = typeImg + ' ' + typeString + getString("uploading");
     statusDiv.appendChild(statusText);
     const progress = document.createElement("div");
     statusDiv.appendChild(progress);
@@ -311,7 +333,7 @@ function fileUpload(file, fileInput){
     bottomProgressBar.style.width = "0%";
     bottomProgressVisible(1);
     const after = document.createElement("div");
-    after.classList.add("uploadstatuses2", "boxs");
+    after.classList.add("boxs", "boxs2");
     var formData = new FormData();
     formData.append("photovideo", file);
     var ajax = new XMLHttpRequest();
@@ -321,25 +343,26 @@ function fileUpload(file, fileInput){
             var responseArray = this.responseText.substring(1).split('|');
             var n = responseArray[0];
             var key = responseArray[1];
-            var html = "#" + n + "<br>";
+            var html = "<div class=\"boxs boxs2\">" + getString("uploadedid") + ": #" + n + "</div>";
             html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+strings["viewupload"]+"</button>";
             html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\""+strings["writedescription"]+"...\"></textarea></div>";
             html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;"+strings["uploaddescription"]+"</button></div>";
-            html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+strings["uploadvoice"]+"</button></div></div>";
-            html += "<br><br><div id=\"q"+n+"\" class=\"uploadstatuses2 boxs\"></div>";
+            html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+strings["uploadvoice"]+"</button></div></div>";
+            html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
             after.innerHTML = html;
+            var textarea = document.getElementById(n);
             var button = document.getElementById("b"+n);
             button.addEventListener("click", function(){
+                textarea.disabled = 1;
                 button.disabled = 1;
                 uploadDescription(n,key);
             });
-            var textarea = document.getElementById(n);
             textarea.addEventListener("input", function(){
                 button.disabled = textarea.value == '';
                 textarea.style.height = "0";
                 textarea.style.height = textarea.scrollHeight + "px";
             });
-            statusText.innerText += getString("uploadcompleted")+"\n(#" + n + ")";
+            statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadcompleted")+"\n(#" + n + ")";
             color = "#00ff00";
             bottomProgressVisible(0);
             if(latitude != null && longitude != null)    {
@@ -347,7 +370,7 @@ function fileUpload(file, fileInput){
             }
         }
         else    {
-            statusText.innerText += getString("uploadfiled")+"\n(" + this.responseText + ")";
+            statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadfailed")+"\n(" + this.responseText + ")";
             color = "#ff0000";
             bottomProgressVisible(0);
         }
@@ -358,7 +381,7 @@ function fileUpload(file, fileInput){
         status.prepend(statusText);
     };
     ajax.onerror = function(){
-        statusText.innerText += getString("uploaderror")+"\n(" + this.Error + ")";
+        statusText.innerHTML += typeImg + ' ' + typeString + getString("uploaderror")+"\n(" + this.Error + ")";
         statusText.className = "statusText";
         color = "#ff0000";
         statusText.style.borderColor = color;
