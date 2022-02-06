@@ -21,5 +21,12 @@
     }
     $indexHTML = str_replace("<htmllang>lang</htmllang>", $language, $indexHTML);
     $indexHTML = setLanguage($language, $indexHTML);
+    if($language != defaultlanguage){
+        $langget = "&lang=" . $language;
+    }
+    else{
+        $langget = "";
+    }
+    $indexHTML = str_replace("<php>LANG</php>", $langget, $indexHTML);
     echo $indexHTML;
 ?>
