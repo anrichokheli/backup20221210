@@ -1,13 +1,13 @@
-const mainDiv = document.getElementById("main");
-const uploadStatuses = document.getElementById("uploadstatuses");
-const locationDiv = document.getElementById("location");
+var mainDiv = document.getElementById("main");
+var uploadStatuses = document.getElementById("uploadstatuses");
+var locationDiv = document.getElementById("location");
 var strings = null;
 function getString(key)  {
     if(strings!=null)return strings[key];
     return "";
 }
 function buttonSetup(id0) {
-    const input = document.getElementById(id0 + "input");
+    var input = document.getElementById(id0 + "input");
     input.oninput = function(){
         fileUpload(null, input);
     };
@@ -25,19 +25,19 @@ var longitude;
 var altitude;
 var accuracy;
 var altitudeAccuracy;
-const locationTop = document.createElement("div");
+var locationTop = document.createElement("div");
 locationTop.id = "locationtop";
 locationDiv.appendChild(locationTop);
-const locationImage = document.createElement("img");
+var locationImage = document.createElement("img");
 locationImage.src = "images/location.svg";
 locationImage.width = "32";
 locationImage.height = "32";
 locationTop.appendChild(locationImage);
-const locationTitle = document.createElement("span");
+var locationTitle = document.createElement("span");
 locationTitle.id = "currentlocation";
 locationTitle.style.fontSize = "20px";
 locationTop.appendChild(locationTitle);
-const locationData = document.createElement("div");
+var locationData = document.createElement("div");
 locationDiv.appendChild(locationData);
 function addLocationElements(text)  {
     var div = document.createElement("div");
@@ -48,7 +48,7 @@ function addLocationElements(text)  {
     title.innerText = ": ";
     var titleText = document.createElement("span");
     titleText.id = text;
-    title.prepend(titleText);
+    title.insertBefore(titleText, title.childNodes[0]);
     div.appendChild(title);
     var data = document.createElement("span");
     div.appendChild(data);
@@ -65,11 +65,11 @@ function showLocation(element, data)    {
     }
     element.innerText = data;
 }
-const latitudeLongitudeData = addLocationElements("latitudelongitude");
-const altitudeData = addLocationElements("altitude");
-const accuracyData = addLocationElements("accuracy");
-const altitudeAccuracyData = addLocationElements("altitudeaccuracy");
-locationDiv.style.display = "block";
+var latitudeLongitudeData = addLocationElements("latitudelongitude");
+var altitudeData = addLocationElements("altitude");
+var accuracyData = addLocationElements("accuracy");
+var altitudeAccuracyData = addLocationElements("altitudeaccuracy");
+locationDiv.style.display = "inline-block";
 function getLocation()  {
     if(navigator.geolocation)    {
         navigator.geolocation.watchPosition(afterLocation, locationError);
@@ -93,7 +93,7 @@ function afterLocation(position)  {
     showLocation(accuracyData, accuracy);
     showLocation(altitudeAccuracyData, altitudeAccuracy);
 }
-const locationErrorDiv = document.createElement("div");
+var locationErrorDiv = document.createElement("div");
 locationErrorDiv.style.border = "2px solid #ff0000";
 function locationError(error)    {
     locationDiv.appendChild(locationErrorDiv);
@@ -134,7 +134,7 @@ function uploadString(n, key, post, location, value) {
     }
     text += "; ";
     img += ".svg\"> ";
-    const element = document.getElementById('q'+n);
+    var element = document.getElementById('q'+n);
     var div = document.createElement("div");
     div.className = "statusText";
     div.innerHTML = img+text+getString("uploading");
@@ -146,7 +146,7 @@ function uploadString(n, key, post, location, value) {
     div2.style.border = borderStyle;
     div2.borderColor = color;
     div.appendChild(div2);
-    element.prepend(div);
+    element.insertBefore(div, element.childNodes[0]);
     ajax.onload = function(){
         div = document.createElement("div");
         div.className = "statusText";
@@ -168,7 +168,7 @@ function uploadString(n, key, post, location, value) {
             div.appendChild(div2);
         }
         div.style.borderColor = color;
-        element.prepend(div);
+        element.insertBefore(div, element.childNodes[0]);
     };
     ajax.onerror = function(){
         div = document.createElement("div");
@@ -185,7 +185,7 @@ function uploadString(n, key, post, location, value) {
         div2.style.border = borderStyle;
         div2.style.borderColor = color;
         div.appendChild(div2);
-        element.prepend(div);
+        element.insertBefore(div, element.childNodes[0]);
     };
     ajax.open("POST", "/");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -199,9 +199,9 @@ function uploadDescription(n, key)    {
     uploadString(n, key, "&description="+descriptionValue, false, descriptionValue);
 }
 function uploadVoice(n, key)  {
-    const statusElement = document.getElementById('q'+n);
-    const voiceinput = document.getElementById('v'+n);
-    const button = document.getElementById("vb"+n);
+    var statusElement = document.getElementById('q'+n);
+    var voiceinput = document.getElementById('v'+n);
+    var button = document.getElementById("vb"+n);
     button.disabled = 1;
     var div = document.createElement("div");
     div.className = "statusText";
@@ -209,35 +209,36 @@ function uploadVoice(n, key)  {
     var img = "<img width=\"16\" height=\"16\" src=\"images/microphone.svg\"> ";
     div.innerHTML = img+text+getString("uploading");
     div.style.borderColor = "#ffff00";
-    statusElement.prepend(div);
+    statusElement.insertBefore(div, statusElement.childNodes[0]);
     var formData = new FormData();
     formData.append("voice", voiceinput.files[0]);
     formData.append("n", n);
     formData.append("key", key);
-    fetch("/", {method: "POST", body: formData})
-    .then(Response => Response.text())
-    .then(Response => {
+    var ajax = new XMLHttpRequest();
+    ajax.onload = function(){
         div = document.createElement("div");
         div.className = "statusText";
-        if(Response === "1")    {
+        if(this.responseText === "1")    {
             div.innerHTML = img+text+getString("uploadcompleted");
             div.style.borderColor = "#00ff00";
         }
         else    {
-            div.innerHTML = img+text+getString("uploadfailed")+"\n(" + Response + ")";
+            div.innerHTML = img+text+getString("uploadfailed")+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             button.disabled = 0;
         }
-        statusElement.prepend(div);
-    })
-    .catch(Error => {
+        statusElement.insertBefore(div, statusElement.childNodes[0]);
+    };
+    ajax.onerror = function(){
         div = document.createElement("div");
         div.className = "statusText";
-        div.innerHTML = img+text+getString("uploaderror")+"\n(" + Error + ")";
+        div.innerHTML = img+text+getString("uploaderror")+"\n(" + this.Error + ")";
         div.style.borderColor = "#ff0000";
-        statusElement.prepend(div);
+        statusElement.insertBefore(div, statusElement.childNodes[0]);
         button.disabled = 0;
-    });
+    };
+    ajax.open("POST", "/");
+    ajax.send(formData);
 }
 var timeout1;
 var timeout2;
@@ -260,16 +261,16 @@ function bottomProgressVisible(visible)    {
     }
 }
 function flexCenter(element) {
-    element.style.display = "flex";
+    element.style.display = "inline-flex";
     element.style.alignItems = "center";
     element.style.flexDirection = "column";
 }
-const uploadStatusBottom = document.getElementById("uploadstatusbottom");
-const bottomProgressBar = document.createElement("div");
+var uploadStatusBottom = document.getElementById("uploadstatusbottom");
+var bottomProgressBar = document.createElement("div");
 uploadStatusBottom.appendChild(bottomProgressBar);
 var uploadstatusesdisplayed = 0;
-const maxFileSize = 25000000;
-const allowedFileExtensions = ["bmp", "gif", "x-icon", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
+var maxFileSize = 25000000;
+var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
 function fileUpload(file, fileInput){
     if(file === null)  {
         file = fileInput.files[0];
@@ -285,18 +286,18 @@ function fileUpload(file, fileInput){
         alert("only images and videos are allowed.");
         return;
     }
-    if(!allowedFileExtensions.includes(fileExtension))    {
+    if(allowedFileExtensions.indexOf(fileExtension) == -1)    {
         alert("allowed file extensions are: ." + allowedFileExtensions.join(", .") + ".");
         return;
     }
     unloadWarning = 1;
-    const subbox = document.createElement("div");
+    var subbox = document.createElement("div");
     flexCenter(subbox);
     subbox.className = "boxs";
-    uploadStatuses.prepend(subbox);
-    const status = document.createElement("div");
+    uploadStatuses.insertBefore(subbox, uploadStatuses.childNodes[0]);
+    var status = document.createElement("div");
     status.className = "boxs boxs2";
-    const statusDiv = document.createElement("div");
+    var statusDiv = document.createElement("div");
     status.appendChild(statusDiv);
     subbox.appendChild(status);
     var statusText = document.createElement("div");
@@ -313,12 +314,12 @@ function fileUpload(file, fileInput){
     typeString += "; ";
     statusText.innerHTML = typeImg + ' ' + typeString + getString("uploading");
     statusDiv.appendChild(statusText);
-    const progress = document.createElement("div");
+    var progress = document.createElement("div");
     statusDiv.appendChild(progress);
-    const progressBar0 = document.createElement("div");
+    var progressBar0 = document.createElement("div");
     progressBar0.className = "progressbar0";
     statusDiv.appendChild(progressBar0);
-    const progressBar = document.createElement("div");
+    var progressBar = document.createElement("div");
     progressBar.className = "progressbar";
     progressBar0.appendChild(progressBar);
     var color = "#ffff00";
@@ -332,14 +333,14 @@ function fileUpload(file, fileInput){
     bottomProgressBar.style.backgroundColor = color;
     bottomProgressBar.style.width = "0%";
     bottomProgressVisible(1);
-    const after = document.createElement("div");
+    var after = document.createElement("div");
     after.classList.add("boxs", "boxs2");
     var formData = new FormData();
     formData.append("photovideo", file);
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
         if(this.responseText.charAt(0) == '#')    {
-            subbox.prepend(after);
+            subbox.insertBefore(after, subbox.childNodes[0]);
             var responseArray = this.responseText.substring(1).split('|');
             var n = responseArray[0];
             var key = responseArray[1];
@@ -378,7 +379,7 @@ function fileUpload(file, fileInput){
         statusText.className = "statusText";
         statusText.style.borderColor = color;
         bottomProgressBar.style.backgroundColor = color;
-        status.prepend(statusText);
+        status.insertBefore(statusText, status.childNodes[0]);
     };
     ajax.onerror = function(){
         statusText.innerHTML += typeImg + ' ' + typeString + getString("uploaderror")+"\n(" + this.Error + ")";
@@ -387,7 +388,7 @@ function fileUpload(file, fileInput){
         statusText.style.borderColor = color;
         bottomProgressBar.style.backgroundColor = color;
         bottomProgressVisible(0);
-        status.prepend(statusText);
+        status.insertBefore(statusText, status.childNodes[0]);
     };
     var progressPercent;
     ajax.upload.onprogress = function(e){
@@ -419,10 +420,10 @@ function setDarkMode(enabled) {
     }
     darkModeEnabled = enabled;
 }
-const matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
+var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
 function defaultdarkmode()  {
     setDarkMode(matchmedia.matches);
-    matchmedia.onchange = function(e){setDarkMode(e.matches)};
+    matchmedia.onchange = function(e){setDarkMode(e.matches);};
 }
 if(localStorage.getItem("darkmode") == null)    {
     defaultdarkmode();
@@ -438,7 +439,7 @@ window.addEventListener("beforeunload", function(e){
         e.returnValue = '';
     }
 });
-const dragOverlay = document.getElementById("dragoverlay");
+var dragOverlay = document.getElementById("dragoverlay");
 var uploadImageDiv = document.createElement("div");
 uploadImageDiv.style.width = "50%";
 uploadImageDiv.style.height = "50%";
@@ -449,7 +450,7 @@ uploadImageDiv.style.backgroundSize = "contain";
 uploadImageDiv.style.backgroundColor = "#ffffff80";
 uploadImageDiv.style.borderRadius = "8px";
 dragOverlay.appendChild(uploadImageDiv);
-const dragOverlay2 = document.createElement("div");
+var dragOverlay2 = document.createElement("div");
 dragOverlay2.className = "overlay";
 dragOverlay.appendChild(dragOverlay2);
 dragOverlay2.addEventListener("dragover", function(e){
@@ -468,15 +469,15 @@ mainDiv.addEventListener("dragenter", function(e){
 dragOverlay2.addEventListener("dragleave", function(){
     dragOverlay.style.display = "none";
 });
-const openFullScreenButton = document.createElement("button");
+var openFullScreenButton = document.createElement("button");
 openFullScreenButton.innerText = "open fullscreen";
 openFullScreenButton.addEventListener("click", function(){document.documentElement.requestFullscreen();});
 mainDiv.appendChild(openFullScreenButton);
-const closeFullScreenButton = document.createElement("button");
+var closeFullScreenButton = document.createElement("button");
 closeFullScreenButton.innerText = "close fullscreen";
 closeFullScreenButton.addEventListener("click", function(){document.exitFullscreen();});
 mainDiv.appendChild(closeFullScreenButton);
-const bottomSpace = document.createElement("div");
+var bottomSpace = document.createElement("div");
 bottomSpace.style.height = "25vh";
 mainDiv.appendChild(bottomSpace);
 function translateHTML(html){
@@ -485,14 +486,14 @@ function translateHTML(html){
     }
     return html;
 }
-const settingsWindowOverlay = document.getElementById("settingswindowoverlay");
+var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
 settingsWindowOverlay.addEventListener("click", function(e){
     if((e.target != settingsWindowOverlay) && (e.target.id != "settingsclosewindow")){
         return;
     }
     this.style.display = "none";
 });
-const settingsWindow = document.getElementById("settingswindow");
+var settingsWindow = document.getElementById("settingswindow");
 function setWindowDarkMode(windowOverlay, windowDiv){
     if(darkModeEnabled){
         windowOverlay.style.backgroundColor = "#ffffff80";

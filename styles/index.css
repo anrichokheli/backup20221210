@@ -3,15 +3,18 @@ body    {
     padding: 0;
 }
 #main, #top {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    text-align: center;
+}
+#top h1{
+    display: inline-block;
+}
+#top *{
+    vertical-align: middle;
 }
 #main   {
-    flex-direction: column;
     min-height: 100vh;
     font-family: sans-serif;
-    max-width: 100%;
+    width: 100%;
     word-wrap: break-word;
 }
 #pedestrian {
@@ -21,30 +24,26 @@ body    {
     color: #ec0400;
 }
 #buttons, .buttonsDivs    {
+    display: inline-block;
     max-width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
 }
 .buttonsDivs div  {
     margin: 2px;
     display: inline-block;
 }
 .buttons {
+    display: inline-block;
     font-size: 25px;
     font-weight: bold;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     border: 2px dotted #256aff;
     border-radius: 8px;
     padding: 4px;
     cursor: pointer;
     background: none;
     text-decoration: none;
-    justify-content: center;
+}
+.buttons *{
+    vertical-align: middle;
 }
 .buttons:disabled   {
     opacity: 0.5;
@@ -66,6 +65,7 @@ body    {
     padding: 1%;
     width: 90%;
     border-radius: 8px;
+    display: inline-block;
 }
 #main textarea   {
     width: 99%;
@@ -86,7 +86,9 @@ body    {
     }
 }
 #info   {
+    display: inline-block;
     border: 2px dotted #256aff;
     border-radius: 8px;
     padding: 16px;
+    text-align: initial;
 }

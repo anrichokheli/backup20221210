@@ -60,7 +60,7 @@
             if(isset($_POST["submit"]))    {
                 //header("Location: view.php?n=" . $_POST["n"]);
                 $html = "<div class=\"boxs texts\">";
-                $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><a href=\"?" . $_POST["n"] . "&noscript\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br>";
+                $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><a href=\"?" . $_POST["n"] . "&noscript\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br><br>";
                 if(!file_exists(uploadstrings . "descriptions/" . $_POST["n"] . ".txt"))    {
                     $html .= str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], file_get_contents("html/uploaddescription.html")));
                 }

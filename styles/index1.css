@@ -12,9 +12,10 @@
     border: 1px solid #256aff;
 }
 #uploadstatuses {
-    margin: 0;
+    margin-top: 2%;
     border-width: 2px;
     border-image: linear-gradient(#0000ff, #0080ff) 1;
+    text-align: initial;
 }
 .descriptioninput  {
     width: 99%;
@@ -56,6 +57,7 @@
 #location   {
     border-radius: 8px;
     max-width: calc(100% - 8px);
+    text-align: initial;
 }
 #location *   {
     margin: 2px;

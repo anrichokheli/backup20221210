@@ -9,6 +9,15 @@
         <meta property="og:title" content="<string>pedestrian</string> SOS!">
         <meta property="og:description" content="<string>webapp</string>">
         <meta property="og:image" content="images/pedestriansos_256.png">
+        <style>
+            form{
+                border-style: dotted;
+                border-color: #256aff;
+                border-width: 2px 0;
+                margin: 4px 0;
+                padding: 4px 0;
+            }
+        </style>
     </head>
     <body>
         <div id="main">
@@ -27,14 +36,14 @@
                             <label class="buttons texts" for="takephoto">
                                 <img width="64" height="64" src="images/take_photo.svg">
                                 &nbsp;
-                                <string>takephoto</string>
+                                <span><string>takephoto</string></span>
                             </label>
                             <input type="file" accept="image/*" id="takephoto" name="photovideo" capture="environment" required>
                         </div>
                         <button type="submit" name="submit" class="buttons uploadbuttons texts">
                             <img width="64" height="64" src="images/uploadicon.svg">
                             &nbsp;
-                            <string>upload</string>
+                            <span><string>upload</string></span>
                         </button>
                     </form>
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
@@ -42,14 +51,14 @@
                             <label class="buttons texts" for="recordvideo">
                                 <img width="64" height="64" src="images/record_video.svg">
                                 &nbsp;
-                                <string>recordvideo</string>
+                                <span><string>recordvideo</string></span>
                             </label>
                             <input type="file" accept="video/*" id="recordvideo" name="photovideo" capture="environment" required>
                         </div>
                         <button type="submit" name="submit" class="buttons uploadbuttons texts">
                             <img width="64" height="64" src="images/uploadicon.svg">
                             &nbsp;
-                            <string>upload</string>
+                            <span><string>upload</string></span>
                         </button>
                     </form>
                 </div>
@@ -59,14 +68,14 @@
                             <label class="buttons texts" for="choosephoto">
                                 <img width="64" height="64" src="images/photo.svg">
                                 &nbsp;
-                                <string>choosephoto</string>
+                                <span><string>choosephoto</string></span>
                             </label>
                             <input type="file" accept="image/*" id="choosephoto" name="photovideo" required>
                         </div>
                         <button type="submit" name="submit" class="buttons uploadbuttons texts">
                             <img width="64" height="64" src="images/uploadicon.svg">
                             &nbsp;
-                            <string>upload</string>
+                            <span><string>upload</string></span>
                         </button>
                     </form>
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
@@ -74,26 +83,26 @@
                             <label class="buttons texts" for="choosevideo">
                                 <img width="64" height="64" src="images/video.svg">
                                 &nbsp;
-                                <string>choosevideo</string>
+                                <span><string>choosevideo</string></span>
                             </label>
                             <input type="file" accept="video/*" id="choosevideo" name="photovideo" required>
                         </div>
                         <button type="submit" name="submit" class="buttons uploadbuttons texts">
                             <img width="64" height="64" src="images/uploadicon.svg">
                             &nbsp;
-                            <string>upload</string>
+                            <span><string>upload</string></span>
                         </button>
                     </form>
                 </div>
             </div>
             <!--AFTER_UPLOAD-->
-            <br>
+            <br><br>
             <a id="viewuploadsbutton" class="buttons viewuploadsbuttons" href="?noscript&view<php>LANG</php>" target="_blank">
                 <img width="64" height="64" src="images/viewicon.svg">
                 &nbsp;
-                <string>viewuploads</string>
+                <span><string>viewuploads</string></span>
             </a>
-            <br>
+            <br><br>
             <p id="info" class="texts">
                 <string>maxfilesize</string> 25MB.
                 <br><br>
@@ -101,8 +110,8 @@
                 <br><br>
                 <string>allowedext</string>: .bmp, .gif, .ico, .jpg, .png, .tif, .webp, .avi, .mpeg, .ogv, .ts, .webm, .3gp, .3g2, .mp4.
             </p>
-            <br>
-            <form style="border: 2px dotted #256aff;padding: 4px;" method="get">
+            <br><br>
+            <form style="border: 2px dotted #256aff;padding: 4px;display: inline-block;" method="get">
                 <input type="hidden" name="noscript">
                 <label for="lang">
                     <img width="26" height="26" src="images/language.svg">
@@ -115,7 +124,7 @@
                 </select>
                 <button type="submit"><string>open</string></button>
             </form>
-            <br>
+            <br><br>
         </div>
     </body>
 </html>
