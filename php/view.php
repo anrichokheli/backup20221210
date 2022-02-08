@@ -152,8 +152,12 @@
             else    {
                 if(!empty($voicePath))    {
                     $voiceTag = "<audio controls src=\"" . $voicePath . "\"></audio>";
+                    $voiceDownload = "<a target=\"_blank\" href=\"" . $voicePath . "\" download=\"" . $n . "\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><string>download</string></a>";
+                }else{
+                    $voiceDownload = "";
                 }
                 $html = setValue("VOICE", $voiceTag, $html);
+                $html = setValue("VDOWNLOAD", $voiceDownload, $html);
                 $html = setValue("VTIME", $voiceTime, $html);
             }
         }
