@@ -1,6 +1,6 @@
-const darkmodediv = document.getElementById("darkmodediv");
-const darkmodecheckbox = document.getElementById("darkmodecheckbox");
-const defaultTheme = document.getElementById("defaulttheme");
+var darkmodediv = document.getElementById("darkmodediv");
+var darkmodecheckbox = document.getElementById("darkmodecheckbox");
+var defaultTheme = document.getElementById("defaulttheme");
 function changeDarkMode()   {
     if(defaultTheme.checked)defaultTheme.checked=0;
     matchmedia.onchange=function(){};
@@ -23,11 +23,11 @@ defaultTheme.onchange = function(){
 };
 darkmodecheckbox.checked=darkModeEnabled;
 if(localStorage.getItem("darkmode")==null)defaultTheme.checked=1;
-const defaultLang = document.getElementById("defaultlang");
+var defaultLang = document.getElementById("defaultlang");
 if(localStorage.getItem("lang") == null){
     defaultLang.checked = 1;
 }
-const languageSelect = document.getElementById("setlang");
+var languageSelect = document.getElementById("setlang");
 defaultLang.onchange = function(){
     if(this.checked){
         localStorage.removeItem("lang");
@@ -40,8 +40,8 @@ defaultLang.onchange = function(){
     }
 };
 languageSelect.value = lang;
-const settingsTitle = document.getElementById("settingstitle");
-const langLabel = document.getElementById("langlabel");
+var settingsTitle = document.getElementById("settingstitle");
+var langLabel = document.getElementById("langlabel");
 languageSelect.onchange = function(){
     lang = this.value;
     setLanguage(lang);

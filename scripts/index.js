@@ -8,7 +8,7 @@ function getString(key)  {
 }
 function buttonSetup(id0) {
     var input = document.getElementById(id0 + "input");
-    input.oninput = function(){
+    input.onchange = function(){
         fileUpload(null, input);
     };
     document.getElementById(id0 + "button").addEventListener("click", function(){
@@ -348,7 +348,7 @@ function fileUpload(file, fileInput){
             html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+strings["viewupload"]+"</button>";
             html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\""+strings["writedescription"]+"...\"></textarea></div>";
             html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;"+strings["uploaddescription"]+"</button></div>";
-            html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" oninput=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+strings["uploadvoice"]+"</button></div></div>";
+            html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+strings["uploadvoice"]+"</button></div></div>";
             html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
             after.innerHTML = html;
             var textarea = document.getElementById(n);
@@ -469,14 +469,6 @@ mainDiv.addEventListener("dragenter", function(e){
 dragOverlay2.addEventListener("dragleave", function(){
     dragOverlay.style.display = "none";
 });
-var openFullScreenButton = document.createElement("button");
-openFullScreenButton.innerText = "open fullscreen";
-openFullScreenButton.addEventListener("click", function(){document.documentElement.requestFullscreen();});
-mainDiv.appendChild(openFullScreenButton);
-var closeFullScreenButton = document.createElement("button");
-closeFullScreenButton.innerText = "close fullscreen";
-closeFullScreenButton.addEventListener("click", function(){document.exitFullscreen();});
-mainDiv.appendChild(closeFullScreenButton);
 var bottomSpace = document.createElement("div");
 bottomSpace.style.height = "25vh";
 mainDiv.appendChild(bottomSpace);
