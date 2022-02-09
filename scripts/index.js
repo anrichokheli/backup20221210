@@ -1,31 +1,20 @@
+var styleTag = document.createElement("link");
+styleTag.rel = "stylesheet";
+styleTag.href = "styles/index1.css";
+document.head.appendChild(styleTag);
 var mainDiv = document.getElementById("main");
-var uploadStatuses = document.getElementById("uploadstatuses");
-var locationDiv = document.getElementById("location");
 var strings = null;
 function getString(key)  {
     if(strings!=null)return strings[key];
     return "";
 }
-function buttonSetup(id0) {
-    var input = document.getElementById(id0 + "input");
-    input.addEventListener("change", function(){
-        fileUpload(null, input);
-    });
-    document.getElementById(id0 + "button").addEventListener("click", function(){
-        input.click();
-    });
-}
-buttonSetup("takephoto");
-buttonSetup("recordvideo");
-buttonSetup("choosephoto");
-buttonSetup("choosevideo");
-document.getElementById("buttons").style.opacity = "1";
 var latitude;
 var longitude;
 var altitude;
 var accuracy;
 var altitudeAccuracy;
 try{
+    var locationDiv = document.getElementById("location");
     var locationTop = document.createElement("div");
     locationTop.id = "locationtop";
     locationDiv.appendChild(locationTop);
@@ -126,6 +115,7 @@ function locationError(error)    {
     }
 }
 getLocation();
+var uploadStatuses = document.getElementById("uploadstatuses");
 function uploadString(n, key, post, location, value) {
     try{
         var text;
@@ -259,6 +249,7 @@ function bottomProgressVisible(visible)    {
             if(timeout2 != undefined)    {
                 clearTimeout(timeout2);
             }
+            uploadStatusBottom.style.display = "block";
             uploadStatusBottom.style.display = "flex";
             uploadStatusBottom.style.animation = "showbottom 0.5s forwards";
         }
@@ -291,23 +282,23 @@ function fileUpload(file, fileInput){
     if(file === null)  {
         file = fileInput.files[0];
     }
-    if(file.size > maxFileSize)    {
-        alert("maximum file size is " + (maxFileSize / 1000000) + "MB.");
-        return;
-    }
-    var fileTypeArray = file.type.split('/');
-    var fileType = fileTypeArray[0];
-    var fileExtension = fileTypeArray[1];
-    if(fileType != "image" && fileType != "video")    {
-        alert("only images and videos are allowed.");
-        return;
-    }
-    if(allowedFileExtensions.indexOf(fileExtension) == -1)    {
-        alert("allowed file extensions are: ." + allowedFileExtensions.join(", .") + ".");
-        return;
-    }
-    unloadWarning = 1;
     try{
+        if(file.size > maxFileSize)    {
+            alert("maximum file size is " + (maxFileSize / 1000000) + "MB.");
+            return;
+        }
+        var fileTypeArray = file.type.split('/');
+        var fileType = fileTypeArray[0];
+        var fileExtension = fileTypeArray[1];
+        if(fileType != "image" && fileType != "video")    {
+            alert("only images and videos are allowed.");
+            return;
+        }
+        if(allowedFileExtensions.indexOf(fileExtension) == -1)    {
+            alert("allowed file extensions are: ." + allowedFileExtensions.join(", .") + ".");
+            return;
+        }
+        unloadWarning = 1;
         var subbox = document.createElement("div");
         flexCenter(subbox);
         subbox.className = "boxs";
@@ -422,6 +413,44 @@ function fileUpload(file, fileInput){
     ajax.open("POST", "/");
     ajax.send(formData);
 }
+var unloadWarning = 0;
+function uploadFunction(input){
+    try{
+        fileUpload(null, input);
+    }catch{
+        try{
+            if(unloadWarning){
+                unloadWarning = 0;
+            }
+            input.parentNode.parentNode.submit();
+        }catch{
+            button.style.display = "inline-block";
+            input.hidden = 0;
+        }
+    }
+}
+function buttonSetup(id0) {
+    var input = document.getElementById(id0 + "input");
+    var button = document.getElementById(id0 + "upload");
+    input.addEventListener("change", function(){uploadFunction(input);});
+    if(input.value){
+        uploadFunction(input);
+    }
+    button.style.display = "none";
+    input.hidden = 1;
+}
+try{
+    buttonSetup("takephoto");
+    buttonSetup("recordvideo");
+    buttonSetup("choosephoto");
+    buttonSetup("choosevideo");
+    var uploadForms = document.getElementsByClassName("uploadforms");
+    for(var i = 0; i < uploadForms.length; i++){
+        uploadForms[i].style.border = "none";
+        uploadForms[i].style.margin = "0";
+        uploadForms[i].style.padding = "0";
+    }
+}catch{}
 var darkModeEnabled;
 function setDarkMode(enabled) {
     var color = "#000000";
@@ -442,134 +471,137 @@ function setDarkMode(enabled) {
     }
     darkModeEnabled = enabled;
 }
-var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
-function defaultdarkmode()  {
-    setDarkMode(matchmedia.matches);
-    matchmedia.onchange = function(e){setDarkMode(e.matches);};
-}
-if(localStorage.getItem("darkmode") == null)    {
-    defaultdarkmode();
-}
-else    {
-    setDarkMode(localStorage.getItem("darkmode")=="true");
-    matchmedia.onchange=function(){};
-}
-var unloadWarning = 0;
-window.addEventListener("beforeunload", function(e){
-    if(unloadWarning)    {
+try{
+    var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
+    function defaultdarkmode()  {
+        setDarkMode(matchmedia.matches);
+        matchmedia.onchange = function(e){setDarkMode(e.matches);};
+    }
+    if(localStorage.getItem("darkmode") == null)    {
+        defaultdarkmode();
+    }
+    else    {
+        setDarkMode(localStorage.getItem("darkmode")=="true");
+        matchmedia.onchange=function(){};
+    }
+    window.addEventListener("beforeunload", function(e){
+        if(unloadWarning)    {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+    var dragOverlay = document.getElementById("dragoverlay");
+    var uploadImageDiv = document.createElement("div");
+    uploadImageDiv.style.width = "50%";
+    uploadImageDiv.style.height = "50%";
+    uploadImageDiv.style.backgroundImage = "url(images/uploadicon.svg)";
+    uploadImageDiv.style.backgroundRepeat = "no-repeat";
+    uploadImageDiv.style.backgroundPosition = "center";
+    uploadImageDiv.style.backgroundSize = "contain";
+    uploadImageDiv.style.backgroundColor = "#ffffff80";
+    uploadImageDiv.style.borderRadius = "8px";
+    dragOverlay.appendChild(uploadImageDiv);
+    var dragOverlay2 = document.createElement("div");
+    dragOverlay2.className = "overlay";
+    dragOverlay.appendChild(dragOverlay2);
+    dragOverlay2.addEventListener("dragover", function(e){
         e.preventDefault();
-        e.returnValue = '';
+    });
+    dragOverlay2.addEventListener("drop", function(e){
+        e.preventDefault();
+        fileUpload(e.dataTransfer.items[0].getAsFile());
+        dragOverlay.style.display = "none";
+    });
+    mainDiv.addEventListener("dragenter", function(e){
+        if(e.dataTransfer.items[0].kind == "file")    {
+            dragOverlay.style.display = "flex";
+        }
+    });
+    dragOverlay2.addEventListener("dragleave", function(){
+        dragOverlay.style.display = "none";
+    });
+    var bottomSpace = document.createElement("div");
+    bottomSpace.style.height = "25vh";
+    mainDiv.appendChild(bottomSpace);
+    function translateHTML(html){
+        for(var key in strings) {
+            html = html.replaceAll("<string>"+key+"</string>", strings[key]);
+        }
+        return html;
     }
-});
-var dragOverlay = document.getElementById("dragoverlay");
-var uploadImageDiv = document.createElement("div");
-uploadImageDiv.style.width = "50%";
-uploadImageDiv.style.height = "50%";
-uploadImageDiv.style.backgroundImage = "url(images/uploadicon.svg)";
-uploadImageDiv.style.backgroundRepeat = "no-repeat";
-uploadImageDiv.style.backgroundPosition = "center";
-uploadImageDiv.style.backgroundSize = "contain";
-uploadImageDiv.style.backgroundColor = "#ffffff80";
-uploadImageDiv.style.borderRadius = "8px";
-dragOverlay.appendChild(uploadImageDiv);
-var dragOverlay2 = document.createElement("div");
-dragOverlay2.className = "overlay";
-dragOverlay.appendChild(dragOverlay2);
-dragOverlay2.addEventListener("dragover", function(e){
-    e.preventDefault();
-});
-dragOverlay2.addEventListener("drop", function(e){
-    e.preventDefault();
-    fileUpload(e.dataTransfer.items[0].getAsFile());
-    dragOverlay.style.display = "none";
-});
-mainDiv.addEventListener("dragenter", function(e){
-    if(e.dataTransfer.items[0].kind == "file")    {
-        dragOverlay.style.display = "flex";
-    }
-});
-dragOverlay2.addEventListener("dragleave", function(){
-    dragOverlay.style.display = "none";
-});
-var bottomSpace = document.createElement("div");
-bottomSpace.style.height = "25vh";
-mainDiv.appendChild(bottomSpace);
-function translateHTML(html){
-    for(var key in strings) {
-        html = html.replaceAll("<string>"+key+"</string>", strings[key]);
-    }
-    return html;
-}
-var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
-settingsWindowOverlay.addEventListener("click", function(e){
-    if((e.target != settingsWindowOverlay) && (e.target.id != "settingsclosewindow")){
-        return;
-    }
-    this.style.display = "none";
-});
-var settingsWindow = document.getElementById("settingswindow");
-function setWindowDarkMode(windowOverlay, windowDiv){
-    if(darkModeEnabled){
-        windowOverlay.style.backgroundColor = "#ffffff80";
-        windowDiv.style.backgroundColor = "#000000";
-    }
-    else{
-        windowOverlay.style.backgroundColor = "#00000080";
-        windowDiv.style.backgroundColor = "#ffffff";
-    }
-}
-function openWindow(windowOverlay, windowDiv, content){
-    setWindowDarkMode(windowOverlay, windowDiv);
-    windowDiv.innerHTML = content;
-    windowOverlay.style.display = "flex";
-}
-document.getElementById("settingsbutton").addEventListener("click", function(){
-    if(settingsWindow.innerHTML != '')    {
-        settingsWindowOverlay.style.display = "flex";
-        return;
-    }
-    var ajax = new XMLHttpRequest();
-    ajax.open("GET", "html/settings.html");
-    ajax.onload = function(){
-        openWindow(settingsWindowOverlay, settingsWindow, translateHTML(this.responseText));
-        var script = document.createElement("script");
-        script.src = "scripts/settings.js";
-        settingsWindow.appendChild(script);
-    };
-    ajax.send();
-});
-function setLanguage(lang,get)  {
-    var ajax = new XMLHttpRequest();
-    ajax.open("GET", "json/languages/" + lang + ".json");
-    ajax.onload = function()    {
-        if(this.status == 200){
-            document.documentElement.lang = lang;
-            var json = JSON.parse(this.responseText);
-            strings = json;
-            var element;
-            for(var key in json) {
-                element = document.getElementById(key);
-                if(element!=null)element.innerText = json[key];
-            }
-            if(typeof settingsTitle!=="undefined")settingsTitle.innerHTML = strings["settings"];
-            if(typeof langLabel!=="undefined")langLabel.innerHTML = strings["devicedefault"];
-            document.title = strings["title"];
+    var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
+    settingsWindowOverlay.addEventListener("click", function(e){
+        if((e.target != settingsWindowOverlay) && (e.target.id != "settingsclosewindow")){
+            return;
+        }
+        this.style.display = "none";
+    });
+    var settingsWindow = document.createElement("div");
+    settingsWindow.id = "settingswindow";
+    settingsWindowOverlay.appendChild(settingsWindow);
+    function setWindowDarkMode(windowOverlay, windowDiv){
+        if(darkModeEnabled){
+            windowOverlay.style.backgroundColor = "#ffffff80";
+            windowDiv.style.backgroundColor = "#000000";
         }
         else{
-            var getlang = (new URL(window.location.href)).searchParams.get("lang");
-            if(getlang != null && get != 1){
-                lang = getlang;
-                setLanguage(lang,1);
-            }else{
-                lang = "en";
-                setLanguage(lang);
-            }
+            windowOverlay.style.backgroundColor = "#00000080";
+            windowDiv.style.backgroundColor = "#ffffff";
         }
-    };
-    ajax.send();
-}
-var lang = localStorage.getItem("lang");
-if(lang == null){
-    lang = navigator.language.substring(0, 2);
-}
-setLanguage(lang);
+    }
+    var settingsButton = document.getElementById("settingsbutton");
+    settingsButton.addEventListener("click", function(){
+        settingsWindowOverlay.style.display = "block";
+        settingsWindowOverlay.style.display = "flex";
+        if(settingsWindow.innerHTML != '')    {
+            return;
+        }
+        setWindowDarkMode(settingsWindowOverlay, settingsWindow);
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", "html/settings.html");
+        ajax.onload = function(){
+            settingsWindow.innerHTML = translateHTML(this.responseText);
+            var script = document.createElement("script");
+            script.src = "scripts/settings.js";
+            settingsWindow.appendChild(script);
+        };
+        ajax.send();
+    });
+    settingsButton.innerHTML = "<img width=\"64\" height=\"64\" src=\"images/settings.svg\"> <span id=\"settings\"><string>settings</string></span>";
+    settingsButton.style.display = "inline-block";
+    function setLanguage(lang,get)  {
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", "json/languages/" + lang + ".json");
+        ajax.onload = function()    {
+            if(this.status == 200){
+                document.documentElement.lang = lang;
+                var json = JSON.parse(this.responseText);
+                strings = json;
+                var element;
+                for(var key in json) {
+                    element = document.getElementById(key);
+                    if(element!=null)element.innerText = json[key];
+                }
+                if(typeof settingsTitle!=="undefined")settingsTitle.innerHTML = strings["settings"];
+                if(typeof langLabel!=="undefined")langLabel.innerHTML = strings["devicedefault"];
+                document.title = strings["title"];
+            }
+            else{
+                var getlang = (new URL(window.location.href)).searchParams.get("lang");
+                if(getlang != null && get != 1){
+                    lang = getlang;
+                    setLanguage(lang,1);
+                }else{
+                    lang = "en";
+                    setLanguage(lang);
+                }
+            }
+        };
+        ajax.send();
+    }
+    var lang = localStorage.getItem("lang");
+    if(lang == null){
+        lang = navigator.language.substring(0, 2);
+    }
+    setLanguage(lang);
+}catch{}

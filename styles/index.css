@@ -92,3 +92,11 @@ body    {
     padding: 16px;
     text-align: initial;
 }
+.uploadforms{
+    border: 2px dotted #256aff;
+    margin: 4px;
+    padding: 4px;
+}
+#uploadstatuses, #location, #uploadstatus, #uploadprogress, #settingsbutton {
+    display: none;
+}

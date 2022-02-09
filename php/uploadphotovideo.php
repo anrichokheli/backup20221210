@@ -98,25 +98,35 @@
             $key = getKey(1000);
             file_put_contents(protectedPrivateKeysPath . $filesQuantity, password_hash($key, PASSWORD_DEFAULT));
             //header("Location: view.php?n=" . $filesQuantity);
-            if(isset($_POST["submit"]))    {
-                $html = "<div class=\"boxs\">";
-                $html .= "<div class=\"texts\">#: " . $filesQuantity . "</div><a href=\"?" . $filesQuantity . "&noscript\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br><br>";
-                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("html/uploaddescription.html")));
-                $html .= "<br><br>";
-                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, file_get_contents("html/uploadvoice.html")));
-                $html .= "</div>";
-                $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents("html/indexnoscript.html")));
-                $html = str_replace("<htmllang>lang</htmllang>", $lang, $html);
-                $html = setLanguage($html);
+            if(isset($_POST["submitform"]) || isset($_POST["submit"]))    {
                 if($lang != defaultLang)    {
-                    $html = str_replace("action=\"?noscript\"", "action=\"?noscript&lang=" . $lang . "\"", $html);
-                    $html = str_replace("&noscript", "&noscript&lang=" . $lang, $html);
                     $langget = "&lang=" . $lang;
                 }else{
                     $langget = "";
                 }
+                $descriptionHTML = file_get_contents("html/uploaddescription.html");
+                $voiceHTML = file_get_contents("html/uploadvoice.html");
+                if(isset($_POST["submit"])){
+                    $noscript = "noscript";
+                    $descriptionHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $descriptionHTML);
+                    $voiceHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $voiceHTML);
+                }else{
+                    $noscript = "";
+                }
+                $html = "<div class=\"boxs\" id=\"afterupload\">";
+                $html .= "<div class=\"texts\">#: " . $filesQuantity . "</div><a href=\"?" . $filesQuantity . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br><br>";
+                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, $descriptionHTML));
+                $html .= "<br><br>";
+                $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, $voiceHTML));
+                $html .= "</div>";
+                $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents("html/index" . $noscript . ".html")));
+                $html = str_replace("<htmllang>lang</htmllang>", $lang, $html);
+                $html = setLanguage($html);
                 $html = str_replace("<php>LANG</php>", $langget, $html);
                 echo $html;
+                if(empty($noscript)){
+                    echo "<script>if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(a){var b=new XMLHttpRequest();b.onload=function(){if(this.responseText===\"1\"){var c=document.createElement(\"div\");c.innerHTML='<img width=\"16\" height=\"16\" src=\"images/location.svg\"> location uploaded';c.style.border=\"2px solid #00ff00\";c.style.marginTop=\"4px\";document.getElementById(\"afterupload\").appendChild(c);}};b.open(\"POST\",\"/\");b.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\");b.send(\"n=\"+encodeURIComponent(\"" . $filesQuantity . "\")+\"&key=\"+encodeURIComponent(\"" . $key . "\")+\"&latitude=\"+encodeURIComponent(a.coords.latitude)+\"&longitude=\"+encodeURIComponent(a.coords.longitude)+\"&altitude=\"+encodeURIComponent(a.coords.altitude)+\"&accuracy=\"+encodeURIComponent(a.coords.accuracy)+\"&altitudeAccuracy=\"+encodeURIComponent(a.coords.altitudeAccuracy));})}</script>";
+                }
             }
             else    {
                 echo '#' . $filesQuantity . '|' . $key;

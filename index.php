@@ -31,20 +31,16 @@
     include("php/uploadvoice.php");
     if(isset($_GET["noscript"])){
         $indexHTML = file_get_contents("html/indexnoscript.html");
-        if($lang != defaultLang)    {
-            $indexHTML = str_replace("action=\"?noscript/\"", "action=\"?noscript&lang=" . $lang . "\"", $indexHTML);
-        }
-        $indexHTML = setLanguage($indexHTML);
-        if($lang != defaultLang){
-            $langget = "&lang=" . $lang;
-        }
-        else{
-            $langget = "";
-        }
-        $indexHTML = str_replace("<php>LANG</php>", $langget, $indexHTML);
     }else{
-        $indexHTML = file_get_contents("html/indexjs.html");
+        $indexHTML = file_get_contents("html/index.html");
     }
+    if($lang != defaultLang){
+        $langget = "&lang=" . $lang;
+    }
+    else{
+        $langget = "";
+    }
+    $indexHTML = str_replace("<php>LANG</php>", $langget, $indexHTML);
     $indexHTML = str_replace("<htmllang>lang</htmllang>", $lang, $indexHTML);
     $indexHTML = setLanguage($indexHTML);
     echo $indexHTML;

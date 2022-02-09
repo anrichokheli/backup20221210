@@ -1,10 +1,4 @@
-#buttons    {
-    opacity: 0.5;
-}
 #upload {
-    display: none;
-}
-#uploadstatuses, #location, #uploadstatus, #uploadprogress {
     display: none;
 }
 #location, #uploadprogress   {
@@ -107,8 +101,11 @@
     padding: 2px;
 }
 #settingswindow{
-    width: 90%;
-    height: 90%;
     border: 2px solid #256aff;
     border-radius: 10px;
+}
+#uploadstatusbottomcenter{
+    display: block;
+    display: flex;
+    justify-content: center;
 }
