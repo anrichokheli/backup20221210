@@ -8,9 +8,9 @@ function getString(key)  {
 }
 function buttonSetup(id0) {
     var input = document.getElementById(id0 + "input");
-    input.onchange = function(){
+    input.addEventListener("change", function(){
         fileUpload(null, input);
-    };
+    });
     document.getElementById(id0 + "button").addEventListener("click", function(){
         input.click();
     });
@@ -19,6 +19,10 @@ buttonSetup("takephoto");
 buttonSetup("recordvideo");
 buttonSetup("choosephoto");
 buttonSetup("choosevideo");
+var abc = document.getElementById("abc");
+    abc.addEventListener("click", function(){
+        fileUpload(null, document.getElementById("takephotoinput"));
+    });
 document.getElementById("buttons").style.opacity = "1";
 var latitude;
 var longitude;
