@@ -19,10 +19,6 @@ buttonSetup("takephoto");
 buttonSetup("recordvideo");
 buttonSetup("choosephoto");
 buttonSetup("choosevideo");
-var abc = document.getElementById("abc");
-    abc.addEventListener("click", function(){
-        fileUpload(null, document.getElementById("takephotoinput"));
-    });
 document.getElementById("buttons").style.opacity = "1";
 var latitude;
 var longitude;
@@ -201,14 +197,14 @@ function uploadString(n, key, post, location, value) {
     };
     ajax.open("POST", "/");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    ajax.send("n="+n+"&key="+key+post);
+    ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+post);
 }
 function uploadLocation(n, key)   {
-    uploadString(n, key, "&latitude="+latitude+"&longitude="+longitude+"&altitude="+altitude+"&accuracy="+accuracy+"&altitudeaccuracy="+altitudeAccuracy, true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy);
+    uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy), true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy);
 }
 function uploadDescription(n, key)    {
     var descriptionValue = document.getElementById(n).value;
-    uploadString(n, key, "&description="+descriptionValue, false, descriptionValue);
+    uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, descriptionValue);
 }
 function uploadVoice(n, key)  {
     var statusElement = document.getElementById('q'+n);
