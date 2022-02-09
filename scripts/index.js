@@ -25,20 +25,22 @@ var longitude;
 var altitude;
 var accuracy;
 var altitudeAccuracy;
-var locationTop = document.createElement("div");
-locationTop.id = "locationtop";
-locationDiv.appendChild(locationTop);
-var locationImage = document.createElement("img");
-locationImage.src = "images/location.svg";
-locationImage.width = "32";
-locationImage.height = "32";
-locationTop.appendChild(locationImage);
-var locationTitle = document.createElement("span");
-locationTitle.id = "currentlocation";
-locationTitle.style.fontSize = "20px";
-locationTop.appendChild(locationTitle);
-var locationData = document.createElement("div");
-locationDiv.appendChild(locationData);
+try{
+    var locationTop = document.createElement("div");
+    locationTop.id = "locationtop";
+    locationDiv.appendChild(locationTop);
+    var locationImage = document.createElement("img");
+    locationImage.src = "images/location.svg";
+    locationImage.width = "32";
+    locationImage.height = "32";
+    locationTop.appendChild(locationImage);
+    var locationTitle = document.createElement("span");
+    locationTitle.id = "currentlocation";
+    locationTitle.style.fontSize = "20px";
+    locationTop.appendChild(locationTitle);
+    var locationData = document.createElement("div");
+    locationDiv.appendChild(locationData);
+}catch{}
 function addLocationElements(text)  {
     var div = document.createElement("div");
     div.className = "locationDivs";
@@ -65,11 +67,13 @@ function showLocation(element, data)    {
     }
     element.innerText = data;
 }
-var latitudeLongitudeData = addLocationElements("latitudelongitude");
-var altitudeData = addLocationElements("altitude");
-var accuracyData = addLocationElements("accuracy");
-var altitudeAccuracyData = addLocationElements("altitudeaccuracy");
-locationDiv.style.display = "inline-block";
+try{
+    var latitudeLongitudeData = addLocationElements("latitudelongitude");
+    var altitudeData = addLocationElements("altitude");
+    var accuracyData = addLocationElements("accuracy");
+    var altitudeAccuracyData = addLocationElements("altitudeaccuracy");
+    locationDiv.style.display = "inline-block";
+}catch{}
 function getLocation()  {
     if(navigator.geolocation)    {
         navigator.geolocation.watchPosition(afterLocation, locationError);
@@ -80,18 +84,20 @@ function getLocation()  {
     }
 }
 function afterLocation(position)  {
-    if(locationDiv.contains(locationErrorDiv))    {
-        locationDiv.removeChild(locationErrorDiv);
-    }
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
     altitude = position.coords.altitude;
     accuracy = position.coords.accuracy;
     altitudeAccuracy = position.coords.altitudeAccuracy;
-    showLocation(latitudeLongitudeData, latitude + ", " + longitude);
-    showLocation(altitudeData, altitude);
-    showLocation(accuracyData, accuracy);
-    showLocation(altitudeAccuracyData, altitudeAccuracy);
+    try{
+        if(locationDiv.contains(locationErrorDiv))    {
+            locationDiv.removeChild(locationErrorDiv);
+        }
+        showLocation(latitudeLongitudeData, latitude + ", " + longitude);
+        showLocation(altitudeData, altitude);
+        showLocation(accuracyData, accuracy);
+        showLocation(altitudeAccuracyData, altitudeAccuracy);
+    }catch{}
 }
 var locationErrorDiv = document.createElement("div");
 locationErrorDiv.style.border = "2px solid #ff0000";
@@ -121,32 +127,34 @@ function locationError(error)    {
 }
 getLocation();
 function uploadString(n, key, post, location, value) {
+    try{
+        var text;
+        var img = "<img width=\"16\" height=\"16\" src=\"images/";
+        if(location == true)    {
+            text = strings["locationcoordinates"];
+            img += "location";
+        }
+        else    {
+            text = strings["description"];
+            img += "description";
+        }
+        text += "; ";
+        img += ".svg\"> ";
+        var element = document.getElementById('q'+n);
+        var div = document.createElement("div");
+        div.className = "statusText";
+        div.innerHTML = img+text+getString("uploading");
+        var color = "#ffff00";
+        div.style.borderColor = color;
+        var div2 = document.createElement("div");
+        div2.innerText = value;
+        var borderStyle = "1px dotted";
+        div2.style.border = borderStyle;
+        div2.borderColor = color;
+        div.appendChild(div2);
+        element.insertBefore(div, element.childNodes[0]);
+    }catch{}
     var ajax = new XMLHttpRequest();
-    var text;
-    var img = "<img width=\"16\" height=\"16\" src=\"images/";
-    if(location == true)    {
-        text = strings["locationcoordinates"];
-        img += "location";
-    }
-    else    {
-        text = strings["description"];
-        img += "description";
-    }
-    text += "; ";
-    img += ".svg\"> ";
-    var element = document.getElementById('q'+n);
-    var div = document.createElement("div");
-    div.className = "statusText";
-    div.innerHTML = img+text+getString("uploading");
-    var color = "#ffff00";
-    div.style.borderColor = color;
-    var div2 = document.createElement("div");
-    div2.innerText = value;
-    var borderStyle = "1px dotted";
-    div2.style.border = borderStyle;
-    div2.borderColor = color;
-    div.appendChild(div2);
-    element.insertBefore(div, element.childNodes[0]);
     ajax.onload = function(){
         div = document.createElement("div");
         div.className = "statusText";
@@ -243,27 +251,35 @@ function uploadVoice(n, key)  {
 var timeout1;
 var timeout2;
 function bottomProgressVisible(visible)    {
-    if(visible)    {
-        if(timeout1 != undefined)    {
-            clearTimeout(timeout1);
+    try{
+        if(visible)    {
+            if(timeout1 != undefined)    {
+                clearTimeout(timeout1);
+            }
+            if(timeout2 != undefined)    {
+                clearTimeout(timeout2);
+            }
+            uploadStatusBottom.style.display = "flex";
+            uploadStatusBottom.style.animation = "showbottom 0.5s forwards";
         }
-        if(timeout2 != undefined)    {
-            clearTimeout(timeout2);
+        else    {
+            timeout1 = setTimeout(function(){
+                try{
+                    uploadStatusBottom.style.animation = "hidebottom 0.5s forwards";
+                    timeout2 = setTimeout(function(){uploadStatusBottom.style.display = "none";}, 500);
+                }catch{}
+            }, 3000);
         }
-        uploadStatusBottom.style.display = "flex";
-        uploadStatusBottom.style.animation = "showbottom 0.5s forwards";
-    }
-    else    {
-        timeout1 = setTimeout(function(){
-            uploadStatusBottom.style.animation = "hidebottom 0.5s forwards";
-            timeout2 = setTimeout(function(){uploadStatusBottom.style.display = "none";}, 500);
-        }, 3000);
-    }
+    }catch{}
 }
 function flexCenter(element) {
-    element.style.display = "inline-flex";
-    element.style.alignItems = "center";
-    element.style.flexDirection = "column";
+    try{
+        element.style.display = "inline-flex";
+        element.style.alignItems = "center";
+        element.style.flexDirection = "column";
+    }catch{
+        element.style.display = "inline-block";
+    }
 }
 var uploadStatusBottom = document.getElementById("uploadstatusbottom");
 var bottomProgressBar = document.createElement("div");
@@ -291,81 +307,87 @@ function fileUpload(file, fileInput){
         return;
     }
     unloadWarning = 1;
-    var subbox = document.createElement("div");
-    flexCenter(subbox);
-    subbox.className = "boxs";
-    uploadStatuses.insertBefore(subbox, uploadStatuses.childNodes[0]);
-    var status = document.createElement("div");
-    status.className = "boxs boxs2";
-    var statusDiv = document.createElement("div");
-    status.appendChild(statusDiv);
-    subbox.appendChild(status);
-    var statusText = document.createElement("div");
-    var typeString;
-    var typeImg = "<img width=\"16\" height=\"16\" src=\"images/";
-    if(fileType == "image"){
-        typeString = getString("photo");
-        typeImg += "photo";
-    }else{
-        typeString = getString("video");
-        typeImg += "video";
-    }
-    typeImg += ".svg\">";
-    typeString += "; ";
-    statusText.innerHTML = typeImg + ' ' + typeString + getString("uploading");
-    statusDiv.appendChild(statusText);
-    var progress = document.createElement("div");
-    statusDiv.appendChild(progress);
-    var progressBar0 = document.createElement("div");
-    progressBar0.className = "progressbar0";
-    statusDiv.appendChild(progressBar0);
-    var progressBar = document.createElement("div");
-    progressBar.className = "progressbar";
-    progressBar0.appendChild(progressBar);
-    var color = "#ffff00";
-    statusDiv.className = "statusText";
-    statusDiv.style.borderColor = color;
-    if(!uploadstatusesdisplayed) {
-        flexCenter(uploadStatuses);
-        uploadstatusesdisplayed = 1;
-    }
-    statusText = document.createElement("div");
-    bottomProgressBar.style.backgroundColor = color;
-    bottomProgressBar.style.width = "0%";
-    bottomProgressVisible(1);
-    var after = document.createElement("div");
-    after.classList.add("boxs", "boxs2");
+    try{
+        var subbox = document.createElement("div");
+        flexCenter(subbox);
+        subbox.className = "boxs";
+        uploadStatuses.insertBefore(subbox, uploadStatuses.childNodes[0]);
+        var status = document.createElement("div");
+        status.className = "boxs boxs2";
+        var statusDiv = document.createElement("div");
+        status.appendChild(statusDiv);
+        subbox.appendChild(status);
+        var statusText = document.createElement("div");
+        var typeString;
+        var typeImg = "<img width=\"16\" height=\"16\" src=\"images/";
+        if(fileType == "image"){
+            typeString = getString("photo");
+            typeImg += "photo";
+        }else{
+            typeString = getString("video");
+            typeImg += "video";
+        }
+        typeImg += ".svg\">";
+        typeString += "; ";
+        statusText.innerHTML = typeImg + ' ' + typeString + getString("uploading");
+        statusDiv.appendChild(statusText);
+        var progress = document.createElement("div");
+        statusDiv.appendChild(progress);
+        var progressBar0 = document.createElement("div");
+        progressBar0.className = "progressbar0";
+        statusDiv.appendChild(progressBar0);
+        var progressBar = document.createElement("div");
+        progressBar.className = "progressbar";
+        progressBar0.appendChild(progressBar);
+        var color = "#ffff00";
+        statusDiv.className = "statusText";
+        statusDiv.style.borderColor = color;
+        if(!uploadstatusesdisplayed) {
+            flexCenter(uploadStatuses);
+            uploadstatusesdisplayed = 1;
+        }
+        statusText = document.createElement("div");
+        bottomProgressBar.style.backgroundColor = color;
+        bottomProgressBar.style.width = "0%";
+        bottomProgressVisible(1);
+        var after = document.createElement("div");
+        after.classList.add("boxs", "boxs2");
+    }catch{}
     var formData = new FormData();
     formData.append("photovideo", file);
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
         if(this.responseText.charAt(0) == '#')    {
-            subbox.insertBefore(after, subbox.childNodes[0]);
+            try{
+                subbox.insertBefore(after, subbox.childNodes[0]);
+            }catch{}
             var responseArray = this.responseText.substring(1).split('|');
             var n = responseArray[0];
             var key = responseArray[1];
-            var html = "<div class=\"boxs boxs2\">" + getString("uploadedid") + ": #" + n + "</div>";
-            html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+strings["viewupload"]+"</button>";
-            html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\""+strings["writedescription"]+"...\"></textarea></div>";
-            html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;"+strings["uploaddescription"]+"</button></div>";
-            html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+strings["uploadvoice"]+"</button></div></div>";
-            html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
-            after.innerHTML = html;
-            var textarea = document.getElementById(n);
-            var button = document.getElementById("b"+n);
-            button.addEventListener("click", function(){
-                textarea.disabled = 1;
-                button.disabled = 1;
-                uploadDescription(n,key);
-            });
-            textarea.addEventListener("input", function(){
-                button.disabled = textarea.value == '';
-                textarea.style.height = "0";
-                textarea.style.height = textarea.scrollHeight + "px";
-            });
-            statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadcompleted")+"\n(#" + n + ")";
-            color = "#00ff00";
-            bottomProgressVisible(0);
+            try{
+                var html = "<div class=\"boxs boxs2\">" + getString("uploadedid") + ": #" + n + "</div>";
+                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+strings["viewupload"]+"</button>";
+                html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\""+strings["writedescription"]+"...\"></textarea></div>";
+                html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;"+strings["uploaddescription"]+"</button></div>";
+                html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+strings["uploadvoice"]+"</button></div></div>";
+                html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
+                after.innerHTML = html;
+                var textarea = document.getElementById(n);
+                var button = document.getElementById("b"+n);
+                button.addEventListener("click", function(){
+                    textarea.disabled = 1;
+                    button.disabled = 1;
+                    uploadDescription(n,key);
+                });
+                textarea.addEventListener("input", function(){
+                    button.disabled = textarea.value == '';
+                    textarea.style.height = "0";
+                    textarea.style.height = textarea.scrollHeight + "px";
+                });
+                statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadcompleted")+"\n(#" + n + ")";
+                color = "#00ff00";
+                bottomProgressVisible(0);
+            }catch{}
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);
             }
