@@ -114,7 +114,7 @@
                     $noscript = "";
                 }
                 $html = "<div class=\"boxs\" id=\"afterupload\">";
-                $html .= "<div class=\"texts\">#: " . $filesQuantity . "</div><a href=\"?" . $filesQuantity . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<string>viewupload</string></a><br><br>";
+                $html .= "<div class=\"texts\">#: " . $filesQuantity . "</div><a href=\"?" . $filesQuantity . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><br><br>";
                 $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, $descriptionHTML));
                 $html .= "<br><br>";
                 $html .= str_replace("value_n", $filesQuantity, str_replace("value_key", $key, $voiceHTML));

@@ -604,4 +604,5 @@ try{
         lang = navigator.language.substring(0, 2);
     }
     setLanguage(lang);
+    document.getElementById("langform").remove();
 }catch{}

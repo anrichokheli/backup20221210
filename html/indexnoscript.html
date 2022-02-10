@@ -8,15 +8,6 @@
         <meta property="og:title" content="<string>pedestrian</string> SOS!">
         <meta property="og:description" content="<string>webapp</string>">
         <meta property="og:image" content="images/pedestriansos_256.png">
-        <style>
-            form{
-                border-style: dotted;
-                border-color: #256aff;
-                border-width: 2px 0;
-                margin: 4px 0;
-                padding: 4px 0;
-            }
-        </style>
     </head>
     <body>
         <div id="main">
@@ -31,66 +22,66 @@
             <div id="buttons" class="texts">
                 <div class="buttonsDivs">
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
-                        <div>
-                            <label class="buttons texts" for="takephoto">
-                                <img width="64" height="64" src="images/take_photo.svg">
-                                &nbsp;
-                                <span><string>takephoto</string></span>
-                            </label>
-                            <input type="file" accept="image/*" id="takephoto" name="photovideo" capture="environment" required>
-                        </div>
-                        <button type="submit" name="submit" class="buttons uploadbuttons texts">
-                            <img width="64" height="64" src="images/uploadicon.svg">
+                        <input type="file" accept="image/*" id="takephoto" name="photovideo" capture="environment" required>
+                        <label class="buttons texts" for="takephoto">
+                            <img width="64" height="64" src="images/take_photo.svg">
                             &nbsp;
-                            <span><string>upload</string></span>
-                        </button>
+                            <span><string>takephoto</string></span>
+                        </label>
+                        <div class="uploadbuttondiv">
+                            <button type="submit" name="submit" class="buttons uploadbuttons texts">
+                                <img width="64" height="64" src="images/uploadicon.svg">
+                                &nbsp;
+                                <span><string>upload</string></span>
+                            </button>
+                        </div>
                     </form>
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
-                        <div>
-                            <label class="buttons texts" for="recordvideo">
-                                <img width="64" height="64" src="images/record_video.svg">
-                                &nbsp;
-                                <span><string>recordvideo</string></span>
-                            </label>
-                            <input type="file" accept="video/*" id="recordvideo" name="photovideo" capture="environment" required>
-                        </div>
-                        <button type="submit" name="submit" class="buttons uploadbuttons texts">
-                            <img width="64" height="64" src="images/uploadicon.svg">
+                        <input type="file" accept="video/*" id="recordvideo" name="photovideo" capture="environment" required>
+                        <label class="buttons texts" for="recordvideo">
+                            <img width="64" height="64" src="images/record_video.svg">
                             &nbsp;
-                            <span><string>upload</string></span>
-                        </button>
+                            <span><string>recordvideo</string></span>
+                        </label>
+                        <div class="uploadbuttondiv">
+                            <button type="submit" name="submit" class="buttons uploadbuttons texts">
+                                <img width="64" height="64" src="images/uploadicon.svg">
+                                &nbsp;
+                                <span><string>upload</string></span>
+                            </button>
+                        </div>
                     </form>
                 </div>
                 <div class="buttonsDivs">
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
-                        <div>
-                            <label class="buttons texts" for="choosephoto">
-                                <img width="64" height="64" src="images/photo.svg">
-                                &nbsp;
-                                <span><string>choosephoto</string></span>
-                            </label>
-                            <input type="file" accept="image/*" id="choosephoto" name="photovideo" required>
-                        </div>
-                        <button type="submit" name="submit" class="buttons uploadbuttons texts">
-                            <img width="64" height="64" src="images/uploadicon.svg">
+                        <input type="file" accept="image/*" id="choosephoto" name="photovideo" required>
+                        <label class="buttons texts" for="choosephoto">
+                            <img width="64" height="64" src="images/photo.svg">
                             &nbsp;
-                            <span><string>upload</string></span>
-                        </button>
+                            <span><string>choosephoto</string></span>
+                        </label>
+                        <div class="uploadbuttondiv">
+                            <button type="submit" name="submit" class="buttons uploadbuttons texts">
+                                <img width="64" height="64" src="images/uploadicon.svg">
+                                &nbsp;
+                                <span><string>upload</string></span>
+                            </button>
+                        </div>
                     </form>
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
-                        <div>
-                            <label class="buttons texts" for="choosevideo">
-                                <img width="64" height="64" src="images/video.svg">
-                                &nbsp;
-                                <span><string>choosevideo</string></span>
-                            </label>
-                            <input type="file" accept="video/*" id="choosevideo" name="photovideo" required>
-                        </div>
-                        <button type="submit" name="submit" class="buttons uploadbuttons texts">
-                            <img width="64" height="64" src="images/uploadicon.svg">
+                        <input type="file" accept="video/*" id="choosevideo" name="photovideo" required>
+                        <label class="buttons texts" for="choosevideo">
+                            <img width="64" height="64" src="images/video.svg">
                             &nbsp;
-                            <span><string>upload</string></span>
-                        </button>
+                            <span><string>choosevideo</string></span>
+                        </label>
+                        <div class="uploadbuttondiv">
+                            <button type="submit" name="submit" class="buttons uploadbuttons texts">
+                                <img width="64" height="64" src="images/uploadicon.svg">
+                                &nbsp;
+                                <span><string>upload</string></span>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

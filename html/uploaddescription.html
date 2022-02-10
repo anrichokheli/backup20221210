@@ -1,8 +1,10 @@
-<form method="post">
+<form method="post" class="uploadforms">
     <!--LANG-->
     <input type="hidden" name="n" value="value_n">
     <input type="hidden" name="key" value="value_key">
     <textarea name="description" placeholder="<string>writedescription</string>..." class="texts" style="height:50vh;" required></textarea>
     <br>
-    <button name="submit" type="submit" class="buttons afteruploadbuttons texts"><img width="32" height="32" src="../images/description.svg">&nbsp;<string>uploaddescription</string></button>
+    <div class="uploadbuttondiv">
+        <button name="submit" type="submit" class="buttons afteruploadbuttons texts"><img width="32" height="32" src="images/description.svg">&nbsp;<span><string>uploaddescription</string></span></button>
+    </div>
 </form>

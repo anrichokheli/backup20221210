@@ -23,69 +23,69 @@
                 <div class="buttonsDivs">
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <input type="hidden" name="submitform">
-                        <div>
-                            <label class="buttons texts" for="takephotoinput">
-                                <img width="64" height="64" src="images/take_photo.svg">
-                                &nbsp;
-                                <span id="takephoto"><string>takephoto</string></span>
-                            </label>
-                            <input type="file" accept="image/*" id="takephotoinput" name="photovideo" capture="environment" required>
-                        </div>
-                        <button type="submit" class="buttons" id="takephotoupload">
-                            <img width="64" height="64" src="images/uploadicon.svg">
+                        <input type="file" accept="image/*" id="takephotoinput" name="photovideo" capture="environment" required>
+                        <label class="buttons texts" for="takephotoinput">
+                            <img width="64" height="64" src="images/take_photo.svg">
                             &nbsp;
-                            <span><string>upload</string></span>
-                        </button>
+                            <span id="takephoto"><string>takephoto</string></span>
+                        </label>
+                        <div class="uploadbuttondiv">
+                            <button type="submit" class="buttons" id="takephotoupload">
+                                <img width="64" height="64" src="images/uploadicon.svg">
+                                &nbsp;
+                                <span><string>upload</string></span>
+                            </button>
+                        </div>
                     </form>
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <input type="hidden" name="submitform">
-                        <div>
-                            <label class="buttons texts" for="recordvideoinput">
-                                <img width="64" height="64" src="images/record_video.svg">
-                                &nbsp;
-                                <span id="recordvideo"><string>recordvideo</string></span>
-                            </label>
-                            <input type="file" accept="video/*" id="recordvideoinput" name="photovideo" capture="environment" required>
-                        </div>
-                        <button type="submit" class="buttons" id="recordvideoupload">
-                            <img width="64" height="64" src="images/uploadicon.svg">
+                        <input type="file" accept="video/*" id="recordvideoinput" name="photovideo" capture="environment" required>
+                        <label class="buttons texts" for="recordvideoinput">
+                            <img width="64" height="64" src="images/record_video.svg">
                             &nbsp;
-                            <span><string>upload</string></span>
-                        </button>
+                            <span id="recordvideo"><string>recordvideo</string></span>
+                        </label>
+                        <div class="uploadbuttondiv">
+                            <button type="submit" class="buttons" id="recordvideoupload">
+                                <img width="64" height="64" src="images/uploadicon.svg">
+                                &nbsp;
+                                <span><string>upload</string></span>
+                            </button>
+                        </div>
                     </form>
                 </div>
                 <div class="buttonsDivs">
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <input type="hidden" name="submitform">
-                        <div>
-                            <label class="buttons texts" for="choosephotoinput">
-                                <img width="64" height="64" src="images/photo.svg">
-                                &nbsp;
-                                <span id="choosephoto"><string>choosephoto</string></span>
-                            </label>
-                            <input type="file" accept="image/*" id="choosephotoinput" name="photovideo" required>
-                        </div>
-                        <button type="submit" class="buttons" id="choosephotoupload">
-                            <img width="64" height="64" src="images/uploadicon.svg">
+                        <input type="file" accept="image/*" id="choosephotoinput" name="photovideo" required>
+                        <label class="buttons texts" for="choosephotoinput">
+                            <img width="64" height="64" src="images/photo.svg">
                             &nbsp;
-                            <span><string>upload</string></span>
-                        </button>
+                            <span id="choosephoto"><string>choosephoto</string></span>
+                        </label>
+                        <div class="uploadbuttondiv">
+                            <button type="submit" class="buttons" id="choosephotoupload">
+                                <img width="64" height="64" src="images/uploadicon.svg">
+                                &nbsp;
+                                <span><string>upload</string></span>
+                            </button>
+                        </div>
                     </form>
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <input type="hidden" name="submitform">
-                        <div>
-                            <label class="buttons texts" for="choosevideoinput">
-                                <img width="64" height="64" src="images/video.svg">
-                                &nbsp;
-                                <span id="choosevideo"><string>choosevideo</string></span>
-                            </label>
-                            <input type="file" accept="video/*" id="choosevideoinput" name="photovideo" required>
-                        </div>
-                        <button type="submit" class="buttons" id="choosevideoupload">
-                            <img width="64" height="64" src="images/uploadicon.svg">
+                        <input type="file" accept="video/*" id="choosevideoinput" name="photovideo" required>
+                        <label class="buttons texts" for="choosevideoinput">
+                            <img width="64" height="64" src="images/video.svg">
                             &nbsp;
-                            <span><string>upload</string></span>
-                        </button>
+                            <span id="choosevideo"><string>choosevideo</string></span>
+                        </label>
+                        <div class="uploadbuttondiv">
+                            <button type="submit" class="buttons" id="choosevideoupload">
+                                <img width="64" height="64" src="images/uploadicon.svg">
+                                &nbsp;
+                                <span><string>upload</string></span>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                 <span id="allowedext"><string>allowedext</string></span>: .bmp, .gif, .ico, .jpg, .png, .tif, .webp, .avi, .mpeg, .ogv, .ts, .webm, .3gp, .3g2, .mp4.
             </p>
             <br><br>
-            <form style="border: 2px dotted #256aff;padding: 4px;display: inline-block;" method="get">
+            <form id="langform" style="border: 2px dotted #256aff;padding: 4px;display: inline-block;" method="get">
                 <label for="lang">
                     <img width="26" height="26" src="images/language.svg">
                     <string>language</string>
@@ -141,6 +141,7 @@
                     <a href="ps">PS!</a>
                 </div>
             </div>
+            <br><br>
         </div>
         <script src="scripts/index.js"></script>
     </body>
