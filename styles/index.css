@@ -93,6 +93,7 @@ body    {
     text-align: initial;
 }
 .uploadforms{
+    display: inline-block;
     border: 2px dotted #256aff;
     margin: 4px;
     padding: 4px;
