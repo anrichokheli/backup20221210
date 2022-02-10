@@ -447,7 +447,6 @@ try{
     var uploadForms = document.getElementsByClassName("uploadforms");
     for(var i = 0; i < uploadForms.length; i++){
         uploadForms[i].style.border = "none";
-        uploadForms[i].style.margin = "0";
         uploadForms[i].style.padding = "0";
     }
 }catch{}
