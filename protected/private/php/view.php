@@ -163,7 +163,7 @@
                 $voiceTime = "";
             }
             if($rawData)    {
-                array_push($dataArray, $voicePublicPath, $vtimePath);
+                array_push($dataArray, $voicePublicPath, $voiceTime);
             }
             else    {
                 if(!empty($voicePath))    {
