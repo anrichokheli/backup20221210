@@ -2,7 +2,7 @@
     define("protectedPath", dirname($_SERVER["DOCUMENT_ROOT"]) . "/protected/");
     define("protectedPublicPath", protectedPath . "public/");
     define("protectedPrivatePath", protectedPath . "private/");
-    define("htmlPath", protectedPrivatePath . "html/");
+    define("htmlPath", /*protectedPrivatePath . */"html/");
     define("phpPath", protectedPrivatePath . "php/");
     define("defaultLang", "en");
     define("jsonLanguagesPath", "json/languages/");
