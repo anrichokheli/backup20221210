@@ -51,7 +51,7 @@ body    {
 .boxs:not(:first-child) {
     margin-top: 1%;
 }
-.boxs div:not(:empty)   {
+.boxs div:not(:empty):not(.buttonsdivs)   {
     border: 1px dotted #256aff;
     padding: 1px;
 }
@@ -69,6 +69,26 @@ body    {
 .boxs div:not(.photovideo), .boxs a  {
     display: flex;
     align-items: center;
+}
+.buttons {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+    border: 2px dotted #256aff;
+    border-radius: 8px;
+    padding: 4px;
+    cursor: pointer;
+    background: none;
+    text-decoration: none;
+    color: inherit;
+    margin: 4px;
+}
+.buttons:hover   {
+    border-style: solid;
+}
+.buttonsdivs{
+    flex-wrap: wrap;
+    justify-content: center;
 }
 @media(prefers-color-scheme: dark)    {
     :root   {

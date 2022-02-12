@@ -237,7 +237,7 @@
             echo getData($n, $rawData);
         }
         if(!$rawData && (count($files) == maxQuantity))    {
-            echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\">>><br>" . $langJSON["next"] . "</a><br>";
+            echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">>></span> " . $langJSON["next"] . "</a><br>";
         }
     }
     if(!$rawData)    {
