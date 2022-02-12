@@ -168,7 +168,7 @@
             else    {
                 if(!empty($voicePath))    {
                     $voiceTag = "<audio controls src=\"" . $voicePublicPath . "\"></audio>";
-                    $voiceDownload = "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" download=\"" . $n . "\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><string>download</string></a>";
+                    $voiceDownload = "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><string>download</string></a>";
                 }else{
                     $voiceDownload = "";
                 }
