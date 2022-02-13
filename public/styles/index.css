@@ -5,10 +5,8 @@ body    {
 #main, #top {
     text-align: center;
 }
-#top h1{
-    display: inline-block;
-}
 #top *{
+    display: inline-block;
     vertical-align: middle;
 }
 #main   {

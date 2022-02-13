@@ -4,19 +4,17 @@ body    {
 }
 #main   {
     font-family: sans-serif;
+    text-align: center;
+}
+#main *{
+    display: inline-block;
+    vertical-align: middle;
 }
 .pedestrian {
     color: #256aff;
 }
 #sos    {
     color: #ec0400;
-}
-#top, #main, .one, .boxs   {
-    display: flex;
-    align-items: center;
-}
-#main, .one, .boxs   {
-    flex-direction: column;
 }
 .one    {
     width: 90%;
@@ -58,17 +56,11 @@ body    {
 .boxs div:not(:first-child) {
     margin-top: 1%;
 }
-.voicediv  {
-    justify-content: center;
-}
 .descriptiondiv    {
     width: 90%;
     max-height: 50vh;
     overflow-y: auto;
-}
-.boxs div:not(.photovideo), .boxs a, .buttonsdivs *  {
-    display: flex;
-    align-items: center;
+    text-align: initial;
 }
 .buttons {
     font-size: 20px;
@@ -84,10 +76,6 @@ body    {
 }
 .buttons:hover   {
     border-style: solid;
-}
-.buttonsdivs{
-    flex-wrap: wrap;
-    justify-content: center;
 }
 @media(prefers-color-scheme: dark)    {
     :root   {
