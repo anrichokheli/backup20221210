@@ -101,12 +101,12 @@
                 if($fileType == "image")    {
                     $tagName = "img";
                     $attributes = "";
-                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/photo.svg\"><string>photo</string>";
+                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/photo.svg\"><span class=\"photo\"><string>photo</string></span>";
                 }
                 else/* if($fileType == "video")*/   {
                     $tagName = "video";
                     $attributes = " controls";
-                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/video.svg\"><string>video</string>";
+                    $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/video.svg\"><span class=\"video\"><string>video</string></span>";
                 }
                 $photovideoTag = "<" . $tagName . $attributes . " src=\"" . $publicPath . "\"></" . $tagName . ">";
                 $html = setValue("FILETYPE", $fileTypeTag, $html);
@@ -168,7 +168,7 @@
             else    {
                 if(!empty($voicePath))    {
                     $voiceTag = "<audio controls src=\"" . $voicePublicPath . "\"></audio>";
-                    $voiceDownload = "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><string>download</string></a>";
+                    $voiceDownload = "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
                 }else{
                     $voiceDownload = "";
                 }
@@ -187,7 +187,7 @@
     $rawData = isset($_GET["raw"]) && ($_GET["raw"] == 1);
     if(!$rawData)    {
         $topHTML = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title><string>pedestrian</string> SOS!</title></head>";
-        $topHTML .= "<body><div id=\"main\"><div id=\"top\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos.svg\"><h1><span id=\"pedestrian\"><string>pedestrian</string></span>&nbsp;<span id=\"sos\">SOS!</span></h1></div>";
+        $topHTML .= "<body><div id=\"main\"><div id=\"top\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos.svg\"><h1><span class=\"pedestrian\"><string>pedestrian</string></span>&nbsp;<span id=\"sos\">SOS!</span></h1></div>";
         echo setLanguage($topHTML);
         if($lang != defaultLang){
             $langget = "&lang=" . $lang;

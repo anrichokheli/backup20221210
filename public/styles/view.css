@@ -5,7 +5,7 @@ body    {
 #main   {
     font-family: sans-serif;
 }
-#pedestrian {
+.pedestrian {
     color: #256aff;
 }
 #sos    {
@@ -58,10 +58,10 @@ body    {
 .boxs div:not(:first-child) {
     margin-top: 1%;
 }
-.voice  {
+.voicediv  {
     justify-content: center;
 }
-.description    {
+.descriptiondiv    {
     width: 90%;
     max-height: 50vh;
     overflow-y: auto;
