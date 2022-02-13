@@ -378,6 +378,22 @@ function fileUpload(file, fileInput){
                 statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadcompleted")+"\n(#" + n + ")";
                 color = "#00ff00";
                 bottomProgressVisible(0);
+                try{
+                    var shareButton = document.createElement("button");
+                    shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> "+getString("share");
+                    shareButton.classList.add("buttons", "afteruploadbuttons");
+                    shareButton.addEventListener("click", function(){
+                        try{
+                            navigator.share({url: window.location.href+"?"+n});
+                        }catch{
+                            try{
+                                shareButton.style.color = "#ff0000";
+                                shareButton.innerText = "SHARE ERROR!";
+                            }catch{}
+                        }
+                    });
+                    after.appendChild(shareButton);
+                }catch{}
             }catch{}
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);

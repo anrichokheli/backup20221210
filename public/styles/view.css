@@ -66,12 +66,11 @@ body    {
     max-height: 50vh;
     overflow-y: auto;
 }
-.boxs div:not(.photovideo), .boxs a  {
+.boxs div:not(.photovideo), .boxs a, .buttonsdivs *  {
     display: flex;
     align-items: center;
 }
 .buttons {
-    display: inline-block;
     font-size: 20px;
     font-weight: bold;
     border: 2px dotted #256aff;

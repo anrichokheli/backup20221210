@@ -43,5 +43,6 @@
     "photo": "Photo",
     "video": "Video",
     "download": "Download",
-    "uploadedid": "Unique ID of upload"
+    "uploadedid": "Unique ID of upload",
+    "share": "Share"
 }
