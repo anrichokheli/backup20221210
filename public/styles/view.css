@@ -6,9 +6,12 @@ body    {
     font-family: sans-serif;
     text-align: center;
 }
-#main *{
+#main *:not(hr){
     display: inline-block;
     vertical-align: middle;
+}
+#main hr{
+    border-top: 1px solid #256aff;
 }
 .pedestrian {
     color: #256aff;
@@ -49,9 +52,16 @@ body    {
 .boxs:not(:first-child) {
     margin-top: 1%;
 }
-.boxs div:not(:empty):not(.buttonsdivs)   {
+.boxs div:not(.buttonsdivs)   {
     border: 1px dotted #256aff;
     padding: 1px;
+}
+.boxs div:empty{
+    border-color: #ff0000;
+    background-color: #ff000080;
+}
+.boxs div:empty::after{
+    content: "-";
 }
 .boxs div:not(:first-child) {
     margin-top: 1%;
