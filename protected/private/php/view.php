@@ -120,7 +120,7 @@
                 $locationTime = date("Y-m-d H:i:s", file_get_contents(locationtimes . $n . ".txt"));
             }
             else    {
-                $locationData = "";
+                $locationData = "-; -; -; -";
                 $locationTime = "";
             }
             if($rawData)    {
@@ -128,6 +128,29 @@
             }
             else    {
                 $locationArray = explode("; ", $locationData);
+                for($i = 0; $i < count($locationArray); $i++){
+                    if($locationArray[$i] == "-"){
+                        $locationArray[$i] = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
+                    }
+                }
+                if(strpos($locationArray[0], ", ") !== FALSE){
+                    $latlongarray = explode(", ", $locationArray[0]);
+                    $latitude = $latlongarray[0];
+                    $longitude = $latlongarray[1];
+                    $maps = '
+                        <div class="boxs">
+                            <div>
+                                <img width="32" height="32" src="images/maps.svg">
+                                <span class="maps"><string>maps</string></span>
+                            </div>
+                            <hr>
+                            <a target="_blank" href="https://www.bing.com/maps?where1=' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/bingmaps.ico"><span>Bing Maps</span></a>
+                            <a target="_blank" href="https://www.google.com/maps/place/' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/googlemaps.ico"><span>Google Maps</span></a>
+                            <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $latitude . '&mlon=' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/openstreetmap.png"><span>OpenStreetMap</span></a>
+                        </div>
+                    ';
+                    $html = str_replace("<!--MAPS-->", $maps, $html);
+                }
                 $html = setValue("LATLONG", $locationArray[0], $html);
                 $html = setValue("Z", $locationArray[1], $html);
                 $html = setValue("ACCURACY", $locationArray[2], $html);
@@ -136,19 +159,19 @@
             }
             $descriptionPath = descriptions . $n . ".txt";
             if(file_exists($descriptionPath))    {
-                $descriptionData = file_get_contents($descriptionPath);
+                $descriptionData = nl2br(htmlspecialchars(file_get_contents($descriptionPath)));
                 $descriptionTime = date("Y-m-d H:i:s", file_get_contents(descriptiontimes . $n . ".txt"));
                 
             }
             else    {
-                $descriptionData = "";
+                $descriptionData = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
                 $descriptionTime = "";
             }
             if($rawData)    {
                 array_push($dataArray, $descriptionData, $descriptionTime);
             }
             else    {
-                $html = setValue("DESCRIPTION", nl2br(htmlspecialchars($descriptionData)), $html);
+                $html = setValue("DESCRIPTION", $descriptionData, $html);
                 $html = setValue("DTIME", $descriptionTime, $html);
             }
             $vtimePath = voicetimes . $n . ".txt";
@@ -159,7 +182,7 @@
                 $voiceTime = date("Y-m-d H:i:s", file_get_contents(voicetimes . $n . ".txt"));
             }
             else    {
-                $voiceTag = "";
+                $voiceTag = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
                 $voiceTime = "";
             }
             if($rawData)    {
