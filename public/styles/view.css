@@ -6,7 +6,7 @@ body    {
     font-family: sans-serif;
     text-align: center;
 }
-#main *:not(hr):not(span){
+#main *:not(hr):not(.nodata){
     display: inline-block;
     vertical-align: middle;
 }
