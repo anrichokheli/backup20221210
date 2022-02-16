@@ -57,7 +57,7 @@
                     $html .= "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"images/description.svg\"> <string>description</string>; <string>uploadcompleted</string></div>";
                 }
                 $html .= "<br><br>";
-                if(!file_exists(glob("uploads/files/voices/" . $_POST["n"] . ".*")[0]))    {
+                if(!/*file_exists(*/glob("uploads/files/voices/" . $_POST["n"] . ".*")/*[0])*/)    {
                     $html .= str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $voiceHTML));
                 }
                 else    {

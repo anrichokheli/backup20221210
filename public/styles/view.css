@@ -30,6 +30,10 @@ body    {
     max-width: 90%;
     word-wrap: break-word;
 }
+.photovideodiv{
+    max-height: 99vh;
+    overflow-y: auto;
+}
 .photovideo   {
     width: 90%;
     text-align: center;
