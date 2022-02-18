@@ -277,12 +277,17 @@ var bottomProgressBar = document.createElement("div");
 uploadStatusBottom.appendChild(bottomProgressBar);
 var uploadstatusesdisplayed = 0;
 var maxFileSize = 25000000;
+var maxFilesNum = 10;
 var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
 function filesUpload(files, fileInput){
     if(files === null)  {
         files = fileInput.files;
     }
     try{
+        if(files.length > maxFilesNum){
+            alert(getString("maxfilesnum") + " " + maxFilesNum);
+            return;
+        }
         if(files.length == 1){
             if(files[0].size > maxFileSize)    {
                 alert(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB.");

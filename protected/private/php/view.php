@@ -97,44 +97,59 @@
             $dirFiles = array_slice(scandir($dirpath), 2);
             $timeFiles = array_slice(scandir($dirpvtimePath), 2);
             $dirPublicPath = "?view&v=uploads/files/photovideos/" . basename($dirpath) . "/";
-            $photovideoHTML = "";
             $dirFilesQuantity = count($dirFiles);
-            for($i = 0; $i < $dirFilesQuantity; $i++){
-                $path = $dirPublicPath . $dirFiles[$i];
-                if($rawData)    {
-                    array_push($dataArray, $publicPath, file_get_contents($pvtimePath));
+            if($rawData)    {
+                $filePaths = array();
+                $timeDatas = array();
+                for($i = 0; $i < $dirFilesQuantity; $i++){
+                    array_push($filePaths, $dirPublicPath . $dirFiles[$i]);
+                    array_push($timeDatas, file_get_contents(photovideotimes . $n . "/" . $timeFiles[$i]));
                 }
-                else    {
+                array_push($dataArray, $filePaths, $timeDatas);
+            }else{
+                $photovideoHTML = "";
+                for($i = 0; $i < $dirFilesQuantity; $i++){
+                    $path = $dirPublicPath . $dirFiles[$i];
                     $fileType = explode("/", mime_content_type($dirpath . "/" . $dirFiles[$i]))[0];
                     if($fileType == "image")    {
                         $tagName = "img";
                         $attributes = "";
                         $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/photo.svg\"><span class=\"photo\"><string>photo</string></span>";
                     }
-                    else/* if($fileType == "video")*/   {
+                    else   {
                         $tagName = "video";
                         $attributes = " controls";
                         $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/video.svg\"><span class=\"video\"><string>video</string></span>";
                     }
                     $photovideoTag = "<" . $tagName . $attributes . " src=\"" . $path . "\"></" . $tagName . ">";
-                    $photovideoHTML .= '
-                        <div class="filetype">' . $fileTypeTag . '</div>
-                        <br>
-                        <div class="photovideo">' . $photovideoTag . '</div>
-                        <br>
-                        <div class="buttonsdivs">
-                            <a target="_blank" href="' . $path . '" class="buttons"><img width="32" height="32" src="images/open.svg"><span class="open"><string>open</string></span></a>
-                            <a target="_blank" href="' . $path . '" download="' . $n . "_" . $i . '" class="buttons"><img width="32" height="32" src="images/download.svg"><span class="download"><string>download</string></span></a>
-                        </div>
-                        <br>
-                        <div class="pvtime">' . date("Y-m-d H:i:s", file_get_contents(photovideotimes . $n . "/" . $timeFiles[$i])) . '</div>
-                    ';
-                    if($dirFilesQuantity - $i != 1){
-                        $photovideoHTML .= "<hr>";
+                    if(isset($_GET["all"]) || $dirFilesQuantity <= 2 || $i == 0){
+                        $photovideoHTML .= '
+                            <div class="filetype">' . $fileTypeTag . '</div>
+                            <br>
+                            <div class="photovideo">' . $photovideoTag . '</div>
+                            <br>
+                            <div class="buttonsdivs">
+                                <a target="_blank" href="' . $path . '" class="buttons"><img width="32" height="32" src="images/open.svg"><span class="open"><string>open</string></span></a>
+                                <a target="_blank" href="' . $path . '" download="' . $n . "_" . $i . '" class="buttons"><img width="32" height="32" src="images/download.svg"><span class="download"><string>download</string></span></a>
+                            </div>
+                            <br>
+                            <div class="pvtime">' . date("Y-m-d H:i:s", file_get_contents(photovideotimes . $n . "/" . $timeFiles[$i])) . '</div>
+                        ';
+                        if($dirFilesQuantity - $i != 1){
+                            $photovideoHTML .= "<hr>";
+                        }
+                    }else{
+                        if($dirFilesQuantity == 2 || $i == 0){
+                            $photovideoHTML .= '<div class="photovideo">' . $photovideoTag . '</div>';
+                        }else if($i == 1){
+                            $photovideoHTML .= '<div class="photovideo pvoverlay0" style="border-style:solid;">' . $photovideoTag . '<a href="?' . $n . '&all" target="_blank" class="pvoverlay">+' . ($dirFilesQuantity - 1) . '</a></div>';
+                        }else{
+                            break;
+                        }
                     }
                 }
+                $html = setValue("PHOTOVIDEO", $photovideoHTML, $html);
             }
-            $html = setValue("PHOTOVIDEO", $photovideoHTML, $html);
             $locationPath = locations . $n . ".txt";
             if(file_exists($locationPath))    {
                 $locationData = file_get_contents($locationPath);
@@ -205,6 +220,7 @@
             else    {
                 $voiceTag = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
                 $voiceTime = "";
+                $voicePublicPath = "";
             }
             if($rawData)    {
                 array_push($dataArray, $voicePublicPath, $voiceTime);
