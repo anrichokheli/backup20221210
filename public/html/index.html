@@ -57,11 +57,11 @@
                 <div class="buttonsDivs">
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <input type="hidden" name="submitform">
-                        <input type="file" accept="image/*" id="choosephotoinput" name="photovideo" required>
+                        <input type="file" accept="image/*" id="choosephotoinput" name="photovideo[]" required multiple>
                         <label class="buttons texts" for="choosephotoinput">
                             <img width="64" height="64" src="images/photo.svg">
                             &nbsp;
-                            <span id="choosephoto"><string>choosephoto</string></span>
+                            <span id="choosephotos"><string>choosephotos</string></span>
                         </label>
                         <div class="uploadbuttondiv">
                             <button type="submit" class="buttons" id="choosephotoupload">
@@ -73,14 +73,32 @@
                     </form>
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
                         <input type="hidden" name="submitform">
-                        <input type="file" accept="video/*" id="choosevideoinput" name="photovideo" required>
+                        <input type="file" accept="video/*" id="choosevideoinput" name="photovideo[]" required multiple>
                         <label class="buttons texts" for="choosevideoinput">
                             <img width="64" height="64" src="images/video.svg">
                             &nbsp;
-                            <span id="choosevideo"><string>choosevideo</string></span>
+                            <span id="choosevideos"><string>choosevideos</string></span>
                         </label>
                         <div class="uploadbuttondiv">
                             <button type="submit" class="buttons" id="choosevideoupload">
+                                <img width="64" height="64" src="images/uploadicon.svg">
+                                &nbsp;
+                                <span><string>upload</string></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="buttonsDivs">
+                    <form method="post" enctype="multipart/form-data" class="uploadforms">
+                        <input type="hidden" name="submitform">
+                        <input type="file" accept="image/*,video/*" id="choosefilesinput" name="photovideo[]" required multiple>
+                        <label class="buttons texts" for="choosefilesinput">
+                            <img width="64" height="64" src="images/photovideo.svg">
+                            &nbsp;
+                            <span id="choosefiles"><string>choosefiles</string></span>
+                        </label>
+                        <div class="uploadbuttondiv">
+                            <button type="submit" class="buttons" id="choosefilesupload">
                                 <img width="64" height="64" src="images/uploadicon.svg">
                                 &nbsp;
                                 <span><string>upload</string></span>
@@ -109,6 +127,8 @@
                 <span id="onlyimgvid"><string>onlyimgvid</string></span>
                 <br><br>
                 <span id="allowedext"><string>allowedext</string></span>: .bmp, .gif, .ico, .jpg, .png, .tif, .webp, .avi, .mpeg, .ogv, .ts, .webm, .3gp, .3g2, .mp4.
+                <br><br>
+                <span id="maxfilesnum"><string>maxfilesnum</string></span> 10.
             </p>
             <br><br>
             <form id="langform" style="border: 2px dotted #256aff;padding: 4px;display: inline-block;" method="get">
