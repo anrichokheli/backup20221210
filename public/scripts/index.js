@@ -63,6 +63,7 @@ try{
     var altitudeAccuracyData = addLocationElements("altitudeaccuracy");
     locationDiv.style.display = "inline-block";
 }catch{}
+var locationUploadArray = [];
 function getLocation()  {
     if(navigator.geolocation)    {
         navigator.geolocation.watchPosition(afterLocation, locationError);
@@ -78,6 +79,12 @@ function afterLocation(position)  {
     altitude = position.coords.altitude;
     accuracy = position.coords.accuracy;
     altitudeAccuracy = position.coords.altitudeAccuracy;
+    if(locationUploadArray.length > 0){
+        for(var key in locationUploadArray){
+            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1]);
+            locationUploadArray.shift();
+        }
+    }
     try{
         if(locationDiv.contains(locationErrorDiv))    {
             locationDiv.removeChild(locationErrorDiv);
@@ -115,6 +122,24 @@ function locationError(error)    {
     }
 }
 getLocation();
+try{
+    function preImg(image){
+        var img = document.createElement("img");
+        img.src = image;
+        img.style.display = "none";
+        mainDiv.appendChild(img);
+        img.remove();
+    }
+    preImg("images/offline.svg");
+    preImg("images/retry.svg");
+}catch{}
+function addRetryButton(func, element){
+    var retryButton = document.createElement("button");
+    retryButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/retry.svg\"> " + getString("retry");
+    retryButton.classList.add("buttons");
+    retryButton.addEventListener("click", func);
+    element.insertBefore(retryButton, element.childNodes[0]);
+}
 var uploadStatuses = document.getElementById("uploadstatuses");
 function uploadString(n, key, post, location, value) {
     try{
@@ -164,6 +189,7 @@ function uploadString(n, key, post, location, value) {
             div2.style.border = borderStyle;
             div2.style.borderColor = color;
             div.appendChild(div2);
+            addRetryButton(function(){uploadString(n, key, post, location, value);}, element);
         }
         div.style.borderColor = color;
         element.insertBefore(div, element.childNodes[0]);
@@ -184,6 +210,7 @@ function uploadString(n, key, post, location, value) {
         div2.style.borderColor = color;
         div.appendChild(div2);
         element.insertBefore(div, element.childNodes[0]);
+        addRetryButton(function(){uploadString(n, key, post, location, value);}, element);
     };
     ajax.open("POST", "/");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -224,6 +251,7 @@ function uploadVoice(n, key)  {
             div.innerHTML = img+text+getString("uploadfailed")+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             button.disabled = 0;
+            addRetryButton(function(){uploadVoice(n, key);}, statusElement);
         }
         statusElement.insertBefore(div, statusElement.childNodes[0]);
     };
@@ -234,6 +262,7 @@ function uploadVoice(n, key)  {
         div.style.borderColor = "#ff0000";
         statusElement.insertBefore(div, statusElement.childNodes[0]);
         button.disabled = 0;
+        addRetryButton(function(){uploadVoice(n, key);}, statusElement);
     };
     ajax.open("POST", "/");
     ajax.send(formData);
@@ -443,12 +472,15 @@ function filesUpload(files, fileInput){
             }catch{}
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);
+            }else{
+                locationUploadArray.push([n, key]);
             }
         }
         else    {
             statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadfailed")+"\n(" + this.responseText + ")";
             color = "#ff0000";
             bottomProgressVisible(0);
+            addRetryButton(function(){filesUpload(files, fileInput);}, status);
         }
         if(fileInput !== undefined)fileInput.value = null;
         statusText.className = "statusText";
@@ -464,6 +496,7 @@ function filesUpload(files, fileInput){
         bottomProgressBar.style.backgroundColor = color;
         bottomProgressVisible(0);
         status.insertBefore(statusText, status.childNodes[0]);
+        addRetryButton(function(){filesUpload(files, fileInput);}, status);
     };
     var progressPercent;
     ajax.upload.onprogress = function(e){
@@ -671,4 +704,21 @@ try{
     }
     setLanguage(lang);
     document.getElementById("langform").remove();
+}catch{}
+try{
+    var offlineImg;
+    addEventListener("offline", function(){
+        if(offlineImg){
+            offlineImg.style.display = "inline-block";
+            return;
+        }
+        offlineImg = document.createElement("img");
+        offlineImg.width = "64";
+        offlineImg.height = "64";
+        offlineImg.src = "images/offline.svg";
+        mainDiv.insertBefore(offlineImg, mainDiv.childNodes[2]);
+        addEventListener("online", function(){
+            offlineImg.style.display = "none";
+        });
+    });
 }catch{}

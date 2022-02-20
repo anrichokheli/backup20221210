@@ -11,7 +11,7 @@
         define("descriptions", uploadstrings . "descriptions/");
         define("locations", uploadstrings . "locations/");
         define("voices", uploadfiles . "voices/");
-        define("maxFilesQuantity", 100);
+        define("maxFilesQuantity", 1000);
         define("secretPath", protectedPrivatePath . "secret/");
         define("keysPath", secretPath . "keys/");
         function createDirectoryIfNotExists($path)    {

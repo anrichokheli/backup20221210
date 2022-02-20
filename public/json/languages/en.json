@@ -48,5 +48,6 @@
     "download": "Download",
     "uploadedid": "Unique ID of upload",
     "share": "Share",
-    "maps": "Maps"
+    "maps": "Maps",
+    "retry": "Try again"
 }
