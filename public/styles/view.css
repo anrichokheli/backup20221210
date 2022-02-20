@@ -76,8 +76,11 @@ body    {
     border: 1px dotted #256aff;
     padding: 1px;
 }
-.boxs div:not(:first-child):not(.pvoverlay) {
+.boxs>div:not(:first-child):not(.pvoverlay) {
     margin-top: 1%;
+}
+.title{
+    font-weight: bold;
 }
 .descriptiondiv    {
     width: 90%;
