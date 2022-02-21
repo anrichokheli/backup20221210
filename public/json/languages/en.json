@@ -49,5 +49,6 @@
     "uploadedid": "Unique ID of upload",
     "share": "Share",
     "maps": "Maps",
-    "retry": "Try again"
+    "retry": "Try again",
+    "camera": "Camera"
 }

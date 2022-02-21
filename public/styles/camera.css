@@ -1,0 +1,39 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+#camera{
+    width: 100%;
+    height: 100vh;
+    background-color: #000040;
+    position: relative;
+}
+#video{
+    width: 100%;
+    height: 100%;
+}
+.buttons{
+    background-color: #256aff40;
+    border: none;
+    border-radius: 50%;
+    position: absolute;
+}
+#rotate,#flash{
+    top: 0;
+}
+@media(orientation: portrait){
+    #rotate{
+        right: 0;
+    }
+    #flash{
+        left: 0;
+    }
+}
+@media(orientation: landscape){
+    #rotate{
+        left: 0;
+    }
+    #flash{
+        right: 0;
+    }
+}
