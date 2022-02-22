@@ -89,3 +89,22 @@
 #canvas{
     display: none;
 }
+#statusBox{
+    position: absolute;
+    top: 0;
+    left: 25%;
+    right: 25%;
+    width: 50%;
+    height: 10%;
+    background-color: #256aff80;
+    border-radius: 0 0 8px 8px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5;
+}
+#status2{
+    width: 90%;
+    height: 90%;
+    border-radius: 8px;
+}

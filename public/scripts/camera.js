@@ -1,7 +1,7 @@
 var video = document.getElementById("video");
 var flash = document.getElementById("flash");
-var flashState = false;
 var cameraFacing = "environment";
+var flashState = false;
 function cameraStart(){
     navigator.mediaDevices.getUserMedia({
         audio: false,
@@ -42,12 +42,38 @@ document.getElementById("rotate").onclick = function(){
     cameraStop();
     cameraStart();
 };
-// var canvas = document.getElementById("canvas");
-// document.getElementById("takephoto").addEventListener("click", function(){
-//     canvas.getContext("2d").drawImage(video, 0, 0);
-//     var ajax = new XMLHttpRequest();
-//     ajax.open("POST", "../");
-//     var formData = new FormData();
-//     formData.append("photovideo", canvas.toDataURL("image/png"));
-//     ajax.send(formData);
-// });
+var canvas = document.getElementById("canvas");
+function dataURItoBlob(dataURI){
+    var byteString = atob(dataURI.split(",")[1]);
+    var mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    var ab = new ArrayBuffer(byteString.length);
+    var ua = new Uint8Array(ab);
+    for(var i = 0; i < byteString.length; i++){
+        ua[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], {type: mimeString});
+}
+var statusBox = document.getElementById("statusBox");
+var status2 = document.getElementById("status2");
+document.getElementById("takephoto").addEventListener("click", function(){
+    statusBox.style.display = "flex";
+    status2.style.backgroundColor = "#ffff00";
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+    var ajax = new XMLHttpRequest();
+    ajax.open("POST", "../");
+    ajax.onload = function(){
+        if(this.responseText.charAt(0) == '#'){
+            status2.style.backgroundColor = "#00ff00";
+        }else{
+            status2.style.backgroundColor = "#ff0000";
+        }
+        setTimeout(function(){
+            statusBox.style.display = "none";
+        }, 3000);
+    };
+    var formData = new FormData();
+    formData.append("photovideo", dataURItoBlob(canvas.toDataURL("image/png")));
+    ajax.send(formData);
+});
