@@ -10,7 +10,7 @@ function cameraStart(){
     .then(function(stream){
         video.srcObject = stream;
         video.play();
-        flash.addEventListener("click", function(){
+        flash.onclick = function(){
             flashState = !flashState;
             stream.getVideoTracks()[0].applyConstraints({
                 advanced: [{torch: flashState}]
@@ -20,7 +20,7 @@ function cameraStart(){
             }else{
                 flash.childNodes[0].src = "../images/flash0.svg";
             }
-        });
+        };
     });
 }
 function cameraStop(){
@@ -42,3 +42,12 @@ document.getElementById("rotate").onclick = function(){
     cameraStop();
     cameraStart();
 };
+// var canvas = document.getElementById("canvas");
+// document.getElementById("takephoto").addEventListener("click", function(){
+//     canvas.getContext("2d").drawImage(video, 0, 0);
+//     var ajax = new XMLHttpRequest();
+//     ajax.open("POST", "../");
+//     var formData = new FormData();
+//     formData.append("photovideo", canvas.toDataURL("image/png"));
+//     ajax.send(formData);
+// });

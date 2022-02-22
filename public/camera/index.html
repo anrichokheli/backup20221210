@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Camera | PedestrianSOS!</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="../styles/camera.css">
     </head>
     <body>
         <div id="camera">
             <video id="video"></video>
-            <button id="rotate" class="buttons"><img width="64" height="64" src="../images/rotate.svg"></button>
-            <button id="flash" class="buttons"><img width="64" height="64" src="../images/flash0.svg"></button>
+            <div id="bottombuttons">
+                <button id="recordvideo" class="buttons"><div><div></div></div></button>
+                <button id="takephoto" class="buttons"><div><div></div></div></button>
+            </div>
+            <button id="rotate" class="buttons singlebuttons"><img width="32" height="32" src="../images/rotate.svg"></button>
+            <button id="flash" class="buttons singlebuttons"><img width="32" height="32" src="../images/flash0.svg"></button>
         </div>
+        <canvas id="canvas"></canvas>
         <script src="../scripts/camera.js"></script>
     </body>
 </html>

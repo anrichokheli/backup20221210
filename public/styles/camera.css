@@ -14,9 +14,44 @@
 }
 .buttons{
     background-color: #256aff40;
-    border: none;
     border-radius: 50%;
+    border: none;
+    padding: 4px;
+}
+.buttons:active{
+    background-color: #256aff80;
+}
+.singlebuttons{
     position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#bottombuttons{
+    position: absolute;
+    display: flex;
+    justify-content: space-evenly;
+}
+#takephoto div,#recordvideo div{
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff80;
+}
+#takephoto div div{
+    width: 54px;
+    height: 54px;
+    background-color: #ffffff;
+    border-radius: 50%;
+}
+#recordvideo div div{
+    width: 26px;
+    height: 26px;
+    background-color: #ff0000;
+    border-radius: 50%;
 }
 #rotate{
     top: 0;
@@ -25,6 +60,11 @@
     left: 0;
 }
 @media(orientation: portrait){
+    #bottombuttons{
+        width: 100%;
+        bottom: 0;
+        left: 0;
+    }
     #rotate{
         right: 0;
     }
@@ -33,10 +73,19 @@
     }
 }
 @media(orientation: landscape){
+    #bottombuttons{
+        height: 100%;
+        right: 0;
+        top: 0;
+        flex-direction: column-reverse;
+    }
     #rotate{
         left: 0;
     }
     #flash{
         bottom: 0;
     }
+}
+#canvas{
+    display: none;
 }
