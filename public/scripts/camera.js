@@ -1,11 +1,18 @@
 var video = document.getElementById("video");
 var flash = document.getElementById("flash");
-var cameraFacing = "environment";
+var cameraFacing = localStorage.getItem("camerafacing");
+if(!cameraFacing){
+    cameraFacing = "environment";
+}
 var flashState = false;
 function cameraStart(){
     navigator.mediaDevices.getUserMedia({
         audio: false,
-        video: {facingMode: cameraFacing}
+        video: {
+            width: {ideal: 1920},
+            height: {ideal: 1080},
+            facingMode: cameraFacing
+        }
     })
     .then(function(stream){
         video.srcObject = stream;
@@ -39,6 +46,7 @@ document.getElementById("rotate").onclick = function(){
     }else{
         cameraFacing = "environment";
     }
+    localStorage.setItem("camerafacing", cameraFacing);
     cameraStop();
     cameraStart();
 };
