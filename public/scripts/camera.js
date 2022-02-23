@@ -5,6 +5,20 @@ if(!cameraFacing){
     cameraFacing = "environment";
 }
 var flashState = false;
+function cameraSetup(stream){
+    video.srcObject = stream;
+    flash.onclick = function(){
+        flashState = !flashState;
+        stream.getVideoTracks()[0].applyConstraints({
+            advanced: [{torch: flashState}]
+        });
+        if(flashState){
+            flash.childNodes[0].src = "../images/flash1.svg";
+        }else{
+            flash.childNodes[0].src = "../images/flash0.svg";
+        }
+    };
+}
 function cameraStart(){
     navigator.mediaDevices.getUserMedia({
         audio: false,
@@ -14,21 +28,7 @@ function cameraStart(){
             facingMode: cameraFacing
         }
     })
-    .then(function(stream){
-        video.srcObject = stream;
-        video.play();
-        flash.onclick = function(){
-            flashState = !flashState;
-            stream.getVideoTracks()[0].applyConstraints({
-                advanced: [{torch: flashState}]
-            });
-            if(flashState){
-                flash.childNodes[0].src = "../images/flash1.svg";
-            }else{
-                flash.childNodes[0].src = "../images/flash0.svg";
-            }
-        };
-    });
+    .then(function(stream){cameraSetup(stream)});
 }
 function cameraStop(){
     video.srcObject.getTracks().forEach(function(track){
@@ -40,6 +40,21 @@ cameraStart();
 video.onclick = function(){
     document.documentElement.requestFullscreen();
 };
+var videoRecording;
+var recorder;
+var data;
+function videoSetup(){
+    navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: {
+            width: {ideal: 1920},
+            height: {ideal: 1080},
+            facingMode: cameraFacing
+        }
+    })
+    .then(function(stream){cameraSetup(stream);})
+    .then(function(){startRecording(video.captureStream());});
+}
 document.getElementById("rotate").onclick = function(){
     if(cameraFacing == "environment"){
         cameraFacing = "user";
@@ -63,12 +78,9 @@ function dataURItoBlob(dataURI){
 }
 var statusBox = document.getElementById("statusBox");
 var status2 = document.getElementById("status2");
-document.getElementById("takephoto").addEventListener("click", function(){
+function uploadFile(file){
     statusBox.style.display = "flex";
     status2.style.backgroundColor = "#ffff00";
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
     ajax.onload = function(){
@@ -82,6 +94,35 @@ document.getElementById("takephoto").addEventListener("click", function(){
         }, 3000);
     };
     var formData = new FormData();
-    formData.append("photovideo", dataURItoBlob(canvas.toDataURL("image/png")));
+    formData.append("photovideo", file);
     ajax.send(formData);
+}
+document.getElementById("takephoto").addEventListener("click", function(){
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+    uploadFile(dataURItoBlob(canvas.toDataURL("image/png")));
+});
+var recordVideoButton = document.getElementById("recordvideo");
+function onVideoStop(){
+    var recordedBlob = new Blob(data, {type: "video/webm"});
+    uploadFile(recordedBlob);
+    cameraStart();
+    videoRecording = 0;
+    recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "50%";
+}
+function startRecording(stream){
+    recorder = new MediaRecorder(stream);
+    data = [];
+    recorder.ondataavailable = function(e){data.push(e.data)};
+    recorder.start();
+    videoRecording = 1;
+    recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "0";
+    recorder.onstop = function(){onVideoStop();};
+}
+recordVideoButton.addEventListener("click", function(){
+    cameraStop();
+    if(!videoRecording){
+        videoSetup();
+    }
 });
