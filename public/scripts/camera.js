@@ -78,6 +78,51 @@ function dataURItoBlob(dataURI){
 }
 var statusBox = document.getElementById("statusBox");
 var status2 = document.getElementById("status2");
+var statusLocation = document.getElementById("statuslocation");
+var locationUploadArray = [];
+function uploadLocation(n, key){
+    statusLocation.style.backgroundColor = "#ffff00";
+    statusLocation.style.display = "flex";
+    statusBox.style.display = "flex";
+    var ajax = new XMLHttpRequest();
+    ajax.open("POST", "../");
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.onload = function(){
+        if(this.responseText === "1"){
+            statusLocation.style.backgroundColor = "#00ff00";
+        }else{
+            statusLocation.style.backgroundColor = "#ff0000";
+        }
+        setTimeout(function(){
+            statusBox.style.display = "none";
+            statusLocation.style.display = "none";
+        }, 3000);
+    };
+    ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+"&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy));
+}
+var latitude;
+var longitude;
+var altitude;
+var accuracy;
+var altitudeAccuracy;
+function getLocation()  {
+    if(navigator.geolocation)    {
+        navigator.geolocation.watchPosition(afterLocation/*, locationError*/);
+    }
+}
+function afterLocation(position)  {
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+    altitude = position.coords.altitude;
+    accuracy = position.coords.accuracy;
+    altitudeAccuracy = position.coords.altitudeAccuracy;
+    if(locationUploadArray.length > 0){
+        for(var key in locationUploadArray){
+            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1]);
+            locationUploadArray.shift();
+        }
+    }
+}
 function uploadFile(file){
     statusBox.style.display = "flex";
     status2.style.backgroundColor = "#ffff00";
@@ -85,6 +130,14 @@ function uploadFile(file){
     ajax.open("POST", "../");
     ajax.onload = function(){
         if(this.responseText.charAt(0) == '#'){
+            var responseArray = this.responseText.substring(1).split('|');
+            var n = responseArray[0];
+            var key = responseArray[1];
+            if(latitude != null && longitude != null)    {
+                uploadLocation(n, key);
+            }else{
+                locationUploadArray.push([n, key]);
+            }
             status2.style.backgroundColor = "#00ff00";
         }else{
             status2.style.backgroundColor = "#ff0000";
@@ -126,3 +179,4 @@ recordVideoButton.addEventListener("click", function(){
         videoSetup();
     }
 });
+getLocation();
