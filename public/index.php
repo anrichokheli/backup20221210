@@ -6,6 +6,9 @@
     define("phpPath", protectedPrivatePath . "php/");
     define("defaultLang", "en");
     define("jsonLanguagesPath", "json/languages/");
+    if(file_exists(phpPath . "setup.php")){
+        require_once(phpPath . "setup.php");
+    }
     if(isset($_GET["lang"]) && file_exists(jsonLanguagesPath . $_GET["lang"] . ".json")){
         $lang = $_GET["lang"];
     }

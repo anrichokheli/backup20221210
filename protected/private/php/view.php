@@ -265,7 +265,7 @@
         echo getData($_GET["n"], $rawData);
     }
     else    {
-        if(!file_exists(photovideotimes)){
+        if(/*!file_exists(photovideotimes)*/count(scandir(photovideotimes)) == 2){
             exit("<br>" . $langJSON["nodata"]);
         }
         //$filesQuantity = count(scandir(photovideos)) - 2;

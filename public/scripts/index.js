@@ -139,6 +139,8 @@ function addRetryButton(func, element){
     retryButton.classList.add("buttons");
     retryButton.addEventListener("click", func);
     element.insertBefore(retryButton, element.childNodes[0]);
+    var onlineFunc = function(){window.removeEventListener("online", onlineFunc);func();};
+    window.addEventListener("online", onlineFunc);
 }
 var uploadStatuses = document.getElementById("uploadstatuses");
 function uploadString(n, key, post, location, value) {
@@ -719,7 +721,7 @@ try{
 }catch{}
 try{
     var isOffline;
-    addEventListener("offline", function(){
+    window.addEventListener("offline", function(){
         if(isOffline){
             isOffline.style.display = "block";
             return;
@@ -738,7 +740,7 @@ try{
         offlineText.style.verticalAlign = "middle";
         isOffline.appendChild(offlineText);
         mainDiv.insertBefore(isOffline, mainDiv.childNodes[2]);
-        addEventListener("online", function(){
+        window.addEventListener("online", function(){
             isOffline.style.display = "none";
         });
     });

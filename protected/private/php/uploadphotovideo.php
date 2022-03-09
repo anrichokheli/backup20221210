@@ -11,13 +11,9 @@
         define("descriptions", uploadstrings . "descriptions/");
         define("locations", uploadstrings . "locations/");
         define("voices", uploadfiles . "voices/");
-        define("maxFilesQuantity", 1000);
+        //define("maxFilesQuantity", 1000);
         define("secretPath", protectedPrivatePath . "secret/");
         define("keysPath", secretPath . "keys/");
-        function createDirectoryIfNotExists($path)    {
-            if(!file_exists($path))
-                mkdir($path, 0777, true);
-        }
         function getKey($n)   {
             $key = "";
             for($i = 0; $i < $n; $i++)   {
@@ -26,19 +22,11 @@
             }
             return $key;
         }
-        createDirectoryIfNotExists(photovideos);
-        createDirectoryIfNotExists(photovideotimes);
-        createDirectoryIfNotExists(descriptiontimes);
-        createDirectoryIfNotExists(locationtimes);
-        createDirectoryIfNotExists(voicetimes);
-        createDirectoryIfNotExists(descriptions);
-        createDirectoryIfNotExists(locations);
-        createDirectoryIfNotExists(voices);
-        createDirectoryIfNotExists(keysPath);
-        $filesQuantity = count(scandir(photovideos)) - 2;
-        if($filesQuantity >= maxFilesQuantity)    {
+        //$filesQuantity = count(scandir(photovideos)) - 2;
+        $filesQuantity = hrtime(1) . random_int(0, 9);
+        /*if($filesQuantity >= maxFilesQuantity)    {
             exit("server total files quantity limit: " . maxFilesQuantity);
-        }
+        }*/
         if(empty($_FILES["photovideo"]["tmp_name"]))    {
             exit("file is not chosen");
         }
