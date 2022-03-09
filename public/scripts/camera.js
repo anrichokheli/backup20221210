@@ -174,7 +174,9 @@ function startRecording(stream){
     recorder.onstop = function(){onVideoStop();};
 }
 recordVideoButton.addEventListener("click", function(){
-    cameraStop();
+    try{
+        cameraStop();
+    }catch{}
     if(!videoRecording){
         videoSetup();
     }
