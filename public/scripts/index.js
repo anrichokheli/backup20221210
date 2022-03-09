@@ -308,7 +308,9 @@ var uploadstatusesdisplayed = 0;
 var maxFileSize = 25000000;
 var maxFilesNum = 10;
 var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
+var lastUploadID = 0;
 function filesUpload(files, fileInput){
+    var currentUploadID = ++lastUploadID;
     if(files === null)  {
         files = fileInput.files;
     }
@@ -452,7 +454,9 @@ function filesUpload(files, fileInput){
                 });
                 statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadcompleted")+"\n(#" + n + ")";
                 color = "#00ff00";
-                bottomProgressVisible(0);
+                if(currentUploadID == lastUploadID){
+                    bottomProgressVisible(0);
+                }
                 try{
                     var shareButton = document.createElement("button");
                     shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> "+getString("share");
@@ -479,13 +483,17 @@ function filesUpload(files, fileInput){
         else    {
             statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadfailed")+"\n(" + this.responseText + ")";
             color = "#ff0000";
-            bottomProgressVisible(0);
+            if(currentUploadID == lastUploadID){
+                bottomProgressVisible(0);
+            }
             addRetryButton(function(){filesUpload(files, fileInput);}, status);
         }
         if(fileInput !== undefined)fileInput.value = null;
         statusText.className = "statusText";
         statusText.style.borderColor = color;
-        bottomProgressBar.style.backgroundColor = color;
+        if(currentUploadID == lastUploadID){
+            bottomProgressBar.style.backgroundColor = color;
+        }
         status.insertBefore(statusText, status.childNodes[0]);
     };
     ajax.onerror = function(){
@@ -493,8 +501,10 @@ function filesUpload(files, fileInput){
         statusText.className = "statusText";
         color = "#ff0000";
         statusText.style.borderColor = color;
-        bottomProgressBar.style.backgroundColor = color;
-        bottomProgressVisible(0);
+        if(currentUploadID == lastUploadID){
+            bottomProgressBar.style.backgroundColor = color;
+            bottomProgressVisible(0);
+        }
         status.insertBefore(statusText, status.childNodes[0]);
         addRetryButton(function(){filesUpload(files, fileInput);}, status);
     };
@@ -503,7 +513,9 @@ function filesUpload(files, fileInput){
         progressPercent = ((e.loaded / e.total) * 100).toFixed(2) + '%';
         progress.innerText = progressPercent + " (" + e.loaded + " / " + e.total + ")";
         progressBar.style.width = progressPercent;
-        bottomProgressBar.style.width = progressPercent;
+        if(currentUploadID == lastUploadID){
+            bottomProgressBar.style.width = progressPercent;
+        }
     };
     ajax.open("POST", "/");
     ajax.send(formData);
