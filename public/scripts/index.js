@@ -718,19 +718,28 @@ try{
     document.getElementById("langform").remove();
 }catch{}
 try{
-    var offlineImg;
+    var isOffline;
     addEventListener("offline", function(){
-        if(offlineImg){
-            offlineImg.style.display = "inline-block";
+        if(isOffline){
+            isOffline.style.display = "block";
             return;
         }
-        offlineImg = document.createElement("img");
+        isOffline = document.createElement("div");
+        isOffline.style.border = "2px solid #ff0000";
+        var offlineImg = document.createElement("img");
         offlineImg.width = "64";
         offlineImg.height = "64";
         offlineImg.src = "images/offline.svg";
-        mainDiv.insertBefore(offlineImg, mainDiv.childNodes[2]);
+        isOffline.appendChild(offlineImg);
+        var offlineText = document.createElement("span");
+        offlineText.innerText = getString("offline");
+        offlineText.style.fontWeight = "bold";
+        offlineImg.style.verticalAlign = "middle";
+        offlineText.style.verticalAlign = "middle";
+        isOffline.appendChild(offlineText);
+        mainDiv.insertBefore(isOffline, mainDiv.childNodes[2]);
         addEventListener("online", function(){
-            offlineImg.style.display = "none";
+            isOffline.style.display = "none";
         });
     });
 }catch{}
