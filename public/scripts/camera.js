@@ -31,6 +31,9 @@ function cameraStart(){
     .then(function(stream){cameraSetup(stream)});
 }
 function cameraStop(){
+    if(!video.srcObject){
+        return;
+    }
     video.srcObject.getTracks().forEach(function(track){
         track.stop();
     });
@@ -166,6 +169,7 @@ function onVideoStop(){
     cameraStart();
     videoRecording = 0;
     recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "50%";
+    recordVideoButton.disabled = 0;
 }
 function startRecording(stream){
     recorder = new MediaRecorder(stream);
@@ -175,11 +179,11 @@ function startRecording(stream){
     videoRecording = 1;
     recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "0";
     recorder.onstop = function(){onVideoStop();};
+    recordVideoButton.disabled = 0;
 }
 recordVideoButton.addEventListener("click", function(){
-    try{
-        cameraStop();
-    }catch{}
+    recordVideoButton.disabled = 1;
+    cameraStop();
     if(!videoRecording){
         videoSetup();
     }
