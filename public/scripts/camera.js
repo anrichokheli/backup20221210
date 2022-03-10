@@ -105,6 +105,7 @@ var altitudeAccuracy;
 function getLocation()  {
     if(navigator.geolocation)    {
         navigator.geolocation.watchPosition(afterLocation, locationError);
+        statusLocation.style.borderColor = "#ffff0080";
     }
 }
 function afterLocation(position)  {
@@ -119,9 +120,11 @@ function afterLocation(position)  {
             locationUploadArray.shift();
         }
     }
+    statusLocation.style.borderColor = "#00ff0080";
 }
 function locationError(){
     setTimeout(getLocation, 250);
+    statusLocation.style.borderColor = "#ff000080";
 }
 function uploadFile(file){
     statusLocation.style.backgroundColor = "";
