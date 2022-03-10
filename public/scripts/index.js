@@ -120,6 +120,7 @@ function locationError(error)    {
             locationErrorDiv.innerText = "unknown error";
             break;
     }
+    setTimeout(getLocation, 250);
 }
 getLocation();
 try{

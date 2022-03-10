@@ -65,6 +65,9 @@ body    {
     border-radius: 8px;
     display: inline-block;
 }
+.boxs:empty{
+    display: none;
+}
 #main textarea   {
     width: 99%;
     max-height: 50vh;

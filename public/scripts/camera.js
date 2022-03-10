@@ -82,8 +82,6 @@ var statusLocation = document.getElementById("statuslocation");
 var locationUploadArray = [];
 function uploadLocation(n, key){
     statusLocation.style.backgroundColor = "#ffff00";
-    statusLocation.style.display = "flex";
-    statusBox.style.display = "flex";
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -93,10 +91,9 @@ function uploadLocation(n, key){
         }else{
             statusLocation.style.backgroundColor = "#ff0000";
         }
-        setTimeout(function(){
-            statusBox.style.display = "none";
-            statusLocation.style.display = "none";
-        }, 3000);
+    };
+    ajax.onerror = function(){
+        statusLocation.style.backgroundColor = "#ff0000";
     };
     ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+"&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy));
 }
@@ -107,7 +104,7 @@ var accuracy;
 var altitudeAccuracy;
 function getLocation()  {
     if(navigator.geolocation)    {
-        navigator.geolocation.watchPosition(afterLocation/*, locationError*/);
+        navigator.geolocation.watchPosition(afterLocation, locationError);
     }
 }
 function afterLocation(position)  {
@@ -123,8 +120,11 @@ function afterLocation(position)  {
         }
     }
 }
+function locationError(){
+    setTimeout(getLocation, 250);
+}
 function uploadFile(file){
-    statusBox.style.display = "flex";
+    statusLocation.style.backgroundColor = "";
     status2.style.backgroundColor = "#ffff00";
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
@@ -142,10 +142,10 @@ function uploadFile(file){
         }else{
             status2.style.backgroundColor = "#ff0000";
         }
-        setTimeout(function(){
-            statusBox.style.display = "none";
-        }, 3000);
     };
+    ajax.onerror = function(){
+        status2.style.backgroundColor = "#ff0000";
+    }
     var formData = new FormData();
     formData.append("photovideo", file);
     ajax.send(formData);
