@@ -75,6 +75,9 @@
     #flash{
         top: 0;
     }
+    #statusBigBox{
+        height: calc(100vh - 124px);
+    }
 }
 @media(orientation: landscape){
     #bottombuttons{
@@ -88,6 +91,9 @@
     }
     #flash{
         bottom: 0;
+    }
+    #statusBigBox{
+        height: calc(100vh - 48px);
     }
 }
 #canvas{
@@ -117,7 +123,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    padding: 1%;
+    padding: 2px;
     border: 2px solid #00000000;
 }
 #statuslocation img{
@@ -126,6 +132,39 @@
 #live{
     width: 72px;
     height: 72px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#statusBigBox{
+    display: none;
+    position: absolute;
+    top: 44px;
+    left: 10%;
+    right: 10%;
+    width: 80%;
+    background-color: #256aff80;
+    border-radius: 8px;
+    flex-direction: column;
+    align-items: center;
+    padding: 2px;
+    overflow-y: auto;
+}
+#statusBigBox > div{
+    width: 99%;
+    border-radius: 8px;
+    padding: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#statusBigBox > div:not(:first-child){
+    margin-top: 2px;
+}
+#statusBigBox .buttons{
+    width: 48px;
+    height: 48px;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;

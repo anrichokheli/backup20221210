@@ -80,23 +80,43 @@ function dataURItoBlob(dataURI){
     return new Blob([ab], {type: mimeString});
 }
 var statusBox = document.getElementById("statusBox");
+var statusBigBox = document.getElementById("statusBigBox");
+statusBox.addEventListener("click", function(){
+    if(statusBigBox.style.display == "flex"){
+        statusBigBox.style.display = "none";
+    }else{
+        statusBigBox.style.display = "flex";
+    }
+});
 var status2 = document.getElementById("status2");
 var statusLocation = document.getElementById("statuslocation");
 var locationUploadArray = [];
 function uploadLocation(n, key){
     statusLocation.style.backgroundColor = "#ffff00";
+    addStatus("location", "ffff00", "#" + n + "<br>" + latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy);
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.onload = function(){
         if(this.responseText === "1"){
             statusLocation.style.backgroundColor = "#00ff00";
+            addStatus("location", "00ff00", "#" + n);
         }else{
             statusLocation.style.backgroundColor = "#ff0000";
+            addStatus("location", "ff0000", "#" + n + "<br>" + this.responseText);
         }
     };
     ajax.onerror = function(){
         statusLocation.style.backgroundColor = "#ff0000";
+        var retryButton = document.createElement("button");
+        retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
+        retryButton.onclick = function(){
+            uploadLocation(n, key);
+        };
+        retryButton.classList.add("buttons");
+        addStatus("location", "ff0000", "#" + n + "<br>" + this.Error, retryButton);
+        var onlineFunc = function(){window.removeEventListener("online", onlineFunc);uploadLocation(n, key);};
+        window.addEventListener("online", onlineFunc);
     };
     ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+"&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy));
 }
@@ -129,9 +149,54 @@ function locationError(){
     setTimeout(getLocation, 250);
     statusLocation.style.borderColor = "#ff000080";
 }
+function getCurrentDateTime(){
+    var d = new Date();
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+}
+function preImg(image){
+    var img = document.createElement("img");
+    img.src = image;
+    img.style.display = "none";
+    document.body.appendChild(img);
+    img.remove();
+}
+preImg("../images/offline.svg");
+preImg("../images/retry.svg");
+preImg("../images/photo.svg");
+preImg("../images/video.svg");
+preImg("../images/download.svg");
+function addStatus(imageName, color, text, html){
+    var statusSubDiv = document.createElement("div");
+    statusSubDiv.style.backgroundColor = "#"+color+"80";
+    if(text){
+        text = "<br>" + text;
+    }else{
+        text = '';
+    }
+    statusSubDiv.innerHTML = '<img width="32" height="32" src="../images/'+imageName+'.svg"> '+getCurrentDateTime()+text;
+    if(html){
+        statusSubDiv.appendChild(html);
+    }
+    statusBigBox.prepend(statusSubDiv);
+}
+var unloadWarning = 0;
 function uploadFile(file){
+    unloadWarning = 1;
     statusLocation.style.backgroundColor = "";
     status2.style.backgroundColor = "#ffff00";
+    var imageName;
+    var fileType = file.type.split('/')[0];
+    if(fileType == "image"){
+        imageName = "photo";
+    }else if(fileType == "video"){
+        imageName = "video";
+    }
+    var downloadButton = document.createElement("a");
+    downloadButton.innerHTML = '<img width="32" height="32" src="../images/download.svg">';
+    downloadButton.classList.add("buttons");
+    downloadButton.href = URL.createObjectURL(file);
+    downloadButton.download = (new Date()).getTime();
+    addStatus(imageName, "ffff00", null, downloadButton);
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
     ajax.onload = function(){
@@ -145,12 +210,29 @@ function uploadFile(file){
                 locationUploadArray.push([n, key]);
             }
             status2.style.backgroundColor = "#00ff00";
+            addStatus(imageName, "00ff00", "#" + n);
         }else{
             status2.style.backgroundColor = "#ff0000";
+            var retryButton = document.createElement("button");
+            retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
+            retryButton.onclick = function(){
+                uploadFile(file);
+            };
+            retryButton.classList.add("buttons");
+            addStatus(imageName, "ff0000", this.responseText, retryButton);
         }
     };
     ajax.onerror = function(){
         status2.style.backgroundColor = "#ff0000";
+        var retryButton = document.createElement("button");
+        retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
+        retryButton.onclick = function(){
+            uploadFile(file);
+        };
+        retryButton.classList.add("buttons");
+        addStatus(imageName, "ff0000", this.Error, retryButton);
+        var onlineFunc = function(){window.removeEventListener("online", onlineFunc);uploadFile(file);};
+        window.addEventListener("online", onlineFunc);
     }
     var formData = new FormData();
     formData.append("photovideo", file);
@@ -189,3 +271,24 @@ recordVideoButton.addEventListener("click", function(){
     }
 });
 getLocation();
+var offlineImg;
+window.addEventListener("offline", function(){
+    if(offlineImg){
+        offlineImg.style.display = "block";
+        return;
+    }
+    offlineImg = document.createElement("img");
+    offlineImg.width = "32";
+    offlineImg.height = "32";
+    offlineImg.src = "../images/offline.svg";
+    statusBox.prepend(offlineImg);
+    window.addEventListener("online", function(){
+        offlineImg.style.display = "none";
+    });
+});
+window.addEventListener("beforeunload", function(e){
+    if(unloadWarning)    {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
