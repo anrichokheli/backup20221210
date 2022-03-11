@@ -389,6 +389,14 @@ function filesUpload(files, fileInput){
         bottomProgressVisible(1);
         var after = document.createElement("div");
         after.classList.add("boxs", "boxs2");
+        if(files.length == 1){
+            var downloadButton = document.createElement("a");
+            downloadButton.innerHTML = '<img width="32" height="32" src="images/download.svg"> ' + getString("download");
+            downloadButton.classList.add("buttons", "afteruploadbuttons");
+            downloadButton.href = URL.createObjectURL(files[0]);
+            downloadButton.download = (new Date()).getTime();
+            status.appendChild(downloadButton);
+        }
     }catch{}
     var formData = new FormData();
     var fileTypeArray2;
