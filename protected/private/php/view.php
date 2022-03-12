@@ -71,6 +71,9 @@
     function setValue($name, $value, $html) {
         return str_replace("<php>" . $name . "</php>", $value, $html);
     }
+    function getT($t){
+        return date("Y-m-d H:i:s", $t) . "<br><div>" . date('O') . "<br>" . $t . "</div>";
+    }
     function getData($n, $rawData)  {
         //$pvtimePath = photovideotimes . $n . ".txt";
         $dirpvtimePath = photovideotimes . $n;
@@ -133,7 +136,7 @@
                                 <a target="_blank" href="' . $path . '" download="' . $n . "_" . $i . '" class="buttons"><img width="32" height="32" src="images/download.svg"><span class="download"><string>download</string></span></a>
                             </div>
                             <br>
-                            <div class="pvtime">' . date("Y-m-d H:i:s", file_get_contents(photovideotimes . $n . "/" . $timeFiles[$i])) . '</div>
+                            <div class="pvtime">' . getT(file_get_contents(photovideotimes . $n . "/" . $timeFiles[$i])) . '</div>
                         ';
                         if($dirFilesQuantity - $i != 1){
                             $photovideoHTML .= "<hr>";
@@ -153,7 +156,7 @@
             $locationPath = locations . $n . ".txt";
             if(file_exists($locationPath))    {
                 $locationData = file_get_contents($locationPath);
-                $locationTime = date("Y-m-d H:i:s", file_get_contents(locationtimes . $n . ".txt"));
+                $locationTime = getT(file_get_contents(locationtimes . $n . ".txt"));
             }
             else    {
                 $locationData = "-; -; -; -";
@@ -196,7 +199,7 @@
             $descriptionPath = descriptions . $n . ".txt";
             if(file_exists($descriptionPath))    {
                 $descriptionData = nl2br(htmlspecialchars(file_get_contents($descriptionPath)));
-                $descriptionTime = date("Y-m-d H:i:s", file_get_contents(descriptiontimes . $n . ".txt"));
+                $descriptionTime = getT(file_get_contents(descriptiontimes . $n . ".txt"));
                 
             }
             else    {
@@ -215,7 +218,7 @@
             if(file_exists($vtimePath))    {
                 $voicePath = glob(voices . $n . ".*")[0];
                 $voicePublicPath = "?view&v=uploads/files/voices/" . basename($voicePath);
-                $voiceTime = date("Y-m-d H:i:s", file_get_contents(voicetimes . $n . ".txt"));
+                $voiceTime = getT(file_get_contents(voicetimes . $n . ".txt"));
             }
             else    {
                 $voiceTag = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
