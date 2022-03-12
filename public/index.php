@@ -12,6 +12,9 @@
     if(isset($_GET["lang"]) && file_exists(jsonLanguagesPath . $_GET["lang"] . ".json")){
         $lang = $_GET["lang"];
     }
+    else if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
+        $lang = explode(",", $_SERVER['HTTP_ACCEPT_LANGUAGE'])[0];
+    }
     else{
         $lang = defaultLang;
     }

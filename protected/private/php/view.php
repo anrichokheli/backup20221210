@@ -71,6 +71,9 @@
     function setValue($name, $value, $html) {
         return str_replace("<php>" . $name . "</php>", $value, $html);
     }
+    if(isset($_COOKIE["timezone"])){
+        date_default_timezone_set("Etc/GMT" . ($_COOKIE["timezone"] / 60));
+    }
     function getT($t){
         return date("Y-m-d H:i:s", $t) . "<br><div>" . date('O') . "<br>" . $t . "</div>";
     }
