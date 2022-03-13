@@ -9,13 +9,17 @@
     if(file_exists(phpPath . "setup.php")){
         require_once(phpPath . "setup.php");
     }
-    if(isset($_GET["lang"]) && file_exists(jsonLanguagesPath . $_GET["lang"] . ".json")){
+    if(isset($_GET["lang"])){
         $lang = $_GET["lang"];
     }
     else if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
         $lang = explode(",", $_SERVER['HTTP_ACCEPT_LANGUAGE'])[0];
     }
     else{
+        $lang = defaultLang;
+    }
+    $lang = substr($lang, 0, 2);
+    if(!file_exists(jsonLanguagesPath . $lang . ".json")){
         $lang = defaultLang;
     }
     $langJSON = json_decode(file_get_contents(jsonLanguagesPath . $lang . ".json"), 1);

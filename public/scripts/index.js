@@ -29,7 +29,7 @@ try{
     locationTop.appendChild(locationTitle);
     var locationData = document.createElement("div");
     locationDiv.appendChild(locationData);
-}catch{}
+}catch(e){}
 function addLocationElements(text)  {
     var div = document.createElement("div");
     div.className = "locationDivs";
@@ -62,7 +62,7 @@ try{
     var accuracyData = addLocationElements("accuracy");
     var altitudeAccuracyData = addLocationElements("altitudeaccuracy");
     locationDiv.style.display = "inline-block";
-}catch{}
+}catch(e){}
 var locationUploadArray = [];
 function getLocation()  {
     if(navigator.geolocation)    {
@@ -93,7 +93,7 @@ function afterLocation(position)  {
         showLocation(altitudeData, altitude);
         showLocation(accuracyData, accuracy);
         showLocation(altitudeAccuracyData, altitudeAccuracy);
-    }catch{}
+    }catch(e){}
 }
 var locationErrorDiv = document.createElement("div");
 locationErrorDiv.style.border = "2px solid #ff0000";
@@ -133,7 +133,7 @@ try{
     }
     preImg("images/offline.svg");
     preImg("images/retry.svg");
-}catch{}
+}catch(e){}
 function addRetryButton(func, element){
     var retryButton = document.createElement("button");
     retryButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/retry.svg\"> " + getString("retry");
@@ -149,11 +149,11 @@ function uploadString(n, key, post, location, value) {
         var text;
         var img = "<img width=\"16\" height=\"16\" src=\"images/";
         if(location == true)    {
-            text = strings["locationcoordinates"];
+            text = getString("locationcoordinates");
             img += "location";
         }
         else    {
-            text = strings["description"];
+            text = getString("description");
             img += "description";
         }
         text += "; ";
@@ -171,7 +171,7 @@ function uploadString(n, key, post, location, value) {
         div2.borderColor = color;
         div.appendChild(div2);
         element.insertBefore(div, element.childNodes[0]);
-    }catch{}
+    }catch(e){}
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
         div = document.createElement("div");
@@ -233,7 +233,7 @@ function uploadVoice(n, key)  {
     button.disabled = 1;
     var div = document.createElement("div");
     div.className = "statusText";
-    var text = strings["voice"] + "; ";
+    var text = getString("voice") + "; ";
     var img = "<img width=\"16\" height=\"16\" src=\"images/microphone.svg\"> ";
     div.innerHTML = img+text+getString("uploading");
     div.style.borderColor = "#ffff00";
@@ -290,17 +290,17 @@ function bottomProgressVisible(visible)    {
                 try{
                     uploadStatusBottom.style.animation = "hidebottom 0.5s forwards";
                     timeout2 = setTimeout(function(){uploadStatusBottom.style.display = "none";}, 500);
-                }catch{}
+                }catch(e){}
             }, 3000);
         }
-    }catch{}
+    }catch(e){}
 }
 function flexCenter(element) {
     try{
         element.style.display = "inline-flex";
         element.style.alignItems = "center";
         element.style.flexDirection = "column";
-    }catch{
+    }catch(e){
         element.style.display = "inline-block";
     }
 }
@@ -310,13 +310,15 @@ uploadStatusBottom.appendChild(bottomProgressBar);
 var uploadstatusesdisplayed = 0;
 var maxFileSize = 25000000;
 var maxFilesNum = 10;
-var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
+var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpg", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
 var lastUploadID = 0;
 function filesUpload(files, fileInput){
     var currentUploadID = ++lastUploadID;
     if(files === null)  {
         files = fileInput.files;
     }
+    var subbox;
+    var after;
     try{
         if(files.length > maxFilesNum){
             alert(getString("maxfilesnum") + " " + maxFilesNum);
@@ -340,7 +342,7 @@ function filesUpload(files, fileInput){
             }
         }
         unloadWarning = 1;
-        var subbox = document.createElement("div");
+        subbox = document.createElement("div");
         flexCenter(subbox);
         subbox.className = "boxs";
         uploadStatuses.insertBefore(subbox, uploadStatuses.childNodes[0]);
@@ -387,7 +389,7 @@ function filesUpload(files, fileInput){
         bottomProgressBar.style.backgroundColor = color;
         bottomProgressBar.style.width = "0%";
         bottomProgressVisible(1);
-        var after = document.createElement("div");
+        after = document.createElement("div");
         after.classList.add("boxs", "boxs2");
         if(files.length == 1){
             var downloadButton = document.createElement("a");
@@ -397,7 +399,7 @@ function filesUpload(files, fileInput){
             downloadButton.download = (new Date()).getTime();
             status.appendChild(downloadButton);
         }
-    }catch{}
+    }catch(e){}
     var formData = new FormData();
     var fileTypeArray2;
     var fileType2;
@@ -413,7 +415,7 @@ function filesUpload(files, fileInput){
             if(files[file].size > maxFileSize)    {
                 try{
                     displayUploadError(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB. (" + files[file].name + ")");
-                }catch{}
+                }catch(e){}
                 continue;
             }
             fileTypeArray2 = files[file].type.split('/');
@@ -422,16 +424,16 @@ function filesUpload(files, fileInput){
             if(fileType2 != "image" && fileType2 != "video")    {
                 try{
                     displayUploadError(getString("onlyimgvid") + " (" + files[file].name + ")");
-                }catch{}
+                }catch(e){}
                 continue;
             }
             if(allowedFileExtensions.indexOf(fileExtension2) == -1)    {
                 try{
                     displayUploadError(getString("allowedext") + ": ." + allowedFileExtensions.join(", .") + ". (" + files[file].name + ")");
-                }catch{}
+                }catch(e){}
                 continue;
             }
-        }catch{}
+        }catch(e){}
         formData.append("photovideo[]", files[file]);
     }
     var ajax = new XMLHttpRequest();
@@ -439,16 +441,16 @@ function filesUpload(files, fileInput){
         if(this.responseText.charAt(0) == '#')    {
             try{
                 subbox.insertBefore(after, subbox.childNodes[0]);
-            }catch{}
+            }catch(e){}
             var responseArray = this.responseText.substring(1).split('|');
             var n = responseArray[0];
             var key = responseArray[1];
             try{
                 var html = "<div class=\"boxs boxs2\">" + getString("uploadedid") + ": #" + n + "</div>";
-                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+strings["viewupload"]+"</button>";
-                html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\""+strings["writedescription"]+"...\"></textarea></div>";
-                html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;"+strings["uploaddescription"]+"</button></div>";
-                html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+strings["uploadvoice"]+"</button></div></div>";
+                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+getString("viewupload")+"</button>";
+                html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\"></textarea></div>";
+                html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;"+getString("uploaddescription")+"</button></div>";
+                html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+getString("uploadvoice")+"</button></div></div>";
                 html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
                 after.innerHTML = html;
                 var textarea = document.getElementById(n);
@@ -475,16 +477,16 @@ function filesUpload(files, fileInput){
                     shareButton.addEventListener("click", function(){
                         try{
                             navigator.share({url: window.location.href+"?"+n});
-                        }catch{
+                        }catch(e){
                             try{
                                 shareButton.style.color = "#ff0000";
                                 shareButton.innerText = "SHARE ERROR!";
-                            }catch{}
+                            }catch(e){}
                         }
                     });
                     after.appendChild(shareButton);
-                }catch{}
-            }catch{}
+                }catch(e){}
+            }catch(e){}
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key);
             }else{
@@ -492,7 +494,11 @@ function filesUpload(files, fileInput){
             }
         }
         else    {
-            statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadfailed")+"\n(" + this.responseText + ")";
+            statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadfailed");
+            var errorDiv = document.createElement("div");
+            errorDiv.style.border = "1px dotted #ff0000";
+            errorDiv.innerText = this.responseText;
+            statusText.appendChild(errorDiv);
             color = "#ff0000";
             if(currentUploadID == lastUploadID){
                 bottomProgressVisible(0);
@@ -535,13 +541,13 @@ var unloadWarning = 0;
 function uploadFunction(input){
     try{
         filesUpload(null, input);
-    }catch{
+    }catch(e){
         try{
             if(unloadWarning){
                 unloadWarning = 0;
             }
             input.parentNode.parentNode.submit();
-        }catch{
+        }catch(e){
             button.style.display = "inline-block";
             input.hidden = 0;
         }
@@ -550,10 +556,13 @@ function uploadFunction(input){
 function buttonSetup(id0) {
     var input = document.getElementById(id0 + "input");
     var button = document.getElementById(id0 + "upload");
-    input.addEventListener("change", function(){uploadFunction(input);});
-    if(input.value){
-        uploadFunction(input);
+    function uploadIfInput(){
+        if(input.value){
+            uploadFunction(input);
+        }
     }
+    input.addEventListener("change", function(){uploadIfInput();});
+    uploadIfInput();
     button.style.display = "none";
     input.hidden = 1;
 }
@@ -568,7 +577,7 @@ try{
         uploadForms[i].style.border = "none";
         uploadForms[i].style.padding = "0";
     }
-}catch{}
+}catch(e){}
 var darkModeEnabled;
 function setDarkMode(enabled) {
     var color = "#000000";
@@ -692,6 +701,7 @@ try{
     settingsButton.innerHTML = "<img width=\"64\" height=\"64\" src=\"images/settings.svg\"> <span id=\"settings\"><string>settings</string></span>";
     settingsButton.style.display = "inline-block";
     function setLanguage(lang,get)  {
+        lang = lang.substring(0, 2);
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "json/languages/" + lang + ".json");
         ajax.onload = function()    {
@@ -723,11 +733,11 @@ try{
     }
     var lang = localStorage.getItem("lang");
     if(lang == null){
-        lang = navigator.language.substring(0, 2);
+        lang = navigator.language;
     }
     setLanguage(lang);
     document.getElementById("langform").remove();
-}catch{}
+}catch(e){}
 try{
     var isOffline;
     window.addEventListener("offline", function(){
@@ -753,11 +763,11 @@ try{
             isOffline.style.display = "none";
         });
     });
-}catch{}
+}catch(e){}
 function setCookie(cname, cvalue, exdays) {
-    const d = new Date();
+    var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    let expires = "expires="+ d.toUTCString();
+    var expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);

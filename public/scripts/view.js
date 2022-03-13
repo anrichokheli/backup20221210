@@ -10,7 +10,7 @@ try{
             mainDiv.style.backgroundColor = "#ffffff";
         }
     }
-}catch{}
+}catch(e){}
 var strings = null;
 function getString(key)  {
     if(strings!=null)return strings[key];
@@ -51,7 +51,7 @@ try{
         }
     };
     ajax.send();
-}catch{}
+}catch(e){}
 try{
     var buttonsDivs = document.getElementsByClassName("buttonsdivs");
     var shareButton;
@@ -66,11 +66,11 @@ try{
                     URL = URL.substring(0, URL.lastIndexOf("/")+2)+n;
                 }
                 navigator.share({url: URL});
-            }catch{
+            }catch(e){
                 try{
                     shareButton.style.color = "#ff0000";
                     shareButton.innerText = "SHARE ERROR!";
-                }catch{}
+                }catch(e){}
             }
         });
         element.appendChild(shareButton);
@@ -80,7 +80,7 @@ try{
             addShareButton(buttonsDivs[key].parentNode.id, buttonsDivs[key]);
         }
     }
-}catch{}
+}catch(e){}
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
