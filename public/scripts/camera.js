@@ -210,7 +210,12 @@ function uploadFile(file){
                 locationUploadArray.push([n, key]);
             }
             status2.style.backgroundColor = "#00ff00";
-            addStatus(imageName, "00ff00", "#" + n);
+            var viewButton = document.createElement("a");
+            viewButton.innerHTML = '<img width="32" height="32" src="../images/viewicon.svg">';
+            viewButton.classList.add("buttons");
+            viewButton.href = "../?" + n;
+            viewButton.target = "_blank";
+            addStatus(imageName, "00ff00", "#" + n, viewButton);
         }else{
             status2.style.backgroundColor = "#ff0000";
             var retryButton = document.createElement("button");
@@ -247,11 +252,16 @@ document.getElementById("takephoto").addEventListener("click", function(){
 var recordVideoButton = document.getElementById("recordvideo");
 function onVideoStop(){
     var recordedBlob = new Blob(data, {type: "video/webm"});
-    uploadFile(recordedBlob);
+    if(recordedBlob == ""){
+        cameraStop();
+    }
     cameraStart();
     videoRecording = 0;
     recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "50%";
     recordVideoButton.disabled = 0;
+    if(recordedBlob != ""){
+        uploadFile(recordedBlob);
+    }
 }
 function startRecording(stream){
     recorder = new MediaRecorder(stream);
