@@ -72,6 +72,8 @@
     font-weight: bold;
 }
 #uploadstatusbottom {
+    left: 5%;
+    right: 5%;
     width: 90%;
     height: 0px;
     background-color: #256aff80;

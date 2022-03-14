@@ -439,9 +439,6 @@ function filesUpload(files, fileInput){
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
         if(this.responseText.charAt(0) == '#')    {
-            try{
-                subbox.insertBefore(after, subbox.childNodes[0]);
-            }catch(e){}
             var responseArray = this.responseText.substring(1).split('|');
             var n = responseArray[0];
             var key = responseArray[1];
@@ -453,6 +450,7 @@ function filesUpload(files, fileInput){
                 html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+getString("uploadvoice")+"</button></div></div>";
                 html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
                 after.innerHTML = html;
+                subbox.insertBefore(after, subbox.childNodes[0]);
                 var textarea = document.getElementById(n);
                 var button = document.getElementById("b"+n);
                 button.addEventListener("click", function(){
