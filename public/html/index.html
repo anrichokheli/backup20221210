@@ -105,10 +105,17 @@
                             </button>
                         </div>
                     </form>
+                    <button class="buttons" onclick="location.assign('camera')">
+                        <img width="64" height="64" src="images/camera.svg">
+                        &nbsp;
+                        <span id="camera"><string>camera</string></span>
+                    </button>
                     <button class="buttons" onclick="window.open('camera')">
                         <img width="64" height="64" src="images/camera.svg">
                         &nbsp;
                         <span id="camera"><string>camera</string></span>
+                        &nbsp;
+                        <img width="64" height="64" src="images/open.svg">
                     </button>
                 </div>
             </div>
@@ -118,10 +125,17 @@
             <br>
             <div id="uploadstatuses" class="boxs"></div>
             <br>
+            <a id="viewuploadsbutton" class="buttons viewuploadsbuttons" href="?view<php>LANG</php>">
+                <img width="64" height="64" src="images/viewicon.svg">
+                &nbsp;
+                <span id="viewuploads"><string>viewuploads</string></span>
+            </a>
             <a id="viewuploadsbutton" class="buttons viewuploadsbuttons" href="?view<php>LANG</php>" target="_blank">
                 <img width="64" height="64" src="images/viewicon.svg">
                 &nbsp;
                 <span id="viewuploads"><string>viewuploads</string></span>
+                &nbsp;
+                <img width="64" height="64" src="images/open.svg">
             </a>
             <br><br>
             <button id="settingsbutton" class="buttons"></button>
