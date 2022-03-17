@@ -81,6 +81,22 @@ try{
         }
     }
 }catch(e){}
+try{
+    var topDiv = document.getElementById("top");
+    window.onscroll = function(){
+        if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0){
+            topDiv.style.position = "fixed";
+            topDiv.childNodes[0].childNodes[0].width = "32";
+            topDiv.childNodes[0].childNodes[0].height = "32";
+            topDiv.childNodes[0].childNodes[2].style.fontSize = "1em";
+        }else{
+            topDiv.style.position = "static";
+            topDiv.childNodes[0].childNodes[0].width = "64";
+            topDiv.childNodes[0].childNodes[0].height = "64";
+            topDiv.childNodes[0].childNodes[2].style.fontSize = "2em";
+        }
+    };
+}catch(e){}
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
