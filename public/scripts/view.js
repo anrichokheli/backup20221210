@@ -83,14 +83,14 @@ try{
 }catch(e){}
 try{
     var topDiv = document.getElementById("top");
+    document.getElementsByClassName("one")[0].style.marginTop = topDiv.clientHeight + 10 + "px";
+    topDiv.style.position = "fixed";
     window.onscroll = function(){
         if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0){
-            topDiv.style.position = "fixed";
             topDiv.childNodes[0].childNodes[0].width = "32";
             topDiv.childNodes[0].childNodes[0].height = "32";
             topDiv.childNodes[0].childNodes[2].style.fontSize = "1em";
         }else{
-            topDiv.style.position = "static";
             topDiv.childNodes[0].childNodes[0].width = "64";
             topDiv.childNodes[0].childNodes[0].height = "64";
             topDiv.childNodes[0].childNodes[2].style.fontSize = "2em";

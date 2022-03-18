@@ -9,8 +9,11 @@
     if(file_exists(phpPath . "setup.php")){
         require_once(phpPath . "setup.php");
     }
-    if(isset($_GET["lang"])){
+    if(!empty($_GET["lang"])){
         $lang = $_GET["lang"];
+    }
+    else if(!empty($_COOKIE["lang"])){
+        $lang = $_COOKIE["lang"];
     }
     else if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
         $lang = explode(",", $_SERVER['HTTP_ACCEPT_LANGUAGE'])[0];

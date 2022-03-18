@@ -24,7 +24,7 @@ try{
     locationImage.height = "32";
     locationTop.appendChild(locationImage);
     var locationTitle = document.createElement("span");
-    locationTitle.id = "currentlocation";
+    locationTitle.className = "currentlocation";
     locationTitle.style.fontSize = "20px";
     locationTop.appendChild(locationTitle);
     var locationData = document.createElement("div");
@@ -38,7 +38,7 @@ function addLocationElements(text)  {
     title.className = "locationTitles";
     title.innerText = ": ";
     var titleText = document.createElement("span");
-    titleText.id = text;
+    titleText.className = text;
     title.insertBefore(titleText, title.childNodes[0]);
     div.appendChild(title);
     var data = document.createElement("span");
@@ -50,6 +50,7 @@ function showLocation(element, data)    {
         data = getString("nodata");
         if(data=="")data="-";
         element.style.backgroundColor = "#ff000080";
+        element.className = "nodata";
     }
     else    {
         element.style.backgroundColor = "";
@@ -596,6 +597,27 @@ function setDarkMode(enabled) {
     }
     darkModeEnabled = enabled;
 }
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 try{
     var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
     function defaultdarkmode()  {
@@ -696,7 +718,7 @@ try{
         };
         ajax.send();
     });
-    settingsButton.innerHTML = "<img width=\"64\" height=\"64\" src=\"images/settings.svg\"> <span id=\"settings\"><string>settings</string></span>";
+    settingsButton.innerHTML = "<img width=\"64\" height=\"64\" src=\"images/settings.svg\"> <span class=\"settings\"><string>settings</string></span>";
     settingsButton.style.display = "inline-block";
     function setLanguage(lang,get)  {
         lang = lang.substring(0, 2);
@@ -707,10 +729,13 @@ try{
                 document.documentElement.lang = lang;
                 var json = JSON.parse(this.responseText);
                 strings = json;
-                var element;
                 for(var key in json) {
-                    element = document.getElementById(key);
-                    if(element!=null)element.innerText = json[key];
+                    var elements = document.getElementsByClassName(key);
+                    if(elements!=null){
+                        for(var element in elements){
+                            if(elements[element]!=null)elements[element].innerText=json[key];
+                        }
+                    }
                 }
                 if(typeof settingsTitle!=="undefined")settingsTitle.innerHTML = strings["settings"];
                 if(typeof langLabel!=="undefined")langLabel.innerHTML = strings["devicedefault"];
@@ -734,6 +759,9 @@ try{
         lang = navigator.language;
     }
     setLanguage(lang);
+    if(lang != getCookie("lang")){
+        setCookie("lang", lang);
+    }
     document.getElementById("langform").remove();
 }catch(e){}
 try{
@@ -762,10 +790,4 @@ try{
         });
     });
 }catch(e){}
-function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);

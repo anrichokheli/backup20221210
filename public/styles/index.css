@@ -15,10 +15,10 @@ body    {
     width: 100%;
     word-wrap: break-word;
 }
-#pedestrian {
+.pedestrian {
     color: #256aff;
 }
-#sos    {
+.sos    {
     color: #ec0400;
 }
 #buttons, .buttonsDivs    {
