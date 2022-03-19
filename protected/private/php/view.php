@@ -94,6 +94,14 @@
     function getT($t){
         return date("Y-m-d H:i:s", $t) . "<br><div>" . date('O') . "<br>" . $t . "</div>";
     }
+    function getMainWebAddress(){
+        if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"){
+            $protocol = "https";
+        }else{
+            $protocol = "http";
+        }
+        return $protocol . "://" . $_SERVER["HTTP_HOST"];
+    }
     function getData($n, $rawData)  {
         //$pvtimePath = photovideotimes . $n . ".txt";
         $dirpvtimePath = photovideotimes . $n;
@@ -113,6 +121,7 @@
             $html = file_get_contents(htmlPath . "view.html");
             $html = setValue("N", $n, $html);
             $html = setValue("LINK", $n . $GLOBALS["langget"], $html);
+            $html = setValue("FULLLINK", getMainWebAddress() . "/?" . $n, $html);
         }
         //$path = glob(photovideos . $n . ".*")[0];
         $dirpath = photovideos . $n;

@@ -48,5 +48,6 @@
     "maps": "Maps",
     "retry": "Try again",
     "camera": "Camera",
-    "offline": "Offline"
+    "offline": "Offline",
+    "link": "Link"
 }
