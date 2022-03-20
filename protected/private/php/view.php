@@ -102,6 +102,7 @@
         }
         return $protocol . "://" . $_SERVER["HTTP_HOST"];
     }
+    define("textLengthDisplay", 100);
     function getData($n, $rawData)  {
         //$pvtimePath = photovideotimes . $n . ".txt";
         $dirpvtimePath = photovideotimes . $n;
@@ -227,7 +228,10 @@
             }
             $descriptionPath = descriptions . $n . ".txt";
             if(file_exists($descriptionPath))    {
-                $descriptionData = nl2br(htmlspecialchars(file_get_contents($descriptionPath)));
+                $descriptionData = htmlspecialchars(file_get_contents($descriptionPath));
+                if(strlen($descriptionData) > textLengthDisplay){
+                    $descriptionData = substr_replace($descriptionData, "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;\">", textLengthDisplay, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore buttons\" style=\"font-size:16px;display:none;\">...>></button>";
+                }
                 $descriptionTime = getT(file_get_contents(descriptiontimes . $n . ".txt"));
                 
             }

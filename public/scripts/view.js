@@ -97,6 +97,26 @@ try{
         }
     };
 }catch(e){}
+try{
+    var descriptionDivs = document.getElementsByClassName("descriptiondiv");
+    for(var i = 0; i < descriptionDivs.length; i++){
+        if(descriptionDivs[i].childNodes.length > 1){
+            var seeMore = document.getElementById("seemore"+descriptionDivs[i].parentNode.parentNode.id);
+            seeMore.style.display = "inline";
+            document.getElementById("moretext"+descriptionDivs[i].parentNode.parentNode.id).style.display = "none";
+            seeMore.onclick = function(){
+                var moreText = document.getElementById("moretext"+this.parentNode.parentNode.parentNode.id);
+                if(this.innerText == "...>>"){
+                    moreText.style.display = "inline";
+                    this.innerText = "...<<";
+                }else{
+                    moreText.style.display = "none";
+                    this.innerText = "...>>";
+                }
+            };
+        }
+    }
+}catch(e){}
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));

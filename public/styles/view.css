@@ -100,6 +100,7 @@ body    {
     max-height: 50vh;
     overflow-y: auto;
     text-align: initial;
+    white-space: pre-wrap;
 }
 .buttons {
     font-size: 20px;
