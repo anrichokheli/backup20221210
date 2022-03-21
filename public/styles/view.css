@@ -125,3 +125,14 @@ body    {
         background-color: #000000;
     }
 }
+.seemore{
+    background: none;
+    border: none;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    color: #256aff;
+}
+.seemore:hover{
+    text-decoration: underline;
+}

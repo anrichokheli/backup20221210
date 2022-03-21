@@ -103,6 +103,7 @@
         return $protocol . "://" . $_SERVER["HTTP_HOST"];
     }
     define("textLengthDisplay", 100);
+    define("textNewlineDisplay", 4);
     function getData($n, $rawData)  {
         //$pvtimePath = photovideotimes . $n . ".txt";
         $dirpvtimePath = photovideotimes . $n;
@@ -229,8 +230,19 @@
             $descriptionPath = descriptions . $n . ".txt";
             if(file_exists($descriptionPath))    {
                 $descriptionData = htmlspecialchars(file_get_contents($descriptionPath));
-                if(strlen($descriptionData) > textLengthDisplay){
-                    $descriptionData = substr_replace($descriptionData, "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;\">", textLengthDisplay, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore buttons\" style=\"font-size:16px;display:none;\">...>></button>";
+                if((substr_count($descriptionData, "\n") + 1) > textNewlineDisplay){
+                    $lastPos = 0;
+                    for($i = 0; $i < textNewlineDisplay; $i++){
+                        $lastPos = strpos($descriptionData, "\n", $lastPos);
+                        $lastPos++;
+                    }
+                    $moreTextIndex = $lastPos;
+                }
+                else if(strlen($descriptionData) > textLengthDisplay){
+                    $moreTextIndex = textLengthDisplay;
+                }
+                if(isset($moreTextIndex)){
+                    $descriptionData = substr_replace($descriptionData, "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;vertical-align:initial;\">", $moreTextIndex, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore\" style=\"display:none;\">...>></button>";
                 }
                 $descriptionTime = getT(file_get_contents(descriptiontimes . $n . ".txt"));
                 
