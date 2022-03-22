@@ -255,7 +255,17 @@
                 array_push($dataArray, $descriptionData, $descriptionTime);
             }
             else    {
+                if(!empty($descriptionTime))    {
+                    $descriptionPublicPath = "?view&v=uploads/strings/descriptions/" . basename($descriptionPath);
+                    $descriptionButtons = "<div class=\"buttonsdivs\">";
+                    $descriptionButtons .= "<a target=\"_blank\" href=\"" . $descriptionPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span></a>";
+                    $descriptionButtons .= "<a href=\"" . $descriptionPublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
+                    $descriptionButtons .= "</div>";
+                }else{
+                    $descriptionButtons = "";
+                }
                 $html = setValue("DESCRIPTION", $descriptionData, $html);
+                $html = setValue("DBUTTONS", $descriptionButtons, $html);
                 $html = setValue("DTIME", $descriptionTime, $html);
             }
             $vtimePath = voicetimes . $n . ".txt";
@@ -276,12 +286,15 @@
             else    {
                 if(!empty($voicePath))    {
                     $voiceTag = "<audio controls src=\"" . $voicePublicPath . "\"></audio>";
-                    $voiceDownload = "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
+                    $voiceButtons = "<div class=\"buttonsdivs\">";
+                    $voiceButtons .= "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span></a>";
+                    $voiceButtons .= "<a href=\"" . $voicePublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
+                    $voiceButtons .= "</div>";
                 }else{
-                    $voiceDownload = "";
+                    $voiceButtons = "";
                 }
                 $html = setValue("VOICE", $voiceTag, $html);
-                $html = setValue("VDOWNLOAD", $voiceDownload, $html);
+                $html = setValue("VBUTTONS", $voiceButtons, $html);
                 $html = setValue("VTIME", $voiceTime, $html);
             }
         }
