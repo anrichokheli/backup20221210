@@ -107,9 +107,9 @@ body    {
     opacity: 0.5;
     border-color: #ec0400;
 }
-.uploadforms:valid>input[type=file],.uploadforms:invalid>input[type=file]{
-    display: none;
-}
 #uploadstatuses, #location, #uploadstatus, #uploadprogress, #settingsbutton{
     display: none;
+}
+.uploadforms input:not([hidden]){
+    display: block;
 }

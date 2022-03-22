@@ -13,8 +13,9 @@ var longitude;
 var altitude;
 var accuracy;
 var altitudeAccuracy;
+var locationDiv;
 try{
-    var locationDiv = document.getElementById("location");
+    locationDiv = document.getElementById("location");
     var locationTop = document.createElement("div");
     locationTop.id = "locationtop";
     locationDiv.appendChild(locationTop);
@@ -296,11 +297,13 @@ function bottomProgressVisible(visible)    {
         }
     }catch(e){}
 }
-function flexCenter(element) {
+function flexCenter(element, columnDirection) {
     try{
         element.style.display = "inline-flex";
         element.style.alignItems = "center";
-        element.style.flexDirection = "column";
+        if(columnDirection){
+            element.style.flexDirection = "column";
+        }
     }catch(e){
         element.style.display = "inline-block";
     }
@@ -344,7 +347,7 @@ function filesUpload(files, fileInput){
         }
         unloadWarning = 1;
         subbox = document.createElement("div");
-        flexCenter(subbox);
+        flexCenter(subbox, 1);
         subbox.className = "boxs";
         uploadStatuses.insertBefore(subbox, uploadStatuses.childNodes[0]);
         var status = document.createElement("div");
@@ -383,7 +386,7 @@ function filesUpload(files, fileInput){
         statusDiv.className = "statusText";
         statusDiv.style.borderColor = color;
         if(!uploadstatusesdisplayed) {
-            flexCenter(uploadStatuses);
+            flexCenter(uploadStatuses, 1);
             uploadstatusesdisplayed = 1;
         }
         statusText = document.createElement("div");
@@ -554,7 +557,7 @@ function uploadFunction(input){
 }
 function buttonSetup(id0) {
     var input = document.getElementById(id0 + "input");
-    var button = document.getElementById(id0 + "upload");
+    var upload = document.getElementById(id0 + "upload");
     function uploadIfInput(){
         if(input.value){
             uploadFunction(input);
@@ -562,7 +565,13 @@ function buttonSetup(id0) {
     }
     input.addEventListener("change", function(){uploadIfInput();});
     uploadIfInput();
-    button.style.display = "none";
+    var button = document.getElementById(id0 + "button");
+    button.onclick = function(e){
+        e.preventDefault();
+        input.click();
+    };
+    button.tabIndex = "";
+    upload.style.display = "none";
     input.hidden = 1;
 }
 try{
@@ -657,8 +666,9 @@ try{
     dragOverlay2.addEventListener("drop", function(e){
         e.preventDefault();
         var files = [];
-        for(var i = 0; i < e.dataTransfer.items.length; i++){
-            files.push(e.dataTransfer.items[i].getAsFile());
+        var items = e.dataTransfer.items;
+        for(var i = 0; i < items.length; i++){
+            files.push(items[i].getAsFile());
         }
         filesUpload(files);
         dragOverlay.style.display = "none";
@@ -671,6 +681,35 @@ try{
     dragOverlay2.addEventListener("dragleave", function(){
         dragOverlay.style.display = "none";
     });
+    mainDiv.addEventListener("paste", function(e){
+        var items = e.clipboardData.items;
+        if(items[0].kind != "file"){
+            return;
+        }
+        var files = [];
+        for(var i = 0; i < items.length; i++){
+            files.push(items[i].getAsFile());
+        }
+        filesUpload(files);
+    });
+    try{
+        var br0 = document.createElement("br");
+        mainDiv.insertBefore(br0, locationDiv.nextSibling);
+        var br = document.createElement("br");
+        mainDiv.insertBefore(br, br0.nextSibling);
+        var pasteElement = document.createElement("div");
+        pasteElement.innerHTML = '<label for="pasteinput"><img width="32" height="32" src="images/photovideo.svg"></label>';
+        flexCenter(pasteElement);
+        var pasteInput = document.createElement("input");
+        pasteInput.type = "text";
+        pasteInput.oninput = function(){this.value='';};
+        pasteInput.style.caretColor = "transparent";
+        pasteInput.placeholder = getString("pastefiles");
+        pasteInput.className = "pastefiles";
+        pasteInput.id = "pasteinput";
+        pasteElement.appendChild(pasteInput);
+        mainDiv.insertBefore(pasteElement, br.nextSibling);
+    }catch(e){}
     var bottomSpace = document.createElement("div");
     bottomSpace.style.height = "25vh";
     mainDiv.appendChild(bottomSpace);
@@ -733,7 +772,13 @@ try{
                     var elements = document.getElementsByClassName(key);
                     if(elements!=null){
                         for(var element in elements){
-                            if(elements[element]!=null)elements[element].innerText=json[key];
+                            if(elements[element]!=null){
+                                if(elements[element].tagName == "INPUT"){
+                                    elements[element].placeholder=json[key];
+                                }else{
+                                    elements[element].innerText=json[key];
+                                }
+                            };
                         }
                     }
                 }
@@ -784,7 +829,7 @@ try{
         offlineImg.style.verticalAlign = "middle";
         offlineText.style.verticalAlign = "middle";
         isOffline.appendChild(offlineText);
-        mainDiv.insertBefore(isOffline, mainDiv.childNodes[2]);
+        mainDiv.insertBefore(isOffline, mainDiv.children[1]);
         window.addEventListener("online", function(){
             isOffline.style.display = "none";
         });
