@@ -704,7 +704,7 @@ try{
         dragOverlay.style.display = "none";
     });
     mainDiv.addEventListener("paste", function(e){
-        if(e.target.id == fileLink.id){
+        if((e.target.tagName == "INPUT" || e.target.tagName == "TEXTAREA") && e.target.id != pasteInput.id){
             return;
         }
         var items = e.clipboardData.items;
