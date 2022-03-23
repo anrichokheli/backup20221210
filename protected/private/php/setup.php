@@ -12,6 +12,7 @@ define("locations", uploadstrings . "locations/");
 define("voices", uploadfiles . "voices/");
 define("secretPath", protectedPrivatePath . "secret/");
 define("keysPath", secretPath . "keys/");
+define("tmpPath", protectedPrivatePath . "tmp/");
 function createDirectoryIfNotExists($path)    {
     if(!file_exists($path))
         mkdir($path, 0777, true);
@@ -25,5 +26,6 @@ createDirectoryIfNotExists(descriptions);
 createDirectoryIfNotExists(locations);
 createDirectoryIfNotExists(voices);
 createDirectoryIfNotExists(keysPath);
+createDirectoryIfNotExists(tmpPath);
 rename(phpPath . "setup.php", phpPath . "setup.php.txt");
 ?>

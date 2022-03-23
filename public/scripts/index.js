@@ -693,10 +693,6 @@ try{
         filesUpload(files);
     });
     try{
-        var br0 = document.createElement("br");
-        mainDiv.insertBefore(br0, locationDiv.nextSibling);
-        var br = document.createElement("br");
-        mainDiv.insertBefore(br, br0.nextSibling);
         var pasteElement = document.createElement("div");
         pasteElement.innerHTML = '<label for="pasteinput"><img width="32" height="32" src="images/photovideo.svg"></label>';
         flexCenter(pasteElement);
@@ -708,7 +704,11 @@ try{
         pasteInput.className = "pastefiles";
         pasteInput.id = "pasteinput";
         pasteElement.appendChild(pasteInput);
-        mainDiv.insertBefore(pasteElement, br.nextSibling);
+        mainDiv.insertBefore(pasteElement, locationDiv);
+        var br0 = document.createElement("br");
+        mainDiv.insertBefore(br0, pasteElement.nextElementSibling);
+        var br = document.createElement("br");
+        mainDiv.insertBefore(br, br0);
     }catch(e){}
     var bottomSpace = document.createElement("div");
     bottomSpace.style.height = "25vh";
