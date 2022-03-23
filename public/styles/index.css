@@ -110,6 +110,6 @@ body    {
 #uploadstatuses, #location, #uploadstatus, #uploadprogress, #settingsbutton{
     display: none;
 }
-.uploadforms input:not([hidden]){
-    display: block;
+#filelink{
+    font-size: 16px;
 }

@@ -50,5 +50,6 @@
     "camera": "Camera",
     "offline": "Offline",
     "link": "Link",
-    "pastefiles": "Paste Files"
+    "pastefiles": "Paste Files",
+    "enterlink": "Enter Link"
 }

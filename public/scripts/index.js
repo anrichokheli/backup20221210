@@ -316,33 +316,35 @@ var maxFileSize = 25000000;
 var maxFilesNum = 10;
 var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpg", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
 var lastUploadID = 0;
-function filesUpload(files, fileInput){
+function filesUpload(files, fileInput, filelink){
     var currentUploadID = ++lastUploadID;
-    if(files === null)  {
+    if(!filelink && files === null)  {
         files = fileInput.files;
     }
     var subbox;
     var after;
     try{
-        if(files.length > maxFilesNum){
-            alert(getString("maxfilesnum") + " " + maxFilesNum);
-            return;
-        }
-        if(files.length == 1){
-            if(files[0].size > maxFileSize)    {
-                alert(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB.");
+        if(!filelink){
+            if(files.length > maxFilesNum){
+                alert(getString("maxfilesnum") + " " + maxFilesNum);
                 return;
             }
-            var fileTypeArray = files[0].type.split('/');
-            var fileType = fileTypeArray[0];
-            var fileExtension = fileTypeArray[1];
-            if(fileType != "image" && fileType != "video")    {
-                alert(getString("onlyimgvid"));
-                return;
-            }
-            if(allowedFileExtensions.indexOf(fileExtension) == -1)    {
-                alert(getString("allowedext") + ": ." + allowedFileExtensions.join(", .") + ".");
-                return;
+            if(files.length == 1){
+                if(files[0].size > maxFileSize)    {
+                    alert(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB.");
+                    return;
+                }
+                var fileTypeArray = files[0].type.split('/');
+                var fileType = fileTypeArray[0];
+                var fileExtension = fileTypeArray[1];
+                if(fileType != "image" && fileType != "video")    {
+                    alert(getString("onlyimgvid"));
+                    return;
+                }
+                if(allowedFileExtensions.indexOf(fileExtension) == -1)    {
+                    alert(getString("allowedext") + ": ." + allowedFileExtensions.join(", .") + ".");
+                    return;
+                }
             }
         }
         unloadWarning = 1;
@@ -358,17 +360,22 @@ function filesUpload(files, fileInput){
         var statusText = document.createElement("div");
         var typeString;
         var typeImg = "<img width=\"16\" height=\"16\" src=\"images/";
-        if(files.length == 1){
-            if(fileType == "image"){
-                typeString = getString("photo");
-                typeImg += "photo";
-            }else{
-                typeString = getString("video");
-                typeImg += "video";
-            }
+        if(filelink){
+            typeString = getString("link");
+            typeImg += "link";
         }else{
-            typeString = getString("files");
-            typeImg += "photovideo";
+            if(files.length == 1){
+                if(fileType == "image"){
+                    typeString = getString("photo");
+                    typeImg += "photo";
+                }else{
+                    typeString = getString("video");
+                    typeImg += "video";
+                }
+            }else{
+                typeString = getString("files");
+                typeImg += "photovideo";
+            }
         }
         typeImg += ".svg\">";
         typeString += "; ";
@@ -395,7 +402,7 @@ function filesUpload(files, fileInput){
         bottomProgressVisible(1);
         after = document.createElement("div");
         after.classList.add("boxs", "boxs2");
-        if(files.length == 1){
+        if(!link && files.length == 1){
             var downloadButton = document.createElement("a");
             downloadButton.innerHTML = '<img width="32" height="32" src="images/download.svg"> ' + getString("download");
             downloadButton.classList.add("buttons", "afteruploadbuttons");
@@ -414,31 +421,35 @@ function filesUpload(files, fileInput){
         div.innerText = text;
         subbox.insertBefore(div, subbox.childNodes[0]);
     }
-    for(var file in files){
-        try{
-            if(files[file].size > maxFileSize)    {
-                try{
-                    displayUploadError(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB. (" + files[file].name + ")");
-                }catch(e){}
-                continue;
-            }
-            fileTypeArray2 = files[file].type.split('/');
-            fileType2 = fileTypeArray2[0];
-            fileExtension2 = fileTypeArray2[1];
-            if(fileType2 != "image" && fileType2 != "video")    {
-                try{
-                    displayUploadError(getString("onlyimgvid") + " (" + files[file].name + ")");
-                }catch(e){}
-                continue;
-            }
-            if(allowedFileExtensions.indexOf(fileExtension2) == -1)    {
-                try{
-                    displayUploadError(getString("allowedext") + ": ." + allowedFileExtensions.join(", .") + ". (" + files[file].name + ")");
-                }catch(e){}
-                continue;
-            }
-        }catch(e){}
-        formData.append("photovideo[]", files[file]);
+    if(filelink){
+        formData.append("filelink", filelink);
+    }else{
+        for(var file in files){
+            try{
+                if(files[file].size > maxFileSize)    {
+                    try{
+                        displayUploadError(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB. (" + files[file].name + ")");
+                    }catch(e){}
+                    continue;
+                }
+                fileTypeArray2 = files[file].type.split('/');
+                fileType2 = fileTypeArray2[0];
+                fileExtension2 = fileTypeArray2[1];
+                if(fileType2 != "image" && fileType2 != "video")    {
+                    try{
+                        displayUploadError(getString("onlyimgvid") + " (" + files[file].name + ")");
+                    }catch(e){}
+                    continue;
+                }
+                if(allowedFileExtensions.indexOf(fileExtension2) == -1)    {
+                    try{
+                        displayUploadError(getString("allowedext") + ": ." + allowedFileExtensions.join(", .") + ". (" + files[file].name + ")");
+                    }catch(e){}
+                    continue;
+                }
+            }catch(e){}
+            formData.append("photovideo[]", files[file]);
+        }
     }
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
@@ -507,7 +518,9 @@ function filesUpload(files, fileInput){
             }
             addRetryButton(function(){filesUpload(files, fileInput);}, status);
         }
-        if(fileInput !== undefined)fileInput.value = null;
+        if(!filelink){
+            if(fileInput !== undefined)fileInput.value = null;
+        }
         statusText.className = "statusText";
         statusText.style.borderColor = color;
         if(currentUploadID == lastUploadID){
@@ -585,6 +598,15 @@ try{
         uploadForms[i].style.border = "none";
         uploadForms[i].style.padding = "0";
     }
+}catch(e){}
+try{
+    var fileLinkForm = document.getElementById("filelinkform");
+    var fileLink = document.getElementById("filelink");
+    fileLinkForm.addEventListener("submit", function(e){
+        e.preventDefault();
+        filesUpload(null, null, fileLink.value);
+        fileLink.value = "";
+    });
 }catch(e){}
 var darkModeEnabled;
 function setDarkMode(enabled) {
@@ -682,7 +704,24 @@ try{
         dragOverlay.style.display = "none";
     });
     mainDiv.addEventListener("paste", function(e){
+        if(e.target.id == fileLink.id){
+            return;
+        }
         var items = e.clipboardData.items;
+        if(items[0].kind == "string"){
+            items[0].getAsString(function(s){
+                if(!urlInput){
+                    var urlInput = document.createElement("input");
+                    urlInput.type = "url";
+                }
+                urlInput.value = s;
+                if(!urlInput.checkValidity()){
+                    return;
+                }
+                filesUpload(null, null, s);
+            });
+            return;
+        }
         if(items[0].kind != "file"){
             return;
         }
@@ -774,7 +813,11 @@ try{
                         for(var element in elements){
                             if(elements[element]!=null){
                                 if(elements[element].tagName == "INPUT"){
-                                    elements[element].placeholder=json[key];
+                                    if(elements[element].placeholder.includes("...")){
+                                        elements[element].placeholder=json[key]+"...";
+                                    }else{
+                                        elements[element].placeholder=json[key];
+                                    }
                                 }else{
                                     elements[element].innerText=json[key];
                                 }
