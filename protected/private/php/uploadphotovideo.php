@@ -193,6 +193,8 @@
                     file_put_contents($tmp, $urldata);
                     if(file_exists($tmp)){
                         upload($tmp, $_POST["filelink"], 0, 1, 0);
+                    }else{
+                        exitError("-2 (" . $_POST["filelink"] . ")");
                     }
                     if(file_exists($tmp)){
                         unlink($tmp);
