@@ -459,7 +459,8 @@ function filesUpload(files, fileInput, filelink){
             var key = responseArray[1];
             try{
                 var html = "<div class=\"boxs boxs2\">" + getString("uploadedid") + ": #" + n + "</div>";
-                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+getString("viewupload")+"</button>";
+                html += "<button onclick=location.assign(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+getString("viewupload")+"</button>";
+                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+getString("viewupload")+"&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></button>";
                 html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\"></textarea></div>";
                 html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;"+getString("uploaddescription")+"</button></div>";
                 html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+getString("uploadvoice")+"</button></div></div>";

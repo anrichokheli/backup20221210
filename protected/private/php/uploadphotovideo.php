@@ -15,8 +15,13 @@
         define("secretPath", protectedPrivatePath . "secret/");
         define("keysPath", secretPath . "keys/");
         define("tmpPath", protectedPrivatePath . "tmp/");
+        $htmlMode = (isset($_POST["submitform"]) || isset($_POST["submit"]) || isset($_POST["ps"]));
         function returnError($error){
-            return "<div style=\"border:2px solid #ff0000\">" . $error . "</div>";
+            if($GLOBALS["htmlMode"]){
+                return "<div style=\"border:2px solid #ff0000\">" . $error . "</div>";
+            }else{
+                return $error;
+            }
         }
         function echoError($error){
             echo returnError($error);
@@ -104,7 +109,9 @@
                 }
                 $dirPath = photovideos . $GLOBALS["filesName"] . '/';
                 if(!file_exists($dirPath)){
-                    mkdir($dirPath);
+                    if(!mkdir($dirPath)){
+                        exitError("-6");
+                    }
                 }
                 $path = $dirPath . $fileIndex . '.' . $extension;
                 if(($httppostuploadfile && move_uploaded_file($filePath, $path)) || rename($filePath, $path))  {
@@ -113,53 +120,18 @@
                     if(!file_exists($dirPath)){
                         mkdir($dirPath);
                     }
-                    file_put_contents($dirPath . $fileIndex . ".txt", $t);
-                    if(($uploadedFilesQuantity - $fileIndex) != 1){
-                        return;
-                    }
-                    $key = getKey(1000);
-                    file_put_contents(keysPath . $GLOBALS["filesName"], password_hash($key, PASSWORD_DEFAULT));
-                    //header("Location: view.php?n=" . $filesQuantity);
-                    if(isset($_POST["submitform"]) || isset($_POST["submit"]) || isset($_POST["ps"]))    {
-                        $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
-                        $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
-                        $descriptionHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $descriptionHTML));
-                        $voiceHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $voiceHTML));
-                        if(isset($_POST["ps"]))    {
-                            echo(str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a target=\"_blank\" href=\"../?" . $GLOBALS["filesName"] . "\">view upload</a></div>", file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php")));
-                            $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
-                            $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
-                            echo '<div id="afterupload">' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '</div>';
-                        }else{
-                            if($GLOBALS["lang"] != defaultLang)    {
-                                $langget = "&lang=" . $GLOBALS["lang"];
-                            }else{
-                                $langget = "";
-                            }
-                            if(isset($_POST["submit"])){
-                                $noscript = "noscript";
-                                $descriptionHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $descriptionHTML);
-                                $voiceHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $voiceHTML);
-                            }else{
-                                $noscript = "";
-                            }
-                            $html = "<div class=\"boxs\" id=\"afterupload\">";
-                            $html .= "<div class=\"texts\">#: " . $GLOBALS["filesName"] . "</div><a href=\"?" . $GLOBALS["filesName"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><br><br>";
-                            $html .= $descriptionHTML;
-                            $html .= "<br><br>";
-                            $html .= $voiceHTML;
-                            $html .= "</div>";
-                            $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents(htmlPath . "index" . $noscript . ".html")));
-                            $html = str_replace("<htmllang>lang</htmllang>", $GLOBALS["lang"], $html);
-                            $html = setLanguage($html);
-                            $html = str_replace("<php>LANG</php>", $langget, $html);
-                            echo $html;
+                    if(file_exists($dirPath)){
+                        $dirFilePath = $dirPath . $fileIndex . ".txt";
+                        file_put_contents($dirFilePath, $t);
+                        if(!file_exists($dirFilePath)){
+                            echoError("-4 (" . $fileName . ")");
                         }
-                        echo "<script>if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(a){var b=new XMLHttpRequest();b.onload=function(){if(this.responseText===\"1\"){var c=document.createElement(\"div\");c.innerHTML='<img width=\"16\" height=\"16\" src=\"/images/location.svg\"> " . $GLOBALS["langJSON"]["locationcoordinates"] . "; " . $GLOBALS["langJSON"]["uploadcompleted"] . "<br>'+a.coords.latitude+\", \"+a.coords.longitude+\"; \"+a.coords.altitude+\"; \"+a.coords.accuracy+\"; \"+a.coords.altitudeAccuracy;c.style.border=\"2px solid #00ff00\";c.style.marginTop=\"4px\";document.getElementById(\"afterupload\").appendChild(c);}};b.open(\"POST\",\"/\");b.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\");b.send(\"n=\"+encodeURIComponent(\"" . $GLOBALS["filesName"] . "\")+\"&key=\"+encodeURIComponent(\"" . $key . "\")+\"&latitude=\"+encodeURIComponent(a.coords.latitude)+\"&longitude=\"+encodeURIComponent(a.coords.longitude)+\"&altitude=\"+encodeURIComponent(a.coords.altitude)+\"&accuracy=\"+encodeURIComponent(a.coords.accuracy)+\"&altitudeAccuracy=\"+encodeURIComponent(a.coords.altitudeAccuracy));})}</script>";
+                    }else{
+                        echoError("-3");
                     }
-                    else    {
-                        echo '#' . $GLOBALS["filesName"] . '|' . $key;
-                    }
+                    /*if(($uploadedFilesQuantity - $fileIndex) != 1){
+                        return;
+                    }*/
                     $GLOBALS["uploaded"] = 1;
                 }else{
                     echoError("-1 (" . $fileName . ")");
@@ -184,6 +156,54 @@
                 }else{
                     upload($_FILES["photovideo"]["tmp_name"], $_FILES["photovideo"]["name"], 0, 1, 1);
                 }
+                if($GLOBALS["uploaded"]){
+                    $key = getKey(1000);
+                    $keyPath = keysPath . $GLOBALS["filesName"];
+                    file_put_contents($keyPath, password_hash($key, PASSWORD_DEFAULT));
+                    if(!file_exists($keyPath)){
+                        echoError("-5");
+                    }
+                    if($GLOBALS["htmlMode"])    {
+                        $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
+                        $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
+                        $descriptionHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $descriptionHTML));
+                        $voiceHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $voiceHTML));
+                        if(isset($_POST["ps"]))    {
+                            echo(str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?" . $GLOBALS["filesName"] . "\">view upload</a></div>", file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php")));
+                            $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
+                            $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
+                            echo '<div id="afterupload">' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '</div>';
+                        }else{
+                            if($GLOBALS["lang"] != defaultLang)    {
+                                $langget = "&lang=" . $GLOBALS["lang"];
+                            }else{
+                                $langget = "";
+                            }
+                            if(isset($_POST["submit"])){
+                                $noscript = "noscript";
+                                $descriptionHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $descriptionHTML);
+                                $voiceHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $voiceHTML);
+                            }else{
+                                $noscript = "";
+                            }
+                            $html = "<div class=\"boxs\" id=\"afterupload\">";
+                            $html .= "<div class=\"texts\">#: " . $GLOBALS["filesName"] . "</div><a href=\"?" . $GLOBALS["filesName"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?" . $GLOBALS["filesName"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"/images/open.svg\"></a><br><br>";
+                            $html .= $descriptionHTML;
+                            $html .= "<br><br>";
+                            $html .= $voiceHTML;
+                            $html .= "</div>";
+                            $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents(htmlPath . "index" . $noscript . ".html")));
+                            $html = str_replace("<htmllang>lang</htmllang>", $GLOBALS["lang"], $html);
+                            $html = setLanguage($html);
+                            $html = str_replace("<php>LANG</php>", $langget, $html);
+                            echo $html;
+                        }
+                        echo "<script>if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(a){var b=new XMLHttpRequest();b.onload=function(){if(this.responseText===\"1\"){var c=document.createElement(\"div\");c.innerHTML='<img width=\"16\" height=\"16\" src=\"/images/location.svg\"> " . $GLOBALS["langJSON"]["locationcoordinates"] . "; " . $GLOBALS["langJSON"]["uploadcompleted"] . "<br>'+a.coords.latitude+\", \"+a.coords.longitude+\"; \"+a.coords.altitude+\"; \"+a.coords.accuracy+\"; \"+a.coords.altitudeAccuracy;c.style.border=\"2px solid #00ff00\";c.style.marginTop=\"4px\";document.getElementById(\"afterupload\").appendChild(c);}};b.open(\"POST\",\"/\");b.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\");b.send(\"n=\"+encodeURIComponent(\"" . $GLOBALS["filesName"] . "\")+\"&key=\"+encodeURIComponent(\"" . $key . "\")+\"&latitude=\"+encodeURIComponent(a.coords.latitude)+\"&longitude=\"+encodeURIComponent(a.coords.longitude)+\"&altitude=\"+encodeURIComponent(a.coords.altitude)+\"&accuracy=\"+encodeURIComponent(a.coords.accuracy)+\"&altitudeAccuracy=\"+encodeURIComponent(a.coords.altitudeAccuracy));})}</script>";
+                    }
+                    else    {
+                        echo '#' . $GLOBALS["filesName"] . '|' . $key;
+                    }
+                }
             }else{
                 $urldata = @file_get_contents($_POST["filelink"]);
                 if($urldata === FALSE){
@@ -201,7 +221,7 @@
                     }
                 }
             }
-            if($GLOBALS["correct"] && $GLOBALS["uploaded"]){
+            if(($GLOBALS["correct"] && $GLOBALS["uploaded"]) || !$GLOBALS["htmlMode"]){
                 exit;
             }
         }
