@@ -168,9 +168,8 @@ function uploadString(n, key, post, location, value) {
         div.style.borderColor = color;
         var div2 = document.createElement("div");
         div2.innerText = value;
-        var borderStyle = "1px dotted";
-        div2.style.border = borderStyle;
-        div2.borderColor = color;
+        var borderStyle = "1px dotted ";
+        div2.style.border = borderStyle + color;
         div.appendChild(div2);
         element.insertBefore(div, element.childNodes[0]);
     }catch(e){}
@@ -191,8 +190,7 @@ function uploadString(n, key, post, location, value) {
             }
             var div2 = document.createElement("div");
             div2.innerText = this.responseText;
-            div2.style.border = borderStyle;
-            div2.style.borderColor = color;
+            div2.style.border = borderStyle + color;
             div.appendChild(div2);
             addRetryButton(function(){uploadString(n, key, post, location, value);}, element);
         }
@@ -211,8 +209,7 @@ function uploadString(n, key, post, location, value) {
         }
         div2 = document.createElement("div");
         div2.innerText = this.Error;
-        div2.style.border = borderStyle;
-        div2.style.borderColor = color;
+        div2.style.border = borderStyle + color;
         div.appendChild(div2);
         element.insertBefore(div, element.childNodes[0]);
         addRetryButton(function(){uploadString(n, key, post, location, value);}, element);
@@ -390,6 +387,12 @@ function filesUpload(files, fileInput, filelink){
         progressBar.className = "progressbar";
         progressBar0.appendChild(progressBar);
         var color = "#ffff00";
+        if(filelink){
+            var linkDiv = document.createElement("div");
+            linkDiv.innerText = filelink;
+            linkDiv.style.border = "1px dotted " + color;
+            statusDiv.appendChild(linkDiv);
+        }
         statusDiv.className = "statusText";
         statusDiv.style.borderColor = color;
         if(!uploadstatusesdisplayed) {
@@ -402,7 +405,7 @@ function filesUpload(files, fileInput, filelink){
         bottomProgressVisible(1);
         after = document.createElement("div");
         after.classList.add("boxs", "boxs2");
-        if(!link && files.length == 1){
+        if(!filelink && (files.length == 1)){
             var downloadButton = document.createElement("a");
             downloadButton.innerHTML = '<img width="32" height="32" src="images/download.svg"> ' + getString("download");
             downloadButton.classList.add("buttons", "afteruploadbuttons");
@@ -519,7 +522,7 @@ function filesUpload(files, fileInput, filelink){
             if(currentUploadID == lastUploadID){
                 bottomProgressVisible(0);
             }
-            addRetryButton(function(){filesUpload(files, fileInput);}, status);
+            addRetryButton(function(){filesUpload(files, fileInput, filelink);}, status);
         }
         if(!filelink){
             if(fileInput !== undefined)fileInput.value = null;
@@ -541,7 +544,7 @@ function filesUpload(files, fileInput, filelink){
             bottomProgressVisible(0);
         }
         status.insertBefore(statusText, status.childNodes[0]);
-        addRetryButton(function(){filesUpload(files, fileInput);}, status);
+        addRetryButton(function(){filesUpload(files, fileInput, filelink);}, status);
     };
     var progressPercent;
     ajax.upload.onprogress = function(e){
