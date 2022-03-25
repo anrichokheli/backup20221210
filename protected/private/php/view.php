@@ -92,7 +92,13 @@
         }
     }
     function getT($t){
-        return date("Y-m-d H:i:s", $t) . "<br><div>" . date('O') . "<br>" . $t . "</div>";
+        $datetime = date("Y-m-d H:i:s", $t);
+        $timezone = date('O');
+        if($GLOBALS["rawData"]){
+            return array($datetime, $timezone, $t);
+        }else{
+            return $datetime . "<br><div>" . $timezone . "<br>" . $t . "</div>";
+        }
     }
     function getMainWebAddress(){
         if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"){
@@ -248,7 +254,11 @@
                 
             }
             else    {
-                $descriptionData = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
+                if($rawData){
+                    $descriptionData = "";
+                }else{
+                    $descriptionData = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
+                }
                 $descriptionTime = "";
             }
             if($rawData)    {
