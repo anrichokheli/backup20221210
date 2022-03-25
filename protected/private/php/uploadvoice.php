@@ -7,6 +7,14 @@
         define("voicetimes", uploadstrings . "voicetimes/");
         define("secretPath", protectedPrivatePath . "secret/");
         define("keysPath", secretPath . "keys/");
+        function getMainWebAddress(){
+            if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"){
+                $protocol = "https";
+            }else{
+                $protocol = "http";
+            }
+            return $protocol . "://" . $_SERVER["HTTP_HOST"];
+        }
         $keyPath = keysPath . $_POST["n"];
         if(!file_exists($keyPath))    {
             exit("-1");
@@ -96,7 +104,7 @@
                         $noscript = "";
                     }
                     $html = "<div class=\"boxs texts\">";
-                    $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><a href=\"?" . $_POST["n"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?" . $_POST["n"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></a><br><br>";
+                    $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><div><label for=\"link" . $_POST["n"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?" . $_POST["n"] . "\" id=\"link" . $_POST["n"] . "\"></div><a href=\"?" . $_POST["n"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?" . $_POST["n"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></a><br><br>";
                     $html .= $descriptionHTML;
                     $html .= "<br><br>";
                     $html .= $voiceHTML;

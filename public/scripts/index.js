@@ -458,7 +458,9 @@ function filesUpload(files, fileInput, filelink){
             var n = responseArray[0];
             var key = responseArray[1];
             try{
+                var fullLink = window.location.href+"?"+n;
                 var html = "<div class=\"boxs boxs2\">" + getString("uploadedid") + ": #" + n + "</div>";
+                html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
                 html += "<button onclick=location.assign(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+getString("viewupload")+"</button>";
                 html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+getString("viewupload")+"&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></button>";
                 html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\"></textarea></div>";
@@ -490,7 +492,7 @@ function filesUpload(files, fileInput, filelink){
                     shareButton.classList.add("buttons", "afteruploadbuttons");
                     shareButton.addEventListener("click", function(){
                         try{
-                            navigator.share({url: window.location.href+"?"+n});
+                            navigator.share({url: fullLink});
                         }catch(e){
                             try{
                                 shareButton.style.color = "#ff0000";

@@ -40,6 +40,14 @@
             }
             return $key;
         }
+        function getMainWebAddress(){
+            if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"){
+                $protocol = "https";
+            }else{
+                $protocol = "http";
+            }
+            return $protocol . "://" . $_SERVER["HTTP_HOST"];
+        }
         //$filesQuantity = count(scandir(photovideos)) - 2;
         $filesName = hrtime(1) . random_int(0, 9);
         /*if($filesQuantity >= maxFilesQuantity)    {
@@ -187,7 +195,7 @@
                                 $noscript = "";
                             }
                             $html = "<div class=\"boxs\" id=\"afterupload\">";
-                            $html .= "<div class=\"texts\">#: " . $GLOBALS["filesName"] . "</div><a href=\"?" . $GLOBALS["filesName"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?" . $GLOBALS["filesName"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"/images/open.svg\"></a><br><br>";
+                            $html .= "<div class=\"texts\">#: " . $GLOBALS["filesName"] . "</div><div><label for=\"link" . $GLOBALS["filesName"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?" . $GLOBALS["filesName"] . "\" id=\"link" . $GLOBALS["filesName"] . "\"></div><a href=\"?" . $GLOBALS["filesName"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?" . $GLOBALS["filesName"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"/images/open.svg\"></a><br><br>";
                             $html .= $descriptionHTML;
                             $html .= "<br><br>";
                             $html .= $voiceHTML;
