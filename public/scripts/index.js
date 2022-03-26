@@ -805,7 +805,6 @@ try{
     settingsButton.innerHTML = "<img width=\"64\" height=\"64\" src=\"images/settings.svg\"> <span class=\"settings\"><string>settings</string></span>";
     settingsButton.style.display = "inline-block";
     function setLanguage(lang,get)  {
-        lang = lang.substring(0, 2);
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "json/languages/" + lang + ".json");
         ajax.onload = function()    {
@@ -845,17 +844,18 @@ try{
                     setLanguage(lang);
                 }
             }
+            if(lang != getCookie("lang")){
+                setCookie("lang", lang);
+            }
         };
         ajax.send();
     }
     var lang = localStorage.getItem("lang");
     if(lang == null){
         lang = navigator.language;
+        lang = lang.substring(0, 2);
     }
     setLanguage(lang);
-    if(lang != getCookie("lang")){
-        setCookie("lang", lang);
-    }
     document.getElementById("langform").remove();
 }catch(e){}
 try{
@@ -883,5 +883,63 @@ try{
             isOffline.style.display = "none";
         });
     });
+}catch(e){}
+try{
+    var topDiv = document.getElementById("top");
+    var topScrollDiv = document.createElement("div");
+    var topScrollDivHeight = topDiv.clientHeight / 2;
+    topScrollDiv.style.position = "fixed";
+    topScrollDiv.style.top = "0";
+    topScrollDiv.style.left = "0";
+    topScrollDiv.style.width = "100%";
+    topScrollDiv.style.backgroundColor = "#256aff80";
+    topScrollDiv.style.transition = "0.1s";
+    topScrollDiv.style.height = "0";
+    topScrollDiv.style.overflow = "hidden";
+    topScrollDiv.style.display = "flex";
+    topScrollDiv.style.justifyContent = "space-evenly";
+    var psImg = document.createElement("img");
+    psImg.src = "images/pedestriansos.svg";
+    psImg.style.width = topScrollDivHeight + "px";
+    psImg.style.height = topScrollDivHeight + "px";
+    topScrollDiv.appendChild(psImg);
+    function addTopButton(btnid){
+        var topButton = document.createElement("button");
+        topButton.style.border = "none";
+        if(darkModeEnabled){
+            topButton.style.backgroundColor = "#000000";
+        }else{
+            topButton.style.backgroundColor = "#ffffff";
+        }
+        topButton.style.backgroundImage = 'url("'+document.querySelector("#"+btnid+" img").src+'")';
+        topButton.style.backgroundRepeat = "no-repeat";
+        topButton.style.backgroundSize = "contain";
+        topButton.style.backgroundPosition = "center";
+        topButton.style.width = topScrollDivHeight + "px";
+        topButton.style.height = topScrollDivHeight + "px";
+        topButton.style.cursor = "pointer";
+        topButton.style.borderRadius = "10%";
+        var btn = document.getElementById(btnid);
+        topButton.onclick = function(){
+            btn.click();
+        };
+        topScrollDiv.appendChild(topButton);
+    }
+    addTopButton("takephotobutton");
+    addTopButton("recordvideobutton");
+    addTopButton("choosephotobutton");
+    addTopButton("choosevideobutton");
+    addTopButton("choosefilesbutton");
+    addTopButton("camerabutton");
+    mainDiv.appendChild(topScrollDiv);
+    window.onscroll = function(){
+        if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0){
+            topScrollDiv.style.height = topScrollDivHeight + "px";
+            topScrollDiv.style.borderBottom = "2px solid #256aff";
+        }else{
+            topScrollDiv.style.height = "0";
+            topScrollDiv.style.borderBottom = "";
+        }
+    };
 }catch(e){}
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);
