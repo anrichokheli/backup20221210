@@ -169,7 +169,8 @@
                             <div class="photovideo">' . $photovideoTag . '</div>
                             <br>
                             <div class="buttonsdivs">
-                                <a target="_blank" href="' . $path . '" class="buttons"><img width="32" height="32" src="images/open.svg"><span class="open"><string>open</string></span></a>
+                                <a href="' . $path . '" class="buttons"><img width="32" height="32" src="images/open.svg"><span class="open"><string>open</string></span></a>
+                                <a target="_blank" href="' . $path . '" class="buttons"><img width="32" height="32" src="images/open.svg"><span class="open"><string>open</string></span><img width="32" height="32" src="images/open.svg"></a>
                                 <a target="_blank" href="' . $path . '" download="' . $n . "_" . $i . '" class="buttons"><img width="32" height="32" src="images/download.svg"><span class="download"><string>download</string></span></a>
                             </div>
                             <br>
@@ -182,7 +183,8 @@
                         if($dirFilesQuantity == 2 || $i == 0){
                             $photovideoHTML .= '<div class="photovideo">' . $photovideoTag . '</div>';
                         }else if($i == 1){
-                            $photovideoHTML .= '<div class="photovideo pvoverlay0" style="border-style:solid;">' . $photovideoTag . '<a href="?' . $n . '&all" target="_blank" class="pvoverlay">+' . ($dirFilesQuantity - 1) . '</a></div>';
+                            $photovideoHTML .= '<div class="photovideo pvoverlay0" style="border-style:solid;">' . $photovideoTag . '<a href="?' . $n . '&all" class="pvoverlay">+' . ($dirFilesQuantity - 1) . '</a></div>';
+                            $photovideoHTML .= '<a target="_blank" href="?' . $n . '&all" class="buttons"><img width="32" height="32" src="images/open.svg"><span class="open"><string>open</string></span><img width="32" height="32" src="images/open.svg"></a>';
                         }else{
                             break;
                         }
@@ -268,7 +270,8 @@
                 if(!empty($descriptionTime))    {
                     $descriptionPublicPath = "?view&v=uploads/strings/descriptions/" . basename($descriptionPath);
                     $descriptionButtons = "<div class=\"buttonsdivs\">";
-                    $descriptionButtons .= "<a target=\"_blank\" href=\"" . $descriptionPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span></a>";
+                    $descriptionButtons .= "<a href=\"" . $descriptionPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span></a>";
+                    $descriptionButtons .= "<a target=\"_blank\" href=\"" . $descriptionPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span><img width=\"32\" height=\"32\" src=\"images/open.svg\"></a>";
                     $descriptionButtons .= "<a href=\"" . $descriptionPublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
                     $descriptionButtons .= "</div>";
                 }else{
@@ -297,7 +300,8 @@
                 if(!empty($voicePath))    {
                     $voiceTag = "<audio controls src=\"" . $voicePublicPath . "\"></audio>";
                     $voiceButtons = "<div class=\"buttonsdivs\">";
-                    $voiceButtons .= "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span></a>";
+                    $voiceButtons .= "<a href=\"" . $voicePublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span></a>";
+                    $voiceButtons .= "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span><img width=\"32\" height=\"32\" src=\"images/open.svg\"></a>";
                     $voiceButtons .= "<a href=\"" . $voicePublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
                     $voiceButtons .= "</div>";
                 }else{
