@@ -374,8 +374,15 @@
         foreach($files as $n)    {
             echo getData($n, $rawData);
         }
-        if(!$rawData && (count($files) == maxQuantity))    {
-            echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a><br><br>";
+        if(!$rawData)    {
+            if($page){
+                echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\"><<</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+            }
+            if(count($files) == maxQuantity){
+                echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
+            }
+            echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"></a>';
+            echo "<br><br>";
         }
     }
     if(!$rawData)    {

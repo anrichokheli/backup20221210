@@ -1,8 +1,8 @@
 try{
-    if(localStorage.getItem("darkmode") != null){
-        var mainDiv = document.getElementById("main");
-        window.matchMedia("(prefers-color-scheme: dark)").onchange = function(){};
-        if(localStorage.getItem("darkmode") == "true"){
+    var mainDiv = document.getElementById("main");
+    var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
+    function setDarkMode(enabled){
+        if(enabled){
             document.documentElement.style.colorScheme = "dark";
             mainDiv.style.backgroundColor = "#000000";
         }else{
@@ -10,6 +10,22 @@ try{
             mainDiv.style.backgroundColor = "#ffffff";
         }
     }
+    function defaultdarkmode()  {
+        setDarkMode(matchmedia.matches);
+        matchmedia.onchange = function(e){setDarkMode(e.matches);};
+    }
+    function darkMode(){
+        if(localStorage.getItem("darkmode") != null){
+            matchmedia.onchange = function(){};
+            setDarkMode(localStorage.getItem("darkmode") == "true");
+        }else{
+            defaultdarkmode();
+        }
+    }
+    darkMode();
+    window.onstorage = function(){
+        darkMode();
+    };
 }catch(e){}
 var strings = null;
 function getString(key)  {

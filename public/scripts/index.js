@@ -407,7 +407,7 @@ function filesUpload(files, fileInput, filelink){
         after.classList.add("boxs", "boxs2");
         if(!filelink && (files.length == 1)){
             var downloadButton = document.createElement("a");
-            downloadButton.innerHTML = '<img width="32" height="32" src="images/download.svg"> ' + getString("download");
+            downloadButton.innerHTML = '<img width="32" height="32" src="images/download.svg"> <span class="download">' + getString("download") + '</span>';
             downloadButton.classList.add("buttons", "afteruploadbuttons");
             downloadButton.href = URL.createObjectURL(files[0]);
             downloadButton.download = (new Date()).getTime();
@@ -462,13 +462,13 @@ function filesUpload(files, fileInput, filelink){
             var key = responseArray[1];
             try{
                 var fullLink = window.location.href+"?"+n;
-                var html = "<div class=\"boxs boxs2\">" + getString("uploadedid") + ": #" + n + "</div>";
+                var html = "<div class=\"boxs boxs2\"><span class=\"uploadedid\">" + getString("uploadedid") + "</span>: #" + n + "</div>";
                 html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
-                html += "<button onclick=location.assign(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+getString("viewupload")+"</button>";
-                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;"+getString("viewupload")+"&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></button>";
-                html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\"></textarea></div>";
-                html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;"+getString("uploaddescription")+"</button></div>";
-                html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;"+getString("uploadvoice")+"</button></div></div>";
+                html += "<button onclick=location.assign(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span></button>";
+                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></button>";
+                html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts writedescription\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\"></textarea></div>";
+                html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;<span class=\"uploaddescription\">"+getString("uploaddescription")+"</span></button></div>";
+                html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;<span class=\"uploadvoice\">"+getString("uploadvoice")+"</span></button></div></div>";
                 html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
                 after.innerHTML = html;
                 subbox.insertBefore(after, subbox.childNodes[0]);
@@ -491,7 +491,7 @@ function filesUpload(files, fileInput, filelink){
                 }
                 try{
                     var shareButton = document.createElement("button");
-                    shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> "+getString("share");
+                    shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> <span class=\"share\">"+getString("share")+"</span>";
                     shareButton.classList.add("buttons", "afteruploadbuttons");
                     shareButton.addEventListener("click", function(){
                         try{
@@ -659,7 +659,15 @@ try{
     var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
     function defaultdarkmode()  {
         setDarkMode(matchmedia.matches);
-        matchmedia.onchange = function(e){setDarkMode(e.matches);};
+        matchmedia.onchange = function(e){
+            setDarkMode(e.matches);
+            if(typeof darkmodecheckbox != "undefined"){
+                darkmodecheckbox.checked = e.matches;
+            }
+            if(typeof settingsWindowOverlay != "undefined" && typeof settingsWindow != "undefined"){
+                setWindowDarkMode(settingsWindowOverlay, settingsWindow);
+            }
+        };
     }
     if(localStorage.getItem("darkmode") == null)    {
         defaultdarkmode();
@@ -817,7 +825,7 @@ try{
                     if(elements!=null){
                         for(var element in elements){
                             if(elements[element]!=null){
-                                if(elements[element].tagName == "INPUT"){
+                                if(elements[element].tagName == "INPUT" || elements[element].tagName == "TEXTAREA"){
                                     if(elements[element].placeholder.includes("...")){
                                         elements[element].placeholder=json[key]+"...";
                                     }else{
@@ -902,15 +910,15 @@ try{
     psImg.src = "images/pedestriansos.svg";
     psImg.style.width = topScrollDivHeight + "px";
     psImg.style.height = topScrollDivHeight + "px";
+    psImg.onclick = function(){
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    };
+    psImg.style.cursor = "pointer";
     topScrollDiv.appendChild(psImg);
     function addTopButton(btnid){
         var topButton = document.createElement("button");
         topButton.style.border = "none";
-        if(darkModeEnabled){
-            topButton.style.backgroundColor = "#000000";
-        }else{
-            topButton.style.backgroundColor = "#ffffff";
-        }
         topButton.style.backgroundImage = 'url("'+document.querySelector("#"+btnid+" img").src+'")';
         topButton.style.backgroundRepeat = "no-repeat";
         topButton.style.backgroundSize = "contain";
