@@ -147,6 +147,7 @@ function addRetryButton(func, element){
 }
 var uploadStatuses = document.getElementById("uploadstatuses");
 function uploadString(n, key, post, location, value) {
+    unloadWarning++;
     try{
         var text;
         var img = "<img width=\"16\" height=\"16\" src=\"images/";
@@ -223,7 +224,6 @@ function uploadLocation(n, key)   {
     uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy), true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy);
 }
 function uploadDescription(n, key)    {
-    unloadWarning++;
     var descriptionValue = document.getElementById(n).value;
     uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, descriptionValue);
 }
