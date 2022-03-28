@@ -34,6 +34,7 @@ defaultLang.onchange = function(){
         lang = navigator.language.substring(0, 2);
         setLanguage(lang);
         languageSelect.value = lang;
+        window.onlanguagechange = function(){onLanguageChange();};
     }else{
         localStorage.setItem("lang", lang);
         window.onlanguagechange = function(){};
@@ -47,9 +48,5 @@ languageSelect.onchange = function(){
     setLanguage(lang);
     localStorage.setItem("lang", lang);
     defaultLang.checked = 0;
-};
-window.onlanguagechange = function(){
-    lang = navigator.language.substring(0, 2);
-    setLanguage(lang);
-    languageSelect.value = lang;
+    window.onlanguagechange = function(){};
 };

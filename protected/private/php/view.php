@@ -381,7 +381,10 @@
             if(count($files) == maxQuantity){
                 echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
             }
-            echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"></a>';
+            if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
+                echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
+                echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest"><string>viewnewest</string></span></a>';
+            }
             echo "<br><br>";
         }
     }

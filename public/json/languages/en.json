@@ -52,5 +52,7 @@
     "offline": "Offline",
     "link": "Link",
     "pastefiles": "Paste Files",
-    "enterlink": "Enter Link"
+    "enterlink": "Enter Link",
+    "viewnewest": "View Newest",
+    "myuploads": "My Uploads"
 }

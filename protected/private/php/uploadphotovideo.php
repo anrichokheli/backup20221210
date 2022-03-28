@@ -229,9 +229,9 @@
                     echo '#' . $GLOBALS["filesName"] . '|' . $key;
                 }
             }
-            if(($GLOBALS["correct"] && $GLOBALS["uploaded"]) || !$GLOBALS["htmlMode"]){
-                exit;
-            }
+        }
+        if(($GLOBALS["correct"] && $GLOBALS["uploaded"]) || !$GLOBALS["htmlMode"]){
+            exit;
         }
     }
 ?>

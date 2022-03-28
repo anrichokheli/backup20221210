@@ -180,6 +180,7 @@ function uploadString(n, key, post, location, value) {
         if(this.responseText === "1")    {
             div.innerHTML = img + text + getString("uploadcompleted");
             color = "#00ff00";
+            unloadWarning--;
         }
         else    {
             div.innerHTML = img + text + getString("uploadfailed");
@@ -222,10 +223,12 @@ function uploadLocation(n, key)   {
     uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy), true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy);
 }
 function uploadDescription(n, key)    {
+    unloadWarning++;
     var descriptionValue = document.getElementById(n).value;
     uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, descriptionValue);
 }
 function uploadVoice(n, key)  {
+    unloadWarning++;
     var statusElement = document.getElementById('q'+n);
     var voiceinput = document.getElementById('v'+n);
     var button = document.getElementById("vb"+n);
@@ -248,6 +251,7 @@ function uploadVoice(n, key)  {
         if(this.responseText === "1")    {
             div.innerHTML = img+text+getString("uploadcompleted");
             div.style.borderColor = "#00ff00";
+            unloadWarning--;
         }
         else    {
             div.innerHTML = img+text+getString("uploadfailed")+"\n(" + this.responseText + ")";
@@ -344,7 +348,7 @@ function filesUpload(files, fileInput, filelink){
                 }
             }
         }
-        unloadWarning = 1;
+        unloadWarning++;
         subbox = document.createElement("div");
         flexCenter(subbox, 1);
         subbox.className = "boxs";
@@ -461,6 +465,16 @@ function filesUpload(files, fileInput, filelink){
             var n = responseArray[0];
             var key = responseArray[1];
             try{
+                var uploadsStorage = localStorage.getItem("uploads");
+                if(uploadsStorage){
+                    uploadsStorage = JSON.parse(uploadsStorage);
+                }else{
+                    uploadsStorage = [];
+                }
+                uploadsStorage.push([n, key]);
+                localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
+            }catch(e){}
+            try{
                 var fullLink = window.location.href+"?"+n;
                 var html = "<div class=\"boxs boxs2\"><span class=\"uploadedid\">" + getString("uploadedid") + "</span>: #" + n + "</div>";
                 html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
@@ -511,6 +525,7 @@ function filesUpload(files, fileInput, filelink){
             }else{
                 locationUploadArray.push([n, key]);
             }
+            unloadWarning--;
         }
         else    {
             statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadfailed");
@@ -564,9 +579,6 @@ function uploadFunction(input){
         filesUpload(null, input);
     }catch(e){
         try{
-            if(unloadWarning){
-                unloadWarning = 0;
-            }
             input.parentNode.parentNode.submit();
         }catch(e){
             button.style.display = "inline-block";
@@ -676,8 +688,23 @@ try{
         setDarkMode(localStorage.getItem("darkmode")=="true");
         matchmedia.onchange=function(){};
     }
+    function inputsHaveContent(){
+        var inputs = document.getElementsByTagName("input");
+        for(var i = 0; i < inputs.length; i++){
+            if((inputs[i].type == "text" || inputs[i].type == "url") && !inputs[i].readOnly && inputs[i].value != ""){
+                return true;
+            }
+        }
+        inputs = document.getElementsByTagName("textarea");
+        for(var i = 0; i < inputs.length; i++){
+            if(!inputs[i].disabled && inputs[i].value != ""){
+                return true;
+            }
+        }
+        return false;
+    }
     window.addEventListener("beforeunload", function(e){
-        if(unloadWarning)    {
+        if(unloadWarning || inputsHaveContent())    {
             e.preventDefault();
             e.returnValue = '';
         }
@@ -858,10 +885,18 @@ try{
         };
         ajax.send();
     }
+    function onLanguageChange(){
+        lang = navigator.language.substring(0, 2);
+        setLanguage(lang);
+        if(typeof languageSelect != "undefined")languageSelect.value = lang;
+    }
     var lang = localStorage.getItem("lang");
     if(lang == null){
         lang = navigator.language;
         lang = lang.substring(0, 2);
+        window.onlanguagechange = function(){
+            onLanguageChange();
+        };
     }
     setLanguage(lang);
     document.getElementById("langform").remove();
@@ -906,6 +941,7 @@ try{
     topScrollDiv.style.overflow = "hidden";
     topScrollDiv.style.display = "flex";
     topScrollDiv.style.justifyContent = "space-evenly";
+    topScrollDiv.style.zIndex = "1";
     var psImg = document.createElement("img");
     psImg.src = "images/pedestriansos.svg";
     psImg.style.width = topScrollDivHeight + "px";
@@ -949,5 +985,54 @@ try{
             topScrollDiv.style.borderBottom = "";
         }
     };
+}catch(e){}
+try{
+    var myUploadsButton = document.createElement("button");
+    myUploadsButton.innerHTML = '<img width="64" height="64" src="images/viewicon.svg"> <span class="myuploads">' + getString("myuploads") + '</span>';
+    myUploadsButton.classList.add("buttons");
+    var myUploadsOverlay = document.createElement("div");
+    myUploadsOverlay.id = "myuploadsoverlay";
+    myUploadsOverlay.classList.add("overlay");
+    myUploadsOverlay.style.backgroundColor = "#256aff80";
+    var myUploadsWindow = document.createElement("div");
+    myUploadsWindow.style.display = "flex";
+    myUploadsWindow.style.flexDirection = "column";
+    myUploadsOverlay.appendChild(myUploadsWindow);
+    myUploadsOverlay.style.display = "none";
+    myUploadsOverlay.onclick = function(e){
+        if(e.target.id != this.id){
+            return;
+        }
+        this.style.display = "none";
+        myUploadsWindow.innerHTML = '';
+    };
+    mainDiv.appendChild(myUploadsOverlay);
+    myUploadsButton.onclick = function(){
+        if(darkModeEnabled){
+            myUploadsWindow.style.backgroundColor = "#000000";
+        }else{
+            myUploadsWindow.style.backgroundColor = "#ffffff";
+        }
+        var uploadsData = localStorage.getItem("uploads");
+        if(uploadsData){
+            uploadsData = JSON.parse(uploadsData);
+            for(var i = 0; i < uploadsData.length; i++){
+                var a = document.createElement("a");
+                a.href = "?"+uploadsData[i][0];
+                a.innerText = "#"+uploadsData[i][0];
+                a.target = "_blank";
+                myUploadsWindow.appendChild(a);
+            }
+        }else{
+            uploadsData = getString("nodata");
+        }
+        console.log(uploadsData)
+        myUploadsOverlay.style.display = "flex";
+    };
+    mainDiv.insertBefore(myUploadsButton, settingsButton);
+    var br0 = document.createElement("br");
+    mainDiv.insertBefore(br0, myUploadsButton.nextElementSibling);
+    var br = document.createElement("br");
+    mainDiv.insertBefore(br, br0);
 }catch(e){}
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);
