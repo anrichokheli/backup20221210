@@ -465,16 +465,6 @@ function filesUpload(files, fileInput, filelink){
             var n = responseArray[0];
             var key = responseArray[1];
             try{
-                var uploadsStorage = localStorage.getItem("uploads");
-                if(uploadsStorage){
-                    uploadsStorage = JSON.parse(uploadsStorage);
-                }else{
-                    uploadsStorage = [];
-                }
-                uploadsStorage.push([n, key]);
-                localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
-            }catch(e){}
-            try{
                 var fullLink = window.location.href+"?"+n;
                 var html = "<div class=\"boxs boxs2\"><span class=\"uploadedid\">" + getString("uploadedid") + "</span>: #" + n + "</div>";
                 html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
@@ -525,6 +515,16 @@ function filesUpload(files, fileInput, filelink){
             }else{
                 locationUploadArray.push([n, key]);
             }
+            try{
+                var uploadsStorage = localStorage.getItem("uploads");
+                if(uploadsStorage){
+                    uploadsStorage = JSON.parse(uploadsStorage);
+                }else{
+                    uploadsStorage = [];
+                }
+                uploadsStorage.push([n, key]);
+                localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
+            }catch(e){}
             unloadWarning--;
         }
         else    {
@@ -865,8 +865,6 @@ try{
                         }
                     }
                 }
-                if(typeof settingsTitle!=="undefined")settingsTitle.innerHTML = strings["settings"];
-                if(typeof langLabel!=="undefined")langLabel.innerHTML = strings["devicedefault"];
                 document.title = strings["title"];
             }
             else{
@@ -995,16 +993,48 @@ try{
     myUploadsOverlay.classList.add("overlay");
     myUploadsOverlay.style.backgroundColor = "#256aff80";
     var myUploadsWindow = document.createElement("div");
-    myUploadsWindow.style.display = "flex";
-    myUploadsWindow.style.flexDirection = "column";
+    myUploadsWindow.style.border = "1px solid #256aff";
+    var myUploadsTitle = document.createElement("h3");
+    myUploadsTitle.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="myuploads">'+getString("myuploads")+'</span>';
+    myUploadsTitle.style.display = "flex";
+    myUploadsTitle.style.justifyContent = "center";
+    myUploadsTitle.style.alignItems = "center";
+    myUploadsTitle.style.margin = "0";
+    var myUploadsTop = document.createElement("div");
+    myUploadsTop.style.marginBottom = "1%";
+    myUploadsTop.style.borderBottom = "1px solid #256aff";
+    myUploadsTop.style.display = "flex";
+    myUploadsTop.style.justifyContent = "space-between";
+    myUploadsTop.appendChild(myUploadsTitle);
+    var closeMyUploads = document.createElement("button");
+    closeMyUploads.innerHTML = "&times;";
+    closeMyUploads.style.background = "none";
+    closeMyUploads.style.fontSize = "25px";
+    closeMyUploads.style.border = "2px solid #ec040080";
+    closeMyUploads.style.borderRadius = "8px";
+    closeMyUploads.style.fontWeight = "bold";
+    closeMyUploads.style.cursor = "pointer";
+    closeMyUploads.onmouseenter = function(){this.style.borderColor = "#ec0400";};
+    closeMyUploads.onmouseleave = function(){this.style.borderColor = "#ec040080";};
+    function closeMyUploadsFunction(){
+        myUploadsOverlay.style.display = "none";
+        myUploadsContent.innerHTML = '';
+    }
+    closeMyUploads.onclick = function(){
+        closeMyUploadsFunction();
+    };
+    myUploadsTop.appendChild(closeMyUploads);
+    myUploadsWindow.appendChild(myUploadsTop);
+    var myUploadsContent = document.createElement("div");
+    myUploadsContent.style.display = "flex";
+    myUploadsContent.style.flexDirection = "column";
+    myUploadsWindow.appendChild(myUploadsContent);
     myUploadsOverlay.appendChild(myUploadsWindow);
     myUploadsOverlay.style.display = "none";
     myUploadsOverlay.onclick = function(e){
-        if(e.target.id != this.id){
-            return;
+        if(e.target.id == this.id){
+            closeMyUploadsFunction();
         }
-        this.style.display = "none";
-        myUploadsWindow.innerHTML = '';
     };
     mainDiv.appendChild(myUploadsOverlay);
     myUploadsButton.onclick = function(){
@@ -1021,12 +1051,12 @@ try{
                 a.href = "?"+uploadsData[i][0];
                 a.innerText = "#"+uploadsData[i][0];
                 a.target = "_blank";
-                myUploadsWindow.appendChild(a);
+                a.classList.add("buttons");
+                myUploadsContent.appendChild(a);
             }
         }else{
-            uploadsData = getString("nodata");
+            myUploadsContent.innerText = getString("nodata");
         }
-        console.log(uploadsData)
         myUploadsOverlay.style.display = "flex";
     };
     mainDiv.insertBefore(myUploadsButton, settingsButton);

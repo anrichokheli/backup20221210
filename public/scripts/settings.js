@@ -41,8 +41,6 @@ defaultLang.onchange = function(){
     }
 };
 languageSelect.value = lang;
-var settingsTitle = document.getElementById("settingstitle");
-var langLabel = document.getElementById("langlabel");
 languageSelect.onchange = function(){
     lang = this.value;
     setLanguage(lang);
