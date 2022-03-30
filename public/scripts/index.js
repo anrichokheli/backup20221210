@@ -1011,7 +1011,6 @@ try{
     myUploadsTitle.style.alignItems = "center";
     myUploadsTitle.style.margin = "0";
     var myUploadsTop = document.createElement("div");
-    myUploadsTop.style.marginBottom = "1%";
     myUploadsTop.style.borderBottom = "1px solid #256aff";
     myUploadsTop.style.display = "flex";
     myUploadsTop.style.justifyContent = "space-between";
@@ -1037,7 +1036,6 @@ try{
     myUploadsWindow.style.maxWidth = "90%";
     myUploadsWindow.appendChild(myUploadsTop);
     var myUploadsContent = document.createElement("div");
-    myUploadsContent.style.maxHeight = "90vh";
     myUploadsContent.style.overflowY = "auto";
     myUploadsContent.style.display = "flex";
     myUploadsContent.style.flexDirection = "column";
@@ -1071,6 +1069,7 @@ try{
             myUploadsContent.innerText = getString("nodata");
         }
         myUploadsOverlay.style.display = "flex";
+        myUploadsContent.style.maxHeight = "calc(90vh - "+myUploadsTop.clientHeight+"px)";
     };
     mainDiv.insertBefore(myUploadsButton, settingsButton);
     var br0 = document.createElement("br");
