@@ -66,8 +66,10 @@ try{
     locationDiv.style.display = "inline-block";
 }catch(e){}
 var locationUploadArray = [];
+var locationWait;
 function getLocation()  {
     if(navigator.geolocation)    {
+        locationWait = 1;
         navigator.geolocation.watchPosition(afterLocation, locationError);
     }
     else    {
@@ -111,6 +113,7 @@ function locationError(error)    {
                 getLocation();
             });
             locationErrorDiv.appendChild(button);
+            locationWait = 0;
             break;
         case error.POSITION_UNAVAILABLE:
             locationErrorDiv.innerText = "location unavailable";
@@ -147,7 +150,9 @@ function addRetryButton(func, element){
 }
 var uploadStatuses = document.getElementById("uploadstatuses");
 function uploadString(n, key, post, location, value) {
-    unloadWarning++;
+    if((location && !locationWait) || !location){
+        unloadWarning++;
+    }
     try{
         var text;
         var img = "<img width=\"16\" height=\"16\" src=\"images/";
@@ -538,7 +543,9 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 uploadsStorage.push([n, key]);
                 localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
             }catch(e){}
-            unloadWarning--;
+            if(!locationWait){
+                unloadWarning--;
+            }
         }
         else    {
             statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadfailed");
@@ -873,6 +880,7 @@ try{
         if((e.target != settingsWindowOverlay) && (e.target.id != "settingsclosewindow")){
             return;
         }
+        document.body.style.overflow = "visible";
         this.style.display = "none";
     });
     var settingsWindow = document.createElement("div");
@@ -892,6 +900,7 @@ try{
     settingsButton.addEventListener("click", function(){
         settingsWindowOverlay.style.display = "block";
         settingsWindowOverlay.style.display = "flex";
+        document.body.style.overflow = "hidden";
         if(settingsWindow.innerHTML != '')    {
             return;
         }
@@ -1004,6 +1013,7 @@ try{
     myUploadsOverlay.style.backgroundColor = "#256aff80";
     var myUploadsWindow = document.createElement("div");
     myUploadsWindow.style.border = "1px solid #256aff";
+    myUploadsWindow.style.borderRadius = "8px";
     var myUploadsTitle = document.createElement("h3");
     myUploadsTitle.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="myuploads">'+getString("myuploads")+'</span>';
     myUploadsTitle.style.display = "flex";
@@ -1011,21 +1021,16 @@ try{
     myUploadsTitle.style.alignItems = "center";
     myUploadsTitle.style.margin = "0";
     var myUploadsTop = document.createElement("div");
+    myUploadsTop.style.padding = "4px";
     myUploadsTop.style.borderBottom = "1px solid #256aff";
     myUploadsTop.style.display = "flex";
     myUploadsTop.style.justifyContent = "space-between";
     myUploadsTop.appendChild(myUploadsTitle);
     var closeMyUploads = document.createElement("button");
     closeMyUploads.innerHTML = "&times;";
-    closeMyUploads.style.background = "none";
-    closeMyUploads.style.fontSize = "25px";
-    closeMyUploads.style.border = "2px solid #ec040080";
-    closeMyUploads.style.borderRadius = "8px";
-    closeMyUploads.style.fontWeight = "bold";
-    closeMyUploads.style.cursor = "pointer";
-    closeMyUploads.onmouseenter = function(){this.style.borderColor = "#ec0400";};
-    closeMyUploads.onmouseleave = function(){this.style.borderColor = "#ec040080";};
+    closeMyUploads.classList.add("closeButtons");
     function closeMyUploadsFunction(){
+        document.body.style.overflow = "visible";
         myUploadsOverlay.style.display = "none";
         myUploadsContent.innerHTML = '';
     }
@@ -1057,19 +1062,30 @@ try{
         var uploadsData = localStorage.getItem("uploads");
         if(uploadsData){
             uploadsData = JSON.parse(uploadsData);
-            for(var i = 0; i < uploadsData.length; i++){
-                var a = document.createElement("a");
-                a.href = "?"+uploadsData[i][0];
-                a.innerText = "#"+uploadsData[i][0];
-                a.target = "_blank";
-                a.classList.add("buttons");
-                myUploadsContent.appendChild(a);
+            for(var i = uploadsData.length - 1; i >= 0; i--){
+                var myUploadBox = document.createElement("div");
+                myUploadBox.style.border = "2px solid #256aff";
+                myUploadBox.style.margin = "4px 2px";
+                myUploadBox.style.padding = "2px";
+                var myUploadID = document.createElement("div");
+                myUploadID.style.borderBottom = "1px solid #256aff";
+                myUploadID.style.marginBottom = "1px";
+                myUploadID.innerText = "#" + uploadsData[i][0];
+                myUploadBox.appendChild(myUploadID);
+                var myUploadView = document.createElement("a");
+                myUploadView.className = "buttons";
+                myUploadView.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> ' + getString("viewupload");
+                myUploadView.target = "_blank";
+                myUploadView.href = "?" + uploadsData[i][0];
+                myUploadBox.appendChild(myUploadView);
+                myUploadsContent.appendChild(myUploadBox);
             }
         }else{
             myUploadsContent.innerText = getString("nodata");
         }
         myUploadsOverlay.style.display = "flex";
         myUploadsContent.style.maxHeight = "calc(90vh - "+myUploadsTop.clientHeight+"px)";
+        document.body.style.overflow = "hidden";
     };
     mainDiv.insertBefore(myUploadsButton, settingsButton);
     var br0 = document.createElement("br");

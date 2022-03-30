@@ -111,3 +111,14 @@
     display: flex;
     justify-content: center;
 }
+.closeButtons{
+    background: none;
+    font-size: 25px;
+    border: 2px solid #ec040080;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.closeButtons:hover{
+    border-color: #ec0400;
+}

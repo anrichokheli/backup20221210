@@ -25,17 +25,6 @@
     display: flex;
     align-items: center;
 }
-#settingsclosewindow{
-    background: none;
-    font-size: 25px;
-    border: 2px solid #ec040080;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-}
-#settingsclosewindow:hover{
-    border-color: #ec0400;
-}
 .settingsbox{
     border: 1px dotted #256aff;
     border-radius: 4px;
