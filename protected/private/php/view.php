@@ -110,6 +110,9 @@
     }
     define("textLengthDisplay", 100);
     define("textNewlineDisplay", 4);
+    function getNoData(){
+        return "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
+    }
     function getData($n, $rawData)  {
         //$pvtimePath = photovideotimes . $n . ".txt";
         $dirpvtimePath = photovideotimes . $n;
@@ -118,7 +121,7 @@
                 return "0";
             }
             else    {
-                echo "<br>#: " . $n . "<br>not exists<br>";
+                echo "<br>#: " . $n . "<br>" . getNoData() . "<br>";
                 return;
             }
         }
@@ -208,7 +211,7 @@
                 $locationArray = explode("; ", $locationData);
                 for($i = 0; $i < count($locationArray); $i++){
                     if($locationArray[$i] == "-"){
-                        $locationArray[$i] = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
+                        $locationArray[$i] = getNoData();
                     }
                 }
                 if(strpos($locationArray[0], ", ") !== FALSE){
@@ -259,7 +262,7 @@
                 if($rawData){
                     $descriptionData = "";
                 }else{
-                    $descriptionData = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
+                    $descriptionData = getNoData();
                 }
                 $descriptionTime = "";
             }
@@ -289,7 +292,7 @@
                 $voiceTime = getT(file_get_contents(voicetimes . $n . ".txt"));
             }
             else    {
-                $voiceTag = "<span style=\"background-color:#ff000080;\" class=\"nodata\"><string>nodata</string></span>";
+                $voiceTag = getNoData();
                 $voiceTime = "";
                 $voicePublicPath = "";
             }
@@ -341,51 +344,45 @@
     }
     else    {
         if(/*!file_exists(photovideotimes)*/count(scandir(photovideotimes)) == 2){
-            exit("<br>" . $langJSON["nodata"]);
-        }
-        //$filesQuantity = count(scandir(photovideos)) - 2;
-        /*for ($i = 0; $i < $filesQuantity; $i++) {
-            echo getData($i, 1);
-        }
-        for ($i = $filesQuantity - 1; $i >= 0; $i--) {
-            //echo getData($i, 1);
-            echo getData($i);
-        }*/
-        $files = array_slice(scandir(photovideotimes), 2);
-        // for($i = 0; $i < count($files); $i++)   {
-        //     $files[$i] = str_replace(".txt", "", $files[$i]);
-        // }
-        if(!$rawData)    {
-            define("maxQuantity", 10);
-            rsort($files);
-            if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
-                $topN = $_GET["t"];
-                $files = array_slice($files, array_search($topN, $files));
+            if($rawData){
+                echo "0";
+            }else{
+                echo("<br>" . getNoData());
             }
-            else    {
-                $topN = $files[0];
+        }else{
+            $files = array_slice(scandir(photovideotimes), 2);
+            if(!$rawData)    {
+                define("maxQuantity", 10);
+                rsort($files);
+                if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
+                    $topN = $_GET["t"];
+                    $files = array_slice($files, array_search($topN, $files));
+                }
+                else    {
+                    $topN = $files[0];
+                }
+                $page = 0;
+                if(isset($_GET["p"]) && ctype_digit($_GET["p"]))    {
+                    $page = $_GET["p"];
+                }
+                $files = array_slice($files, maxQuantity * $page, maxQuantity);
             }
-            $page = 0;
-            if(isset($_GET["p"]) && ctype_digit($_GET["p"]))    {
-                $page = $_GET["p"];
+            foreach($files as $n)    {
+                echo getData($n, $rawData);
             }
-            $files = array_slice($files, maxQuantity * $page, maxQuantity);
-        }
-        foreach($files as $n)    {
-            echo getData($n, $rawData);
-        }
-        if(!$rawData)    {
-            if($page){
-                echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\"><<</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+            if(!$rawData)    {
+                if($page){
+                    echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\"><<</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+                }
+                if(count($files) == maxQuantity){
+                    echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
+                }
+                if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
+                    echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
+                    echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest"><string>viewnewest</string></span></a>';
+                }
+                echo "<br><br>";
             }
-            if(count($files) == maxQuantity){
-                echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
-            }
-            if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
-                echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
-                echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest"><string>viewnewest</string></span></a>';
-            }
-            echo "<br><br>";
         }
     }
     if(!$rawData)    {

@@ -678,6 +678,64 @@ function getCookie(cname) {
     return "";
 }
 try{
+    var topDiv = document.getElementById("top");
+    var topScrollDiv = document.createElement("div");
+    var topScrollDivHeight = topDiv.clientHeight / 2;
+    topScrollDiv.style.position = "fixed";
+    topScrollDiv.style.top = "0";
+    topScrollDiv.style.left = "0";
+    topScrollDiv.style.width = "100%";
+    topScrollDiv.style.backgroundColor = "#256aff80";
+    topScrollDiv.style.transition = "0.1s";
+    topScrollDiv.style.height = "0";
+    topScrollDiv.style.overflow = "hidden";
+    topScrollDiv.style.display = "flex";
+    topScrollDiv.style.justifyContent = "space-evenly";
+    var psImg = document.createElement("img");
+    psImg.src = "images/pedestriansos.svg";
+    psImg.style.width = topScrollDivHeight + "px";
+    psImg.style.height = topScrollDivHeight + "px";
+    psImg.onclick = function(){
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    };
+    psImg.style.cursor = "pointer";
+    topScrollDiv.appendChild(psImg);
+    function addTopButton(btnid){
+        var topButton = document.createElement("button");
+        topButton.style.border = "none";
+        topButton.style.backgroundImage = 'url("'+document.querySelector("#"+btnid+" img").src+'")';
+        topButton.style.backgroundRepeat = "no-repeat";
+        topButton.style.backgroundSize = "contain";
+        topButton.style.backgroundPosition = "center";
+        topButton.style.width = topScrollDivHeight + "px";
+        topButton.style.height = topScrollDivHeight + "px";
+        topButton.style.cursor = "pointer";
+        topButton.style.borderRadius = "10%";
+        var btn = document.getElementById(btnid);
+        topButton.onclick = function(){
+            btn.click();
+        };
+        topScrollDiv.appendChild(topButton);
+    }
+    addTopButton("takephotobutton");
+    addTopButton("recordvideobutton");
+    addTopButton("choosephotobutton");
+    addTopButton("choosevideobutton");
+    addTopButton("choosefilesbutton");
+    addTopButton("camerabutton");
+    mainDiv.appendChild(topScrollDiv);
+    window.onscroll = function(){
+        if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0){
+            topScrollDiv.style.height = topScrollDivHeight + "px";
+            topScrollDiv.style.borderBottom = "2px solid #256aff";
+        }else{
+            topScrollDiv.style.height = "0";
+            topScrollDiv.style.borderBottom = "";
+        }
+    };
+}catch(e){}
+try{
     var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
     function defaultdarkmode()  {
         setDarkMode(matchmedia.matches);
@@ -810,6 +868,7 @@ try{
         return html;
     }
     var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
+    settingsWindowOverlay.style.zIndex = "1";
     settingsWindowOverlay.addEventListener("click", function(e){
         if((e.target != settingsWindowOverlay) && (e.target.id != "settingsclosewindow")){
             return;
@@ -936,65 +995,6 @@ try{
     });
 }catch(e){}
 try{
-    var topDiv = document.getElementById("top");
-    var topScrollDiv = document.createElement("div");
-    var topScrollDivHeight = topDiv.clientHeight / 2;
-    topScrollDiv.style.position = "fixed";
-    topScrollDiv.style.top = "0";
-    topScrollDiv.style.left = "0";
-    topScrollDiv.style.width = "100%";
-    topScrollDiv.style.backgroundColor = "#256aff80";
-    topScrollDiv.style.transition = "0.1s";
-    topScrollDiv.style.height = "0";
-    topScrollDiv.style.overflow = "hidden";
-    topScrollDiv.style.display = "flex";
-    topScrollDiv.style.justifyContent = "space-evenly";
-    topScrollDiv.style.zIndex = "1";
-    var psImg = document.createElement("img");
-    psImg.src = "images/pedestriansos.svg";
-    psImg.style.width = topScrollDivHeight + "px";
-    psImg.style.height = topScrollDivHeight + "px";
-    psImg.onclick = function(){
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-    };
-    psImg.style.cursor = "pointer";
-    topScrollDiv.appendChild(psImg);
-    function addTopButton(btnid){
-        var topButton = document.createElement("button");
-        topButton.style.border = "none";
-        topButton.style.backgroundImage = 'url("'+document.querySelector("#"+btnid+" img").src+'")';
-        topButton.style.backgroundRepeat = "no-repeat";
-        topButton.style.backgroundSize = "contain";
-        topButton.style.backgroundPosition = "center";
-        topButton.style.width = topScrollDivHeight + "px";
-        topButton.style.height = topScrollDivHeight + "px";
-        topButton.style.cursor = "pointer";
-        topButton.style.borderRadius = "10%";
-        var btn = document.getElementById(btnid);
-        topButton.onclick = function(){
-            btn.click();
-        };
-        topScrollDiv.appendChild(topButton);
-    }
-    addTopButton("takephotobutton");
-    addTopButton("recordvideobutton");
-    addTopButton("choosephotobutton");
-    addTopButton("choosevideobutton");
-    addTopButton("choosefilesbutton");
-    addTopButton("camerabutton");
-    mainDiv.appendChild(topScrollDiv);
-    window.onscroll = function(){
-        if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0){
-            topScrollDiv.style.height = topScrollDivHeight + "px";
-            topScrollDiv.style.borderBottom = "2px solid #256aff";
-        }else{
-            topScrollDiv.style.height = "0";
-            topScrollDiv.style.borderBottom = "";
-        }
-    };
-}catch(e){}
-try{
     var myUploadsButton = document.createElement("button");
     myUploadsButton.innerHTML = '<img width="64" height="64" src="images/viewicon.svg"> <span class="myuploads">' + getString("myuploads") + '</span>';
     myUploadsButton.classList.add("buttons");
@@ -1034,8 +1034,11 @@ try{
         closeMyUploadsFunction();
     };
     myUploadsTop.appendChild(closeMyUploads);
+    myUploadsWindow.style.maxWidth = "90%";
     myUploadsWindow.appendChild(myUploadsTop);
     var myUploadsContent = document.createElement("div");
+    myUploadsContent.style.maxHeight = "90vh";
+    myUploadsContent.style.overflowY = "auto";
     myUploadsContent.style.display = "flex";
     myUploadsContent.style.flexDirection = "column";
     myUploadsWindow.appendChild(myUploadsContent);
