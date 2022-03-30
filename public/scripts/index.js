@@ -317,15 +317,15 @@ var maxFileSize = 25000000;
 var maxFilesNum = 10;
 var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpg", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
 var lastUploadID = 0;
-function filesUpload(files, fileInput, filelink){
+function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString0){
     var currentUploadID = ++lastUploadID;
-    if(!filelink && files === null)  {
+    if(!filelink && files === null && !formData0)  {
         files = fileInput.files;
     }
     var subbox;
     var after;
     try{
-        if(!filelink){
+        if(!filelink && !formData0){
             if(files.length > maxFilesNum){
                 alert(getString("maxfilesnum") + " " + maxFilesNum);
                 return;
@@ -348,7 +348,9 @@ function filesUpload(files, fileInput, filelink){
                 }
             }
         }
-        unloadWarning++;
+        if(!formData0){
+            unloadWarning++;
+        }
         subbox = document.createElement("div");
         flexCenter(subbox, 1);
         subbox.className = "boxs";
@@ -360,26 +362,32 @@ function filesUpload(files, fileInput, filelink){
         subbox.appendChild(status);
         var statusText = document.createElement("div");
         var typeString;
-        var typeImg = "<img width=\"16\" height=\"16\" src=\"images/";
-        if(filelink){
-            typeString = getString("link");
-            typeImg += "link";
+        var typeImg;
+        if(typeImg0 && typeString0){
+            typeImg = typeImg0;
+            typeString = typeString0;
         }else{
-            if(files.length == 1){
-                if(fileType == "image"){
-                    typeString = getString("photo");
-                    typeImg += "photo";
-                }else{
-                    typeString = getString("video");
-                    typeImg += "video";
-                }
+            typeImg = "<img width=\"16\" height=\"16\" src=\"images/";
+            if(filelink){
+                typeString = getString("link");
+                typeImg += "link";
             }else{
-                typeString = getString("files");
-                typeImg += "photovideo";
+                if(files.length == 1){
+                    if(fileType == "image"){
+                        typeString = getString("photo");
+                        typeImg += "photo";
+                    }else{
+                        typeString = getString("video");
+                        typeImg += "video";
+                    }
+                }else{
+                    typeString = getString("files");
+                    typeImg += "photovideo";
+                }
             }
+            typeImg += ".svg\">";
+            typeString += "; ";
         }
-        typeImg += ".svg\">";
-        typeString += "; ";
         statusText.innerHTML = typeImg + ' ' + typeString + getString("uploading");
         statusDiv.appendChild(statusText);
         var progress = document.createElement("div");
@@ -418,44 +426,49 @@ function filesUpload(files, fileInput, filelink){
             status.appendChild(downloadButton);
         }
     }catch(e){}
-    var formData = new FormData();
-    var fileTypeArray2;
-    var fileType2;
-    var fileExtension2;
-    function displayUploadError(text){
-        var div = document.createElement("div");
-        div.style.border = "2px solid #ff0000";
-        div.innerText = text;
-        subbox.insertBefore(div, subbox.childNodes[0]);
-    }
-    if(filelink){
-        formData.append("filelink", filelink);
+    if(formData0){
+        formData = formData0;
     }else{
-        for(var file in files){
-            try{
-                if(files[file].size > maxFileSize)    {
-                    try{
-                        displayUploadError(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB. (" + files[file].name + ")");
-                    }catch(e){}
-                    continue;
-                }
-                fileTypeArray2 = files[file].type.split('/');
-                fileType2 = fileTypeArray2[0];
-                fileExtension2 = fileTypeArray2[1];
-                if(fileType2 != "image" && fileType2 != "video")    {
-                    try{
-                        displayUploadError(getString("onlyimgvid") + " (" + files[file].name + ")");
-                    }catch(e){}
-                    continue;
-                }
-                if(allowedFileExtensions.indexOf(fileExtension2) == -1)    {
-                    try{
-                        displayUploadError(getString("allowedext") + ": ." + allowedFileExtensions.join(", .") + ". (" + files[file].name + ")");
-                    }catch(e){}
-                    continue;
-                }
-            }catch(e){}
-            formData.append("photovideo[]", files[file]);
+        var formData = new FormData();
+        var fileTypeArray2;
+        var fileType2;
+        var fileExtension2;
+        function displayUploadError(text){
+            var div = document.createElement("div");
+            div.style.border = "2px solid #ff0000";
+            div.innerText = text;
+            subbox.insertBefore(div, subbox.childNodes[0]);
+        }
+        if(filelink){
+            formData.append("filelink", filelink);
+        }else{
+            for(var file in files){
+                try{
+                    if(files[file].size > maxFileSize)    {
+                        try{
+                            displayUploadError(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB. (" + files[file].name + ")");
+                        }catch(e){}
+                        continue;
+                    }
+                    fileTypeArray2 = files[file].type.split('/');
+                    fileType2 = fileTypeArray2[0];
+                    fileExtension2 = fileTypeArray2[1];
+                    if(fileType2 != "image" && fileType2 != "video")    {
+                        try{
+                            displayUploadError(getString("onlyimgvid") + " (" + files[file].name + ")");
+                        }catch(e){}
+                        continue;
+                    }
+                    if(allowedFileExtensions.indexOf(fileExtension2) == -1)    {
+                        try{
+                            displayUploadError(getString("allowedext") + ": ." + allowedFileExtensions.join(", .") + ". (" + files[file].name + ")");
+                        }catch(e){}
+                        continue;
+                    }
+                }catch(e){}
+                formData.append("photovideo[]", files[file]);
+            }
+            if(fileInput)fileInput.value = null;
         }
     }
     var ajax = new XMLHttpRequest();
@@ -537,10 +550,7 @@ function filesUpload(files, fileInput, filelink){
             if(currentUploadID == lastUploadID){
                 bottomProgressVisible(0);
             }
-            addRetryButton(function(){filesUpload(files, fileInput, filelink);}, status);
-        }
-        if(!filelink){
-            if(fileInput !== undefined)fileInput.value = null;
+            addRetryButton(function(){filesUpload(files, fileInput, filelink, formData, typeImg, typeString);}, status);
         }
         statusText.className = "statusText";
         statusText.style.borderColor = color;
@@ -559,7 +569,7 @@ function filesUpload(files, fileInput, filelink){
             bottomProgressVisible(0);
         }
         status.insertBefore(statusText, status.childNodes[0]);
-        addRetryButton(function(){filesUpload(files, fileInput, filelink);}, status);
+        addRetryButton(function(){filesUpload(files, fileInput, filelink, formData, typeImg, typeString);}, status);
     };
     var progressPercent;
     ajax.upload.onprogress = function(e){
