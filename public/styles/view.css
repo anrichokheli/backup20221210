@@ -6,6 +6,7 @@ body    {
     font-family: sans-serif;
     text-align: center;
     background-color: #ffffff;
+    min-height: 100vh;
 }
 #main *:not(hr):not(.nodata):not(.pvoverlay){
     display: inline-block;
