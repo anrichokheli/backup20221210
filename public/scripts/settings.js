@@ -48,3 +48,10 @@ languageSelect.onchange = function(){
     defaultLang.checked = 0;
     window.onlanguagechange = function(){};
 };
+var saveUploads = document.getElementById("saveuploads");
+if(localStorage.getItem("saveuploads") == "true"){
+    saveUploads.checked = 1;
+}
+saveUploads.onchange = function(){
+    localStorage.setItem("saveuploads", this.checked);
+};

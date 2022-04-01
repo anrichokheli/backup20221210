@@ -85,7 +85,7 @@ function afterLocation(position)  {
     altitudeAccuracy = position.coords.altitudeAccuracy;
     if(locationUploadArray.length > 0){
         for(var key in locationUploadArray){
-            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1]);
+            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1], document.getElementById('q'+locationUploadArray[key][0]));
             locationUploadArray.shift();
         }
     }
@@ -149,7 +149,11 @@ function addRetryButton(func, element){
     window.addEventListener("online", onlineFunc);
 }
 var uploadStatuses = document.getElementById("uploadstatuses");
-function uploadString(n, key, post, location, value) {
+function uploadString(n, key, post, location, value, element, storage_ID, input, button) {
+    if(!location)    {
+        input.disabled = 1;
+        button.disabled = 1;
+    }
     if((location && !locationWait) || !location){
         unloadWarning++;
     }
@@ -166,7 +170,6 @@ function uploadString(n, key, post, location, value) {
         }
         text += "; ";
         img += ".svg\"> ";
-        var element = document.getElementById('q'+n);
         var div = document.createElement("div");
         div.className = "statusText";
         div.innerHTML = img+text+getString("uploading");
@@ -187,19 +190,26 @@ function uploadString(n, key, post, location, value) {
             div.innerHTML = img + text + getString("uploadcompleted");
             color = "#00ff00";
             unloadWarning--;
+            try{
+                if(!location && storage_ID){
+                    var uploadsArray = JSON.parse(localStorage.getItem("uploads"));
+                    uploadsArray[storage_ID][2] = false;
+                    localStorage.setItem("uploads", JSON.stringify(uploadsArray));
+                }
+            }catch(e){}
         }
         else    {
             div.innerHTML = img + text + getString("uploadfailed");
             color = "#ff0000";
             if(!location)    {
-                document.getElementById(n).disabled = 0;
-                document.getElementById("b"+n).disabled = 0;
+                input.disabled = 0;
+                button.disabled = 0;
             }
             var div2 = document.createElement("div");
             div2.innerText = this.responseText;
             div2.style.border = borderStyle + color;
             div.appendChild(div2);
-            addRetryButton(function(){uploadString(n, key, post, location, value);}, element);
+            addRetryButton(function(){uploadString(n, key, post, location, value, element, storage_ID, input, button);}, element);
         }
         div.style.borderColor = color;
         element.insertBefore(div, element.childNodes[0]);
@@ -211,32 +221,31 @@ function uploadString(n, key, post, location, value) {
         color = "#ff0000";
         div.style.borderColor = color;
         if(!location)    {
-            document.getElementById(n).disabled = 0;
-            document.getElementById("b"+n).disabled = 0;
+            input.disabled = 0;
+            button.disabled = 0;
         }
         div2 = document.createElement("div");
         div2.innerText = this.Error;
         div2.style.border = borderStyle + color;
         div.appendChild(div2);
         element.insertBefore(div, element.childNodes[0]);
-        addRetryButton(function(){uploadString(n, key, post, location, value);}, element);
+        addRetryButton(function(){uploadString(n, key, post, location, value, element, storage_ID, input, button);}, element);
     };
     ajax.open("POST", "/");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+post);
 }
-function uploadLocation(n, key)   {
-    uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy), true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy);
+function uploadLocation(n, key, element)   {
+    uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy), true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy, element);
 }
-function uploadDescription(n, key)    {
-    var descriptionValue = document.getElementById(n).value;
-    uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, descriptionValue);
+function uploadDescription(n, key, descriptionValue, storage_ID, input, button, element)    {
+    uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, descriptionValue, element, storage_ID, input, button);
 }
-function uploadVoice(n, key)  {
+function uploadVoice(n, key, storage_ID, statusElement, voiceinput, button)  {
     unloadWarning++;
-    var statusElement = document.getElementById('q'+n);
-    var voiceinput = document.getElementById('v'+n);
-    var button = document.getElementById("vb"+n);
+    if(!statusElement)var statusElement = document.getElementById('q'+n);
+    if(!voiceinput)var voiceinput = document.getElementById('v'+n);
+    if(!button)var button = document.getElementById("vb"+n);
     button.disabled = 1;
     var div = document.createElement("div");
     div.className = "statusText";
@@ -257,12 +266,19 @@ function uploadVoice(n, key)  {
             div.innerHTML = img+text+getString("uploadcompleted");
             div.style.borderColor = "#00ff00";
             unloadWarning--;
+            try{
+                if(storage_ID){
+                    var uploadsArray = JSON.parse(localStorage.getItem("uploads"));
+                    uploadsArray[storage_ID][3] = false;
+                    localStorage.setItem("uploads", JSON.stringify(uploadsArray));
+                }
+            }catch(e){}
         }
         else    {
             div.innerHTML = img+text+getString("uploadfailed")+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             button.disabled = 0;
-            addRetryButton(function(){uploadVoice(n, key);}, statusElement);
+            addRetryButton(function(){uploadVoice(n, key, storage_ID, statusElement, voiceinput, button);}, statusElement);
         }
         statusElement.insertBefore(div, statusElement.childNodes[0]);
     };
@@ -273,7 +289,7 @@ function uploadVoice(n, key)  {
         div.style.borderColor = "#ff0000";
         statusElement.insertBefore(div, statusElement.childNodes[0]);
         button.disabled = 0;
-        addRetryButton(function(){uploadVoice(n, key);}, statusElement);
+        addRetryButton(function(){uploadVoice(n, key, storage_ID, statusElement, voiceinput, button);}, statusElement);
     };
     ajax.open("POST", "/");
     ajax.send(formData);
@@ -483,6 +499,18 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
             var n = responseArray[0];
             var key = responseArray[1];
             try{
+                if(localStorage.getItem("saveuploads") == "true"){
+                    var uploadsStorage = localStorage.getItem("uploads");
+                    if(uploadsStorage){
+                        uploadsStorage = JSON.parse(uploadsStorage);
+                    }else{
+                        uploadsStorage = [];
+                    }
+                    var storage_ID = uploadsStorage.push([n, key, true, true]) - 1;
+                    localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
+                }
+            }catch(e){}
+            try{
                 var fullLink = window.location.href+"?"+n;
                 var html = "<div class=\"boxs boxs2\"><span class=\"uploadedid\">" + getString("uploadedid") + "</span>: #" + n + "</div>";
                 html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
@@ -490,16 +518,15 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></button>";
                 html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts writedescription\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\"></textarea></div>";
                 html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;<span class=\"uploaddescription\">"+getString("uploaddescription")+"</span></button></div>";
-                html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;<span class=\"uploadvoice\">"+getString("uploadvoice")+"</span></button></div></div>";
+                html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\",\""+storage_ID+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;<span class=\"uploadvoice\">"+getString("uploadvoice")+"</span></button></div></div>";
                 html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
                 after.innerHTML = html;
                 subbox.insertBefore(after, subbox.childNodes[0]);
+                var element = document.getElementById('q'+n);
                 var textarea = document.getElementById(n);
                 var button = document.getElementById("b"+n);
                 button.addEventListener("click", function(){
-                    textarea.disabled = 1;
-                    button.disabled = 1;
-                    uploadDescription(n,key);
+                    uploadDescription(n,key,textarea.value,storage_ID,textarea,button,element);
                 });
                 textarea.addEventListener("input", function(){
                     button.disabled = textarea.value == '';
@@ -529,20 +556,10 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 }catch(e){}
             }catch(e){}
             if(latitude != null && longitude != null)    {
-                uploadLocation(n, key);
+                uploadLocation(n, key, element);
             }else{
                 locationUploadArray.push([n, key]);
             }
-            try{
-                var uploadsStorage = localStorage.getItem("uploads");
-                if(uploadsStorage){
-                    uploadsStorage = JSON.parse(uploadsStorage);
-                }else{
-                    uploadsStorage = [];
-                }
-                uploadsStorage.push([n, key]);
-                localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
-            }catch(e){}
             if(!locationWait){
                 unloadWarning--;
             }
@@ -1004,6 +1021,11 @@ try{
     });
 }catch(e){}
 try{
+    if(localStorage.getItem("saveuploads") == null){
+        localStorage.setItem("saveuploads", true);
+    }
+}catch(e){}
+try{
     var myUploadsButton = document.createElement("button");
     myUploadsButton.innerHTML = '<img width="64" height="64" src="images/viewicon.svg"> <span class="myuploads">' + getString("myuploads") + '</span>';
     myUploadsButton.classList.add("buttons");
@@ -1078,6 +1100,47 @@ try{
                 myUploadView.target = "_blank";
                 myUploadView.href = "?" + uploadsData[i][0];
                 myUploadBox.appendChild(myUploadView);
+                var element = document.createElement("div");
+                element.id = 'i'+i;
+                myUploadBox.appendChild(element);
+                if(uploadsData[i][2]){
+                    var descriptionForm = document.createElement("form");
+                    descriptionForm.innerHTML = '<textarea class="writedesciption" rows="2" cols="10" placeholder="'+getString("writedescription")+'..."></textarea><button type="submit" class="buttons uploaddescription" disabled><img width="32" height="32" src="images/description.svg"> '+getString("uploaddescription")+'</button>';
+                    descriptionForm.children[0].addEventListener("input", function(){
+                        this.nextElementSibling.disabled = this.value == '';
+                        this.style.height = "0";
+                        this.style.height = this.scrollHeight + "px";
+                    });
+                    descriptionForm.id = 'd'+i;
+                    descriptionForm.onsubmit = function(e){
+                        e.preventDefault();
+                        var i = this.id.substring(1);
+                        var element = document.getElementById('i'+i);
+                        uploadDescription(uploadsData[i][0], uploadsData[i][1], this.children[0].value, i, this.children[0], this.children[1], element);
+                    };
+                    myUploadBox.insertBefore(descriptionForm, element);
+                }
+                if(uploadsData[i][3]){
+                    var voiceUpload = document.createElement("button");
+                    voiceUpload.innerHTML = '<img width="32" height="32" src="images/microphone.svg"> '+getString("uploadvoice");
+                    voiceUpload.classList.add("buttons", "uploadvoice");
+                    voiceUpload.id = "vb"+i;
+                    var voiceInput = document.createElement("input");
+                    voiceInput.type = "file";
+                    voiceInput.accept = "audio/*";
+                    voiceInput.id = 'v'+i;
+                    voiceInput.oninput = function(){
+                        var i = this.id.substring(1);
+                        var element = document.getElementById('i'+i);
+                        uploadVoice(uploadsData[i][0], uploadsData[i][1], i, element, this, document.getElementById("vb"+i));
+                    };
+                    voiceInput.hidden = 1;
+                    myUploadBox.appendChild(voiceInput);
+                    voiceUpload.onclick = function(){
+                        document.getElementById("v"+this.id.substring(2)).click();
+                    }
+                    myUploadBox.insertBefore(voiceUpload, element);
+                }
                 myUploadsContent.appendChild(myUploadBox);
             }
         }else{
