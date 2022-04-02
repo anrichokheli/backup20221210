@@ -926,6 +926,10 @@ try{
         ajax.open("GET", "html/settings.html");
         ajax.onload = function(){
             settingsWindow.innerHTML = translateHTML(this.responseText);
+            var style = document.createElement("link");
+            style.rel = "stylesheet";
+            style.href = "styles/settings.css";
+            document.head.appendChild(style);
             var script = document.createElement("script");
             script.src = "scripts/settings.js";
             settingsWindow.appendChild(script);
