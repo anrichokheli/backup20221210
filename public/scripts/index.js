@@ -1027,7 +1027,7 @@ try{
 }catch(e){}
 try{
     var myUploadsButton = document.createElement("button");
-    myUploadsButton.innerHTML = '<img width="64" height="64" src="images/viewicon.svg"> <span class="myuploads">' + getString("myuploads") + '</span>';
+    myUploadsButton.innerHTML = '<img width="64" height="64" src="images/myuploads.svg"> <span class="myuploads">' + getString("myuploads") + '</span>';
     myUploadsButton.classList.add("buttons");
     var myUploadsOverlay = document.createElement("div");
     myUploadsOverlay.id = "myuploadsoverlay";
@@ -1037,7 +1037,7 @@ try{
     myUploadsWindow.style.border = "1px solid #256aff";
     myUploadsWindow.style.borderRadius = "8px";
     var myUploadsTitle = document.createElement("h3");
-    myUploadsTitle.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="myuploads">'+getString("myuploads")+'</span>';
+    myUploadsTitle.innerHTML = '<img width="32" height="32" src="images/myuploads.svg"> <span class="myuploads">'+getString("myuploads")+'</span>';
     myUploadsTitle.style.display = "flex";
     myUploadsTitle.style.justifyContent = "center";
     myUploadsTitle.style.alignItems = "center";
