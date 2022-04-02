@@ -55,3 +55,34 @@ if(localStorage.getItem("saveuploads") == "true"){
 saveUploads.onchange = function(){
     localStorage.setItem("saveuploads", this.checked);
 };
+try{
+    window.addEventListener("storage", function(){
+        try{
+            if(this.localStorage.getItem("darkmode")=="true"){
+                onDarkModeChange(1);
+            }else{
+                onDarkModeChange(0);
+                if(this.localStorage.getItem("darkmode")==null){
+                    defaultTheme.checked=1;
+                }else{
+                    defaultTheme.checked=0;
+                }
+            }
+        }catch(e){}
+        try{
+            languageSelect.value = lang;
+            if(this.localStorage.getItem("lang")==null){
+                defaultLang.checked=1;
+            }else{
+                defaultLang.checked=0;
+            }
+        }catch(e){}
+        try{
+            if(localStorage.getItem("saveuploads") == "true"){
+                saveUploads.checked = 1;
+            }else{
+                saveUploads.checked = 0;
+            }
+        }catch(e){}
+    });
+}catch(e){}

@@ -72,9 +72,15 @@ try{
         ajax.send();
     }
     setLanguage();
+}catch(e){}
+try{
     window.onstorage = function(){
-        darkMode();
-        setLanguage();
+        try{
+            darkMode();
+        }catch(e){}
+        try{
+            setLanguage();
+        }catch(e){}
     };
 }catch(e){}
 try{

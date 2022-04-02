@@ -678,6 +678,10 @@ function setDarkMode(enabled) {
     for(var i = 0; i < elements.length; i++)   {
         elements[i].style.color = color;
     }
+    elements = document.getElementsByClassName("backgrounds");
+    for(var i = 0; i < elements.length; i++)   {
+        elements[i].style.backgroundColor = backgroundColor;
+    }
     darkModeEnabled = enabled;
 }
 function setCookie(cname, cvalue, exdays) {
@@ -710,6 +714,8 @@ try{
     topScrollDiv.style.left = "0";
     topScrollDiv.style.width = "100%";
     topScrollDiv.style.backgroundColor = "#256aff80";
+    topScrollDiv.style.borderBottomWidth = "2px";
+    topScrollDiv.style.borderBottomColor = "#256aff";
     topScrollDiv.style.transition = "0.1s";
     topScrollDiv.style.height = "0";
     topScrollDiv.style.overflow = "hidden";
@@ -752,34 +758,42 @@ try{
     window.onscroll = function(){
         if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0){
             topScrollDiv.style.height = topScrollDivHeight + "px";
-            topScrollDiv.style.borderBottom = "2px solid #256aff";
+            topScrollDiv.style.borderBottomStyle = "solid";
         }else{
             topScrollDiv.style.height = "0";
-            topScrollDiv.style.borderBottom = "";
+            topScrollDiv.style.borderBottomStyle = "";
         }
     };
 }catch(e){}
 try{
     var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
+    function onDarkModeChange(checked){
+        if(typeof darkmodecheckbox != "undefined"){
+            darkmodecheckbox.checked = checked;
+        }
+        if(typeof settingsWindowOverlay != "undefined" && typeof settingsWindow != "undefined"){
+            setWindowDarkMode(settingsWindowOverlay, settingsWindow);
+        }
+    }
     function defaultdarkmode()  {
         setDarkMode(matchmedia.matches);
         matchmedia.onchange = function(e){
             setDarkMode(e.matches);
-            if(typeof darkmodecheckbox != "undefined"){
-                darkmodecheckbox.checked = e.matches;
-            }
-            if(typeof settingsWindowOverlay != "undefined" && typeof settingsWindow != "undefined"){
-                setWindowDarkMode(settingsWindowOverlay, settingsWindow);
-            }
+            onDarkModeChange(e.matches);
         };
     }
-    if(localStorage.getItem("darkmode") == null)    {
-        defaultdarkmode();
+    function darkmode(){
+        if(localStorage.getItem("darkmode") == null)    {
+            defaultdarkmode();
+        }
+        else    {
+            setDarkMode(localStorage.getItem("darkmode")=="true");
+            matchmedia.onchange=function(){};
+        }
     }
-    else    {
-        setDarkMode(localStorage.getItem("darkmode")=="true");
-        matchmedia.onchange=function(){};
-    }
+    darkmode();
+}catch(e){}
+try{
     function inputsHaveContent(){
         var inputs = document.getElementsByTagName("input");
         for(var i = 0; i < inputs.length; i++){
@@ -987,20 +1001,38 @@ try{
         setLanguage(lang);
         if(typeof languageSelect != "undefined")languageSelect.value = lang;
     }
-    var lang = localStorage.getItem("lang");
-    if(lang == null){
-        lang = navigator.language;
-        lang = lang.substring(0, 2);
-        window.onlanguagechange = function(){
-            onLanguageChange();
-        };
+    var lang;
+    function language(){
+        lang = localStorage.getItem("lang");
+        if(lang == null){
+            lang = navigator.language;
+            lang = lang.substring(0, 2);
+            window.onlanguagechange = function(){
+                onLanguageChange();
+            };
+        }
+        setLanguage(lang);
     }
-    setLanguage(lang);
+    language();
     document.getElementById("langform").remove();
+}catch(e){}
+try{
+    window.addEventListener("storage", function(){
+        try{
+            darkmode();
+        }catch(e){}
+        try{
+            language();
+        }catch(e){}
+    });
 }catch(e){}
 try{
     var isOffline;
     window.addEventListener("offline", function(){
+        try{
+            topScrollDiv.style.backgroundColor = "#ec040080";
+            topScrollDiv.style.borderBottomColor = "#ec0400";
+        }catch(e){}
         if(isOffline){
             isOffline.style.display = "block";
             return;
@@ -1021,6 +1053,10 @@ try{
         mainDiv.insertBefore(isOffline, mainDiv.children[1]);
         window.addEventListener("online", function(){
             isOffline.style.display = "none";
+            try{
+                topScrollDiv.style.backgroundColor = "#256aff80";
+                topScrollDiv.style.borderBottomColor = "#256aff";
+            }catch(e){}
         });
     });
 }catch(e){}
@@ -1038,6 +1074,7 @@ try{
     myUploadsOverlay.classList.add("overlay");
     myUploadsOverlay.style.backgroundColor = "#256aff80";
     var myUploadsWindow = document.createElement("div");
+    myUploadsWindow.className = "backgrounds";
     myUploadsWindow.style.border = "1px solid #256aff";
     myUploadsWindow.style.borderRadius = "8px";
     var myUploadsTitle = document.createElement("h3");
@@ -1100,7 +1137,7 @@ try{
                 myUploadBox.appendChild(myUploadID);
                 var myUploadView = document.createElement("a");
                 myUploadView.className = "buttons";
-                myUploadView.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> ' + getString("viewupload");
+                myUploadView.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="viewupload">' + getString("viewupload") + '</span>';
                 myUploadView.target = "_blank";
                 myUploadView.href = "?" + uploadsData[i][0];
                 myUploadBox.appendChild(myUploadView);
@@ -1109,7 +1146,7 @@ try{
                 myUploadBox.appendChild(element);
                 if(uploadsData[i][2]){
                     var descriptionForm = document.createElement("form");
-                    descriptionForm.innerHTML = '<textarea class="writedesciption" rows="2" cols="10" placeholder="'+getString("writedescription")+'..."></textarea><button type="submit" class="buttons uploaddescription" disabled><img width="32" height="32" src="images/description.svg"> '+getString("uploaddescription")+'</button>';
+                    descriptionForm.innerHTML = '<textarea class="writedesciption" rows="2" cols="10" placeholder="'+getString("writedescription")+'..."></textarea><button type="submit" class="buttons" disabled><img width="32" height="32" src="images/description.svg"> <span class="uploaddescription">'+getString("uploaddescription")+'</span></button>';
                     descriptionForm.children[0].addEventListener("input", function(){
                         this.nextElementSibling.disabled = this.value == '';
                         this.style.height = "0";
@@ -1126,8 +1163,8 @@ try{
                 }
                 if(uploadsData[i][3]){
                     var voiceUpload = document.createElement("button");
-                    voiceUpload.innerHTML = '<img width="32" height="32" src="images/microphone.svg"> '+getString("uploadvoice");
-                    voiceUpload.classList.add("buttons", "uploadvoice");
+                    voiceUpload.innerHTML = '<img width="32" height="32" src="images/microphone.svg"> <span class="uploadvoice">'+getString("uploadvoice")+'</span>';
+                    voiceUpload.className = "buttons";
                     voiceUpload.id = "vb"+i;
                     var voiceInput = document.createElement("input");
                     voiceInput.type = "file";
