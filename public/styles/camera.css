@@ -156,6 +156,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    word-break: break-all;
 }
 #statusBigBox > div:not(:first-child){
     margin-top: 2px;
