@@ -2,7 +2,9 @@
     <!--LANG-->
     <input type="hidden" name="n" value="value_n">
     <input type="hidden" name="key" value="value_key">
-    <textarea name="description" placeholder="<string>writedescription</string>..." class="texts" style="height:50vh;" required></textarea>
+    <textarea name="description" placeholder="<string>writedescription</string>..." class="texts" style="height:50vh;" required maxlength="<php>MAX_DESCRIPTION_LENGTH</php>"></textarea>
+    <br>
+    <span><string>maxdescriptionlength</string>: <php>MAX_DESCRIPTION_LENGTH</php> <string>characters</string></span>
     <br>
     <div class="uploadbuttondiv">
         <button name="submit" type="submit" class="buttons afteruploadbuttons texts"><img width="32" height="32" src="/images/description.svg">&nbsp;<span><string>uploaddescription</string></span></button>

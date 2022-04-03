@@ -139,7 +139,7 @@ try{
                 var moreText = document.getElementById("moretext"+this.parentNode.parentNode.parentNode.id);
                 if(this.innerText == "...>>"){
                     moreText.style.display = "inline";
-                    this.innerText = "...<<";
+                    this.innerText = "<<";
                 }else{
                     moreText.style.display = "none";
                     this.innerText = "...>>";

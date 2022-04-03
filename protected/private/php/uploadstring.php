@@ -44,11 +44,13 @@
             return $protocol . "://" . $_SERVER["HTTP_HOST"];
         }
         if(isset($_POST["description"]))    {
-            if(saveData(descriptions, descriptiontimes, $_POST["description"])){
+            define("maxDescriptionLength", 100000);
+            if(saveData(descriptions, descriptiontimes, mb_substr($_POST["description"], 0, maxDescriptionLength))){
                 if(isset($_POST["submit"]) || isset($_POST["ps"]))    {
                     if(!file_exists(descriptions . $_POST["n"] . ".txt"))    {
                         $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
                         $descriptionHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $descriptionHTML));
+                        $descriptionHTML = str_replace("<php>MAX_DESCRIPTION_LENGTH</php>", maxDescriptionLength, $descriptionHTML);
                     }
                     else    {
                         $descriptionHTML = "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/description.svg\"> <string>description</string>; <string>uploadcompleted</string></div>";

@@ -189,7 +189,9 @@
                     echoError("-5");
                 }
                 if($GLOBALS["htmlMode"])    {
+                    define("maxDescriptionLength", 100000);
                     $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
+                    $descriptionHTML = str_replace("<php>MAX_DESCRIPTION_LENGTH</php>", maxDescriptionLength, $descriptionHTML);
                     $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
                     $descriptionHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $descriptionHTML));
                     $voiceHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $voiceHTML));

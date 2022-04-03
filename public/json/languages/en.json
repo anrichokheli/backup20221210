@@ -55,5 +55,7 @@
     "enterlink": "Enter Link",
     "viewnewest": "View Newest",
     "myuploads": "My Uploads",
-    "savemyuploadsinthisbrowser": "Save my uploads in this browser"
+    "savemyuploadsinthisbrowser": "Save my uploads in this browser",
+    "maxdescriptionlength": "Maximum description length",
+    "characters": "Characters"
 }

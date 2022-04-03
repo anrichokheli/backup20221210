@@ -179,6 +179,8 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
         div2.innerText = value;
         var borderStyle = "1px dotted ";
         div2.style.border = borderStyle + color;
+        div2.style.maxHeight = "50vh";
+        div2.style.overflowY = "auto";
         div.appendChild(div2);
         element.insertBefore(div, element.childNodes[0]);
     }catch(e){}
@@ -336,6 +338,7 @@ uploadStatusBottom.appendChild(bottomProgressBar);
 var uploadstatusesdisplayed = 0;
 var maxFileSize = 25000000;
 var maxFilesNum = 10;
+var maxDescriptionLength = 100000;
 var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpg", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
 var lastUploadID = 0;
 function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString0){
@@ -516,7 +519,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
                 html += "<button onclick=location.assign(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span></button>";
                 html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></button>";
-                html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts writedescription\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\"></textarea></div>";
+                html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts writedescription\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\" maxlength=\""+maxDescriptionLength+"\"></textarea><br><span id=\"charnum"+n+"\">0</span> / "+maxDescriptionLength+"</div>";
                 html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;<span class=\"uploaddescription\">"+getString("uploaddescription")+"</span></button></div>";
                 html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\",\""+storage_ID+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;<span class=\"uploadvoice\">"+getString("uploadvoice")+"</span></button></div></div>";
                 html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
@@ -528,10 +531,12 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 button.addEventListener("click", function(){
                     uploadDescription(n,key,textarea.value,storage_ID,textarea,button,element);
                 });
+                var charNumSpan = document.getElementById("charnum"+n);
                 textarea.addEventListener("input", function(){
                     button.disabled = textarea.value == '';
                     textarea.style.height = "0";
                     textarea.style.height = textarea.scrollHeight + "px";
+                    charNumSpan.innerText = textarea.value.length;
                 });
                 statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadcompleted")+"\n(#" + n + ")";
                 color = "#00ff00";
@@ -1146,11 +1151,12 @@ try{
                 myUploadBox.appendChild(element);
                 if(uploadsData[i][2]){
                     var descriptionForm = document.createElement("form");
-                    descriptionForm.innerHTML = '<textarea class="writedesciption" rows="2" cols="10" placeholder="'+getString("writedescription")+'..."></textarea><button type="submit" class="buttons" disabled><img width="32" height="32" src="images/description.svg"> <span class="uploaddescription">'+getString("uploaddescription")+'</span></button>';
+                    descriptionForm.innerHTML = '<textarea class="writedesciption" rows="2" cols="10" placeholder="'+getString("writedescription")+'..." maxlength="'+maxDescriptionLength+'"></textarea><br><span>0</span> / '+maxDescriptionLength+'<br><button type="submit" class="buttons" disabled><img width="32" height="32" src="images/description.svg"> <span class="uploaddescription">'+getString("uploaddescription")+'</span></button>';
                     descriptionForm.children[0].addEventListener("input", function(){
-                        this.nextElementSibling.disabled = this.value == '';
+                        this.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling.disabled = this.value == '';
                         this.style.height = "0";
                         this.style.height = this.scrollHeight + "px";
+                        this.nextElementSibling.nextElementSibling.innerText = this.value.length;
                     });
                     descriptionForm.id = 'd'+i;
                     descriptionForm.onsubmit = function(e){
