@@ -161,18 +161,18 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
         var text;
         var img = "<img width=\"16\" height=\"16\" src=\"images/";
         if(location == true)    {
-            text = getString("locationcoordinates");
+            text = '<span class="locationcoordinates">'+getString("locationcoordinates")+'</span>';
             img += "location";
         }
         else    {
-            text = getString("description");
+            text = '<span class="description">'+getString("description")+'</span>';
             img += "description";
         }
         text += "; ";
         img += ".svg\"> ";
         var div = document.createElement("div");
         div.className = "statusText";
-        div.innerHTML = img+text+getString("uploading");
+        div.innerHTML = img+text+'<span class="uploading">'+getString("uploading")+'</span>';
         var color = "#ffff00";
         div.style.borderColor = color;
         var div2 = document.createElement("div");
@@ -189,7 +189,7 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
         div = document.createElement("div");
         div.className = "statusText";
         if(this.responseText === "1")    {
-            div.innerHTML = img + text + getString("uploadcompleted");
+            div.innerHTML = img + text + '<span class="uploadcompleted">' + getString("uploadcompleted") + '</span>';
             color = "#00ff00";
             unloadWarning--;
             try{
@@ -201,7 +201,7 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
             }catch(e){}
         }
         else    {
-            div.innerHTML = img + text + getString("uploadfailed");
+            div.innerHTML = img + text + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
             color = "#ff0000";
             if(!location)    {
                 input.disabled = 0;
@@ -219,7 +219,7 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
     ajax.onerror = function(){
         div = document.createElement("div");
         div.className = "statusText";
-        div.innerHTML = img + text + getString("uploaderror");
+        div.innerHTML = img + text + '<span class="uploaderror">' + getString("uploaderror") + '</span>';
         color = "#ff0000";
         div.style.borderColor = color;
         if(!location)    {
@@ -256,9 +256,9 @@ function uploadVoice(n, key, storage_ID, statusElement, voiceinput, button)  {
     button.disabled = 1;
     var div = document.createElement("div");
     div.className = "statusText";
-    var text = getString("voice") + "; ";
+    var text = '<span class="voice">' + getString("voice") + '</span>' + "; ";
     var img = "<img width=\"16\" height=\"16\" src=\"images/microphone.svg\"> ";
-    div.innerHTML = img+text+getString("uploading");
+    div.innerHTML = img+text+'<span class="uploading">'+getString("uploading")+'</span>';
     div.style.borderColor = "#ffff00";
     statusElement.insertBefore(div, statusElement.childNodes[0]);
     var formData = new FormData();
@@ -270,7 +270,7 @@ function uploadVoice(n, key, storage_ID, statusElement, voiceinput, button)  {
         div = document.createElement("div");
         div.className = "statusText";
         if(this.responseText === "1")    {
-            div.innerHTML = img+text+getString("uploadcompleted");
+            div.innerHTML = img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
             div.style.borderColor = "#00ff00";
             unloadWarning--;
             try{
@@ -282,7 +282,7 @@ function uploadVoice(n, key, storage_ID, statusElement, voiceinput, button)  {
             }catch(e){}
         }
         else    {
-            div.innerHTML = img+text+getString("uploadfailed")+"\n(" + this.responseText + ")";
+            div.innerHTML = img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             button.disabled = 0;
             addRetryButton(function(){uploadVoice(n, key, storage_ID, statusElement, voiceinput, button);}, statusElement);
@@ -292,7 +292,7 @@ function uploadVoice(n, key, storage_ID, statusElement, voiceinput, button)  {
     ajax.onerror = function(){
         div = document.createElement("div");
         div.className = "statusText";
-        div.innerHTML = img+text+getString("uploaderror")+"\n(" + this.Error + ")";
+        div.innerHTML = img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         div.style.borderColor = "#ff0000";
         statusElement.insertBefore(div, statusElement.childNodes[0]);
         button.disabled = 0;
@@ -398,26 +398,26 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         }else{
             typeImg = "<img width=\"16\" height=\"16\" src=\"images/";
             if(filelink){
-                typeString = getString("link");
+                typeString = '<span class="link">'+getString("link")+'</span>';
                 typeImg += "link";
             }else{
                 if(files.length == 1){
                     if(fileType == "image"){
-                        typeString = getString("photo");
+                        typeString = '<span class="photo">'+getString("photo")+'</span>';
                         typeImg += "photo";
                     }else{
-                        typeString = getString("video");
+                        typeString = '<span class="video">'+getString("video")+'</span>';
                         typeImg += "video";
                     }
                 }else{
-                    typeString = getString("files");
+                    typeString = '<span class="files">'+getString("files")+'</span>';
                     typeImg += "photovideo";
                 }
             }
             typeImg += ".svg\">";
             typeString += "; ";
         }
-        statusText.innerHTML = typeImg + ' ' + typeString + getString("uploading");
+        statusText.innerHTML = typeImg + ' ' + typeString + '<span class="uploading">' + getString("uploading") + '</span>';
         statusDiv.appendChild(statusText);
         var progress = document.createElement("div");
         statusDiv.appendChild(progress);
@@ -543,7 +543,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                     textarea.style.height = textarea.scrollHeight + "px";
                     charNumSpan.innerText = textarea.value.length;
                 });
-                statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadcompleted")+"\n(#" + n + ")";
+                statusText.innerHTML += typeImg + ' ' + typeString + '<span class="uploadcompleted">' + getString("uploadcompleted")+'</span>'+"\n(#" + n + ")";
                 color = "#00ff00";
                 if(currentUploadID == lastUploadID){
                     bottomProgressVisible(0);
@@ -575,7 +575,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
             }
         }
         else    {
-            statusText.innerHTML += typeImg + ' ' + typeString + getString("uploadfailed");
+            statusText.innerHTML += typeImg + ' ' + typeString + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
             var errorDiv = document.createElement("div");
             errorDiv.style.border = "1px dotted #ff0000";
             errorDiv.innerText = this.responseText;
@@ -594,7 +594,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         status.insertBefore(statusText, status.childNodes[0]);
     };
     ajax.onerror = function(){
-        statusText.innerHTML += typeImg + ' ' + typeString + getString("uploaderror")+"\n(" + this.Error + ")";
+        statusText.innerHTML += typeImg + ' ' + typeString + '<span class="uploaderror">' + getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         statusText.className = "statusText";
         color = "#ff0000";
         statusText.style.borderColor = color;
