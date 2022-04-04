@@ -1137,6 +1137,16 @@ try{
         }
         var uploadsData = localStorage.getItem("uploads");
         if(uploadsData){
+            var clearMyUploads = document.createElement("button");
+            clearMyUploads.innerHTML = '<span style="color:#ec0400;font-size:32px;">&times;</span> <span class="clearall">'+getString("clearall")+'</span>';
+            clearMyUploads.classList.add("buttons", "afteruploadbuttons");
+            clearMyUploads.onclick = function(){
+                if(confirm(getString("clearall")+"?")){
+                    localStorage.removeItem("uploads");
+                    myUploadsContent.innerText = getString("nodata");
+                }
+            };
+            myUploadsContent.appendChild(clearMyUploads);
             uploadsData = JSON.parse(uploadsData);
             for(var i = uploadsData.length - 1; i >= 0; i--){
                 var myUploadBox = document.createElement("div");
@@ -1149,7 +1159,7 @@ try{
                 myUploadID.innerText = "#" + uploadsData[i][0];
                 myUploadBox.appendChild(myUploadID);
                 var myUploadView = document.createElement("a");
-                myUploadView.className = "buttons";
+                myUploadView.classList.add("buttons", "afteruploadbuttons");
                 myUploadView.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="viewupload">' + getString("viewupload") + '</span>';
                 myUploadView.target = "_blank";
                 myUploadView.href = "?" + uploadsData[i][0];
@@ -1159,7 +1169,7 @@ try{
                 myUploadBox.appendChild(element);
                 if(uploadsData[i][2]){
                     var descriptionForm = document.createElement("form");
-                    descriptionForm.innerHTML = '<textarea class="writedesciption" rows="2" cols="10" placeholder="'+getString("writedescription")+'..." maxlength="'+maxDescriptionLength+'"></textarea><br><span>0</span> / '+maxDescriptionLength+'<br><button type="submit" class="buttons" disabled><img width="32" height="32" src="images/description.svg"> <span class="uploaddescription">'+getString("uploaddescription")+'</span></button>';
+                    descriptionForm.innerHTML = '<textarea class="writedesciption" rows="2" cols="10" placeholder="'+getString("writedescription")+'..." maxlength="'+maxDescriptionLength+'"></textarea><br><span>0</span> / '+maxDescriptionLength+'<br><button type="submit" class="buttons afteruploadbuttons" disabled><img width="32" height="32" src="images/description.svg"> <span class="uploaddescription">'+getString("uploaddescription")+'</span></button>';
                     descriptionForm.children[0].addEventListener("input", function(){
                         this.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling.disabled = this.value == '';
                         this.style.height = "0";
@@ -1178,7 +1188,7 @@ try{
                 if(uploadsData[i][3]){
                     var voiceUpload = document.createElement("button");
                     voiceUpload.innerHTML = '<img width="32" height="32" src="images/microphone.svg"> <span class="uploadvoice">'+getString("uploadvoice")+'</span>';
-                    voiceUpload.className = "buttons";
+                    voiceUpload.classList.add("buttons", "afteruploadbuttons");
                     voiceUpload.id = "vb"+i;
                     var voiceInput = document.createElement("input");
                     voiceInput.type = "file";

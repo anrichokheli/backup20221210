@@ -58,5 +58,6 @@
     "savemyuploadsinthisbrowser": "Save my uploads in this browser",
     "maxdescriptionlength": "Maximum description length",
     "maxvoicefilesize": "Maximum voice file size",
-    "characters": "Characters"
+    "characters": "Characters",
+    "clearall": "Clear All"
 }
