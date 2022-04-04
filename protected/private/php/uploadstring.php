@@ -56,7 +56,9 @@
                         $descriptionHTML = "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/description.svg\"> <string>description</string>; <string>uploadcompleted</string></div>";
                     }
                     if(!glob(voices . $_POST["n"] . ".*"))    {
+                        define("maxVoiceFileSize", 25000000);
                         $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
+                        $voiceHTML = str_replace("<php>MAX_VOICE_SIZE</php>", maxVoiceFileSize / 1000000, $voiceHTML);
                         $voiceHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $voiceHTML));
                     }
                     else    {
@@ -104,11 +106,12 @@
             }
         }
         else if(isset($_POST["latitude"]) && isset($_POST["longitude"]) && is_numeric($_POST["latitude"]) && is_numeric($_POST["longitude"]))   {
-            $location = $_POST["latitude"] . ", " . $_POST["longitude"];
+            define("maxLocationStringLength", 100);
+            $location = substr($_POST["latitude"], 0, maxLocationStringLength) . ", " . substr($_POST["longitude"], 0, maxLocationStringLength);
             function addLocationString($postname)    {
                 $GLOBALS["location"] .= "; ";
                 if(isset($_POST[$postname]) && is_numeric($_POST[$postname]))    {
-                    $GLOBALS["location"] .= $_POST[$postname];
+                    $GLOBALS["location"] .= substr($_POST[$postname], 0, maxLocationStringLength);
                 }
                 else    {
                     $GLOBALS["location"] .= '-';

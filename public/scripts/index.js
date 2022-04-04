@@ -238,15 +238,20 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
     ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+post);
 }
 function uploadLocation(n, key, element)   {
-    uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy), true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy, element);
+    uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeAccuracy="+encodeURIComponent(altitudeAccuracy), true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy, element);
 }
 function uploadDescription(n, key, descriptionValue, storage_ID, input, button, element)    {
     uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, descriptionValue, element, storage_ID, input, button);
 }
+var maxVoiceFileSize = 25000000;
 function uploadVoice(n, key, storage_ID, statusElement, voiceinput, button)  {
+    if(!voiceinput)var voiceinput = document.getElementById('v'+n);
+    if(voiceinput.files[0].size > maxVoiceFileSize){
+        alert(getString("maxvoicefilesize")+": "+(maxVoiceFileSize/1000000)+"MB");
+        return;
+    }
     unloadWarning++;
     if(!statusElement)var statusElement = document.getElementById('q'+n);
-    if(!voiceinput)var voiceinput = document.getElementById('v'+n);
     if(!button)var button = document.getElementById("vb"+n);
     button.disabled = 1;
     var div = document.createElement("div");
@@ -521,7 +526,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></button>";
                 html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts writedescription\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\" maxlength=\""+maxDescriptionLength+"\"></textarea><br><span id=\"charnum"+n+"\">0</span> / "+maxDescriptionLength+"</div>";
                 html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;<span class=\"uploaddescription\">"+getString("uploaddescription")+"</span></button></div>";
-                html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\",\""+storage_ID+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;<span class=\"uploadvoice\">"+getString("uploadvoice")+"</span></button></div></div>";
+                html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\",\""+storage_ID+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;<span class=\"uploadvoice\">"+getString("uploadvoice")+"</span></button><span class=\"maxvoicefilesize\">"+getString("maxvoicefilesize")+"</span>: "+(maxVoiceFileSize/1000000)+"MB</div></div>";
                 html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
                 after.innerHTML = html;
                 subbox.insertBefore(after, subbox.childNodes[0]);
@@ -920,6 +925,8 @@ try{
         this.style.display = "none";
     });
     var settingsWindow = document.createElement("div");
+    settingsWindow.style.maxWidth = "90%";
+    settingsWindow.style.maxHeight = "90%";
     settingsWindow.id = "settingswindow";
     settingsWindowOverlay.appendChild(settingsWindow);
     function setWindowDarkMode(windowOverlay, windowDiv){
@@ -1107,6 +1114,7 @@ try{
     };
     myUploadsTop.appendChild(closeMyUploads);
     myUploadsWindow.style.maxWidth = "90%";
+    myUploadsWindow.style.maxHeight = "90%";
     myUploadsWindow.appendChild(myUploadsTop);
     var myUploadsContent = document.createElement("div");
     myUploadsContent.style.overflowY = "auto";

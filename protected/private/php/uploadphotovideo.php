@@ -190,9 +190,11 @@
                 }
                 if($GLOBALS["htmlMode"])    {
                     define("maxDescriptionLength", 100000);
+                    define("maxVoiceFileSize", 25000000);
                     $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
                     $descriptionHTML = str_replace("<php>MAX_DESCRIPTION_LENGTH</php>", maxDescriptionLength, $descriptionHTML);
                     $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
+                    $voiceHTML = str_replace("<php>MAX_VOICE_SIZE</php>", maxVoiceFileSize / 1000000, $voiceHTML);
                     $descriptionHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $descriptionHTML));
                     $voiceHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $voiceHTML));
                     if(isset($_POST["ps"]))    {

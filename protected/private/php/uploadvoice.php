@@ -7,6 +7,11 @@
         define("voicetimes", uploadstrings . "voicetimes/");
         define("secretPath", protectedPrivatePath . "secret/");
         define("keysPath", secretPath . "keys/");
+        define("maxVoiceFileSize", 25000000);
+        if(filesize($_FILES["voice"]["tmp_name"]) > maxVoiceFileSize)    {
+            echoError("maximum voice file size is: " . (maxVoiceFileSize / 1000000) . "MB. (" . $_FILES["voice"]["name"] . ")");
+            return;
+        }
         function getMainWebAddress(){
             if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"){
                 $protocol = "https";
@@ -80,6 +85,7 @@
                 }
                 if(!file_exists(glob(voices . $_POST["n"] . ".*")[0]))    {
                     $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
+                    $voiceHTML = str_replace("<php>MAX_VOICE_SIZE</php>", maxVoiceFileSize / 1000000, $voiceHTML);
                     $voiceHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $voiceHTML));
                 }
                 else    {
