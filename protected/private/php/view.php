@@ -350,10 +350,19 @@
                 echo("<br>" . getNoData());
             }
         }else{
-            $files = array_slice(scandir(photovideotimes), 2);
+            $files0 = array_slice(scandir(photovideotimes), 2);
+            $filestimes = [];
+            foreach($files0 as $file){
+                array_push($filestimes, file_get_contents(photovideotimes . $file . "/0.txt"));
+            }
+            $filestimes0 = $filestimes;
+            arsort($filestimes);
+            $files = [];
+            foreach($filestimes as $filetime){
+                array_push($files, $files0[array_search($filetime, $filestimes0)]);
+            }
             if(!$rawData)    {
                 define("maxQuantity", 10);
-                rsort($files);
                 if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
                     $topN = $_GET["t"];
                     $files = array_slice($files, array_search($topN, $files));

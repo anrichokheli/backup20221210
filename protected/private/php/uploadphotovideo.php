@@ -49,7 +49,7 @@
             return $protocol . "://" . $_SERVER["HTTP_HOST"];
         }
         //$filesQuantity = count(scandir(photovideos)) - 2;
-        $filesName = time() . hrtime(1);
+        $filesName = hrtime(1);
         /*if($filesQuantity >= maxFilesQuantity)    {
             exit("server total files quantity limit: " . maxFilesQuantity);
         }*/
