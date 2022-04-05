@@ -241,19 +241,21 @@
             $descriptionPath = descriptions . $n . ".txt";
             if(file_exists($descriptionPath))    {
                 $descriptionData = htmlspecialchars(file_get_contents($descriptionPath));
-                if((substr_count($descriptionData, "\n") + 1) > textNewlineDisplay){
-                    $lastPos = 0;
-                    for($i = 0; $i < textNewlineDisplay; $i++){
-                        $lastPos = strpos($descriptionData, "\n", $lastPos);
-                        $lastPos++;
+                if(!$rawData){
+                    if((substr_count($descriptionData, "\n") + 1) > textNewlineDisplay){
+                        $lastPos = 0;
+                        for($i = 0; $i < textNewlineDisplay; $i++){
+                            $lastPos = strpos($descriptionData, "\n", $lastPos);
+                            $lastPos++;
+                        }
+                        $moreTextIndex = $lastPos;
                     }
-                    $moreTextIndex = $lastPos;
-                }
-                else if(strlen($descriptionData) > textLengthDisplay){
-                    $moreTextIndex = textLengthDisplay;
-                }
-                if(isset($moreTextIndex)){
-                    $descriptionData = substr_replace($descriptionData, "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;vertical-align:initial;\">", $moreTextIndex, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore\" style=\"display:none;\">...>></button>";
+                    else if(strlen($descriptionData) > textLengthDisplay){
+                        $moreTextIndex = textLengthDisplay;
+                    }
+                    if(isset($moreTextIndex)){
+                        $descriptionData = substr_replace($descriptionData, "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;vertical-align:initial;\">", $moreTextIndex, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore\" style=\"display:none;\">...>></button>";
+                    }
                 }
                 $descriptionTime = getT(file_get_contents(descriptiontimes . $n . ".txt"));
                 

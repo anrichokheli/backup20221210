@@ -47,6 +47,9 @@
     include(phpPath . "uploadphotovideo.php");
     include(phpPath . "uploadstring.php");
     include(phpPath . "uploadvoice.php");
+    if(!empty($_GET["download"])){
+        include(phpPath . "download.php");
+    }
     if(!defined("ps")){
         if(isset($_GET["noscript"])){
             $indexHTML = file_get_contents(htmlPath . "indexnoscript.html");
