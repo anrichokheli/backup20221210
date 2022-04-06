@@ -20,6 +20,7 @@
         if(strpos($path, realpath(protectedPublicPath)) === 0){
             if(is_file($path)){
                 header("Content-Type: " . mime_content_type($path));
+                header("Content-Length: " . filesize($path));
                 echo file_get_contents($path);
             }else{
                 foreach(scandir($path) as $link){
@@ -349,7 +350,7 @@
             if($rawData){
                 echo "0";
             }else{
-                echo("<br>" . getNoData());
+                echo("<br><br>" . getNoData());
             }
         }else{
             $files0 = array_slice(scandir(photovideotimes), 2);

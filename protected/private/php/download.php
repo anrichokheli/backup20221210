@@ -17,6 +17,12 @@
             $zipFileName = tmpPath . hrtime(1) . ".zip";
             $zip = new ZipArchive();
             if($zip->open($zipFileName, ZipArchive::CREATE)===TRUE){
+                function getT($path){
+                    $t = file_get_contents($path);
+                    $datetime = date("Y-m-d H:i:s", $t);
+                    $timezone = date('O');
+                    return $datetime . ";\n" . $timezone . ";\n" . $t;
+                }
                 $zipphotovideos = "photovideos";
                 $zip->addEmptyDir($zipphotovideos);
                 $pvdirpath = photovideos . $_GET["download"];
@@ -29,27 +35,28 @@
                 $pvtdirpath = photovideotimes . $_GET["download"];
                 $pvtfiles = array_slice(scandir($pvtdirpath), 2);
                 foreach($pvtfiles as $file){
-                    $zip->addFile($pvtdirpath . "/" . $file, $zipphotovideotimes . "/" . $file);
+                    $zip->addFromString($zipphotovideotimes . "/" . $file, getT($pvtdirpath . "/" . $file));
                 }
                 $locationpath = locations . $_GET["download"] . ".txt";
                 if(file_exists($locationpath)){
                     $zip->addFile($locationpath, "location.txt");
-                    $zip->addFile(locationtimes . $_GET["download"] . ".txt", "locationtime.txt");
+                    $zip->addFromString("locationtime.txt", getT(locationtimes . $_GET["download"] . ".txt"));
                 }
                 $descriptionpath = descriptions . $_GET["download"] . ".txt";
                 if(file_exists($descriptionpath)){
                     $zip->addFile($descriptionpath, "description.txt");
-                    $zip->addFile(descriptiontimes . $_GET["download"] . ".txt", "descriptiontime.txt");
+                    $zip->addFromString("descriptiontime.txt", getT(descriptiontimes . $_GET["download"] . ".txt"));
                 }
                 $vtimePath = voicetimes . $_GET["download"] . ".txt";
                 if(file_exists($vtimePath))    {
                     $voicePath = glob(voices . $_GET["download"] . ".*")[0];
                     $zip->addFile($voicePath, "voice." . pathinfo($voicePath, PATHINFO_EXTENSION));
-                    $zip->addFile($vtimePath, "voicetime.txt");
+                    $zip->addFromString("voicetime.txt", getT($vtimePath));
                 }
                 $zip->close();
                 header("Content-Type: " . mime_content_type($zipFileName));
                 header('Content-Disposition: attachment; filename="' . pathinfo($zipFileName, PATHINFO_BASENAME) . '"');
+                header("Content-Length: " . filesize($zipFileName));
                 echo(file_get_contents($zipFileName));
                 unlink($zipFileName);
                 exit;
