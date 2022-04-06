@@ -346,6 +346,24 @@ var maxFilesNum = 10;
 var maxDescriptionLength = 100000;
 var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpg", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
 var lastUploadID = 0;
+function addShareButton(element, fullurl){
+    try{
+        var shareButton = document.createElement("button");
+        shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> <span class=\"share\">"+getString("share")+"</span>";
+        shareButton.classList.add("buttons", "afteruploadbuttons");
+        shareButton.addEventListener("click", function(){
+            try{
+                navigator.share({url: fullurl});
+            }catch(e){
+                try{
+                    shareButton.style.color = "#ff0000";
+                    shareButton.innerText = "SHARE ERROR!";
+                }catch(e){}
+            }
+        });
+        element.appendChild(shareButton);
+    }catch(e){}
+}
 function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString0){
     var currentUploadID = ++lastUploadID;
     if(!filelink && files === null && !formData0)  {
@@ -548,22 +566,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 if(currentUploadID == lastUploadID){
                     bottomProgressVisible(0);
                 }
-                try{
-                    var shareButton = document.createElement("button");
-                    shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> <span class=\"share\">"+getString("share")+"</span>";
-                    shareButton.classList.add("buttons", "afteruploadbuttons");
-                    shareButton.addEventListener("click", function(){
-                        try{
-                            navigator.share({url: fullLink});
-                        }catch(e){
-                            try{
-                                shareButton.style.color = "#ff0000";
-                                shareButton.innerText = "SHARE ERROR!";
-                            }catch(e){}
-                        }
-                    });
-                    after.appendChild(shareButton);
-                }catch(e){}
+                addShareButton(after, fullLink);
             }catch(e){}
             if(latitude != null && longitude != null)    {
                 uploadLocation(n, key, element);
@@ -1160,10 +1163,17 @@ try{
                 myUploadBox.appendChild(myUploadID);
                 var myUploadView = document.createElement("a");
                 myUploadView.classList.add("buttons", "afteruploadbuttons");
-                myUploadView.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="viewupload">' + getString("viewupload") + '</span>';
+                myUploadView.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="viewupload">' + getString("viewupload") + '</span> <img width="32" height="32" src="images/open.svg">';
                 myUploadView.target = "_blank";
                 myUploadView.href = "?" + uploadsData[i][0];
                 myUploadBox.appendChild(myUploadView);
+                var myUploadDownload = document.createElement("a");
+                myUploadDownload.classList.add("buttons", "afteruploadbuttons");
+                myUploadDownload.innerHTML = '<img width="32" height="32" src="images/download.svg"> <span class="download">' + getString("download") + '</span>';
+                myUploadDownload.download = "";
+                myUploadDownload.href = "?download=" + uploadsData[i][0];
+                myUploadBox.appendChild(myUploadDownload);
+                addShareButton(myUploadBox, window.location.href+"?"+uploadsData[i][0]);
                 var element = document.createElement("div");
                 element.id = 'i'+i;
                 myUploadBox.appendChild(element);

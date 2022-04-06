@@ -17,6 +17,7 @@
             $zipFileName = tmpPath . hrtime(1) . ".zip";
             $zip = new ZipArchive();
             if($zip->open($zipFileName, ZipArchive::CREATE)===TRUE){
+                $zip->addFromString("id.txt", $_GET["download"]);
                 function getT($path){
                     $t = file_get_contents($path);
                     $datetime = date("Y-m-d H:i:s", $t);
@@ -55,7 +56,7 @@
                 }
                 $zip->close();
                 header("Content-Type: " . mime_content_type($zipFileName));
-                header('Content-Disposition: attachment; filename="' . pathinfo($zipFileName, PATHINFO_BASENAME) . '"');
+                header('Content-Disposition: attachment; filename="' . $_GET["download"] . '.zip"');
                 header("Content-Length: " . filesize($zipFileName));
                 echo(file_get_contents($zipFileName));
                 unlink($zipFileName);
