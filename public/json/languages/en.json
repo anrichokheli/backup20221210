@@ -59,5 +59,6 @@
     "maxdescriptionlength": "Maximum description length",
     "maxvoicefilesize": "Maximum voice file size",
     "characters": "Characters",
-    "clearall": "Clear All"
+    "clearall": "Clear All",
+    "linknote": "Link must be directly of photo/video, otherwise it cannot be uploaded"
 }
