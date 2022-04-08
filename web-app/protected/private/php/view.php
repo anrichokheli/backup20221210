@@ -257,13 +257,6 @@
                     if(isset($moreTextIndex)){
                         $descriptionData = substr_replace($descriptionData, "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;vertical-align:initial;\">", $moreTextIndex, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore\" style=\"display:none;\">...>></button>";
                     }
-                    $links0 = [];
-                    if(preg_match_all("~[A-Za-z]+://\S+~", $descriptionData, $links0)){
-                        $links = array_unique($links0[0]);
-                        foreach($links as $link){
-                            $descriptionData = str_replace($link, '<a target="_blank" href="' . $link . '">' . $link . ' <img width="16" height="16" src="images/leaving.svg"></a>', $descriptionData);
-                        }
-                    }
                 }
                 $descriptionTime = getT(file_get_contents(descriptiontimes . $n . ".txt"));
                 
