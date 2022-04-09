@@ -33,7 +33,7 @@ body    {
     display: inline-block;
     font-size: 25px;
     font-weight: bold;
-    border: 2px dotted #256aff;
+    border: 2px dotted #0000ff;
     border-radius: 8px;
     padding: 4px;
     cursor: pointer;
@@ -73,6 +73,9 @@ body    {
     resize: none;
     font-size: 16px;
 }
+.icons{
+    fill: #000000;
+}
 @media(prefers-color-scheme: dark)    {
     #main   {
         background-color: #000000;
@@ -82,6 +85,12 @@ body    {
     }
     :root   {
         color-scheme: dark;
+    }
+    .icons{
+        fill: #ffffff;
+    }
+    .buttons{
+        border-color: #0080ff;
     }
 }
 #info   {

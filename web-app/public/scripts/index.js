@@ -677,11 +677,13 @@ var darkModeEnabled;
 function setDarkMode(enabled) {
     var color = "#000000";
     var backgroundColor = "#ffffff";
+    var bcolor = "#0000ff";
     if(enabled)    {
         var temp = color;
         color = backgroundColor;
         backgroundColor = temp;
         document.documentElement.style.colorScheme = "dark";
+        bcolor = "#0080ff";
     }
     else    {
         document.documentElement.style.colorScheme = "light";
@@ -694,6 +696,14 @@ function setDarkMode(enabled) {
     elements = document.getElementsByClassName("backgrounds");
     for(var i = 0; i < elements.length; i++)   {
         elements[i].style.backgroundColor = backgroundColor;
+    }
+    elements = document.getElementsByClassName("icons");
+    for(var i = 0; i < elements.length; i++)   {
+        elements[i].style.fill = color;
+    }
+    elements = document.getElementsByClassName("buttons");
+    for(var i = 0; i < elements.length; i++)   {
+        elements[i].style.borderColor = bcolor;
     }
     darkModeEnabled = enabled;
 }
@@ -745,17 +755,15 @@ try{
     psImg.style.cursor = "pointer";
     topScrollDiv.appendChild(psImg);
     function addTopButton(btnid){
-        var topButton = document.createElement("button");
-        topButton.style.border = "none";
-        topButton.style.backgroundImage = 'url("'+document.querySelector("#"+btnid+" img").src+'")';
-        topButton.style.backgroundRepeat = "no-repeat";
-        topButton.style.backgroundSize = "contain";
-        topButton.style.backgroundPosition = "center";
+        var topButton = document.createElement("div");
+        topButton.classList.add("backgrounds");
         topButton.style.width = topScrollDivHeight + "px";
         topButton.style.height = topScrollDivHeight + "px";
         topButton.style.cursor = "pointer";
         topButton.style.borderRadius = "10%";
         var btn = document.getElementById(btnid);
+        var html = btn.innerHTML;
+        topButton.innerHTML = html.substring(html.indexOf("<svg"), html.indexOf("</svg>")+1).replace('width="64" height="64"', 'width="'+topScrollDivHeight+'" height="'+topScrollDivHeight+'"');
         topButton.onclick = function(){
             btn.click();
         };
