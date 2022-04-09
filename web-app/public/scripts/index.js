@@ -132,7 +132,9 @@ try{
     function preImg(image){
         var img = document.createElement("img");
         img.src = image;
-        img.style.display = "none";
+        img.width = "0";
+        img.height = "0";
+        img.style.display = "block";
         mainDiv.appendChild(img);
         img.remove();
     }
@@ -541,7 +543,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 var html = "<div class=\"boxs boxs2\"><span class=\"uploadedid\">" + getString("uploadedid") + "</span>: #" + n + "</div>";
                 html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
                 html += "<button onclick=location.assign(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span></button>";
-                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/open.svg\"></button>";
+                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></button>";
                 html += "<br><br><div class=\"descriptioninput\"><textarea id=\""+n+"\" class=\"texts writedescription\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\" maxlength=\""+maxDescriptionLength+"\"></textarea><br><span id=\"charnum"+n+"\">0</span> / "+maxDescriptionLength+"</div>";
                 html += "<div class=\"buttonsDivs\"><div><button id=\"b"+n+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;<span class=\"uploaddescription\">"+getString("uploaddescription")+"</span></button></div>";
                 html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+n+"\" onchange=uploadVoice(\""+n+"\",\""+key+"\",\""+storage_ID+"\") hidden><button id=\"vb"+n+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+n+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;<span class=\"uploadvoice\">"+getString("uploadvoice")+"</span></button><span class=\"maxvoicefilesize\">"+getString("maxvoicefilesize")+"</span>: "+(maxVoiceFileSize/1000000)+"MB</div></div>";
@@ -675,17 +677,32 @@ try{
 }catch(e){}
 var darkModeEnabled;
 function setDarkMode(enabled) {
-    var color = "#000000";
-    var backgroundColor = "#ffffff";
-    var bcolor = "#0000ff";
+    var color;
+    var backgroundColor;
     if(enabled)    {
-        var temp = color;
-        color = backgroundColor;
-        backgroundColor = temp;
+        if(localStorage.getItem("darkcolor")){
+            color = localStorage.getItem("darkcolor");
+        }else{
+            color = "#ffffff";
+        }
+        if(localStorage.getItem("darkbackgroundcolor")){
+            backgroundColor = localStorage.getItem("darkbackgroundcolor");
+        }else{
+            backgroundColor = "#000000";
+        }
         document.documentElement.style.colorScheme = "dark";
-        bcolor = "#0080ff";
     }
     else    {
+        if(localStorage.getItem("lightcolor")){
+            color = localStorage.getItem("lightcolor");
+        }else{
+            color = "#000000";
+        }
+        if(localStorage.getItem("lightbackgroundcolor")){
+            backgroundColor = localStorage.getItem("lightbackgroundcolor");
+        }else{
+            backgroundColor = "#ffffff";
+        }
         document.documentElement.style.colorScheme = "light";
     }
     mainDiv.style.backgroundColor = backgroundColor;
@@ -700,10 +717,6 @@ function setDarkMode(enabled) {
     elements = document.getElementsByClassName("icons");
     for(var i = 0; i < elements.length; i++)   {
         elements[i].style.fill = color;
-    }
-    elements = document.getElementsByClassName("buttons");
-    for(var i = 0; i < elements.length; i++)   {
-        elements[i].style.borderColor = bcolor;
     }
     darkModeEnabled = enabled;
 }
@@ -785,34 +798,6 @@ try{
             topScrollDiv.style.borderBottomStyle = "";
         }
     };
-}catch(e){}
-try{
-    var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
-    function onDarkModeChange(checked){
-        if(typeof darkmodecheckbox != "undefined"){
-            darkmodecheckbox.checked = checked;
-        }
-        if(typeof settingsWindowOverlay != "undefined" && typeof settingsWindow != "undefined"){
-            setWindowDarkMode(settingsWindowOverlay, settingsWindow);
-        }
-    }
-    function defaultdarkmode()  {
-        setDarkMode(matchmedia.matches);
-        matchmedia.onchange = function(e){
-            setDarkMode(e.matches);
-            onDarkModeChange(e.matches);
-        };
-    }
-    function darkmode(){
-        if(localStorage.getItem("darkmode") == null)    {
-            defaultdarkmode();
-        }
-        else    {
-            setDarkMode(localStorage.getItem("darkmode")=="true");
-            matchmedia.onchange=function(){};
-        }
-    }
-    darkmode();
 }catch(e){}
 try{
     function inputsHaveContent(){
@@ -951,13 +936,7 @@ try{
         }
     }
     var settingsButton = document.getElementById("settingsbutton");
-    settingsButton.addEventListener("click", function(){
-        settingsWindowOverlay.style.display = "block";
-        settingsWindowOverlay.style.display = "flex";
-        document.body.style.overflow = "hidden";
-        if(settingsWindow.innerHTML != '')    {
-            return;
-        }
+    function setSettingsWindow(){
         setWindowDarkMode(settingsWindowOverlay, settingsWindow);
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "html/settings.html");
@@ -972,8 +951,17 @@ try{
             settingsWindow.appendChild(script);
         };
         ajax.send();
+    }
+    settingsButton.addEventListener("click", function(){
+        settingsWindowOverlay.style.display = "block";
+        settingsWindowOverlay.style.display = "flex";
+        document.body.style.overflow = "hidden";
+        if(settingsWindow.innerHTML != '')    {
+            return;
+        }
+        setSettingsWindow();
     });
-    settingsButton.innerHTML = "<img width=\"64\" height=\"64\" src=\"images/settings.svg\"> <span class=\"settings\"><string>settings</string></span>";
+    settingsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 64 64" class="icons"><g transform="translate(0 64) scale(.1 -.1)"><path d="m257 584c-4-4-7-22-7-40 0-23-7-36-26-49-23-15-29-15-64-1l-39 15-64-112 32-26c20-17 31-35 31-51s-11-34-31-51l-32-26 32-56 32-57 36 15c19 8 38 15 42 15 20-1 45-35 50-67l6-38h65 65l6 38c5 32 30 66 50 67 4 0 23-7 42-15l36-15 64 112-32 25c-42 33-42 73 0 106l32 25-32 56-32 55-39-15c-35-14-41-14-64 1-18 12-26 27-28 53l-3 37-60 3c-34 2-64 0-68-4zm128-199c36-35 35-97-1-130-61-57-154-17-154 65 0 56 34 90 90 90 30 0 47-6 65-25z"/></g></svg> <span class="settings"><string>settings</string></span>';
     settingsButton.style.display = "inline-block";
     function setLanguage(lang,get)  {
         var ajax = new XMLHttpRequest();
@@ -1090,7 +1078,7 @@ try{
 }catch(e){}
 try{
     var myUploadsButton = document.createElement("button");
-    myUploadsButton.innerHTML = '<img width="64" height="64" src="images/myuploads.svg"> <span class="myuploads">' + getString("myuploads") + '</span>';
+    myUploadsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 256 256" class="icons"><g transform="translate(0 256) scale(.1 -.1)"><path d="m705 2254c-326-72-588-347-646-680-16-93-6-270 21-364 94-328 381-569 723-605l67-7v31c0 30-2 31-42 31-24 0-79 9-123 19-355 86-595 390-597 756-2 305 159 563 441 704 142 72 357 96 515 57 190-46 362-167 472-333l36-55-176-177c-161-163-176-181-176-213 0-72 73-118 128-82 15 10 73 63 130 117l102 100v-240-240l-49-69c-98-140-244-252-398-305-31-10-58-19-60-19-1 0-3 38-3 85 0 89-15 137-45 149-37 14-86 6-110-19-28-27-29-54-25-410 2-173 8-197 56-215 39-15 1416-13 1449 2 51 23 55 45 55 327v259l-26 31c-19 23-34 31-59 31-88 0-95-20-95-275v-205h-600-600v95c0 88 1 95 20 95 32 0 150 48 222 91 76 44 172 129 230 202l38 49v-102c0-134 19-169 92-170 28 0 42 7 62 31l26 31v396 396l113-111c66-65 123-113 140-117 32-8 81 14 97 43 28 53 19 66-197 283-194 195-210 208-244 208-24 0-45-8-63-25-28-26-36-22-11 5 15 16 11 24-46 99-104 139-238 234-409 292-85 29-109 32-230 35-95 3-156-1-205-12z"/><path d="m762 1919c-125-62-177-214-116-337 94-188 364-188 458 0 32 64 35 152 7 213-21 46-88 111-137 131-52 22-161 18-212-7z"/><path d="m701 1405c-136-38-227-149-239-291-4-53-2-64 16-82 39-39 87-43 425-40 304 3 324 4 357 24 34 19 35 22 38 88 5 120-58 220-176 278-65 32-69 33-217 35-109 2-165-1-204-12z"/></g></svg> <span class="myuploads">' + getString("myuploads") + '</span>';
     myUploadsButton.classList.add("buttons");
     var myUploadsOverlay = document.createElement("div");
     myUploadsOverlay.id = "myuploadsoverlay";
@@ -1171,7 +1159,7 @@ try{
                 myUploadBox.appendChild(myUploadID);
                 var myUploadView = document.createElement("a");
                 myUploadView.classList.add("buttons", "afteruploadbuttons");
-                myUploadView.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="viewupload">' + getString("viewupload") + '</span> <img width="32" height="32" src="images/open.svg">';
+                myUploadView.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="viewupload">' + getString("viewupload") + '</span> <img width="32" height="32" src="images/newtab.svg">';
                 myUploadView.target = "_blank";
                 myUploadView.href = "?" + uploadsData[i][0];
                 myUploadBox.appendChild(myUploadView);
@@ -1238,5 +1226,33 @@ try{
     mainDiv.insertBefore(br0, myUploadsButton.nextElementSibling);
     var br = document.createElement("br");
     mainDiv.insertBefore(br, br0);
+}catch(e){}
+try{
+    var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
+    function onDarkModeChange(checked){
+        if(typeof darkmodecheckbox != "undefined"){
+            darkmodecheckbox.checked = checked;
+        }
+        if(typeof settingsWindowOverlay != "undefined" && typeof settingsWindow != "undefined"){
+            setWindowDarkMode(settingsWindowOverlay, settingsWindow);
+        }
+    }
+    function defaultdarkmode()  {
+        setDarkMode(matchmedia.matches);
+        matchmedia.onchange = function(e){
+            setDarkMode(e.matches);
+            onDarkModeChange(e.matches);
+        };
+    }
+    function darkmode(){
+        if(localStorage.getItem("darkmode") == null)    {
+            defaultdarkmode();
+        }
+        else    {
+            setDarkMode(localStorage.getItem("darkmode")=="true");
+            matchmedia.onchange=function(){};
+        }
+    }
+    darkmode();
 }catch(e){}
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);

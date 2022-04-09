@@ -86,3 +86,39 @@ try{
         }catch(e){}
     });
 }catch(e){}
+try{
+    function colorInputSetup(name, defaultColor){
+        var input = document.getElementById(name);
+        var storage = localStorage.getItem(name);
+        if(storage){
+            input.value = storage;
+        }else{
+            input.value = defaultColor;
+        }
+        input.onchange = function(){
+            localStorage.setItem(name, this.value);
+            setDarkMode(darkModeEnabled);
+        }
+    }
+    colorInputSetup("lightcolor", "#000000");
+    colorInputSetup("lightbackgroundcolor", "#ffffff");
+    colorInputSetup("darkcolor", "#ffffff");
+    colorInputSetup("darkbackgroundcolor", "#000000");
+}catch(e){}
+try{
+    var resetSettings = document.getElementById("resetsettings");
+    resetSettings.onclick = function(){
+        if(confirm(getString("resetsettings")+"?")){
+            localStorage.removeItem("darkmode");
+            localStorage.removeItem("lang");
+            localStorage.setItem("saveuploads", true);
+            localStorage.removeItem("lightcolor");
+            localStorage.removeItem("lightbackgroundcolor");
+            localStorage.removeItem("darkcolor");
+            localStorage.removeItem("darkbackgroundcolor");
+            darkmode();
+            language();
+            setSettingsWindow();
+        }
+    };
+}catch(e){}

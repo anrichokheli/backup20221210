@@ -173,9 +173,9 @@
                             <div class="photovideo">' . $photovideoTag . '</div>
                             <br>
                             <div class="buttonsdivs">
-                                <a href="' . $path . '" class="buttons"><img width="32" height="32" src="images/open.svg"><span class="open"><string>open</string></span></a>
-                                <a target="_blank" href="' . $path . '" class="buttons"><img width="32" height="32" src="images/open.svg"><span class="open"><string>open</string></span><img width="32" height="32" src="images/open.svg"></a>
-                                <a target="_blank" href="' . $path . '" download="' . $n . "_" . $i . '" class="buttons"><img width="32" height="32" src="images/download.svg"><span class="download"><string>download</string></span></a>
+                                <a href="' . $path . '" class="buttons"><img width="32" height="32" src="images/open.svg"> <span class="open"><string>open</string></span></a>
+                                <a target="_blank" href="' . $path . '" class="buttons"><img width="32" height="32" src="images/newtab.svg"></a>
+                                <a target="_blank" href="' . $path . '" download="' . $n . "_" . $i . '" class="buttons"><img width="32" height="32" src="images/download.svg"> <span class="download"><string>download</string></span></a>
                             </div>
                             <br>
                             <div class="pvtime">' . getT(file_get_contents(photovideotimes . $n . "/" . $timeFiles[$i])) . '</div>
@@ -188,7 +188,7 @@
                             $photovideoHTML .= '<div class="photovideo">' . $photovideoTag . '</div>';
                         }else if($i == 1){
                             $photovideoHTML .= '<div class="photovideo pvoverlay0" style="border-style:solid;">' . $photovideoTag . '<a href="?' . $n . '&all" class="pvoverlay">+' . ($dirFilesQuantity - 1) . '</a></div>';
-                            $photovideoHTML .= '<a target="_blank" href="?' . $n . '&all" class="buttons"><img width="32" height="32" src="images/open.svg"><span class="open"><string>open</string></span><img width="32" height="32" src="images/open.svg"></a>';
+                            $photovideoHTML .= '<a target="_blank" href="?' . $n . '&all" class="buttons"><img width="32" height="32" src="images/open.svg"> <span class="open"><string>open</string></span> <img width="32" height="32" src="images/newtab.svg"></a>';
                         }else{
                             break;
                         }
@@ -226,9 +226,9 @@
                                 <span class="maps title"><string>maps</string></span>
                             </div>
                             <hr>
-                            <a target="_blank" href="https://www.bing.com/maps?where1=' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/bingmaps.ico"><span>Bing Maps</span><img width="32" height="32" src="images/open.svg"><img width="32" height="32" src="images/leaving.svg"></a>
-                            <a target="_blank" href="https://www.google.com/maps/place/' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/googlemaps.ico"><span>Google Maps</span><img width="32" height="32" src="images/open.svg"><img width="32" height="32" src="images/leaving.svg"></a>
-                            <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $latitude . '&mlon=' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/openstreetmap.png"><span>OpenStreetMap</span><img width="32" height="32" src="images/open.svg"><img width="32" height="32" src="images/leaving.svg"></a>
+                            <a target="_blank" href="https://www.bing.com/maps?where1=' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/bingmaps.ico"> <span>Bing Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
+                            <a target="_blank" href="https://www.google.com/maps/place/' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/googlemaps.ico"> <span>Google Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
+                            <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $latitude . '&mlon=' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/openstreetmap.png"> <span>OpenStreetMap</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
                         </div>
                     ';
                     $html = str_replace("<!--MAPS-->", $maps, $html);
@@ -276,8 +276,8 @@
                 if(!empty($descriptionTime))    {
                     $descriptionPublicPath = "?view&v=uploads/strings/descriptions/" . basename($descriptionPath);
                     $descriptionButtons = "<div class=\"buttonsdivs\">";
-                    $descriptionButtons .= "<a href=\"" . $descriptionPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span></a>";
-                    $descriptionButtons .= "<a target=\"_blank\" href=\"" . $descriptionPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span><img width=\"32\" height=\"32\" src=\"images/open.svg\"></a>";
+                    $descriptionButtons .= "<a href=\"" . $descriptionPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"> <span class=\"open\"><string>open</string></span></a>";
+                    $descriptionButtons .= "<a target=\"_blank\" href=\"" . $descriptionPublicPath . "\" class=\"buttons\"> <img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a>";
                     $descriptionButtons .= "<a href=\"" . $descriptionPublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
                     $descriptionButtons .= "</div>";
                 }else{
@@ -306,8 +306,8 @@
                 if(!empty($voicePath))    {
                     $voiceTag = "<audio controls src=\"" . $voicePublicPath . "\"></audio>";
                     $voiceButtons = "<div class=\"buttonsdivs\">";
-                    $voiceButtons .= "<a href=\"" . $voicePublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span></a>";
-                    $voiceButtons .= "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"><span class=\"open\"><string>open</string></span><img width=\"32\" height=\"32\" src=\"images/open.svg\"></a>";
+                    $voiceButtons .= "<a href=\"" . $voicePublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"> <span class=\"open\"><string>open</string></span></a>";
+                    $voiceButtons .= "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" class=\"buttons\"> <img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a>";
                     $voiceButtons .= "<a href=\"" . $voicePublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
                     $voiceButtons .= "</div>";
                 }else{

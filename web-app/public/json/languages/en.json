@@ -60,5 +60,6 @@
     "maxvoicefilesize": "Maximum voice file size",
     "characters": "Characters",
     "clearall": "Clear All",
-    "linknote": "Link must be directly of photo/video, otherwise it cannot be uploaded"
+    "linknote": "Link must be directly of photo/video, otherwise it cannot be uploaded",
+    "resetsettings": "Reset Settings"
 }

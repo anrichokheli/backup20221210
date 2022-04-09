@@ -33,7 +33,7 @@ body    {
     display: inline-block;
     font-size: 25px;
     font-weight: bold;
-    border: 2px dotted #0000ff;
+    border: 2px dotted #256aff;
     border-radius: 8px;
     padding: 4px;
     cursor: pointer;
@@ -50,6 +50,9 @@ body    {
     border-color: #ec0400;
 }
 .buttons:hover   {
+    border-style: dashed;
+}
+.buttons:active   {
     border-style: solid;
 }
 .afteruploadbuttons {
@@ -88,9 +91,6 @@ body    {
     }
     .icons{
         fill: #ffffff;
-    }
-    .buttons{
-        border-color: #0080ff;
     }
 }
 #info   {

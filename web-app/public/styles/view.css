@@ -40,8 +40,10 @@ body    {
     margin: 2%;
     padding: 1%;
 }
-.one *  {
+.one > div  {
     max-width: 90%;
+}
+.one *{
     word-wrap: break-word;
 }
 .photovideo   {
