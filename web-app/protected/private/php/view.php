@@ -127,7 +127,7 @@
             }
         }
         if($rawData)    {
-            $dataArray = array();
+            $dataArray = [$n];
         }
         else    {
             $html = file_get_contents(htmlPath . "view.html");
@@ -225,10 +225,12 @@
                                 <img width="32" height="32" src="images/maps.svg">
                                 <span class="maps title"><string>maps</string></span>
                             </div>
-                            <hr>
-                            <a target="_blank" href="https://www.bing.com/maps?where1=' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/bingmaps.ico"> <span>Bing Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
-                            <a target="_blank" href="https://www.google.com/maps/place/' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/googlemaps.ico"> <span>Google Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
-                            <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $latitude . '&mlon=' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/openstreetmap.png"> <span>OpenStreetMap</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
+                            <br>
+                            <div>
+                                <a target="_blank" href="https://www.bing.com/maps?where1=' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/bingmaps.ico"> <span>Bing Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
+                                <a target="_blank" href="https://www.google.com/maps/place/' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/googlemaps.ico"> <span>Google Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
+                                <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $latitude . '&mlon=' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/openstreetmap.png"> <span>OpenStreetMap</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
+                            </div>
                         </div>
                     ';
                     $html = str_replace("<!--MAPS-->", $maps, $html);
@@ -326,10 +328,13 @@
         }
     }
     $rawData = isset($_GET["raw"]) && ($_GET["raw"] == 1);
-    if(!$rawData)    {
+    $contentOnly = isset($_GET["contentonly"]) && ($_GET["contentonly"] == 1);
+    if(!$rawData && !$contentOnly)    {
         $topHTML = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title><string>pedestrian</string> SOS!</title></head>";
         $topHTML .= "<body><div id=\"main\"><div id=\"top\"><a href=\"/\" style=\"text-decoration: none;\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos.svg\"> <h1><span class=\"pedestrian\"><string>pedestrian</string></span>&nbsp;<span id=\"sos\">SOS!</span></h1></a></div>";
         echo setLanguage($topHTML);
+    }
+    if(!$rawData){
         if($lang != defaultLang){
             $langget = "&lang=" . $lang;
         }
@@ -364,7 +369,7 @@
             foreach($filestimes as $filetime){
                 array_push($files, $files0[array_search($filetime, $filestimes0)]);
             }
-            if(!$rawData)    {
+            if(!$rawData || ($rawData && ((isset($_GET["t"]) && ctype_digit($_GET["t"])) || (isset($_GET["p"]) && ctype_digit($_GET["p"])))))    {
                 define("maxQuantity", 10);
                 if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
                     $topN = $_GET["t"];
@@ -382,12 +387,16 @@
             foreach($files as $n)    {
                 echo getData($n, $rawData);
             }
-            if(!$rawData)    {
-                if($page){
-                    echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\"><<</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+            if(!$rawData && !$contentOnly)    {
+                $nextAvailable = (count($files) == maxQuantity);
+                if($nextAvailable){
+                    echo '<div id="newcontent"></div><br><button class="buttons viewmore" id="viewmore" page="' . ($page + 1) . '" topn="' . $topN . '"><img width="32" height="32" src="images/viewmore.svg"> <string>viewmore</string></button><br>';
                 }
-                if(count($files) == maxQuantity){
-                    echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\" id=\"nextbutton\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
+                if($page){
+                    echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\"><<</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+                }
+                if($nextAvailable){
+                    echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
                 }
                 if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
                     echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
@@ -397,7 +406,7 @@
             }
         }
     }
-    if(!$rawData)    {
+    if(!$rawData && !$contentOnly)    {
         echo "</div><script src=\"scripts/view.js\"></script></body></html>";
     }
 ?>

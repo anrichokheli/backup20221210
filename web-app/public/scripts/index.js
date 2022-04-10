@@ -902,9 +902,6 @@ try{
         var br = document.createElement("br");
         mainDiv.insertBefore(br, br0);
     }catch(e){}
-    var bottomSpace = document.createElement("div");
-    bottomSpace.style.height = "25vh";
-    mainDiv.appendChild(bottomSpace);
     function translateHTML(html){
         for(var key in strings) {
             html = html.replaceAll("<string>"+key+"</string>", strings[key]);

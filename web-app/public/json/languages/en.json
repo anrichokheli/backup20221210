@@ -61,5 +61,9 @@
     "characters": "Characters",
     "clearall": "Clear All",
     "linknote": "Link must be directly of photo/video, otherwise it cannot be uploaded",
-    "resetsettings": "Reset Settings"
+    "resetsettings": "Reset Settings",
+    "lightcolor": "Light Colour",
+    "lightbackgroundcolor": "Light Background Colour",
+    "darkcolor": "Dark Colour",
+    "darkbackgroundcolor": "Dark Background Colour"
 }

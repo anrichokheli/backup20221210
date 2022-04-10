@@ -8,7 +8,7 @@ body    {
     background-color: #ffffff;
     min-height: 100vh;
 }
-#main *:not(hr):not(.nodata):not(.pvoverlay){
+#top *,.one,.one *,.buttons,.buttons *{
     display: inline-block;
     vertical-align: middle;
 }

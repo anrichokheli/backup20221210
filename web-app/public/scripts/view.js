@@ -83,33 +83,30 @@ try{
         }catch(e){}
     };
 }catch(e){}
-try{
-    var buttonsDivs = document.getElementsByClassName("buttonsdivs");
-    var shareButton;
-    function addShareButton(n, element){
-        shareButton = document.createElement("button");
-        shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> <span class=\"share\">"+getString("share")+"</span>";
-        shareButton.classList.add("buttons", "afteruploadbuttons");
-        shareButton.addEventListener("click", function(){
-            try{
-                var URL = window.location.href;
-                if(URL.indexOf("?view") != -1){
-                    URL = URL.substring(0, URL.lastIndexOf("/")+2)+n;
-                }
-                navigator.share({url: URL});
-            }catch(e){
-                try{
-                    shareButton.style.color = "#ff0000";
-                    shareButton.innerText = "SHARE ERROR!";
-                }catch(e){}
+function addShareButton(n, element){
+    var shareButton = document.createElement("button");
+    shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> <span class=\"share\">"+getString("share")+"</span>";
+    shareButton.classList.add("buttons", "afteruploadbuttons");
+    shareButton.addEventListener("click", function(){
+        try{
+            var URL = window.location.href;
+            if(URL.indexOf("?view") != -1){
+                URL = URL.substring(0, URL.lastIndexOf("/")+2)+n;
             }
-        });
-        element.appendChild(shareButton);
-    }
-    for(var key in buttonsDivs){
-        if(buttonsDivs[key].parentNode.classList.contains("one")){
-            addShareButton(buttonsDivs[key].parentNode.id, buttonsDivs[key]);
+            navigator.share({url: URL});
+        }catch(e){
+            try{
+                shareButton.style.color = "#ff0000";
+                shareButton.innerText = "SHARE ERROR!";
+            }catch(e){}
         }
+    });
+    element.appendChild(shareButton);
+}
+try{
+    var buttonsDivs = document.querySelectorAll(".one > .buttonsdivs");
+    for(var key in buttonsDivs){
+        addShareButton(buttonsDivs[key].parentNode.id, buttonsDivs[key]);
     }
 }catch(e){}
 try{
@@ -128,8 +125,7 @@ try{
         }
     };
 }catch(e){}
-try{
-    var descriptionDivs = document.getElementsByClassName("descriptiondiv");
+function addDescriptionSeeMore(descriptionDivs){
     for(var i = 0; i < descriptionDivs.length; i++){
         if(descriptionDivs[i].childNodes.length > 1){
             var seeMore = document.getElementById("seemore"+descriptionDivs[i].parentNode.parentNode.id);
@@ -147,6 +143,33 @@ try{
             };
         }
     }
+}
+try{
+    addDescriptionSeeMore(document.getElementsByClassName("descriptiondiv"));
+}catch(e){}
+try{
+    var newContentDiv = document.getElementById("newcontent");
+    var viewMoreButton = document.getElementById("viewmore");
+    var nextPage = viewMoreButton.getAttribute("page");
+    viewMoreButton.onclick = function(){
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", "?view&contentonly=1&p=" + nextPage + "&t=" + this.getAttribute("topn"));
+        ajax.onload = function(){
+            var div = document.createElement("div");
+            div.id = "newdiv" + nextPage;
+            div.innerHTML = this.responseText;
+            newContentDiv.appendChild(div);
+            addDescriptionSeeMore(document.querySelectorAll('#newdiv'+nextPage+' .descriptiondiv'));
+            var buttonsDivs = document.querySelectorAll("#newdiv"+nextPage+" .one > .buttonsdivs");
+            try{
+                for(var key in buttonsDivs){
+                    addShareButton(buttonsDivs[key].parentNode.id, buttonsDivs[key]);
+                }
+            }catch(e){}
+            nextPage++;
+        };
+        ajax.send();
+    };
 }catch(e){}
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
