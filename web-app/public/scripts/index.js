@@ -1252,4 +1252,35 @@ try{
     }
     darkmode();
 }catch(e){}
+try{
+    var lightFilter = document.createElement("div");
+    lightFilter.className = "overlay";
+    mainDiv.style.position = "relative";
+    lightFilter.style.position = "absolute";
+    lightFilter.style.pointerEvents = "none";
+    lightFilter.style.mixBlendMode = "multiply";
+    lightFilter.style.zIndex = "1";
+    lightFilter.style.display = "none";
+    mainDiv.appendChild(lightFilter);
+    var r = 255;
+    var g;
+    var b;
+    function setFilterValue(value0){
+        var value = (value0 / 100.0) * 510;
+        if(value < 0){
+            value = 0;
+        }else if(value > 510){
+            value = 510;
+        }
+        if(value < 256){
+            g = value;
+            b = 0;
+        }else{
+            g = 255;
+            b = value - 255;
+        }
+        lightFilter.style.backgroundColor = "rgb("+r+", "+g+", "+b+")";
+    }
+    setFilterValue(90);
+}catch(e){}
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);

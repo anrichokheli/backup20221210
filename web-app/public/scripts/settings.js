@@ -88,6 +88,20 @@ try{
     });
 }catch(e){}
 try{
+    var colorFilterCheckbox = document.getElementById("colorfiltercheckbox");
+    colorFilterCheckbox.onchange = function(){
+        if(this.checked){
+            lightFilter.style.display = "block";
+        }else{
+            lightFilter.style.display = "none";
+        }
+    };
+    var colorFilterRange = document.getElementById("colorfilterrange");
+    colorFilterRange.oninput = function(){
+        setFilterValue(this.value);
+    };
+}catch(e){}
+try{
     function colorInputSetup(name, defaultColor){
         var input = document.getElementById(name);
         var storage = localStorage.getItem(name);
