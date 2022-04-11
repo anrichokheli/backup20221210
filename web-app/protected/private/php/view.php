@@ -328,8 +328,8 @@
         }
     }
     $rawData = isset($_GET["raw"]) && ($_GET["raw"] == 1);
-    $contentOnly = isset($_GET["contentonly"]) && ($_GET["contentonly"] == 1);
-    if(!$rawData && !$contentOnly)    {
+    $ajax = isset($_GET["ajax"]) && ($_GET["ajax"] == 1);
+    if(!$rawData && !$ajax)    {
         $topHTML = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title><string>pedestrian</string> SOS!</title></head>";
         $topHTML .= "<body><div id=\"main\"><div id=\"top\"><a href=\"/\" style=\"text-decoration: none;\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos.svg\"> <h1><span class=\"pedestrian\"><string>pedestrian</string></span>&nbsp;<span id=\"sos\">SOS!</span></h1></a></div>";
         echo setLanguage($topHTML);
@@ -387,26 +387,31 @@
             foreach($files as $n)    {
                 echo getData($n, $rawData);
             }
-            if(!$rawData && !$contentOnly)    {
+            if(!$rawData)    {
                 $nextAvailable = (count($files) == maxQuantity);
                 if($nextAvailable){
-                    echo '<div id="newcontent"></div><br><button class="buttons viewmore" id="viewmore" page="' . ($page + 1) . '" topn="' . $topN . '"><img width="32" height="32" src="images/viewmore.svg"> <string>viewmore</string></button><br>';
+                    echo '<br><button class="buttons" onclick="viewMore(this)" page="' . ($page + 1) . '" topn="' . $topN . '"><img width="32" height="32" src="images/viewmore.svg"> <span class="viewmore"><string>viewmore</string></span></button><br>';
                 }
-                if($page){
-                    echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\"><<</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+                if(!$ajax){
+                    if($nextAvailable){
+                        echo '<div id="newcontent"></div><div class="loader" id="loader"></div><br><div id="loaderror"></div>';
+                    }
+                    if($page){
+                        echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\"><<</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+                    }
+                    if($nextAvailable){
+                        echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
+                    }
+                    if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
+                        echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
+                        echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest"><string>viewnewest</string></span></a>';
+                    }
+                    echo "<br><br>";
                 }
-                if($nextAvailable){
-                    echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
-                }
-                if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
-                    echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
-                    echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest"><string>viewnewest</string></span></a>';
-                }
-                echo "<br><br>";
             }
         }
     }
-    if(!$rawData && !$contentOnly)    {
+    if(!$rawData && !$ajax)    {
         echo "</div><script src=\"scripts/view.js\"></script></body></html>";
     }
 ?>

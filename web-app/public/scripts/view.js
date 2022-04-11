@@ -149,28 +149,56 @@ try{
 }catch(e){}
 try{
     var newContentDiv = document.getElementById("newcontent");
-    var viewMoreButton = document.getElementById("viewmore");
-    var nextPage = viewMoreButton.getAttribute("page");
-    viewMoreButton.onclick = function(){
-        var ajax = new XMLHttpRequest();
-        ajax.open("GET", "?view&contentonly=1&p=" + nextPage + "&t=" + this.getAttribute("topn"));
-        ajax.onload = function(){
-            var div = document.createElement("div");
-            div.id = "newdiv" + nextPage;
-            div.innerHTML = this.responseText;
-            newContentDiv.appendChild(div);
-            addDescriptionSeeMore(document.querySelectorAll('#newdiv'+nextPage+' .descriptiondiv'));
-            var buttonsDivs = document.querySelectorAll("#newdiv"+nextPage+" .one > .buttonsdivs");
-            try{
-                for(var key in buttonsDivs){
-                    addShareButton(buttonsDivs[key].parentNode.id, buttonsDivs[key]);
-                }
-            }catch(e){}
-            nextPage++;
-        };
-        ajax.send();
-    };
 }catch(e){}
+function onContentLoad(ajax, nextPage){
+    var div = document.createElement("div");
+    div.id = "newdiv"+nextPage;
+    div.innerHTML = ajax.responseText;
+    newContentDiv.appendChild(div);
+    addDescriptionSeeMore(document.querySelectorAll('#newdiv'+nextPage+' .descriptiondiv'));
+    var buttonsDivs = document.querySelectorAll("#newdiv"+nextPage+" .one > .buttonsdivs");
+    try{
+        for(var key in buttonsDivs){
+            addShareButton(buttonsDivs[key].parentNode.id, buttonsDivs[key]);
+        }
+    }catch(e){}
+}
+try{
+    var loaderStyle = document.createElement("link");
+    loaderStyle.rel = "stylesheet";
+    loaderStyle.href = "styles/loader.css";
+    document.head.appendChild(loaderStyle);
+    var loader = document.getElementById("loader");
+    loader.style.display = "none";
+    var loadError = document.getElementById("loaderror");
+    loadError.style.display = "none";
+    loadError.innerText = "LOAD ERROR!";
+    loadError.style.fontSize = "20px";
+    loadError.style.fontWeight = "bold";
+    loadError.style.color = "#ff0000";
+}catch(e){}
+function viewMore(element){
+    element.disabled = 1;
+    if(loadError.style.display != "none"){
+        loadError.style.display = "none";
+    }
+    loader.style.display = "inline-block";
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", "?view&ajax=1&p=" + element.getAttribute("page") + "&t=" + element.getAttribute("topn"));
+    ajax.onload = function(){
+        onContentLoad(this, element.getAttribute("page"));
+        element.previousElementSibling.remove();
+        element.nextElementSibling.remove();
+        element.remove();
+        loader.style.display = "none";
+    };
+    ajax.onerror = function(){
+        element.disabled = 0;
+        loader.style.display = "none";
+        loadError.style.display = "block";
+    };
+    ajax.send();
+}
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));

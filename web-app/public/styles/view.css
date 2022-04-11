@@ -117,7 +117,15 @@ body    {
     color: inherit;
     margin: 4px;
 }
+.buttons:disabled   {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #ec0400;
+}
 .buttons:hover   {
+    border-style: dashed;
+}
+.buttons:active   {
     border-style: solid;
 }
 @media(prefers-color-scheme: dark)    {

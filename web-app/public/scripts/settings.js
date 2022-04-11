@@ -1,3 +1,4 @@
+document.getElementById("settingscontent").style.maxHeight = "calc(90vh - 9px - "+document.getElementById("settingstop").clientHeight+"px)";
 var darkmodediv = document.getElementById("darkmodediv");
 var darkmodecheckbox = document.getElementById("darkmodecheckbox");
 var defaultTheme = document.getElementById("defaulttheme");
