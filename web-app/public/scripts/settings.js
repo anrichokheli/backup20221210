@@ -49,13 +49,15 @@ languageSelect.onchange = function(){
     defaultLang.checked = 0;
     window.onlanguagechange = function(){};
 };
-var saveUploads = document.getElementById("saveuploads");
-if(localStorage.getItem("saveuploads") == "true"){
-    saveUploads.checked = 1;
-}
-saveUploads.onchange = function(){
-    localStorage.setItem("saveuploads", this.checked);
-};
+try{
+    var saveUploads = document.getElementById("saveuploads");
+    if(localStorage.getItem("saveuploads") == "true"){
+        saveUploads.checked = 1;
+    }
+    saveUploads.onchange = function(){
+        localStorage.setItem("saveuploads", this.checked);
+    };
+}catch(e){}
 try{
     var colorFilterCheckbox = document.getElementById("colorfiltercheckbox");
     var colorFilterRange = document.getElementById("colorfilterrange");
@@ -85,6 +87,20 @@ try{
     colorFilterNumber.oninput = function(){
         setFilterValue(this.value);
         colorFilterRange.value = this.value;
+    };
+}catch(e){}
+function setLoadOnScroll(){
+    if(localStorage.getItem("loadonscroll") != "false"){
+        loadOnScroll.checked = 1;
+    }else{
+        loadOnScroll.checked = 0;
+    }
+}
+try{
+    var loadOnScroll = document.getElementById("loadonscroll");
+    setLoadOnScroll();
+    loadOnScroll.onchange = function(){
+        localStorage.setItem("loadonscroll", this.checked);
     };
 }catch(e){}
 try{
@@ -118,6 +134,9 @@ try{
         }catch(e){}
         try{
             setColorFilterSettings();
+        }catch(e){}
+        try{
+            setLoadOnScroll();
         }catch(e){}
     });
 }catch(e){}
@@ -153,6 +172,7 @@ try{
             localStorage.removeItem("lightbackgroundcolor");
             localStorage.removeItem("darkcolor");
             localStorage.removeItem("darkbackgroundcolor");
+            localStorage.removeItem("loadonscroll");
             darkmode();
             language();
             colorfilter();

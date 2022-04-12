@@ -67,5 +67,6 @@
     "darkcolor": "მუქი ფერი",
     "darkbackgroundcolor": "ფონის მუქი ფერი",
     "viewmore": "მეტის ნახვა",
-    "colorfilter": "ფერის ფილტრი"
+    "colorfilter": "ფერის ფილტრი",
+    "loadnewcontentwhenscroll": "ახალი ინფორმაციის ჩამოტვირთვა ქვემოთ ჩასვლისას"
 }

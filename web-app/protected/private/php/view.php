@@ -390,7 +390,7 @@
             if(!$rawData)    {
                 $nextAvailable = (count($files) == maxQuantity);
                 if($nextAvailable){
-                    echo '<br><button class="buttons" onclick="viewMore(this)" page="' . ($page + 1) . '" topn="' . $topN . '"><img width="32" height="32" src="images/viewmore.svg"> <span class="viewmore"><string>viewmore</string></span></button><br>';
+                    echo '<br><button class="buttons" id="viewmore" onclick="viewMore(this)" page="' . ($page + 1) . '" topn="' . $topN . '"><img width="32" height="32" src="images/viewmore.svg"> <span class="viewmore">' . $langJSON["viewmore"] . '</span></button><br>';
                 }
                 if(!$ajax){
                     if($nextAvailable){
@@ -404,7 +404,7 @@
                     }
                     if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
                         echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
-                        echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest"><string>viewnewest</string></span></a>';
+                        echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest">' . $langJSON["viewnewest"] . '</span></a>';
                     }
                     echo "<br><br>";
                 }

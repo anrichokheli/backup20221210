@@ -118,19 +118,6 @@ try{
     }
     colorfilter();
 }catch(e){}
-try{
-    window.onstorage = function(){
-        try{
-            darkMode();
-        }catch(e){}
-        try{
-            setLanguage();
-        }catch(e){}
-        try{
-            colorfilter();
-        }catch(e){}
-    };
-}catch(e){}
 function addShareButton(n, element){
     var shareButton = document.createElement("button");
     shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> <span class=\"share\">"+getString("share")+"</span>";
@@ -225,6 +212,24 @@ try{
     loadError.style.fontWeight = "bold";
     loadError.style.color = "#ff0000";
 }catch(e){}
+function scrollLoad(){
+    loadContentHeight = mainDiv.clientHeight * 3 / 4;
+    if(document.body.scrollTop > loadContentHeight || document.documentElement.scrollTop > loadContentHeight){
+        window.removeEventListener("scroll", scrollLoad);
+        viewMore(viewMoreButton);
+    }
+}
+function loadScrollEventSetup(){
+    try{
+        if(localStorage.getItem("loadonscroll") == "false"){
+            return;
+        }
+    }catch(e){}
+    viewMoreButton = document.getElementById("viewmore");
+    if(viewMoreButton){
+        window.addEventListener("scroll", scrollLoad);
+    }
+}
 function viewMore(element){
     element.disabled = 1;
     if(loadError.style.display != "none"){
@@ -239,6 +244,7 @@ function viewMore(element){
         element.nextElementSibling.remove();
         element.remove();
         loader.style.display = "none";
+        loadScrollEventSetup();
     };
     ajax.onerror = function(){
         element.disabled = 0;
@@ -247,6 +253,31 @@ function viewMore(element){
     };
     ajax.send();
 }
+try{
+    var loadContentHeight;
+    var viewMoreButton;
+    loadScrollEventSetup();
+}catch(e){}
+try{
+    window.onstorage = function(){
+        try{
+            darkMode();
+        }catch(e){}
+        try{
+            setLanguage();
+        }catch(e){}
+        try{
+            colorfilter();
+        }catch(e){}
+        try{
+            if(localStorage.getItem("loadonscroll") == "false"){
+                window.removeEventListener("scroll", scrollLoad);
+            }else{
+                loadScrollEventSetup();
+            }
+        }catch(e){}
+    };
+}catch(e){}
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));

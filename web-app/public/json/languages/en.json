@@ -67,5 +67,6 @@
     "darkcolor": "Dark Colour",
     "darkbackgroundcolor": "Dark Background Colour",
     "viewmore": "View More",
-    "colorfilter": "Colour Filter"
+    "colorfilter": "Colour Filter",
+    "loadnewcontentwhenscroll": "Load new content when scroll"
 }

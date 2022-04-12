@@ -680,27 +680,37 @@ function setDarkMode(enabled) {
     var color;
     var backgroundColor;
     if(enabled)    {
-        if(localStorage.getItem("darkcolor")){
-            color = localStorage.getItem("darkcolor");
-        }else{
+        try{
+            if(localStorage.getItem("darkcolor")){
+                color = localStorage.getItem("darkcolor");
+            }else{
+                color = "#ffffff";
+            }
+            if(localStorage.getItem("darkbackgroundcolor")){
+                backgroundColor = localStorage.getItem("darkbackgroundcolor");
+            }else{
+                backgroundColor = "#000000";
+            }
+        }catch(e){
             color = "#ffffff";
-        }
-        if(localStorage.getItem("darkbackgroundcolor")){
-            backgroundColor = localStorage.getItem("darkbackgroundcolor");
-        }else{
             backgroundColor = "#000000";
         }
         document.documentElement.style.colorScheme = "dark";
     }
     else    {
-        if(localStorage.getItem("lightcolor")){
-            color = localStorage.getItem("lightcolor");
-        }else{
+        try{
+            if(localStorage.getItem("lightcolor")){
+                color = localStorage.getItem("lightcolor");
+            }else{
+                color = "#000000";
+            }
+            if(localStorage.getItem("lightbackgroundcolor")){
+                backgroundColor = localStorage.getItem("lightbackgroundcolor");
+            }else{
+                backgroundColor = "#ffffff";
+            }
+        }catch(e){
             color = "#000000";
-        }
-        if(localStorage.getItem("lightbackgroundcolor")){
-            backgroundColor = localStorage.getItem("lightbackgroundcolor");
-        }else{
             backgroundColor = "#ffffff";
         }
         document.documentElement.style.colorScheme = "light";

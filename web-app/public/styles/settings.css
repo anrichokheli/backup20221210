@@ -10,7 +10,7 @@
     align-items: center;
     padding: 4px;
 }
-#settingstop h3{
+#settingstop h3,.settingsbox h4{
     margin: 0;
 }
 #settingscontent{
@@ -20,7 +20,7 @@
     max-height: calc(100% - 49px);
     overflow-y: auto;
 }
-#settingsbottomline{
+.settingsbottomline{
     border-bottom: 1px solid #256aff;
 }
 #settingstop div{
