@@ -1025,16 +1025,6 @@ try{
     document.getElementById("langform").remove();
 }catch(e){}
 try{
-    window.addEventListener("storage", function(){
-        try{
-            darkmode();
-        }catch(e){}
-        try{
-            language();
-        }catch(e){}
-    });
-}catch(e){}
-try{
     var isOffline;
     window.addEventListener("offline", function(){
         try{
@@ -1296,5 +1286,18 @@ try{
         }
     }
     colorfilter();
+}catch(e){}
+try{
+    window.addEventListener("storage", function(){
+        try{
+            darkmode();
+        }catch(e){}
+        try{
+            language();
+        }catch(e){}
+        try{
+            colorfilter();
+        }catch(e){}
+    });
 }catch(e){}
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);

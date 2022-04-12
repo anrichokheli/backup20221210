@@ -57,6 +57,37 @@ saveUploads.onchange = function(){
     localStorage.setItem("saveuploads", this.checked);
 };
 try{
+    var colorFilterCheckbox = document.getElementById("colorfiltercheckbox");
+    var colorFilterRange = document.getElementById("colorfilterrange");
+    var colorFilterNumber = document.getElementById("colorfilternumber");
+    function setColorFilterSettings(){
+        if(localStorage.getItem("colorfilterenabled") == "true"){
+            colorFilterCheckbox.checked = 1;
+        }else{
+            colorFilterCheckbox.checked = 0;
+        }
+        colorFilterRange.value = localStorage.getItem("colorfiltervalue");
+        colorFilterNumber.value = localStorage.getItem("colorfiltervalue");
+    }
+    setColorFilterSettings();
+    colorFilterCheckbox.onchange = function(){
+        if(this.checked){
+            lightFilter.style.display = "block";
+        }else{
+            lightFilter.style.display = "none";
+        }
+        localStorage.setItem("colorfilterenabled", this.checked);
+    };
+    colorFilterRange.oninput = function(){
+        setFilterValue(this.value);
+        colorFilterNumber.value = this.value;
+    };
+    colorFilterNumber.oninput = function(){
+        setFilterValue(this.value);
+        colorFilterRange.value = this.value;
+    };
+}catch(e){}
+try{
     window.addEventListener("storage", function(){
         try{
             if(this.localStorage.getItem("darkmode")=="true"){
@@ -85,35 +116,10 @@ try{
                 saveUploads.checked = 0;
             }
         }catch(e){}
+        try{
+            setColorFilterSettings();
+        }catch(e){}
     });
-}catch(e){}
-try{
-    var colorFilterCheckbox = document.getElementById("colorfiltercheckbox");
-    var colorFilterRange = document.getElementById("colorfilterrange");
-    var colorFilterNumber = document.getElementById("colorfilternumber");
-    if(localStorage.getItem("colorfilterenabled") == "true"){
-        colorFilterCheckbox.checked = 1;
-    }else{
-        colorFilterCheckbox.checked = 0;
-    }
-    colorFilterCheckbox.onchange = function(){
-        if(this.checked){
-            lightFilter.style.display = "block";
-        }else{
-            lightFilter.style.display = "none";
-        }
-        localStorage.setItem("colorfilterenabled", this.checked);
-    };
-    colorFilterRange.value = localStorage.getItem("colorfiltervalue");
-    colorFilterNumber.value = localStorage.getItem("colorfiltervalue");
-    colorFilterRange.oninput = function(){
-        setFilterValue(this.value);
-        colorFilterNumber.value = this.value;
-    };
-    colorFilterNumber.oninput = function(){
-        setFilterValue(this.value);
-        colorFilterRange.value = this.value;
-    };
 }catch(e){}
 try{
     function colorInputSetup(name, defaultColor){
