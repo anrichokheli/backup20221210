@@ -89,16 +89,30 @@ try{
 }catch(e){}
 try{
     var colorFilterCheckbox = document.getElementById("colorfiltercheckbox");
+    var colorFilterRange = document.getElementById("colorfilterrange");
+    var colorFilterNumber = document.getElementById("colorfilternumber");
+    if(localStorage.getItem("colorfilterenabled") == "true"){
+        colorFilterCheckbox.checked = 1;
+    }else{
+        colorFilterCheckbox.checked = 0;
+    }
     colorFilterCheckbox.onchange = function(){
         if(this.checked){
             lightFilter.style.display = "block";
         }else{
             lightFilter.style.display = "none";
         }
+        localStorage.setItem("colorfilterenabled", this.checked);
     };
-    var colorFilterRange = document.getElementById("colorfilterrange");
+    colorFilterRange.value = localStorage.getItem("colorfiltervalue");
+    colorFilterNumber.value = localStorage.getItem("colorfiltervalue");
     colorFilterRange.oninput = function(){
         setFilterValue(this.value);
+        colorFilterNumber.value = this.value;
+    };
+    colorFilterNumber.oninput = function(){
+        setFilterValue(this.value);
+        colorFilterRange.value = this.value;
     };
 }catch(e){}
 try{
@@ -127,12 +141,15 @@ try{
             localStorage.removeItem("darkmode");
             localStorage.removeItem("lang");
             localStorage.setItem("saveuploads", true);
+            localStorage.removeItem("colorfilterenabled");
+            localStorage.setItem("colorfiltervalue", colorFilterDefaultValue);
             localStorage.removeItem("lightcolor");
             localStorage.removeItem("lightbackgroundcolor");
             localStorage.removeItem("darkcolor");
             localStorage.removeItem("darkbackgroundcolor");
             darkmode();
             language();
+            colorfilter();
             setSettingsWindow();
         }
     };

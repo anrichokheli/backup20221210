@@ -74,12 +74,60 @@ try{
     setLanguage();
 }catch(e){}
 try{
+    var colorFilterDefaultValue = 90;
+    var lightFilter = document.createElement("div");
+    lightFilter.className = "overlay";
+    mainDiv.style.position = "relative";
+    lightFilter.style.position = "absolute";
+    lightFilter.style.pointerEvents = "none";
+    lightFilter.style.mixBlendMode = "multiply";
+    lightFilter.style.zIndex = "1";
+    lightFilter.style.display = "none";
+    mainDiv.appendChild(lightFilter);
+    var r = 255;
+    var g;
+    var b;
+    function setFilterValue(value0){
+        var value = (value0 / 100.0) * 510;
+        if(value < 0){
+            value = 0;
+        }else if(value > 510){
+            value = 510;
+        }
+        if(value < 256){
+            g = value;
+            b = 0;
+        }else{
+            g = 255;
+            b = value - 255;
+        }
+        lightFilter.style.backgroundColor = "rgb("+r+", "+g+", "+b+")";
+        localStorage.setItem("colorfiltervalue", value0);
+    }
+    function colorfilter(){
+        if(localStorage.getItem("colorfiltervalue")){
+            setFilterValue(localStorage.getItem("colorfiltervalue"));
+        }else{
+            setFilterValue(colorFilterDefaultValue);
+        }
+        if(localStorage.getItem("colorfilterenabled") == "true"){
+            lightFilter.style.display = "block";
+        }else{
+            lightFilter.style.display = "none";
+        }
+    }
+    colorfilter();
+}catch(e){}
+try{
     window.onstorage = function(){
         try{
             darkMode();
         }catch(e){}
         try{
             setLanguage();
+        }catch(e){}
+        try{
+            colorfilter();
         }catch(e){}
     };
 }catch(e){}

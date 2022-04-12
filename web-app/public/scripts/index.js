@@ -1253,6 +1253,7 @@ try{
     darkmode();
 }catch(e){}
 try{
+    var colorFilterDefaultValue = 90;
     var lightFilter = document.createElement("div");
     lightFilter.className = "overlay";
     mainDiv.style.position = "relative";
@@ -1280,7 +1281,20 @@ try{
             b = value - 255;
         }
         lightFilter.style.backgroundColor = "rgb("+r+", "+g+", "+b+")";
+        localStorage.setItem("colorfiltervalue", value0);
     }
-    setFilterValue(90);
+    function colorfilter(){
+        if(localStorage.getItem("colorfiltervalue")){
+            setFilterValue(localStorage.getItem("colorfiltervalue"));
+        }else{
+            setFilterValue(colorFilterDefaultValue);
+        }
+        if(localStorage.getItem("colorfilterenabled") == "true"){
+            lightFilter.style.display = "block";
+        }else{
+            lightFilter.style.display = "none";
+        }
+    }
+    colorfilter();
 }catch(e){}
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);
