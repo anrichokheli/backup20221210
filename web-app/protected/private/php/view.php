@@ -367,7 +367,9 @@
             arsort($filestimes);
             $files = [];
             foreach($filestimes as $filetime){
-                array_push($files, $files0[array_search($filetime, $filestimes0)]);
+                $index = array_search($filetime, $filestimes0);
+                array_push($files, $files0[$index]);
+                unset($filestimes0[$index]);
             }
             if(!$rawData || ($rawData && ((isset($_GET["t"]) && ctype_digit($_GET["t"])) || (isset($_GET["p"]) && ctype_digit($_GET["p"])))))    {
                 define("maxQuantity", 10);
@@ -384,9 +386,11 @@
                 }
                 $files = array_slice($files, maxQuantity * $page, maxQuantity);
             }
+            echo '<div id="content">';
             foreach($files as $n)    {
                 echo getData($n, $rawData);
             }
+            echo '</div>';
             if(!$rawData)    {
                 $nextAvailable = (count($files) == maxQuantity);
                 if($nextAvailable){

@@ -145,18 +145,72 @@ try{
     }
 }catch(e){}
 try{
+    var contentDiv = document.getElementById("content");
+}catch(e){}
+try{
+    var loaderStyle = document.createElement("link");
+    loaderStyle.rel = "stylesheet";
+    loaderStyle.href = "styles/loader.css";
+    document.head.appendChild(loaderStyle);
+}catch(e){}
+function loaderSetup(loader, loadError){
+    loader.style.display = "none";
+    loadError.style.display = "none";
+    loadError.innerText = "LOAD ERROR!";
+    loadError.style.fontSize = "20px";
+    loadError.style.fontWeight = "bold";
+    loadError.style.color = "#ff0000";
+}
+try{
+    var loader = document.getElementById("loader");
+    var loadError = document.getElementById("loaderror");
+    var loaderTop = document.createElement("div");
+    loaderTop.className = "loader";
+    var loadErrorTop = document.createElement("div");
+    mainDiv.insertBefore(loaderTop, contentDiv);
+    mainDiv.insertBefore(loadErrorTop, contentDiv);
+    loaderSetup(loader, loadError);
+    loaderSetup(loaderTop, loadErrorTop);
+}catch(e){}
+function reloadNewContent(){
+    if(loadErrorTop.style.display != "none"){
+        loadErrorTop.style.display = "none";
+    }
+    loaderTop.style.display = "inline-block";
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", "?view&ajax=1");
+    ajax.onload = function(){
+        contentDiv.innerHTML = this.responseText;
+        loaderTop.style.display = "none";
+    };
+    ajax.onerror = function(){
+        loaderTop.style.display = "none";
+        loadErrorTop.style.display = "block";
+    };
+    ajax.send();
+}
+try{
     var topDiv = document.getElementById("top");
-    document.getElementsByClassName("one")[0].style.marginTop = topDiv.clientHeight + 10 + "px";
+    var topSpaceDiv = document.createElement("div");
+    topSpaceDiv.style.marginBottom = topDiv.clientHeight + 10 + "px";
+    mainDiv.insertBefore(topSpaceDiv, mainDiv.childNodes[0]);
     topDiv.style.position = "fixed";
     window.onscroll = function(){
         if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0){
             topDiv.childNodes[0].childNodes[0].width = "32";
             topDiv.childNodes[0].childNodes[0].height = "32";
             topDiv.childNodes[0].childNodes[2].style.fontSize = "1em";
+            topDiv.childNodes[0].onclick = function(e){
+                e.preventDefault();
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+                reloadNewContent();
+            };
         }else{
             topDiv.childNodes[0].childNodes[0].width = "64";
             topDiv.childNodes[0].childNodes[0].height = "64";
             topDiv.childNodes[0].childNodes[2].style.fontSize = "2em";
+            topDiv.childNodes[0].onclick = function(){};
         }
     };
 }catch(e){}
@@ -198,20 +252,6 @@ function onContentLoad(ajax, nextPage){
         }
     }catch(e){}
 }
-try{
-    var loaderStyle = document.createElement("link");
-    loaderStyle.rel = "stylesheet";
-    loaderStyle.href = "styles/loader.css";
-    document.head.appendChild(loaderStyle);
-    var loader = document.getElementById("loader");
-    loader.style.display = "none";
-    var loadError = document.getElementById("loaderror");
-    loadError.style.display = "none";
-    loadError.innerText = "LOAD ERROR!";
-    loadError.style.fontSize = "20px";
-    loadError.style.fontWeight = "bold";
-    loadError.style.color = "#ff0000";
-}catch(e){}
 function scrollLoad(){
     loadContentHeight = mainDiv.clientHeight * 3 / 4;
     if(document.body.scrollTop > loadContentHeight || document.documentElement.scrollTop > loadContentHeight){
