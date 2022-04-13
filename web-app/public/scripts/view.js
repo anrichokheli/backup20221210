@@ -172,6 +172,9 @@ try{
     loaderSetup(loader, loadError);
     loaderSetup(loaderTop, loadErrorTop);
 }catch(e){}
+try{
+    var newContentDiv = document.getElementById("newcontent");
+}catch(e){}
 function reloadNewContent(){
     if(loadErrorTop.style.display != "none"){
         loadErrorTop.style.display = "none";
@@ -180,6 +183,13 @@ function reloadNewContent(){
     var ajax = new XMLHttpRequest();
     ajax.open("GET", "?view&ajax=1");
     ajax.onload = function(){
+        newContentDiv.innerHTML = "";
+        var element = document.getElementById("viewmore");
+        if(element){
+            element.previousElementSibling.remove();
+            element.nextElementSibling.remove();
+            element.remove();
+        }
         contentDiv.innerHTML = this.responseText;
         loaderTop.style.display = "none";
     };
@@ -236,9 +246,6 @@ function addDescriptionSeeMore(descriptionDivs){
 try{
     addDescriptionSeeMore(document.getElementsByClassName("descriptiondiv"));
 }catch(e){}
-try{
-    var newContentDiv = document.getElementById("newcontent");
-}catch(e){}
 function onContentLoad(ajax, nextPage){
     var div = document.createElement("div");
     div.id = "newdiv"+nextPage;
@@ -256,7 +263,7 @@ function scrollLoad(){
     loadContentHeight = mainDiv.clientHeight * 3 / 4;
     if(document.body.scrollTop > loadContentHeight || document.documentElement.scrollTop > loadContentHeight){
         window.removeEventListener("scroll", scrollLoad);
-        viewMore(viewMoreButton);
+        viewMore(document.getElementById("viewmore"));
     }
 }
 function loadScrollEventSetup(){
@@ -265,8 +272,7 @@ function loadScrollEventSetup(){
             return;
         }
     }catch(e){}
-    viewMoreButton = document.getElementById("viewmore");
-    if(viewMoreButton){
+    if(document.getElementById("viewmore")){
         window.addEventListener("scroll", scrollLoad);
     }
 }
@@ -295,7 +301,6 @@ function viewMore(element){
 }
 try{
     var loadContentHeight;
-    var viewMoreButton;
     loadScrollEventSetup();
 }catch(e){}
 try{
