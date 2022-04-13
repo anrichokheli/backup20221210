@@ -175,6 +175,23 @@ try{
 try{
     var newContentDiv = document.getElementById("newcontent");
 }catch(e){}
+function scrollLoad(){
+    loadContentHeight = mainDiv.clientHeight * 3 / 4;
+    if(document.body.scrollTop > loadContentHeight || document.documentElement.scrollTop > loadContentHeight){
+        window.removeEventListener("scroll", scrollLoad);
+        viewMore(document.getElementById("viewmore"));
+    }
+}
+function loadScrollEventSetup(){
+    try{
+        if(localStorage.getItem("loadonscroll") == "false"){
+            return;
+        }
+    }catch(e){}
+    if(document.getElementById("viewmore")){
+        window.addEventListener("scroll", scrollLoad);
+    }
+}
 function reloadNewContent(){
     if(loadErrorTop.style.display != "none"){
         loadErrorTop.style.display = "none";
@@ -192,6 +209,7 @@ function reloadNewContent(){
         }
         contentDiv.innerHTML = this.responseText;
         loaderTop.style.display = "none";
+        loadScrollEventSetup();
     };
     ajax.onerror = function(){
         loaderTop.style.display = "none";
@@ -258,23 +276,6 @@ function onContentLoad(ajax, nextPage){
             addShareButton(buttonsDivs[key].parentNode.id, buttonsDivs[key]);
         }
     }catch(e){}
-}
-function scrollLoad(){
-    loadContentHeight = mainDiv.clientHeight * 3 / 4;
-    if(document.body.scrollTop > loadContentHeight || document.documentElement.scrollTop > loadContentHeight){
-        window.removeEventListener("scroll", scrollLoad);
-        viewMore(document.getElementById("viewmore"));
-    }
-}
-function loadScrollEventSetup(){
-    try{
-        if(localStorage.getItem("loadonscroll") == "false"){
-            return;
-        }
-    }catch(e){}
-    if(document.getElementById("viewmore")){
-        window.addEventListener("scroll", scrollLoad);
-    }
 }
 function viewMore(element){
     element.disabled = 1;
