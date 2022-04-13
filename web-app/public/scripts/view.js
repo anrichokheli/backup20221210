@@ -192,7 +192,7 @@ function reloadNewContent(){
 try{
     var topDiv = document.getElementById("top");
     var topSpaceDiv = document.createElement("div");
-    topSpaceDiv.style.marginBottom = topDiv.clientHeight + 10 + "px";
+    topSpaceDiv.style.height = topDiv.clientHeight + 10 + "px";
     mainDiv.insertBefore(topSpaceDiv, mainDiv.childNodes[0]);
     topDiv.style.position = "fixed";
     window.onscroll = function(){
