@@ -1215,7 +1215,8 @@ try{
             myUploadsContent.innerText = getString("nodata");
         }
         myUploadsOverlay.style.display = "flex";
-        myUploadsContent.style.maxHeight = "calc(90vh - "+myUploadsTop.clientHeight+"px)";
+        myUploadsContent.style.maxHeight = "calc(100% - 1px - "+myUploadsTop.clientHeight+"px)";
+        myUploadsWindow.style.height = myUploadsContent.clientHeight + "px";
         document.body.style.overflow = "hidden";
     };
     mainDiv.insertBefore(myUploadsButton, settingsButton);
