@@ -25,13 +25,11 @@
                 }
                 header("Content-Type: " . $mimeContentType);
                 header("Content-Length: " . filesize($path));
-                $fileContent = file_get_contents($path);
-                if($mimeContentType == "text/html"){
-                    if(!(isset($_POST["gethtml"]) && $_POST["gethtml"] == 1)){
-                        $fileContent = htmlspecialchars($fileContent);
-                    }
+                if(strpos($path, "descriptions") !== FALSE){
+                    $fileContent = htmlspecialchars(file_get_contents($path));
+                }else{
+                    echo file_get_contents($path);
                 }
-                echo $fileContent;
             }else{
                 header("X-Frame-Options: DENY");
                 foreach(scandir($path) as $link){
