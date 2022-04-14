@@ -26,7 +26,7 @@
                 header("Content-Type: " . $mimeContentType);
                 header("Content-Length: " . filesize($path));
                 if(strpos($path, "descriptions") !== FALSE){
-                    $fileContent = htmlspecialchars(file_get_contents($path));
+                    echo htmlspecialchars(file_get_contents($path));
                 }else{
                     echo file_get_contents($path);
                 }
