@@ -2,7 +2,7 @@
     define("protectedPath", dirname($_SERVER["DOCUMENT_ROOT"]) . "/protected/");
     define("protectedPublicPath", protectedPath . "public/");
     define("protectedPrivatePath", protectedPath . "private/");
-    define("htmlPath", $_SERVER["DOCUMENT_ROOT"] . "/html/");
+    define("htmlPath", protectedPublicPath . "html/");
     define("phpPath", protectedPrivatePath . "php/");
     define("defaultLang", "en");
     define("jsonLanguagesPath", $_SERVER["DOCUMENT_ROOT"] . "/json/languages/");
@@ -44,6 +44,7 @@
             exit;
         }
     }
+    header("X-Frame-Options: DENY");
     include(phpPath . "uploadphotovideo.php");
     include(phpPath . "uploadstring.php");
     include(phpPath . "uploadvoice.php");
@@ -66,5 +67,6 @@
         $indexHTML = str_replace("<htmllang>lang</htmllang>", $lang, $indexHTML);
         $indexHTML = setLanguage($indexHTML);
         echo $indexHTML;
+        echo '<script>try{function consoleWarning(a,b){for(var i=0;i<3;i++){console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");console.log("%c"+a+"!","color:#ff0000;font-size:32px;font-weight:bold;");console.log("%c"+b,"font-size:25px");console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");}}consoleWarning("' . $langJSON["warning"] . '","' . $langJSON["consolewarning"] . '");}catch(e){}</script>';
     }
 ?>

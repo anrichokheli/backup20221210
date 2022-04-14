@@ -946,7 +946,7 @@ try{
     function setSettingsWindow(){
         setWindowDarkMode(settingsWindowOverlay, settingsWindow);
         var ajax = new XMLHttpRequest();
-        ajax.open("GET", "html/settings.html");
+        ajax.open("POST", "?view&v=html/settings.html");
         ajax.onload = function(){
             settingsWindow.innerHTML = translateHTML(this.responseText);
             var style = document.createElement("link");
@@ -957,7 +957,8 @@ try{
             script.src = "scripts/settings.js";
             settingsWindow.appendChild(script);
         };
-        ajax.send();
+        ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        ajax.send("gethtml=1");
     }
     settingsButton.addEventListener("click", function(){
         settingsWindowOverlay.style.display = "block";
@@ -997,6 +998,9 @@ try{
                     }
                 }
                 document.title = strings["title"];
+                try{
+                    consoleWarning(strings["warning"],strings["consolewarning"]);
+                }catch(e){}
             }
             else{
                 var getlang = (new URL(window.location.href)).searchParams.get("lang");

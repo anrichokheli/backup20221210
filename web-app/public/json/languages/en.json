@@ -68,5 +68,7 @@
     "darkbackgroundcolor": "Dark Background Colour",
     "viewmore": "View More",
     "colorfilter": "Colour Filter",
-    "loadnewcontentwhenscroll": "Load new content when scroll"
+    "loadnewcontentwhenscroll": "Load new content when scroll",
+    "warning": "WARNING",
+    "consolewarning": "This is window for developers, where code can be written. Code may be harmful! For your security, you should not paste anything here if you do not understand what is it."
 }

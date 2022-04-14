@@ -19,10 +19,21 @@
         $path = realpath(protectedPublicPath . $_GET["v"]);
         if(strpos($path, realpath(protectedPublicPath)) === 0){
             if(is_file($path)){
-                header("Content-Type: " . mime_content_type($path));
+                $mimeContentType = mime_content_type($path);
+                if((strpos($mimeContentType, "image/") === FALSE) && (strpos($mimeContentType, "video/") === FALSE) && (strpos($mimeContentType, "audio/") === FALSE)){
+                    header("X-Frame-Options: DENY");
+                }
+                header("Content-Type: " . $mimeContentType);
                 header("Content-Length: " . filesize($path));
-                echo file_get_contents($path);
+                $fileContent = file_get_contents($path);
+                if($mimeContentType == "text/html"){
+                    if(!(isset($_POST["gethtml"]) && $_POST["gethtml"] == 1)){
+                        $fileContent = htmlspecialchars($fileContent);
+                    }
+                }
+                echo $fileContent;
             }else{
+                header("X-Frame-Options: DENY");
                 foreach(scandir($path) as $link){
                     echo "<a href=\"?view&v=" . $_GET["v"] . "/" . $link . "\">" . $link . "</a><br>";
                 }
@@ -30,6 +41,7 @@
             exit;
         }
     }
+    header("X-Frame-Options: DENY");
     /*function echoString($dataPath, $timePath, $n)  {
         $localTimePath = $timePath . $n . ".txt";
         if(file_exists($localTimePath))    {

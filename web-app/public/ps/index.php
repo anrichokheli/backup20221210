@@ -1,4 +1,5 @@
 <?php
+    header("X-Frame-Options: DENY");
     define("ps", "");
     include($_SERVER["DOCUMENT_ROOT"] . "/index.php");
 ?>
