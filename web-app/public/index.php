@@ -32,6 +32,9 @@
         }
         return $html;
     }
+    function echoConsoleWarningScript(){
+        echo '<script>try{function consoleWarning(a,b){for(var i=0;i<3;i++){console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");console.log("%c"+a+"!","color:#ff0000;font-size:32px;font-weight:bold;");console.log("%c"+b,"font-size:25px");console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");}}consoleWarning("' . $GLOBALS["langJSON"]["warning"] . '","' . $GLOBALS["langJSON"]["consolewarning"] . '");}catch(e){}</script>';
+    }
     if(strpos($_SERVER["REQUEST_URI"], /*"/" . basename(getcwd()) . */"/?") === 0)    {
         if(strpos($_SERVER["REQUEST_URI"], "&") !== FALSE)    {
             $_GET["n"] = substr($_SERVER["REQUEST_URI"], /*6*/2, strpos($_SERVER["REQUEST_URI"], "&") - 2);
@@ -41,6 +44,7 @@
         }
         if(ctype_digit($_GET["n"]) || isset($_GET["view"]))    {
             include(phpPath . "view.php");
+            echoConsoleWarningScript();
             exit;
         }
     }
@@ -51,7 +55,7 @@
     if(!empty($_GET["download"])){
         include(phpPath . "download.php");
     }
-    if(!defined("ps")){
+    if(!defined("notmain")){
         if(isset($_GET["noscript"])){
             $indexHTML = file_get_contents(htmlPath . "indexnoscript.html");
         }else{
@@ -67,6 +71,6 @@
         $indexHTML = str_replace("<htmllang>lang</htmllang>", $lang, $indexHTML);
         $indexHTML = setLanguage($indexHTML);
         echo $indexHTML;
-        echo '<script>try{function consoleWarning(a,b){for(var i=0;i<3;i++){console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");console.log("%c"+a+"!","color:#ff0000;font-size:32px;font-weight:bold;");console.log("%c"+b,"font-size:25px");console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");}}consoleWarning("' . $langJSON["warning"] . '","' . $langJSON["consolewarning"] . '");}catch(e){}</script>';
     }
+    echoConsoleWarningScript();
 ?>

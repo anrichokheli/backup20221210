@@ -918,6 +918,53 @@ try{
         }
         return html;
     }
+}catch(e){}
+try{
+    var colorFilterDefaultValue = 90;
+    var lightFilter = document.createElement("div");
+    lightFilter.className = "overlay";
+    mainDiv.style.position = "relative";
+    lightFilter.style.position = "absolute";
+    lightFilter.style.pointerEvents = "none";
+    lightFilter.style.mixBlendMode = "multiply";
+    lightFilter.style.zIndex = "1";
+    lightFilter.style.display = "none";
+    mainDiv.appendChild(lightFilter);
+    var r = 255;
+    var g;
+    var b;
+    function setFilterValue(value0){
+        var value = (value0 / 100.0) * 510;
+        if(value < 0){
+            value = 0;
+        }else if(value > 510){
+            value = 510;
+        }
+        if(value < 256){
+            g = value;
+            b = 0;
+        }else{
+            g = 255;
+            b = value - 255;
+        }
+        lightFilter.style.backgroundColor = "rgb("+r+", "+g+", "+b+")";
+        localStorage.setItem("colorfiltervalue", value0);
+    }
+    function colorfilter(){
+        if(localStorage.getItem("colorfiltervalue")){
+            setFilterValue(localStorage.getItem("colorfiltervalue"));
+        }else{
+            setFilterValue(colorFilterDefaultValue);
+        }
+        if(localStorage.getItem("colorfilterenabled") == "true"){
+            lightFilter.style.display = "block";
+        }else{
+            lightFilter.style.display = "none";
+        }
+    }
+    colorfilter();
+}catch(e){}
+try{
     var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
     settingsWindowOverlay.style.zIndex = "1";
     settingsWindowOverlay.addEventListener("click", function(e){
@@ -926,6 +973,7 @@ try{
         }
         document.body.style.overflow = "visible";
         this.style.display = "none";
+        lightFilter.style.position = "absolute";
     });
     var settingsWindow = document.createElement("div");
     settingsWindow.style.maxWidth = "90%";
@@ -946,7 +994,7 @@ try{
     function setSettingsWindow(){
         setWindowDarkMode(settingsWindowOverlay, settingsWindow);
         var ajax = new XMLHttpRequest();
-        ajax.open("POST", "?view&v=html/settings.html");
+        ajax.open("GET", "?view&v=html/settings.html");
         ajax.onload = function(){
             settingsWindow.innerHTML = translateHTML(this.responseText);
             var style = document.createElement("link");
@@ -957,13 +1005,13 @@ try{
             script.src = "scripts/settings.js";
             settingsWindow.appendChild(script);
         };
-        ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        ajax.send("gethtml=1");
+        ajax.send();
     }
     settingsButton.addEventListener("click", function(){
         settingsWindowOverlay.style.display = "block";
         settingsWindowOverlay.style.display = "flex";
         document.body.style.overflow = "hidden";
+        lightFilter.style.position = "";
         if(settingsWindow.innerHTML != '')    {
             return;
         }
@@ -971,6 +1019,8 @@ try{
     });
     settingsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 64 64" class="icons"><g transform="translate(0 64) scale(.1 -.1)"><path d="m257 584c-4-4-7-22-7-40 0-23-7-36-26-49-23-15-29-15-64-1l-39 15-64-112 32-26c20-17 31-35 31-51s-11-34-31-51l-32-26 32-56 32-57 36 15c19 8 38 15 42 15 20-1 45-35 50-67l6-38h65 65l6 38c5 32 30 66 50 67 4 0 23-7 42-15l36-15 64 112-32 25c-42 33-42 73 0 106l32 25-32 56-32 55-39-15c-35-14-41-14-64 1-18 12-26 27-28 53l-3 37-60 3c-34 2-64 0-68-4zm128-199c36-35 35-97-1-130-61-57-154-17-154 65 0 56 34 90 90 90 30 0 47-6 65-25z"/></g></svg> <span class="settings"><string>settings</string></span>';
     settingsButton.style.display = "inline-block";
+}catch(e){}
+try{
     function setLanguage(lang,get)  {
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "json/languages/" + lang + ".json");
@@ -1013,7 +1063,7 @@ try{
                 }
             }
             if(lang != getCookie("lang")){
-                setCookie("lang", lang);
+                setCookie("lang", lang, 1000);
             }
         };
         ajax.send();
@@ -1256,51 +1306,6 @@ try{
         }
     }
     darkmode();
-}catch(e){}
-try{
-    var colorFilterDefaultValue = 90;
-    var lightFilter = document.createElement("div");
-    lightFilter.className = "overlay";
-    mainDiv.style.position = "relative";
-    lightFilter.style.position = "absolute";
-    lightFilter.style.pointerEvents = "none";
-    lightFilter.style.mixBlendMode = "multiply";
-    lightFilter.style.zIndex = "1";
-    lightFilter.style.display = "none";
-    mainDiv.appendChild(lightFilter);
-    var r = 255;
-    var g;
-    var b;
-    function setFilterValue(value0){
-        var value = (value0 / 100.0) * 510;
-        if(value < 0){
-            value = 0;
-        }else if(value > 510){
-            value = 510;
-        }
-        if(value < 256){
-            g = value;
-            b = 0;
-        }else{
-            g = 255;
-            b = value - 255;
-        }
-        lightFilter.style.backgroundColor = "rgb("+r+", "+g+", "+b+")";
-        localStorage.setItem("colorfiltervalue", value0);
-    }
-    function colorfilter(){
-        if(localStorage.getItem("colorfiltervalue")){
-            setFilterValue(localStorage.getItem("colorfiltervalue"));
-        }else{
-            setFilterValue(colorFilterDefaultValue);
-        }
-        if(localStorage.getItem("colorfilterenabled") == "true"){
-            lightFilter.style.display = "block";
-        }else{
-            lightFilter.style.display = "none";
-        }
-    }
-    colorfilter();
 }catch(e){}
 try{
     window.addEventListener("storage", function(){

@@ -1,5 +1,6 @@
 <?php
-    header("X-Frame-Options: DENY");
+    define("notmain", "");
+    include($_SERVER["DOCUMENT_ROOT"] . "/index.php");
 ?>
 <!DOCTYPE html>
 <html>

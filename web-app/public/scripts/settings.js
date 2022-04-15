@@ -34,6 +34,7 @@ var languageSelect = document.getElementById("setlang");
 defaultLang.onchange = function(){
     if(this.checked){
         localStorage.removeItem("lang");
+        setCookie("lang", "");
         lang = navigator.language.substring(0, 2);
         setLanguage(lang);
         languageSelect.value = lang;
@@ -51,6 +52,39 @@ languageSelect.onchange = function(){
     defaultLang.checked = 0;
     window.onlanguagechange = function(){};
 };
+try{
+    var timeZoneValueDiv = document.getElementById("timezonevalue");
+    var timezoneSelect = document.getElementById("settimezone");
+    var defaultTimezone = document.getElementById("defaulttimezone");
+    function setTimeZoneHTML(value){
+        if(value > 0){
+            value = '+' + value;
+        }
+        timeZoneValueDiv.innerText = value;
+    }
+    if(localStorage.getItem("timezone") == null){
+        defaultTimezone.checked = 1;
+        setTimeZoneHTML(getCookie("timezone") / -60);
+    }else{
+        setTimeZoneHTML(localStorage.getItem("timezone"));
+    }
+    timezoneSelect.value = Math.round(timeZoneValueDiv.innerText);
+    defaultTimezone.onchange = function(){
+        if(this.checked){
+            localStorage.removeItem("timezone");
+            setCookie("settingstimezone", "");
+            setTimeZoneHTML((new Date()).getTimezoneOffset() / -60);
+            timezoneSelect.value = Math.round((new Date()).getTimezoneOffset() / -60);
+        }
+    };
+    timezoneSelect.onchange = function(){
+        localStorage.setItem("timezone", this.value);
+        setCookie("settingstimezone", this.value, 1000);
+        setTimeZoneHTML(this.value);
+        defaultTimezone.checked = 0;
+    };
+    
+}catch(e){}
 try{
     var saveUploads = document.getElementById("saveuploads");
     if(localStorage.getItem("saveuploads") == "true"){
@@ -167,6 +201,9 @@ try{
         if(confirm(getString("resetsettings")+"?")){
             localStorage.removeItem("darkmode");
             localStorage.removeItem("lang");
+            localStorage.removeItem("timezone");
+            setCookie("lang", "");
+            setCookie("settingstimezone", "");
             localStorage.setItem("saveuploads", true);
             localStorage.removeItem("colorfilterenabled");
             localStorage.setItem("colorfiltervalue", colorFilterDefaultValue);

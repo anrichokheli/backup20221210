@@ -82,15 +82,24 @@
     function setValue($name, $value, $html) {
         return str_replace("<php>" . $name . "</php>", $value, $html);
     }
-    if(isset($_COOKIE["timezone"])){
-        $timezone = $_COOKIE["timezone"];
+    function setTimezone($timezone, $invert){
         if(ctype_digit($timezone)){
             $timezone = "+" . $timezone;
         }
         $timezonesign = substr($timezone, 0, 1);
+        if($invert){
+            if($timezonesign == "+"){
+                $timezonesign = "-";
+            }else if($timezonesign == "-"){
+                $timezonesign = "+";
+            }
+        }
         $timezonenum = substr($timezone, 1);
         if(($timezonesign == "+") || ($timezonesign == "-") && (ctype_digit($timezonenum))){
-            $timezonenum = round($timezonenum / 60);
+            if(!$invert){
+                $timezonenum /= 60;
+            }
+            $timezonenum = round($timezonenum);
             if($timezonesign == "-"){
                 $maxGMT = 14;
             }else if($timezonesign == "+"){
@@ -101,6 +110,11 @@
             }
             date_default_timezone_set("Etc/GMT" . $timezonesign . $timezonenum);
         }
+    }
+    if(!empty($_COOKIE["settingstimezone"])){
+        setTimezone($_COOKIE["settingstimezone"], 1);
+    }else if(!empty($_COOKIE["timezone"])){
+        setTimezone($_COOKIE["timezone"], 0);
     }
     function getT($t){
         $datetime = date("Y-m-d H:i:s", $t);
