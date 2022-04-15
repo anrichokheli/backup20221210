@@ -93,12 +93,16 @@ body    {
         fill: #ffffff;
     }
 }
-#info   {
-    display: inline-block;
+.info   {
     border: 2px dotted #256aff;
     border-radius: 8px;
     padding: 16px;
-    text-align: initial;
+}
+.info *{
+    vertical-align: middle;
+}
+.info hr{
+    border-top: 1px solid #256aff;
 }
 .uploadforms{
     border: 1px solid #256aff;
