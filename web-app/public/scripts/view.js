@@ -162,15 +162,21 @@ function loaderSetup(loader, loadError){
     loadError.style.color = "#ff0000";
 }
 try{
-    var loader = document.getElementById("loader");
-    var loadError = document.getElementById("loaderror");
-    var loaderTop = document.createElement("div");
-    loaderTop.className = "loader";
-    var loadErrorTop = document.createElement("div");
-    mainDiv.insertBefore(loaderTop, contentDiv);
-    mainDiv.insertBefore(loadErrorTop, contentDiv);
-    loaderSetup(loader, loadError);
-    loaderSetup(loaderTop, loadErrorTop);
+    var loaderEnabled;
+    if(document.getElementById("content")){
+        loaderEnabled = true;
+    }
+    if(loaderEnabled){
+        var loader = document.getElementById("loader");
+        var loadError = document.getElementById("loaderror");
+        var loaderTop = document.createElement("div");
+        loaderTop.className = "loader";
+        var loadErrorTop = document.createElement("div");
+        mainDiv.insertBefore(loaderTop, contentDiv);
+        mainDiv.insertBefore(loadErrorTop, contentDiv);
+        loaderSetup(loader, loadError);
+        loaderSetup(loaderTop, loadErrorTop);
+    }
 }catch(e){}
 try{
     var newContentDiv = document.getElementById("newcontent");
@@ -183,13 +189,15 @@ function scrollLoad(){
     }
 }
 function loadScrollEventSetup(){
-    try{
-        if(localStorage.getItem("loadonscroll") == "false"){
-            return;
+    if(loaderEnabled){
+        try{
+            if(localStorage.getItem("loadonscroll") == "false"){
+                return;
+            }
+        }catch(e){}
+        if(document.getElementById("viewmore")){
+            window.addEventListener("scroll", scrollLoad);
         }
-    }catch(e){}
-    if(document.getElementById("viewmore")){
-        window.addEventListener("scroll", scrollLoad);
     }
 }
 function reloadNewContent(){
@@ -232,7 +240,9 @@ try{
                 e.preventDefault();
                 document.body.scrollTop = 0;
                 document.documentElement.scrollTop = 0;
-                reloadNewContent();
+                if(loaderEnabled){
+                    reloadNewContent();
+                }
             };
         }else{
             topDiv.childNodes[0].childNodes[0].width = "64";
