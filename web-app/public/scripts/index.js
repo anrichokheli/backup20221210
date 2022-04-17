@@ -160,6 +160,11 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
         unloadWarning++;
     }
     try{
+        if(location){
+            setUploadStatusTop(locationUploadStatus, locationUploadString, 0);
+        }
+    }catch(e){}
+    try{
         var text;
         var img = "<img width=\"16\" height=\"16\" src=\"images/";
         if(location == true)    {
@@ -191,6 +196,11 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
         div = document.createElement("div");
         div.className = "statusText";
         if(this.responseText === "1")    {
+            try{
+                if(location){
+                    setUploadStatusTop(locationUploadStatus, locationUploadString, 1);
+                }
+            }catch(e){}
             div.innerHTML = img + text + '<span class="uploadcompleted">' + getString("uploadcompleted") + '</span>';
             color = "#00ff00";
             unloadWarning--;
@@ -203,6 +213,11 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
             }catch(e){}
         }
         else    {
+            try{
+                if(location){
+                    setUploadStatusTop(locationUploadStatus, locationUploadString, -1);
+                }
+            }catch(e){}
             div.innerHTML = img + text + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
             color = "#ff0000";
             if(!location)    {
@@ -219,6 +234,11 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
         element.insertBefore(div, element.childNodes[0]);
     };
     ajax.onerror = function(){
+        try{
+            if(location){
+                setUploadStatusTop(locationUploadStatus, locationUploadString, -1);
+            }
+        }catch(e){}
         div = document.createElement("div");
         div.className = "statusText";
         div.innerHTML = img + text + '<span class="uploaderror">' + getString("uploaderror") + '</span>';
@@ -316,13 +336,13 @@ function bottomProgressVisible(visible)    {
             }
             uploadStatusBottom.style.display = "block";
             uploadStatusBottom.style.display = "flex";
-            uploadStatusBottom.style.animation = "showbottom 0.5s forwards";
+            uploadStatusBottom.style.animation = "showbottom 0.25s forwards";
         }
         else    {
             timeout1 = setTimeout(function(){
                 try{
-                    uploadStatusBottom.style.animation = "hidebottom 0.5s forwards";
-                    timeout2 = setTimeout(function(){uploadStatusBottom.style.display = "none";}, 500);
+                    uploadStatusBottom.style.animation = "hidebottom 0.25s forwards";
+                    timeout2 = setTimeout(function(){uploadStatusBottom.style.display = "none";}, 250);
                 }catch(e){}
             }, 3000);
         }
@@ -339,15 +359,29 @@ function flexCenter(element, columnDirection) {
         element.style.display = "inline-block";
     }
 }
-var uploadStatusBottom = document.getElementById("uploadstatusbottom");
-var bottomProgressBar = document.createElement("div");
-uploadStatusBottom.appendChild(bottomProgressBar);
-var uploadstatusesdisplayed = 0;
-var maxFileSize = 25000000;
-var maxFilesNum = 10;
-var maxDescriptionLength = 100000;
-var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpg", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
-var lastUploadID = 0;
+try{
+    var uploadStatusBottom = document.getElementById("uploadstatusbottom");
+    try{
+        uploadStatusBottom.addEventListener("click", function(){
+            if(timeout1 != undefined)    {
+                clearTimeout(timeout1);
+            }
+            if(timeout2 != undefined)    {
+                clearTimeout(timeout2);
+            }
+            this.style.display = "none";
+            this.style.bottom = "-8vh";
+        });
+    }catch(e){}
+    var bottomProgressBar = document.createElement("div");
+    uploadStatusBottom.appendChild(bottomProgressBar);
+    var uploadstatusesdisplayed = 0;
+    var maxFileSize = 25000000;
+    var maxFilesNum = 10;
+    var maxDescriptionLength = 100000;
+    var allowedFileExtensions = ["bmp", "gif", "x-icon", "jpg", "jpeg", "png", "tiff", "webp", "x-msvideo", "mpeg", "ogg", "mp2t", "webm", "3gpp", "3gpp2", "mp4"];
+    var lastUploadID = 0;
+}catch(e){}
 function addShareButton(element, fullurl){
     try{
         var shareButton = document.createElement("button");
@@ -366,13 +400,43 @@ function addShareButton(element, fullurl){
         element.appendChild(shareButton);
     }catch(e){}
 }
+try{
+    var uploadStatusTop = document.getElementById("uploadstatustop");
+    uploadStatusTop.style.border = "2px solid #256aff";
+    uploadStatusTop.innerHTML = '<div><img width="16" height="16" src="images/uploadicon.svg"><span class="uploadstatus">' + getString("uploadstatus") + '</span>:</div>';
+    var fileUploadStatus = document.createElement("div");
+    fileUploadStatus.style.border = "2px solid #256aff";
+    fileUploadStatus.innerHTML = '<img width="16" height="16" src="images/photovideo.svg"><span class="file(s)">' + getString("file(s)") + '</span>; ';
+    var fileUploadString = document.createElement("span");
+    fileUploadStatus.appendChild(fileUploadString);
+    uploadStatusTop.appendChild(fileUploadStatus);
+    var locationUploadStatus = document.createElement("div");
+    locationUploadStatus.style.border = "2px solid #256aff";
+    locationUploadStatus.innerHTML = '<img width="16" height="16" src="images/location.svg"><span class="locationcoordinates">' + getString("locationcoordinates") + '</span>; ';
+    var locationUploadString = document.createElement("span");
+    locationUploadStatus.appendChild(locationUploadString);
+    uploadStatusTop.appendChild(locationUploadStatus);
+    function setUploadStatusTop(element, stringelement, statusValue, n){
+        if(statusValue == 0){
+            element.style.border = "2px solid #ffff00";
+            stringelement.innerText = getString("uploading");
+        }else if(statusValue == 1){
+            element.style.border = "2px solid #00ff00";
+            stringelement.innerText = getString("uploadcompleted");
+            if(n){
+                stringelement.innerHTML += ' (<a target="_blank" href="?' + n + '">#' + n + '</a>)';
+            }
+        }else if(statusValue == -1){
+            element.style.border = "2px solid #ff0000";
+            stringelement.innerText = getString("uploadfailed");
+        }
+    }
+}catch(e){}
 function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString0){
     var currentUploadID = ++lastUploadID;
     if(!filelink && files === null && !formData0)  {
         files = fileInput.files;
     }
-    var subbox;
-    var after;
     try{
         if(!filelink && !formData0){
             if(files.length > maxFilesNum){
@@ -400,7 +464,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         if(!formData0){
             unloadWarning++;
         }
-        subbox = document.createElement("div");
+        var subbox = document.createElement("div");
         flexCenter(subbox, 1);
         subbox.className = "boxs";
         uploadStatuses.insertBefore(subbox, uploadStatuses.childNodes[0]);
@@ -464,7 +528,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         bottomProgressBar.style.backgroundColor = color;
         bottomProgressBar.style.width = "0%";
         bottomProgressVisible(1);
-        after = document.createElement("div");
+        var after = document.createElement("div");
         after.classList.add("boxs", "boxs2");
         if(!filelink && (files.length == 1)){
             var downloadButton = document.createElement("a");
@@ -474,6 +538,9 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
             downloadButton.download = (new Date()).getTime();
             status.appendChild(downloadButton);
         }
+    }catch(e){}
+    try{
+        setUploadStatusTop(fileUploadStatus, fileUploadString, 0);
     }catch(e){}
     if(formData0){
         formData = formData0;
@@ -539,6 +606,9 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 }
             }catch(e){}
             try{
+                setUploadStatusTop(fileUploadStatus, fileUploadString, 1, n);
+            }catch(e){}
+            try{
                 var fullLink = window.location.href+"?"+n;
                 var html = "<div class=\"boxs boxs2\"><span class=\"uploadedid\">" + getString("uploadedid") + "</span>: #" + n + "</div>";
                 html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
@@ -580,6 +650,9 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
             }
         }
         else    {
+            try{
+                setUploadStatusTop(fileUploadStatus, fileUploadString, -1);
+            }catch(e){}
             statusText.innerHTML += typeImg + ' ' + typeString + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
             var errorDiv = document.createElement("div");
             errorDiv.style.border = "1px dotted #ff0000";
@@ -599,6 +672,9 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         status.insertBefore(statusText, status.childNodes[0]);
     };
     ajax.onerror = function(){
+        try{
+            setUploadStatusTop(fileUploadStatus, fileUploadString, -1);
+        }catch(e){}
         statusText.innerHTML += typeImg + ' ' + typeString + '<span class="uploaderror">' + getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         statusText.className = "statusText";
         color = "#ff0000";
@@ -631,7 +707,8 @@ function uploadFunction(input){
             input.parentNode.parentNode.submit();
         }catch(e){
             button.style.display = "inline-block";
-            input.hidden = 0;
+            input.style.width = "initial";
+            input.style.height = "initial";
         }
     }
 }
@@ -652,7 +729,8 @@ function buttonSetup(id0) {
     };
     button.tabIndex = "";
     upload.style.display = "none";
-    input.hidden = 1;
+    input.style.width = "0";
+    input.style.height = "0";
 }
 try{
     buttonSetup("takephoto");

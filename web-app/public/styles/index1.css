@@ -75,27 +75,27 @@
     left: 5%;
     right: 5%;
     width: 90%;
-    height: 0px;
+    height: 7vh;
     background-color: #256aff80;
-    border-radius: 8px;
+    border-radius: 8px 8px 0 0;
     position: fixed;
-    bottom: 1%;
+    bottom: -8vh;
     display: none;
     align-items: center;
-    padding: 1%;
+    padding: 1vh;
 }
 @keyframes showbottom   {
-    from{height: 0vh;}
-    to{height: 7vh;}
+    from{bottom: -8vh;}
+    to{bottom: 0;}
 }
 @keyframes hidebottom   {
-    from{height: 7vh;}
-    to{height: 0vh;}
+    from{bottom: 0;}
+    to{bottom: -8vh;}
 }
 #uploadstatusbottom div {
     height: 50%;
     border-radius: 8px;
-    transition: background-color 1s;
+    transition: background-color 0.25s;
 }
 .statusText {
     border: 2px solid;
