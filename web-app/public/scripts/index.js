@@ -439,6 +439,19 @@ try{
     locationUploadStatus.innerHTML = '<img width="16" height="16" src="images/location.svg"> <span class="locationcoordinates">' + getString("locationcoordinates") + '</span>; ';
     var locationUploadString = document.createElement("span");
     locationUploadStatus.appendChild(locationUploadString);
+    try{
+        function scrollIntoViewFunc(element){
+            try{
+                element.scrollIntoView();
+                try{
+                    window.scrollTo(0, window.scrollY - topScrollDivHeight - 3);
+                }catch(e){}
+            }catch(e){}
+        }
+        locationUploadStatus.addEventListener("click", function(){
+            scrollIntoViewFunc(locationDiv);
+        });
+    }catch(e){}
     uploadStatusTop.appendChild(locationUploadStatus);
     function setUploadStatusTop(element, stringelement, statusValue, n){
         if(statusValue == 0){
@@ -593,7 +606,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         fileUploadStatus.addEventListener("click", function(e){
             try{
                 if(e.target.tagName != "A"){
-                    subbox.scrollIntoView();
+                    scrollIntoViewFunc(subbox);
                 }
             }catch(e){}
         });
