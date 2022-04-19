@@ -913,7 +913,8 @@ try{
     topScrollDiv.style.borderBottomColor = "#256aff";
     topScrollDiv.style.transition = "0.1s";
     topScrollDiv.style.height = "0";
-    topScrollDiv.style.overflow = "hidden";
+    topScrollDiv.style.overflowY = "hidden";
+    topScrollDiv.style.overflowX = "auto";
     topScrollDiv.style.display = "flex";
     topScrollDiv.style.justifyContent = "space-evenly";
     var psImg = document.createElement("img");

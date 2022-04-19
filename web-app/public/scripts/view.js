@@ -340,4 +340,24 @@ function setCookie(cname, cvalue, exdays) {
     let expires = "expires="+ d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
+try{
+    var br0 = document.createElement("br");
+    mainDiv.insertBefore(br0, topDiv.nextElementSibling);
+    var viewuploads2button = document.createElement("button");
+    viewuploads2button.classList.add("buttons");
+    viewuploads2button.innerHTML = '<img width="32" height="32" src="images/viewicon.svg">&nbsp;<span class="viewuploads"></span> 2';
+    viewuploads2button.onclick = function(){
+        location.assign("view2");
+    };
+    mainDiv.insertBefore(viewuploads2button, br0.nextElementSibling);
+    var viewuploads2button2 = document.createElement("button");
+    viewuploads2button2.classList.add("buttons");
+    viewuploads2button2.innerHTML = '<img width="32" height="32" src="images/newtab.svg">';
+    viewuploads2button2.onclick = function(){
+        window.open("view2");
+    };
+    mainDiv.insertBefore(viewuploads2button2, viewuploads2button.nextElementSibling);
+    var br = document.createElement("br");
+    mainDiv.insertBefore(br, viewuploads2button2.nextElementSibling);
+}catch(e){}
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);

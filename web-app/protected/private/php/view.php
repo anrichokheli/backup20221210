@@ -111,17 +111,20 @@
             date_default_timezone_set("Etc/GMT" . $timezonesign . $timezonenum);
         }
     }
-    if(!empty($_COOKIE["settingstimezone"])){
-        setTimezone($_COOKIE["settingstimezone"], 1);
-    }else if(!empty($_COOKIE["timezone"])){
-        setTimezone($_COOKIE["timezone"], 0);
+    $rawData = isset($_GET["raw"]) && ($_GET["raw"] == 1);
+    if(!$rawData){
+        if(!empty($_COOKIE["settingstimezone"])){
+            setTimezone($_COOKIE["settingstimezone"], 1);
+        }else if(!empty($_COOKIE["timezone"])){
+            setTimezone($_COOKIE["timezone"], 0);
+        }
     }
     function getT($t){
-        $datetime = date("Y-m-d H:i:s", $t);
-        $timezone = date('O');
         if($GLOBALS["rawData"]){
-            return array($datetime, $timezone, $t);
+            return $t;
         }else{
+            $datetime = date("Y-m-d H:i:s", $t);
+            $timezone = date('O');
             return $datetime . "<br><div>" . $timezone . "<br>" . $t . "</div>";
         }
     }
@@ -169,11 +172,13 @@
             if($rawData)    {
                 $filePaths = array();
                 $timeDatas = array();
+                $fileTypes = [];
                 for($i = 0; $i < $dirFilesQuantity; $i++){
                     array_push($filePaths, $dirPublicPath . $dirFiles[$i]);
                     array_push($timeDatas, file_get_contents(photovideotimes . $n . "/" . $timeFiles[$i]));
+                    array_push($fileTypes, explode("/", mime_content_type($dirpath . "/" . $dirFiles[$i]))[0]);
                 }
-                array_push($dataArray, $filePaths, $timeDatas);
+                array_push($dataArray, $filePaths, $timeDatas, $fileTypes);
             }else{
                 $photovideoHTML = "";
                 for($i = 0; $i < $dirFilesQuantity; $i++){
@@ -351,7 +356,6 @@
             return setLanguage($html);
         }
     }
-    $rawData = isset($_GET["raw"]) && ($_GET["raw"] == 1);
     $ajax = isset($_GET["ajax"]) && ($_GET["ajax"] == 1);
     if(!$rawData && !$ajax)    {
         $topHTML = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title><string>pedestrian</string> SOS!</title></head>";
@@ -410,11 +414,18 @@
                 }
                 $files = array_slice($files, maxQuantity * $page, maxQuantity);
             }
-            echo '<div id="content">';
-            foreach($files as $n)    {
-                echo getData($n, $rawData);
+            if(!$rawData){
+                echo '<div id="content">';
             }
-            echo '</div>';
+            for($i = 0; $i < count($files); $i++)    {
+                echo getData($files[$i], $rawData);
+                if($rawData && ($i < (count($files) - 1))){
+                    echo ">";
+                }
+            }
+            if(!$rawData){
+                echo '</div>';
+            }
             if(!$rawData)    {
                 $nextAvailable = (count($files) == maxQuantity);
                 if($nextAvailable){
