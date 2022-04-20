@@ -76,7 +76,7 @@ body    {
     align-items: center;
 }
 .photovideo img {
-    object-fit: cover;
+    object-fit: contain;
 }
 .boxs  {
     border: 1px solid #256aff;
