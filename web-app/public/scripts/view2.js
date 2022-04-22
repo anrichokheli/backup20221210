@@ -190,7 +190,6 @@ document.getElementById("share").onclick = function(){
 function openWindow(content){
     windowContent.innerHTML = content;
     windowOverlay.style.display = "flex";
-    windowContent.style.height = "calc(100% - " + windowTop.clientHeight + "px - 1px)";
     document.getElementsByTagName("BODY")[0].style.overflow = "hidden";
 }
 try{
