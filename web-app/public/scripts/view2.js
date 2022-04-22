@@ -1,5 +1,6 @@
 var mainDiv = document.getElementById("main");
 var topDiv = document.getElementById("top");
+var windowOverlay = document.getElementById("windowoverlay");
 try{
     var mainDiv = document.getElementById("main");
     var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
@@ -8,10 +9,12 @@ try{
             document.documentElement.style.colorScheme = "dark";
             mainDiv.style.backgroundColor = "#000000";
             topDiv.style.backgroundColor = "#101010";
+            windowOverlay.style.backgroundColor = "#101010";
         }else{
             document.documentElement.style.colorScheme = "light";
             mainDiv.style.backgroundColor = "#efefef";
             topDiv.style.backgroundColor = "#ffffff";
+            windowOverlay.style.backgroundColor = "#ffffff";
         }
     }
     function defaultdarkmode()  {
@@ -37,7 +40,6 @@ try{
     lightFilter.style.pointerEvents = "none";
     lightFilter.style.mixBlendMode = "multiply";
     lightFilter.style.zIndex = "1";
-    lightFilter.style.display = "none";
     mainDiv.appendChild(lightFilter);
     var r = 255;
     var g;
@@ -129,18 +131,67 @@ function loadContent(reload){
     };
     ajax.send();
 }
+function getHTML(array){
+    if(array[3][0] == "image"){
+        return '<img src="../' + array[1][0] + '">';
+    }else{
+        return '<video controls src="../' + array[1][0] + '"></video>';
+    }
+}
 function addContent(array){
     var oneDiv = document.createElement("div");
     oneDiv.classList.add("one");
-    if(array[3][0] == "image"){
-        oneDiv.innerHTML = '<img src="../' + array[1][0] + '">';
-    }else{
-        oneDiv.innerHTML = '<video controls src="../' + array[1][0] + '"></video>';
-    }
+    oneDiv.innerHTML = getHTML(array);
     oneDiv.onclick = function(){
-        window.open("../?" + array[0]);
+        openWindow(this.innerHTML);
+        history.pushState("", "", "?n=" + array[0]);
     };
     contentDiv.appendChild(oneDiv);
+}
+var windowTop = document.getElementById("windowtop");
+var windowContent = document.getElementById("windowcontent");
+var closeWindowButton = document.getElementById("closewindow");
+function closeWindow(){
+    windowOverlay.style.display = "none";
+    document.getElementsByTagName("BODY")[0].style.overflow = "visible";
+}
+closeWindowButton.onclick = function(){
+    closeWindow();
+    history.pushState("", "", "?");
+};
+function getID(){
+    return (new URL(window.location.href)).searchParams.get("n");
+}
+function openID(){
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", "../?" + getID() + "&raw=1");
+    ajax.onload = function(){
+        if(this.responseText != ""){
+            openWindow(getHTML(JSON.parse(this.responseText)));
+        }
+    };
+    ajax.send();
+}
+document.getElementById("open").onclick = function(){
+    location.assign("../?" + getID());
+};
+document.getElementById("opennewtab").onclick = function(){
+    window.open("../?" + getID());
+};
+document.getElementById("download").onclick = function(){
+    var a = document.createElement("a");
+    a.download = "";
+    a.href = "../?download=" + getID();
+    a.click();
+};
+document.getElementById("share").onclick = function(){
+    navigator.share({url: window.location.href});
+};
+function openWindow(content){
+    windowContent.innerHTML = content;
+    windowOverlay.style.display = "flex";
+    windowContent.style.height = "calc(100% - " + windowTop.clientHeight + "px - 1px)";
+    document.getElementsByTagName("BODY")[0].style.overflow = "hidden";
 }
 try{
     var loaderStyle = document.createElement("link");
@@ -210,4 +261,16 @@ try{
         }
     });
 }catch{}
+window.onpopstate = function(){
+    if(getID()){
+        openID();
+    }else{
+        closeWindow();
+    }
+};
+window.onload = function(){
+    if(getID()){
+        openID();
+    }
+};
 loadContent();
