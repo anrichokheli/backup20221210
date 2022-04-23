@@ -161,14 +161,7 @@ function addContent(array){
     }
     oneDiv.innerHTML = getHTML(array) + '<div class="contenticon"><img width="32" height="32" src="../images/' + imageName + '.svg"></div>';
     oneDiv.onclick = function(){
-        if(array[1].length > 1){
-            openAll.style.display = "flex";
-            openAllNewTab.style.display = "flex";
-        }else{
-            openAll.style.display = "none";
-            openAllNewTab.style.display = "none";
-        }
-        openWindow(getHTML(array, true));
+        openWindow(getHTML(array, true), array);
         history.pushState("", "", "?n=" + array[0]);
     };
     contentDiv.appendChild(oneDiv);
@@ -192,7 +185,8 @@ function openID(){
     ajax.open("GET", "../?" + getID() + "&raw=1");
     ajax.onload = function(){
         if(this.responseText != ""){
-            openWindow(getHTML(JSON.parse(this.responseText)));
+            var array = JSON.parse(this.responseText);
+            openWindow(getHTML(array), array);
         }
     };
     ajax.send();
@@ -220,7 +214,14 @@ openAll.onclick = function(){
 openAllNewTab.onclick = function(){
     window.open("../?" + getID() + "&all");
 };
-function openWindow(content){
+function openWindow(content, array){
+    if(array[1].length > 1){
+        openAll.style.display = "flex";
+        openAllNewTab.style.display = "flex";
+    }else{
+        openAll.style.display = "none";
+        openAllNewTab.style.display = "none";
+    }
     windowContent.innerHTML = content;
     windowOverlay.style.display = "flex";
     document.getElementsByTagName("BODY")[0].style.overflow = "hidden";
