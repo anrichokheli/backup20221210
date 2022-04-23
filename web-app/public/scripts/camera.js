@@ -267,11 +267,14 @@ function uploadFile(file){
     formData.append("photovideo", file);
     ajax.send(formData);
 }
-document.getElementById("takephoto").addEventListener("click", function(){
+function takePhoto(){
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
     uploadFile(dataURItoBlob(canvas.toDataURL("image/png")));
+}
+document.getElementById("takephoto").addEventListener("click", function(){
+    takePhoto();
 });
 var recordVideoButton = document.getElementById("recordvideo");
 function onVideoStop(){
@@ -326,3 +329,66 @@ window.addEventListener("beforeunload", function(e){
         e.returnValue = '';
     }
 });
+try{
+    var takePhotoDraggable = document.getElementById("takephotodraggable");
+    var dragging;
+    takePhotoDraggable.onclick = function(){
+        if(!dragging){
+            takePhoto();
+        }
+    };
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    function dragElement(elmnt) {
+        elmnt.onmousedown = dragMouseDown;
+        elmnt.ontouchstart = dragMouseDown;
+        function dragMouseDown(e) {
+            dragging = 0;
+            e = e || window.event;
+            try{
+                if(e.changedTouches[0]){
+                    e = e.changedTouches[0];
+                }
+            }catch(e){}
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+            document.ontouchcancel = closeDragElement;
+            document.ontouchmove = elementDrag;
+        }
+        function elementDrag(e) {
+            dragging = 1;
+            e = e || window.event;
+            try{
+                if(e.changedTouches[0]){
+                    e = e.changedTouches[0];
+                }
+            }catch(e){}
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            var topValue = (elmnt.offsetTop - pos2);
+            var leftValue = (elmnt.offsetLeft - pos1);
+            if(topValue < 0){
+                topValue = 0;
+            }else if(topValue > window.innerHeight - 72){
+                topValue = window.innerHeight - 72;
+            }
+            if(leftValue < 0){
+                leftValue = 0;
+            }else if(leftValue > window.innerWidth - 72){
+                leftValue = window.innerWidth - 72;
+            }
+            elmnt.style.top = topValue + "px";
+            elmnt.style.left = leftValue + "px";
+        }
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+            document.ontouchcancel = null;
+            document.ontouchmove = null;
+        }
+    }
+    dragElement(takePhotoDraggable);
+}catch(e){}

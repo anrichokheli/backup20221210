@@ -17,6 +17,7 @@
                 <button id="takephoto" class="buttons"><div><div></div></div></button>
                 <button id="live" class="buttons"><img width="54" height="54" src="../images/live.svg"></button>
             </div>
+            <button id="takephotodraggable" class="buttons"><div><div></div></div></button>
             <button id="rotate" class="buttons singlebuttons"><img width="32" height="32" src="../images/rotate.svg"></button>
             <button id="flash" class="buttons singlebuttons"><img width="32" height="32" src="../images/flash0.svg"></button>
             <a href="../" style="text-decoration: none;top: 0;left: 0;" class="buttons singlebuttons">

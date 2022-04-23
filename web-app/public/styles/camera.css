@@ -36,7 +36,7 @@
     display: flex;
     justify-content: space-evenly;
 }
-#takephoto div,#recordvideo div{
+#takephoto div,#recordvideo div,#takephotodraggable div{
     width: 64px;
     height: 64px;
     border-radius: 50%;
@@ -45,11 +45,17 @@
     align-items: center;
     background-color: #ffffff80;
 }
-#takephoto div div{
+#takephoto div div,#takephotodraggable div div{
     width: 54px;
     height: 54px;
     background-color: #ffffff;
     border-radius: 50%;
+}
+#takephotodraggable{
+    position: absolute;
+    top: calc(50% - 72px);
+    left: 0;
+    z-index: 1;
 }
 #recordvideo div div{
     width: 26px;

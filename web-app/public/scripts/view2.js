@@ -4,17 +4,22 @@ var windowOverlay = document.getElementById("windowoverlay");
 try{
     var mainDiv = document.getElementById("main");
     var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");
+    var contentBackgroundColor;
     function setDarkMode(enabled){
         if(enabled){
             document.documentElement.style.colorScheme = "dark";
             mainDiv.style.backgroundColor = "#000000";
-            topDiv.style.backgroundColor = "#101010";
-            windowOverlay.style.backgroundColor = "#101010";
+            contentBackgroundColor = "#101010";
         }else{
             document.documentElement.style.colorScheme = "light";
             mainDiv.style.backgroundColor = "#efefef";
-            topDiv.style.backgroundColor = "#ffffff";
-            windowOverlay.style.backgroundColor = "#ffffff";
+            contentBackgroundColor = "#ffffff";
+        }
+        topDiv.style.backgroundColor = contentBackgroundColor;
+        windowOverlay.style.backgroundColor = contentBackgroundColor;
+        var contentElements = document.getElementsByClassName("one");
+        for(var i = 0; i < contentElements.length; i++){
+            contentElements[i].style.backgroundColor = contentBackgroundColor;
         }
     }
     function defaultdarkmode()  {
@@ -131,19 +136,39 @@ function loadContent(reload){
     };
     ajax.send();
 }
-function getHTML(array){
+function getHTML(array, windowMode){
     if(array[3][0] == "image"){
         return '<img src="../' + array[1][0] + '">';
     }else{
-        return '<video controls src="../' + array[1][0] + '"></video>';
+        if(windowMode){
+            return '<video controls src="../' + array[1][0] + '"></video>';
+        }else{
+            return '<video src="../' + array[1][0] + '"></video>';
+        }
     }
 }
 function addContent(array){
     var oneDiv = document.createElement("div");
     oneDiv.classList.add("one");
-    oneDiv.innerHTML = getHTML(array);
+    oneDiv.style.backgroundColor = contentBackgroundColor;
+    var imageName;
+    if(array[1].length > 1){
+        imageName = "multiple";
+    }else if(array[3][0] == "image"){
+        imageName = "photo";
+    }else if(array[3][0] == "video"){
+        imageName = "video";
+    }
+    oneDiv.innerHTML = getHTML(array) + '<div class="contenticon"><img width="32" height="32" src="../images/' + imageName + '.svg"></div>';
     oneDiv.onclick = function(){
-        openWindow(this.innerHTML);
+        if(array[1].length > 1){
+            openAll.style.display = "flex";
+            openAllNewTab.style.display = "flex";
+        }else{
+            openAll.style.display = "none";
+            openAllNewTab.style.display = "none";
+        }
+        openWindow(getHTML(array, true));
         history.pushState("", "", "?n=" + array[0]);
     };
     contentDiv.appendChild(oneDiv);
@@ -186,6 +211,14 @@ document.getElementById("download").onclick = function(){
 };
 document.getElementById("share").onclick = function(){
     navigator.share({url: window.location.href});
+};
+var openAll = document.getElementById("openall");
+var openAllNewTab = document.getElementById("openallnewtab");
+openAll.onclick = function(){
+    location.assign("../?" + getID() + "&all");
+};
+openAllNewTab.onclick = function(){
+    window.open("../?" + getID() + "&all");
 };
 function openWindow(content){
     windowContent.innerHTML = content;
