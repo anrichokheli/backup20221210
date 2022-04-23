@@ -46,10 +46,16 @@
     background-color: #ffffff80;
 }
 #takephoto div div,#takephotodraggable div div{
-    width: 54px;
-    height: 54px;
     background-color: #ffffff;
     border-radius: 50%;
+}
+#takephoto div div{
+    width: 54px;
+    height: 54px;
+}
+#takephotodraggable div div{
+    width: 26px;
+    height: 26px;
 }
 #takephotodraggable{
     position: absolute;
@@ -118,10 +124,18 @@
     opacity: 0.5;
     padding: 2px;
 }
-#status2{
+.progressbardiv{
     width: 90%;
-    height: 32px;
     border-radius: 8px;
+    border: 2px solid;
+    border-color: #00000000;
+}
+.progressbar{
+    height: 100%;
+    border-radius: 4px;
+}
+#status2{
+    height: 32px;
 }
 #statuslocation{
     display: flex;
@@ -157,13 +171,19 @@
     z-index: 2;
 }
 #statusBigBox > div{
-    width: 99%;
+    width: calc(99% - 4px);
     border-radius: 8px;
     padding: 2px;
     display: flex;
     justify-content: center;
     align-items: center;
     word-break: break-all;
+    flex-wrap: wrap;
+    color: #ffffff;
+}
+#statusBigBox > div span{
+    color: #ffffff;
+    background-color: #256aff40;
 }
 #statusBigBox > div:not(:first-child){
     margin-top: 2px;

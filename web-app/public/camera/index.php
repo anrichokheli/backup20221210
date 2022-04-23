@@ -24,7 +24,9 @@
                 <img width="32" height="32" src="../images/pedestriansos.svg">
             </a>
             <div id="statusBox">
-                <div id="status2"></div>
+                <div id="status2" class="progressbardiv">
+                    <div id="progressbartop" class="progressbar"></div>
+                </div>
                 <div id="statuslocation">
                     <img width="32" height="32" src="../images/location.svg">
                 </div>

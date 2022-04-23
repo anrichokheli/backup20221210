@@ -182,17 +182,21 @@ function addStatus(imageName, color, text, html){
     }else{
         text = '';
     }
-    statusSubDiv.innerHTML = '<img width="32" height="32" src="../images/'+imageName+'.svg"> '+getCurrentDateTime()+text;
+    statusSubDiv.innerHTML = '<img width="32" height="32" src="../images/'+imageName+'.svg"> <span>'+getCurrentDateTime()+text+'</span>';
     if(html){
         statusSubDiv.appendChild(html);
     }
     statusBigBox.prepend(statusSubDiv);
+    return statusSubDiv;
 }
 var unloadWarning = 0;
+var topProgressBar = document.getElementById("progressbartop");
 function uploadFile(file){
     unloadWarning++;
     statusLocation.style.backgroundColor = "";
-    status2.style.backgroundColor = "#ffff00";
+    topProgressBar.style.width = "0";
+    topProgressBar.style.backgroundColor = "#ffff00";
+    status2.style.borderColor = "#ffff00";
     var imageName;
     var fileType = file.type.split('/')[0];
     if(fileType == "image"){
@@ -205,7 +209,27 @@ function uploadFile(file){
     downloadButton.classList.add("buttons");
     downloadButton.href = URL.createObjectURL(file);
     downloadButton.download = (new Date()).getTime();
-    addStatus(imageName, "ffff00", null, downloadButton);
+    var statusDiv = addStatus(imageName, "ffff00", null, downloadButton);
+    var progress = document.createElement("span");
+    var progressBarDiv = document.createElement("div");
+    progressBarDiv.style.width = "100%";
+    progressBarDiv.style.display = "flex";
+    progressBarDiv.style.position = "relative";
+    var progressDiv = document.createElement("div");
+    progressDiv.style.position = "absolute";
+    var progressBar = document.createElement("div");
+    progressBar.innerText = "0";
+    progressBar.style.textIndent = "-200vw";
+    progressBar.style.backgroundColor = "#256aff80";
+    progressBarDiv.style.borderColor = "#256aff80";
+    progressDiv.style.width = "100%";
+    progressDiv.style.textAlign = "center";
+    progressDiv.appendChild(progress);
+    progressBarDiv.appendChild(progressDiv);
+    progressBarDiv.appendChild(progressBar);
+    progressBarDiv.classList.add("progressbardiv");
+    progressBar.classList.add("progressbar");
+    statusDiv.prepend(progressBarDiv);
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
     ajax.onload = function(){
@@ -218,11 +242,12 @@ function uploadFile(file){
             }else{
                 locationUploadArray.push([n, key]);
             }
-            status2.style.backgroundColor = "#00ff00";
+            topProgressBar.style.backgroundColor = "#00ff00";
+            status2.style.borderColor = "#00ff00";
             var viewButton = document.createElement("a");
             viewButton.innerHTML = '<img width="32" height="32" src="../images/viewicon.svg">';
             viewButton.classList.add("buttons");
-            viewButton.href = "../?" + n;
+            viewButton.href = "../view2?n=" + n;
             viewButton.target = "_blank";
             addStatus(imageName, "00ff00", "#" + n, viewButton);
             try{
@@ -241,7 +266,8 @@ function uploadFile(file){
                 unloadWarning--;
             }
         }else{
-            status2.style.backgroundColor = "#ff0000";
+            topProgressBar.style.backgroundColor = "#ff0000";
+            status2.style.borderColor = "#ff0000";
             var retryButton = document.createElement("button");
             retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
             retryButton.onclick = function(){
@@ -252,7 +278,8 @@ function uploadFile(file){
         }
     };
     ajax.onerror = function(){
-        status2.style.backgroundColor = "#ff0000";
+        topProgressBar.style.backgroundColor = "#ff0000";
+        status2.style.borderColor = "#ff0000";
         var retryButton = document.createElement("button");
         retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
         retryButton.onclick = function(){
@@ -263,6 +290,12 @@ function uploadFile(file){
         var onlineFunc = function(){window.removeEventListener("online", onlineFunc);uploadFile(file);};
         window.addEventListener("online", onlineFunc);
     }
+    ajax.upload.onprogress = function(e){
+        progressPercent = ((e.loaded / e.total) * 100).toFixed(2) + '%';
+        progress.innerText = progressPercent + " (" + e.loaded + " / " + e.total + ")";
+        progressBar.style.width = progressPercent;
+        topProgressBar.style.width = progressPercent;
+    };
     var formData = new FormData();
     formData.append("photovideo", file);
     ajax.send(formData);
