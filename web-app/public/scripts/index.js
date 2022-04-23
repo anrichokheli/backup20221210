@@ -428,9 +428,6 @@ try{
     fileUploadStatus.innerHTML = '<img width="16" height="16" src="images/photovideo.svg"> <span class="file(s)">' + getString("file(s)") + '</span>; ';
     var fileUploadString = document.createElement("span");
     fileUploadStatus.appendChild(fileUploadString);
-    var uploadStatusTopID = document.createElement("div");
-    uploadStatusTopID.innerText = "#";
-    fileUploadStatus.appendChild(uploadStatusTopID);
     uploadStatusTop.appendChild(fileUploadStatus);
     var locationUploadStatus = document.createElement("div");
     locationUploadStatus.style.border = "2px solid #256aff";
@@ -453,21 +450,17 @@ try{
         });
     }catch(e){}
     uploadStatusTop.appendChild(locationUploadStatus);
-    function setUploadStatusTop(element, stringelement, statusValue, n){
+    function setUploadStatusTop(element, stringelement, statusValue){
         if(statusValue == 0){
             element.style.border = "2px solid #ffff00";
             stringelement.innerText = getString("uploading");
             if(element == fileUploadStatus){
                 locationUploadString.innerText = '';
                 locationUploadStatus.style.border = "2px solid #256aff";
-                uploadStatusTopID.innerText = "#";
             }
         }else if(statusValue == 1){
             element.style.border = "2px solid #00ff00";
             stringelement.innerText = getString("uploadcompleted");
-            if(n){
-                uploadStatusTopID.innerHTML = '<a target="_blank" href="?' + n + '">#' + n + '</a>';
-            }
         }else if(statusValue == -1){
             element.style.border = "2px solid #ff0000";
             stringelement.innerText = getString("uploadfailed");
@@ -675,7 +668,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 }
             }catch(e){}
             try{
-                setUploadStatusTop(fileUploadStatus, fileUploadString, 1, n);
+                setUploadStatusTop(fileUploadStatus, fileUploadString, 1);
             }catch(e){}
             try{
                 var fullLink = window.location.href+"?"+n;
@@ -1115,6 +1108,12 @@ try{
     colorfilter();
 }catch(e){}
 try{
+    var loaderStyle = document.createElement("link");
+    loaderStyle.rel = "stylesheet";
+    loaderStyle.href = "styles/loader.css";
+    document.head.appendChild(loaderStyle);
+}catch(e){}
+try{
     var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
     settingsWindowOverlay.style.zIndex = "1";
     settingsWindowOverlay.addEventListener("click", function(e){
@@ -1141,6 +1140,7 @@ try{
         }
     }
     var settingsButton = document.getElementById("settingsbutton");
+    var disableSettingsWindowLoad;
     function setSettingsWindow(){
         setWindowDarkMode(settingsWindowOverlay, settingsWindow);
         var ajax = new XMLHttpRequest();
@@ -1155,6 +1155,10 @@ try{
             script.src = "scripts/settings.js";
             settingsWindow.appendChild(script);
         };
+        ajax.onerror = function(){
+            settingsWindow.innerHTML = '<div style="color:#ff0000;padding:1%;">LOAD ERROR!</div>';
+            disableSettingsWindowLoad = 0;
+        };
         ajax.send();
     }
     settingsButton.addEventListener("click", function(){
@@ -1162,9 +1166,11 @@ try{
         settingsWindowOverlay.style.display = "flex";
         document.body.style.overflow = "hidden";
         lightFilter.style.position = "";
-        if(settingsWindow.innerHTML != '')    {
+        if(disableSettingsWindowLoad)    {
             return;
         }
+        disableSettingsWindowLoad = 1;
+        settingsWindow.innerHTML = '<div class="loader"></div>';
         setSettingsWindow();
     });
     settingsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 64 64" class="icons"><g transform="translate(0 64) scale(.1 -.1)"><path d="m257 584c-4-4-7-22-7-40 0-23-7-36-26-49-23-15-29-15-64-1l-39 15-64-112 32-26c20-17 31-35 31-51s-11-34-31-51l-32-26 32-56 32-57 36 15c19 8 38 15 42 15 20-1 45-35 50-67l6-38h65 65l6 38c5 32 30 66 50 67 4 0 23-7 42-15l36-15 64 112-32 25c-42 33-42 73 0 106l32 25-32 56-32 55-39-15c-35-14-41-14-64 1-18 12-26 27-28 53l-3 37-60 3c-34 2-64 0-68-4zm128-199c36-35 35-97-1-130-61-57-154-17-154 65 0 56 34 90 90 90 30 0 47-6 65-25z"/></g></svg> <span class="settings"><string>settings</string></span>';
@@ -1329,14 +1335,11 @@ try{
         }
     };
     mainDiv.appendChild(myUploadsOverlay);
-    myUploadsButton.onclick = function(){
-        if(darkModeEnabled){
-            myUploadsWindow.style.backgroundColor = "#000000";
-        }else{
-            myUploadsWindow.style.backgroundColor = "#ffffff";
-        }
+    function loadMyUploads(){
         var uploadsData = localStorage.getItem("uploads");
         if(uploadsData){
+            uploadsData = JSON.parse(uploadsData);
+            myUploadsContent.innerHTML = '';
             var clearMyUploads = document.createElement("button");
             clearMyUploads.innerHTML = '<span style="color:#ec0400;font-size:32px;">&times;</span> <span class="clearall">'+getString("clearall")+'</span>';
             clearMyUploads.classList.add("buttons", "afteruploadbuttons");
@@ -1347,7 +1350,6 @@ try{
                 }
             };
             myUploadsContent.appendChild(clearMyUploads);
-            uploadsData = JSON.parse(uploadsData);
             for(var i = uploadsData.length - 1; i >= 0; i--){
                 var myUploadBox = document.createElement("div");
                 myUploadBox.style.border = "2px solid #256aff";
@@ -1418,10 +1420,20 @@ try{
         }else{
             myUploadsContent.innerText = getString("nodata");
         }
-        myUploadsOverlay.style.display = "flex";
+        myUploadsWindow.style.height = myUploadsTop.clientHeight + 1 + myUploadsContent.clientHeight + "px";
         myUploadsContent.style.maxHeight = "calc(100% - 1px - "+myUploadsTop.clientHeight+"px)";
-        myUploadsWindow.style.height = myUploadsContent.clientHeight + "px";
+    }
+    myUploadsButton.onclick = function(){
+        myUploadsWindow.style.height = "";
+        myUploadsContent.innerHTML = '<div class="loader" style="align-self:center;"></div>';
+        myUploadsOverlay.style.display = "flex";
         document.body.style.overflow = "hidden";
+        if(darkModeEnabled){
+            myUploadsWindow.style.backgroundColor = "#000000";
+        }else{
+            myUploadsWindow.style.backgroundColor = "#ffffff";
+        }
+        setTimeout(function(){loadMyUploads();}, 1);
     };
     mainDiv.insertBefore(myUploadsButton, settingsButton);
     var br0 = document.createElement("br");
