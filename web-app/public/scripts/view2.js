@@ -186,7 +186,7 @@ function openID(){
     ajax.onload = function(){
         if(this.responseText != ""){
             var array = JSON.parse(this.responseText);
-            openWindow(getHTML(array), array);
+            openWindow(getHTML(array, true), array);
         }
     };
     ajax.send();
