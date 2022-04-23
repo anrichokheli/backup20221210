@@ -354,6 +354,7 @@ try{
             document.onmouseup = closeDragElement;
             document.onmousemove = elementDrag;
             document.ontouchcancel = closeDragElement;
+            document.ontouchend = closeDragElement;
             document.ontouchmove = elementDrag;
         }
         function elementDrag(e) {
