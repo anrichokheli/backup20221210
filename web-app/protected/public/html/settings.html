@@ -1,178 +1,165 @@
-<div id="settingsmain">
-    <div id="settingstop">
+<div class="settingsbox">
+    <div id="darkmodediv" class="xycenter">
+        <span class="darkmode"><string>darkmode</string></span>
         <div>
-            <img width="32" height="32" src="images/settings.svg">
-            &nbsp;
-            <h3><span class="settings"><string>settings</string></span></h3>
+            <label class="switch">
+                <input type="checkbox" id="darkmodecheckbox">
+                <span class="slider round"><img width="26" height="26" src="images/darkmode0.png"></span>
+            </label>
         </div>
-        <button id="settingsclosewindow" class="closeButtons">&times;</button>
+    </div>
+    <div class="xycenter">
+        <input type="checkbox" id="defaulttheme">
+        <label class="devicedefault checkboxlabel" for="defaulttheme"><string>devicedefault</string></label>
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <label for="setlang" class="xycenter">
+            <img width="26" height="26" src="images/language.svg">
+            &nbsp;
+            <span class="language"><string>language</string></span>
+        </label>
+        <select id="setlang">
+            <option value="en">English</option>
+            <option value="ka">ქართული</option>
+        </select>
+    </div>
+    <div class="xycenter">
+        <input type="checkbox" id="defaultlang">
+        <label class="devicedefault checkboxlabel" for="defaultlang"><string>devicedefault</string></label>
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <label for="settimezone" class="xycenter">
+            <img width="26" height="26" src="images/timezone.svg">
+            &nbsp;
+            <span class="timezone"><string>timezone</string></span>
+        </label>
+    </div>
+    <div class="xycenter">
+        <div id="timezonevalue"></div>
+        <select id="settimezone">
+            <option value="-12">-12</option>
+            <option value="-11">-11</option>
+            <option value="-10">-10</option>
+            <option value="-9">-9</option>
+            <option value="-8">-8</option>
+            <option value="-7">-7</option>
+            <option value="-6">-6</option>
+            <option value="-5">-5</option>
+            <option value="-4">-4</option>
+            <option value="-3">-3</option>
+            <option value="-2">-2</option>
+            <option value="-1">-1</option>
+            <option value="0">0</option>
+            <option value="1">+1</option>
+            <option value="2">+2</option>
+            <option value="3">+3</option>
+            <option value="4">+4</option>
+            <option value="5">+5</option>
+            <option value="6">+6</option>
+            <option value="7">+7</option>
+            <option value="8">+8</option>
+            <option value="9">+9</option>
+            <option value="10">+10</option>
+            <option value="11">+11</option>
+            <option value="12">+12</option>
+            <option value="13">+13</option>
+            <option value="14">+14</option>
+        </select>
+    </div>
+    <div class="xycenter">
+        <input type="checkbox" id="defaulttimezone">
+        <label class="devicedefault checkboxlabel" for="defaulttimezone"><string>devicedefault</string></label>
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <label for="saveuploads" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/save.svg">
+            <img width="26" height="26" src="images/myuploads.svg">
+            &nbsp;
+            <span class="savemyuploadsinthisbrowser"><string>savemyuploadsinthisbrowser</string></span>
+        </label>
+        <input type="checkbox" id="saveuploads">
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <label for="colorfiltercheckbox" class="xycenter">
+            <img width="26" height="26" src="images/colorfilter.svg">
+            &nbsp;
+            <span class="colorfilter"><string>colorfilter</string></span>
+        </label>
+        &nbsp;
+        <div>
+            <label class="switch">
+                <input type="checkbox" id="colorfiltercheckbox">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+    <input type="range" min="0" max="100" id="colorfilterrange">
+    <br>
+    <input type="number" min="0" max="100" id="colorfilternumber">%
+</div>
+<div class="settingsbox">
+    <table>
+        <tr>
+            <td>
+                <label for="lightcolor" class="lightcolor"><string>lightcolor</string></label>
+            </td>
+            <td>
+                <input type="color" id="lightcolor">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="lightbackgroundcolor" class="lightbackgroundcolor"><string>lightbackgroundcolor</string></label>
+            </td>
+            <td>
+                <input type="color" id="lightbackgroundcolor">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="darkcolor" class="darkcolor"><string>darkcolor</string></label>
+            </td>
+            <td>
+                <input type="color" id="darkcolor">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="darkbackgroundcolor" class="darkbackgroundcolor"><string>darkbackgroundcolor</string></label>
+            </td>
+            <td>
+                <input type="color" id="darkbackgroundcolor">
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <img width="30" height="30" src="images/viewicon.svg">
+        &nbsp;
+        <h4><span class="viewuploads"><string>viewuploads</string></span></h4>
     </div>
     <div class="settingsbottomline"></div>
-    <div id="settingscontent">
-        <div class="settingsbox">
-            <div id="darkmodediv" class="xycenter">
-                <span class="darkmode"><string>darkmode</string></span>
-                <div>
-                    <label class="switch">
-                        <input type="checkbox" id="darkmodecheckbox">
-                        <span class="slider round"><img width="26" height="26" src="images/darkmode0.png"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="xycenter">
-                <input type="checkbox" id="defaulttheme">
-                <label class="devicedefault checkboxlabel" for="defaulttheme"><string>devicedefault</string></label>
-            </div>
-        </div>
-        <div class="settingsbox">
-            <div class="xycenter">
-                <label for="setlang" class="xycenter">
-                    <img width="26" height="26" src="images/language.svg">
-                    &nbsp;
-                    <span class="language"><string>language</string></span>
-                </label>
-                <select id="setlang">
-                    <option value="en">English</option>
-                    <option value="ka">ქართული</option>
-                </select>
-            </div>
-            <div class="xycenter">
-                <input type="checkbox" id="defaultlang">
-                <label class="devicedefault checkboxlabel" for="defaultlang"><string>devicedefault</string></label>
-            </div>
-        </div>
-        <div class="settingsbox">
-            <div class="xycenter">
-                <label for="settimezone" class="xycenter">
-                    <img width="26" height="26" src="images/timezone.svg">
-                    &nbsp;
-                    <span class="timezone"><string>timezone</string></span>
-                </label>
-            </div>
-            <div class="xycenter">
-                <div id="timezonevalue"></div>
-                <select id="settimezone">
-                    <option value="-12">-12</option>
-                    <option value="-11">-11</option>
-                    <option value="-10">-10</option>
-                    <option value="-9">-9</option>
-                    <option value="-8">-8</option>
-                    <option value="-7">-7</option>
-                    <option value="-6">-6</option>
-                    <option value="-5">-5</option>
-                    <option value="-4">-4</option>
-                    <option value="-3">-3</option>
-                    <option value="-2">-2</option>
-                    <option value="-1">-1</option>
-                    <option value="0">0</option>
-                    <option value="1">+1</option>
-                    <option value="2">+2</option>
-                    <option value="3">+3</option>
-                    <option value="4">+4</option>
-                    <option value="5">+5</option>
-                    <option value="6">+6</option>
-                    <option value="7">+7</option>
-                    <option value="8">+8</option>
-                    <option value="9">+9</option>
-                    <option value="10">+10</option>
-                    <option value="11">+11</option>
-                    <option value="12">+12</option>
-                    <option value="13">+13</option>
-                    <option value="14">+14</option>
-                </select>
-            </div>
-            <div class="xycenter">
-                <input type="checkbox" id="defaulttimezone">
-                <label class="devicedefault checkboxlabel" for="defaulttimezone"><string>devicedefault</string></label>
-            </div>
-        </div>
-        <div class="settingsbox">
-            <div class="xycenter">
-                <label for="saveuploads" class="xycenter checkboxlabel">
-                    <img width="26" height="26" src="images/save.svg">
-                    <img width="26" height="26" src="images/myuploads.svg">
-                    &nbsp;
-                    <span class="savemyuploadsinthisbrowser"><string>savemyuploadsinthisbrowser</string></span>
-                </label>
-                <input type="checkbox" id="saveuploads">
-            </div>
-        </div>
-        <div class="settingsbox">
-            <div class="xycenter">
-                <label for="colorfiltercheckbox" class="xycenter">
-                    <img width="26" height="26" src="images/colorfilter.svg">
-                    &nbsp;
-                    <span class="colorfilter"><string>colorfilter</string></span>
-                </label>
-                &nbsp;
-                <div>
-                    <label class="switch">
-                        <input type="checkbox" id="colorfiltercheckbox">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-            </div>
-            <input type="range" min="0" max="100" id="colorfilterrange">
-            <br>
-            <input type="number" min="0" max="100" id="colorfilternumber">%
-        </div>
-        <div class="settingsbox">
-            <table>
-                <tr>
-                    <td>
-                        <label for="lightcolor" class="lightcolor"><string>lightcolor</string></label>
-                    </td>
-                    <td>
-                        <input type="color" id="lightcolor">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="lightbackgroundcolor" class="lightbackgroundcolor"><string>lightbackgroundcolor</string></label>
-                    </td>
-                    <td>
-                        <input type="color" id="lightbackgroundcolor">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="darkcolor" class="darkcolor"><string>darkcolor</string></label>
-                    </td>
-                    <td>
-                        <input type="color" id="darkcolor">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="darkbackgroundcolor" class="darkbackgroundcolor"><string>darkbackgroundcolor</string></label>
-                    </td>
-                    <td>
-                        <input type="color" id="darkbackgroundcolor">
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="settingsbox">
-            <div class="xycenter">
-                <img width="30" height="30" src="images/viewicon.svg">
-                &nbsp;
-                <h4><span class="viewuploads"><string>viewuploads</string></span></h4>
-            </div>
-            <div class="settingsbottomline"></div>
-            <div class="xycenter">
-                <label for="loadonscroll" class="xycenter checkboxlabel">
-                    <img width="26" height="26" src="images/viewmore.svg">
-                    <img width="26" height="26" src="images/scroll.svg">
-                    &nbsp;
-                    <span class="loadnewcontentwhenscroll"><string>loadnewcontentwhenscroll</string></span>
-                </label>
-                <input type="checkbox" id="loadonscroll">
-            </div>
-        </div>
-        <div class="settingsbox">
-            <button class="buttons" id="resetsettings">
-                <span style="color:#ec0400;font-size:32px;">&times;</span> <span class="resetsettings" style="font-size: 16px;"><string>resetsettings</string></span>
-            </button>
-        </div>
+    <div class="xycenter">
+        <label for="loadonscroll" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/viewmore.svg">
+            <img width="26" height="26" src="images/scroll.svg">
+            &nbsp;
+            <span class="loadnewcontentwhenscroll"><string>loadnewcontentwhenscroll</string></span>
+        </label>
+        <input type="checkbox" id="loadonscroll">
     </div>
+</div>
+<div class="settingsbox">
+    <button class="buttons" id="resetsettings">
+        <span style="color:#ec0400;font-size:32px;">&times;</span> <span class="resetsettings" style="font-size: 16px;"><string>resetsettings</string></span>
+    </button>
 </div>

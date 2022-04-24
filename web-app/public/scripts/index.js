@@ -1123,6 +1123,7 @@ try{
         document.body.style.overflow = "visible";
         this.style.display = "none";
         lightFilter.style.position = "absolute";
+        history.pushState("", "", "?");
     });
     var settingsWindow = document.createElement("div");
     settingsWindow.style.maxWidth = "90%";
@@ -1141,12 +1142,13 @@ try{
     }
     var settingsButton = document.getElementById("settingsbutton");
     var disableSettingsWindowLoad;
+    var settingsContent;
     function setSettingsWindow(){
         setWindowDarkMode(settingsWindowOverlay, settingsWindow);
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "?view&v=html/settings.html");
         ajax.onload = function(){
-            settingsWindow.innerHTML = translateHTML(this.responseText);
+            settingsContent.innerHTML = translateHTML(this.responseText);
             var style = document.createElement("link");
             style.rel = "stylesheet";
             style.href = "styles/settings.css";
@@ -1156,12 +1158,12 @@ try{
             settingsWindow.appendChild(script);
         };
         ajax.onerror = function(){
-            settingsWindow.innerHTML = '<div style="color:#ff0000;padding:1%;">LOAD ERROR!</div>';
+            settingsContent.innerHTML = '<div style="color:#ff0000;padding:1%;">LOAD ERROR!</div>';
             disableSettingsWindowLoad = 0;
         };
         ajax.send();
     }
-    settingsButton.addEventListener("click", function(){
+    function openSettingsWindow(){
         settingsWindowOverlay.style.display = "block";
         settingsWindowOverlay.style.display = "flex";
         document.body.style.overflow = "hidden";
@@ -1170,8 +1172,43 @@ try{
             return;
         }
         disableSettingsWindowLoad = 1;
-        settingsWindow.innerHTML = '<div class="loader"></div>';
+        if(!settingsContent){
+            var settingsMain = document.createElement("div");
+            settingsMain.style.fontFamily = "sans-serif";
+            settingsMain.style.height = "100%";
+            settingsMain.innerHTML = '<div id="settingstop" style="display: flex;justify-content: space-between;align-items: center;padding: 4px;"><div style="display: flex;align-items: center;"><img width="32" height="32" src="images/settings.svg">&nbsp;<h3 style="margin: 0;"><span class="settings">' + getString("settings") + '</span></h3></div><button id="settingsclosewindow" class="closeButtons">&times;</button></div><div class="settingsbottomline"></div>';
+            settingsContent = document.createElement("div");
+            settingsContent.id = "settingscontent";
+            settingsContent.style.display = "flex";
+            settingsContent.style.flexDirection = "column";
+            settingsContent.style.alignItems = "center";
+            settingsContent.style.padding = "4px";
+            settingsContent.style.maxHeight = "calc(100% - 49px)";
+            settingsContent.style.overflowY = "auto";
+            settingsMain.appendChild(settingsContent);
+            settingsWindow.appendChild(settingsMain);
+        }
+        settingsContent.innerHTML = '<div class="loader"></div>';
         setSettingsWindow();
+    }
+    function settingsURL(){
+        if(settingsWindowOverlay.style.display == "flex"){
+            document.body.style.overflow = "visible";
+            settingsWindowOverlay.style.display = "none";
+            lightFilter.style.position = "absolute";
+        }else if(window.location.href.includes("?settings")){
+            openSettingsWindow();
+        }
+    }
+    window.addEventListener("popstate", function(){
+        settingsURL();
+    });
+    window.addEventListener("load", function(){
+        settingsURL();
+    });
+    settingsButton.addEventListener("click", function(){
+        history.pushState("", "", "?settings");
+        openSettingsWindow();
     });
     settingsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 64 64" class="icons"><g transform="translate(0 64) scale(.1 -.1)"><path d="m257 584c-4-4-7-22-7-40 0-23-7-36-26-49-23-15-29-15-64-1l-39 15-64-112 32-26c20-17 31-35 31-51s-11-34-31-51l-32-26 32-56 32-57 36 15c19 8 38 15 42 15 20-1 45-35 50-67l6-38h65 65l6 38c5 32 30 66 50 67 4 0 23-7 42-15l36-15 64 112-32 25c-42 33-42 73 0 106l32 25-32 56-32 55-39-15c-35-14-41-14-64 1-18 12-26 27-28 53l-3 37-60 3c-34 2-64 0-68-4zm128-199c36-35 35-97-1-130-61-57-154-17-154 65 0 56 34 90 90 90 30 0 47-6 65-25z"/></g></svg> <span class="settings"><string>settings</string></span>';
     settingsButton.style.display = "inline-block";
@@ -1315,8 +1352,34 @@ try{
         myUploadsOverlay.style.display = "none";
         myUploadsContent.innerHTML = '';
     }
+    function openMyUploads(){
+        myUploadsWindow.style.height = "";
+        myUploadsContent.innerHTML = '<div class="loader" style="align-self:center;"></div>';
+        myUploadsOverlay.style.display = "flex";
+        document.body.style.overflow = "hidden";
+        if(darkModeEnabled){
+            myUploadsWindow.style.backgroundColor = "#000000";
+        }else{
+            myUploadsWindow.style.backgroundColor = "#ffffff";
+        }
+        setTimeout(function(){loadMyUploads();}, 1);
+    }
+    function myuploadsURL(){
+        if(myUploadsOverlay.style.display == "flex"){
+            closeMyUploadsFunction();
+        }else if(window.location.href.includes("?myuploads")){
+            openMyUploads();
+        }
+    }
+    window.addEventListener("popstate", function(){
+        myuploadsURL();
+    });
+    window.addEventListener("load", function(){
+        myuploadsURL();
+    });
     closeMyUploads.onclick = function(){
         closeMyUploadsFunction();
+        history.pushState("", "", "?");
     };
     myUploadsTop.appendChild(closeMyUploads);
     myUploadsWindow.style.maxWidth = "90%";
@@ -1332,6 +1395,7 @@ try{
     myUploadsOverlay.onclick = function(e){
         if(e.target.id == this.id){
             closeMyUploadsFunction();
+            history.pushState("", "", "?");
         }
     };
     mainDiv.appendChild(myUploadsOverlay);
@@ -1424,16 +1488,8 @@ try{
         myUploadsContent.style.maxHeight = "calc(100% - 1px - "+myUploadsTop.clientHeight+"px)";
     }
     myUploadsButton.onclick = function(){
-        myUploadsWindow.style.height = "";
-        myUploadsContent.innerHTML = '<div class="loader" style="align-self:center;"></div>';
-        myUploadsOverlay.style.display = "flex";
-        document.body.style.overflow = "hidden";
-        if(darkModeEnabled){
-            myUploadsWindow.style.backgroundColor = "#000000";
-        }else{
-            myUploadsWindow.style.backgroundColor = "#ffffff";
-        }
-        setTimeout(function(){loadMyUploads();}, 1);
+        openMyUploads();
+        history.pushState("", "", "?myuploads");
     };
     mainDiv.insertBefore(myUploadsButton, settingsButton);
     var br0 = document.createElement("br");

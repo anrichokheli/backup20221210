@@ -1,31 +1,8 @@
-#settingsmain{
-    font-family: sans-serif;
-    height: 100%;
-}
-#settingstop,#settingscontent{
-    display: flex;
-}
-#settingstop{
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px;
-}
-#settingstop h3,.settingsbox h4{
+.settingsbox h4{
     margin: 0;
-}
-#settingscontent{
-    flex-direction: column;
-    align-items: center;
-    padding: 4px;
-    max-height: calc(100% - 49px);
-    overflow-y: auto;
 }
 .settingsbottomline{
     border-bottom: 1px solid #256aff;
-}
-#settingstop div{
-    display: flex;
-    align-items: center;
 }
 .settingsbox{
     border: 1px dotted #256aff;
