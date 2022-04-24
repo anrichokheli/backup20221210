@@ -175,7 +175,7 @@ function closeWindow(){
 }
 closeWindowButton.onclick = function(){
     closeWindow();
-    history.pushState("", "", "?");
+    history.pushState("", "", "/view2");
 };
 function getID(){
     return (new URL(window.location.href)).searchParams.get("n");

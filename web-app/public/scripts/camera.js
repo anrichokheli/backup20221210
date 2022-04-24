@@ -392,6 +392,7 @@ try{
         }
         function elementDrag(e) {
             dragging = 1;
+            takePhotoDraggable.style.opacity = "0.5";
             e = e || window.event;
             try{
                 if(e.changedTouches[0]){
@@ -422,6 +423,7 @@ try{
             document.onmousemove = null;
             document.ontouchcancel = null;
             document.ontouchmove = null;
+            takePhotoDraggable.style.opacity = "";
         }
     }
     dragElement(takePhotoDraggable);

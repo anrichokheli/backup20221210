@@ -1123,7 +1123,7 @@ try{
         document.body.style.overflow = "visible";
         this.style.display = "none";
         lightFilter.style.position = "absolute";
-        history.pushState("", "", "?");
+        history.back();
     });
     var settingsWindow = document.createElement("div");
     settingsWindow.style.maxWidth = "90%";
@@ -1191,23 +1191,22 @@ try{
         settingsContent.innerHTML = '<div class="loader"></div>';
         setSettingsWindow();
     }
+    var settingsWindowID;
     function settingsURL(){
         if(settingsWindowOverlay.style.display == "flex"){
             document.body.style.overflow = "visible";
             settingsWindowOverlay.style.display = "none";
             lightFilter.style.position = "absolute";
-        }else if(window.location.href.includes("?settings")){
+        }else if(window.location.href.includes("#settings" + settingsWindowID)){
             openSettingsWindow();
         }
     }
     window.addEventListener("popstate", function(){
         settingsURL();
     });
-    window.addEventListener("load", function(){
-        settingsURL();
-    });
     settingsButton.addEventListener("click", function(){
-        history.pushState("", "", "?settings");
+        settingsWindowID = Date.now();
+        history.pushState("", "", "#settings" + settingsWindowID);
         openSettingsWindow();
     });
     settingsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 64 64" class="icons"><g transform="translate(0 64) scale(.1 -.1)"><path d="m257 584c-4-4-7-22-7-40 0-23-7-36-26-49-23-15-29-15-64-1l-39 15-64-112 32-26c20-17 31-35 31-51s-11-34-31-51l-32-26 32-56 32-57 36 15c19 8 38 15 42 15 20-1 45-35 50-67l6-38h65 65l6 38c5 32 30 66 50 67 4 0 23-7 42-15l36-15 64 112-32 25c-42 33-42 73 0 106l32 25-32 56-32 55-39-15c-35-14-41-14-64 1-18 12-26 27-28 53l-3 37-60 3c-34 2-64 0-68-4zm128-199c36-35 35-97-1-130-61-57-154-17-154 65 0 56 34 90 90 90 30 0 47-6 65-25z"/></g></svg> <span class="settings"><string>settings</string></span>';
@@ -1364,22 +1363,20 @@ try{
         }
         setTimeout(function(){loadMyUploads();}, 1);
     }
+    var myuploadsWindowID;
     function myuploadsURL(){
         if(myUploadsOverlay.style.display == "flex"){
             closeMyUploadsFunction();
-        }else if(window.location.href.includes("?myuploads")){
+        }else if(window.location.href.includes("#myuploads" + myuploadsWindowID)){
             openMyUploads();
         }
     }
     window.addEventListener("popstate", function(){
         myuploadsURL();
     });
-    window.addEventListener("load", function(){
-        myuploadsURL();
-    });
     closeMyUploads.onclick = function(){
         closeMyUploadsFunction();
-        history.pushState("", "", "?");
+        history.back();
     };
     myUploadsTop.appendChild(closeMyUploads);
     myUploadsWindow.style.maxWidth = "90%";
@@ -1395,7 +1392,7 @@ try{
     myUploadsOverlay.onclick = function(e){
         if(e.target.id == this.id){
             closeMyUploadsFunction();
-            history.pushState("", "", "?");
+            history.back();
         }
     };
     mainDiv.appendChild(myUploadsOverlay);
@@ -1489,7 +1486,8 @@ try{
     }
     myUploadsButton.onclick = function(){
         openMyUploads();
-        history.pushState("", "", "?myuploads");
+        myuploadsWindowID = Date.now();
+        history.pushState("", "", "#myuploads" + myuploadsWindowID);
     };
     mainDiv.insertBefore(myUploadsButton, settingsButton);
     var br0 = document.createElement("br");
