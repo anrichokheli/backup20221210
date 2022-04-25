@@ -264,11 +264,22 @@
                     ';
                     $html = str_replace("<!--MAPS-->", $maps, $html);
                 }
+                if(!empty($locationTime))    {
+                    $locationPublicPath = "?view&v=uploads/strings/locations/" . basename($locationPath);
+                    $locationButtons = "<div class=\"buttonsdivs\">";
+                    $locationButtons .= "<a href=\"" . $locationPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"> <span class=\"open\"><string>open</string></span></a>";
+                    $locationButtons .= "<a target=\"_blank\" href=\"" . $locationPublicPath . "\" class=\"buttons\"> <img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a>";
+                    $locationButtons .= "<a href=\"" . $locationPublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
+                    $locationButtons .= "</div>";
+                }else{
+                    $locationButtons = "";
+                }
                 $html = setValue("LATLONG", $locationArray[0], $html);
                 $html = setValue("Z", $locationArray[1], $html);
                 $html = setValue("ACCURACY", $locationArray[2], $html);
                 $html = setValue("ACCURACYZ", $locationArray[3], $html);
                 $html = setValue("LTIME", $locationTime, $html);
+                $html = setValue("LBUTTONS", $locationButtons, $html);
             }
             $descriptionPath = descriptions . $n . ".txt";
             if(file_exists($descriptionPath))    {
@@ -445,12 +456,11 @@
                         echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
                         echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest">' . $langJSON["viewnewest"] . '</span></a>';
                     }
-                    echo "<br><br>";
                 }
             }
         }
     }
     if(!$rawData && !$ajax)    {
-        echo "</div><script src=\"scripts/view.js\"></script></body></html>";
+        echo "<br><br></div><script src=\"scripts/view.js\"></script></body></html>";
     }
 ?>

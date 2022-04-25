@@ -271,8 +271,15 @@ function uploadString(n, key, post, location, value, element, storage_ID, input,
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+post);
 }
+function getLocationString(data){
+    if(data){
+        return data;
+    }else{
+        return "-";
+    }
+}
 function uploadLocation(n, key, element)   {
-    uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeAccuracy="+encodeURIComponent(altitudeAccuracy), true, latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy, element);
+    uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeAccuracy="+encodeURIComponent(altitudeAccuracy), true, getLocationString(latitude) + ", " + getLocationString(longitude) + "; " + getLocationString(altitude) + "; " + getLocationString(accuracy) + "; " + getLocationString(altitudeAccuracy), element);
 }
 function uploadDescription(n, key, descriptionValue, storage_ID, input, button, element)    {
     uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, descriptionValue, element, storage_ID, input, button);
