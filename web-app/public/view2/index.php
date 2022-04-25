@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>View | PedestrianSOS!</title>
+        <title><?php echo $langJSON["viewuploads"]; ?> | <?php echo $langJSON["pedestrian"]; ?> SOS!</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="../styles/view2.css">
     </head>

@@ -1114,15 +1114,23 @@ try{
     document.head.appendChild(loaderStyle);
 }catch(e){}
 try{
+    window.addEventListener("load", function(){
+        location.hash = '';
+    });
+}catch(e){}
+try{
+    function closeSettingsWindow(){
+        document.body.style.overflow = "visible";
+        settingsWindowOverlay.style.display = "none";
+        lightFilter.style.position = "absolute";
+    }
     var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
     settingsWindowOverlay.style.zIndex = "1";
     settingsWindowOverlay.addEventListener("click", function(e){
         if((e.target != settingsWindowOverlay) && (e.target.id != "settingsclosewindow")){
             return;
         }
-        document.body.style.overflow = "visible";
-        this.style.display = "none";
-        lightFilter.style.position = "absolute";
+        closeSettingsWindow();
         history.back();
     });
     var settingsWindow = document.createElement("div");
@@ -1142,20 +1150,51 @@ try{
     }
     var settingsButton = document.getElementById("settingsbutton");
     var disableSettingsWindowLoad;
+    var settingsScript;
+    var settingsMain;
     var settingsContent;
-    function setSettingsWindow(){
+    var settingsSetup;
+    function setSettingsWindow(reset){
+        if(reset){
+            settingsScript.remove();
+        }
+        disableSettingsWindowLoad = 1;
+        if(!settingsMain){
+            settingsMain = document.createElement("div");
+            settingsMain.style.fontFamily = "sans-serif";
+            settingsMain.style.height = "100%";
+            settingsMain.innerHTML = '<div id="settingstop" style="display: flex;justify-content: space-between;align-items: center;padding: 4px;"><div style="display: flex;align-items: center;"><img width="32" height="32" src="images/settings.svg">&nbsp;<h3 style="margin: 0;"><span class="settings">' + getString("settings") + '</span></h3></div><button id="settingsclosewindow" class="closeButtons">&times;</button></div><div class="settingsbottomline"></div>';
+        }
+        if(!settingsContent){
+            settingsContent = document.createElement("div");
+            settingsContent.id = "settingscontent";
+            settingsContent.style.display = "flex";
+            settingsContent.style.flexDirection = "column";
+            settingsContent.style.alignItems = "center";
+            settingsContent.style.padding = "4px";
+            settingsContent.style.maxHeight = "calc(100% - 49px)";
+            settingsContent.style.overflowY = "auto";
+            settingsMain.appendChild(settingsContent);
+            settingsWindow.appendChild(settingsMain);
+        }
+        settingsContent.innerHTML = '<div class="loader"></div>';
         setWindowDarkMode(settingsWindowOverlay, settingsWindow);
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "?view&v=html/settings.html");
         ajax.onload = function(){
             settingsContent.innerHTML = translateHTML(this.responseText);
-            var style = document.createElement("link");
-            style.rel = "stylesheet";
-            style.href = "styles/settings.css";
-            document.head.appendChild(style);
-            var script = document.createElement("script");
-            script.src = "scripts/settings.js";
-            settingsWindow.appendChild(script);
+            if(!settingsSetup){
+                settingsSetup = 1;
+                var settingsStyle = document.createElement("link");
+                settingsStyle.rel = "stylesheet";
+                settingsStyle.href = "styles/settings.css";
+                document.head.appendChild(settingsStyle);
+                settingsContent.style.maxHeight = "calc(100% - 9px - "+document.getElementById("settingstop").clientHeight+"px)";
+                settingsWindow.style.height = settingsContent.clientHeight + "px";
+            }
+            settingsScript = document.createElement("script");
+            settingsScript.src = "scripts/settings.js";
+            settingsWindow.appendChild(settingsScript);
         };
         ajax.onerror = function(){
             settingsContent.innerHTML = '<div style="color:#ff0000;padding:1%;">LOAD ERROR!</div>';
@@ -1171,33 +1210,13 @@ try{
         if(disableSettingsWindowLoad)    {
             return;
         }
-        disableSettingsWindowLoad = 1;
-        if(!settingsContent){
-            var settingsMain = document.createElement("div");
-            settingsMain.style.fontFamily = "sans-serif";
-            settingsMain.style.height = "100%";
-            settingsMain.innerHTML = '<div id="settingstop" style="display: flex;justify-content: space-between;align-items: center;padding: 4px;"><div style="display: flex;align-items: center;"><img width="32" height="32" src="images/settings.svg">&nbsp;<h3 style="margin: 0;"><span class="settings">' + getString("settings") + '</span></h3></div><button id="settingsclosewindow" class="closeButtons">&times;</button></div><div class="settingsbottomline"></div>';
-            settingsContent = document.createElement("div");
-            settingsContent.id = "settingscontent";
-            settingsContent.style.display = "flex";
-            settingsContent.style.flexDirection = "column";
-            settingsContent.style.alignItems = "center";
-            settingsContent.style.padding = "4px";
-            settingsContent.style.maxHeight = "calc(100% - 49px)";
-            settingsContent.style.overflowY = "auto";
-            settingsMain.appendChild(settingsContent);
-            settingsWindow.appendChild(settingsMain);
-        }
-        settingsContent.innerHTML = '<div class="loader"></div>';
         setSettingsWindow();
     }
     var settingsWindowID;
     function settingsURL(){
         if(settingsWindowOverlay.style.display == "flex"){
-            document.body.style.overflow = "visible";
-            settingsWindowOverlay.style.display = "none";
-            lightFilter.style.position = "absolute";
-        }else if(window.location.href.includes("#settings" + settingsWindowID)){
+            closeSettingsWindow();
+        }else if(location.hash == "#settings" + settingsWindowID){
             openSettingsWindow();
         }
     }
@@ -1206,7 +1225,7 @@ try{
     });
     settingsButton.addEventListener("click", function(){
         settingsWindowID = Date.now();
-        history.pushState("", "", "#settings" + settingsWindowID);
+        location.hash = "settings" + settingsWindowID;
         openSettingsWindow();
     });
     settingsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 64 64" class="icons"><g transform="translate(0 64) scale(.1 -.1)"><path d="m257 584c-4-4-7-22-7-40 0-23-7-36-26-49-23-15-29-15-64-1l-39 15-64-112 32-26c20-17 31-35 31-51s-11-34-31-51l-32-26 32-56 32-57 36 15c19 8 38 15 42 15 20-1 45-35 50-67l6-38h65 65l6 38c5 32 30 66 50 67 4 0 23-7 42-15l36-15 64 112-32 25c-42 33-42 73 0 106l32 25-32 56-32 55-39-15c-35-14-41-14-64 1-18 12-26 27-28 53l-3 37-60 3c-34 2-64 0-68-4zm128-199c36-35 35-97-1-130-61-57-154-17-154 65 0 56 34 90 90 90 30 0 47-6 65-25z"/></g></svg> <span class="settings"><string>settings</string></span>';
@@ -1367,7 +1386,7 @@ try{
     function myuploadsURL(){
         if(myUploadsOverlay.style.display == "flex"){
             closeMyUploadsFunction();
-        }else if(window.location.href.includes("#myuploads" + myuploadsWindowID)){
+        }else if(location.hash == "#myuploads" + myuploadsWindowID){
             openMyUploads();
         }
     }
@@ -1485,9 +1504,9 @@ try{
         myUploadsContent.style.maxHeight = "calc(100% - 1px - "+myUploadsTop.clientHeight+"px)";
     }
     myUploadsButton.onclick = function(){
-        openMyUploads();
         myuploadsWindowID = Date.now();
-        history.pushState("", "", "#myuploads" + myuploadsWindowID);
+        location.hash = "myuploads" + myuploadsWindowID;
+        openMyUploads();
     };
     mainDiv.insertBefore(myUploadsButton, settingsButton);
     var br0 = document.createElement("br");
