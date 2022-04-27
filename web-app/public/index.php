@@ -51,6 +51,7 @@
         }
     }
     header("X-Frame-Options: DENY");
+    require(phpPath . "security.php");
     include(phpPath . "uploadphotovideo.php");
     include(phpPath . "uploadstring.php");
     include(phpPath . "uploadvoice.php");

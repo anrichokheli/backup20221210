@@ -13,11 +13,15 @@ define("voices", uploadfiles . "voices/");
 define("secretPath", protectedPrivatePath . "secret/");
 define("keysPath", secretPath . "keys/");
 define("tmpPath", protectedPrivatePath . "tmp/");
+define("userKeys", secretPath . "userkeys/");
+define("securityData", protectedPrivatePath . "securitydata/");
 function createDirectoryIfNotExists($path)    {
     if(!file_exists($path))
         mkdir($path, 0777, true);
 }
 createDirectoryIfNotExists(photovideos);
+define("photovideothumbnails", uploadfiles . "photovideothumbnails/");
+createDirectoryIfNotExists(photovideothumbnails);
 createDirectoryIfNotExists(photovideotimes);
 createDirectoryIfNotExists(descriptiontimes);
 createDirectoryIfNotExists(locationtimes);
@@ -27,5 +31,7 @@ createDirectoryIfNotExists(locations);
 createDirectoryIfNotExists(voices);
 createDirectoryIfNotExists(keysPath);
 createDirectoryIfNotExists(tmpPath);
+createDirectoryIfNotExists(userKeys);
+createDirectoryIfNotExists(securityData);
 rename(phpPath . "setup.php", phpPath . "setup.php.txt");
 ?>

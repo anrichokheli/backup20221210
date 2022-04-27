@@ -35,8 +35,14 @@
         function getKey($n)   {
             $key = "";
             for($i = 0; $i < $n; $i++)   {
-                //$key .= chr(random_int(0, 255));
-                $key .= random_int(0, 9);
+                $mode = random_int(0, 2);
+                if($mode == 0){
+                    $key .= random_int(0, 9);
+                }else if($mode == 1){
+                    $key .= chr(random_int(65, 90));
+                }else{
+                    $key .= chr(random_int(97, 122));
+                }
             }
             return $key;
         }

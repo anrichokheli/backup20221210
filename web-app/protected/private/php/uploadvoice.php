@@ -1,5 +1,5 @@
 <?php
-    if(!empty($_FILES["voice"]["tmp_name"]) && isset($_POST["n"]) && isset($_POST["key"]) && ctype_digit($_POST["n"]) && ctype_digit($_POST["key"]))    {
+    if(!empty($_FILES["voice"]["tmp_name"]) && isset($_POST["n"]) && isset($_POST["key"]) && ctype_digit($_POST["n"])/* && ctype_digit($_POST["key"])*/)    {
         define("upload", protectedPublicPath . "uploads/");
         define("uploadfiles", upload . "files/");
         define("uploadstrings", upload . "strings/");

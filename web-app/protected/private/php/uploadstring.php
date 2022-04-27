@@ -1,7 +1,7 @@
 <?php
     if(isset($_POST["n"]) && isset($_POST["key"])
     &&
-    ctype_digit($_POST["n"]) && ctype_digit($_POST["key"])/* && ctype_digit($_POST["string"]) && ctype_digit($_POST["type"])*/
+    ctype_digit($_POST["n"])/* && ctype_digit($_POST["key"])*//* && ctype_digit($_POST["string"]) && ctype_digit($_POST["type"])*/
     &&
     (isset($_POST["description"]) || (isset($_POST["latitude"]) && isset($_POST["longitude"])))
     )    {
