@@ -75,5 +75,9 @@
     "timezone": "Time zone",
     "uploadedispublic": "Uploaded data is public",
     "locationwillbeattached": "If location coordinates detected, it will be automatically published after file upload",
-    "uploadstatus": "Upload status"
+    "uploadstatus": "Upload status",
+    "security": "Security",
+    "done": "Done",
+    "incorrectdata": "Incorrect data",
+    "choosecorrectimages": "Choose correct image(s)"
 }

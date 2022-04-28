@@ -6,7 +6,7 @@
     if(!empty($_COOKIE["id"]) && ctype_digit($_COOKIE["id"]) && !empty($_COOKIE["key"]) && file_exists(userKeys . $_COOKIE["id"]) && password_verify($_COOKIE["key"], file_get_contents(userKeys . $_COOKIE["id"]))){
         if(isset($_FILES["photovideo"]) || isset($_POST["filelink"])){
             $securitydataArray = unserialize(file_get_contents(securityData . $_COOKIE["id"]));
-            if(!$securitydataArray[0]){
+            if((isset($securitydataArray[0]) && !$securitydataArray[0]) || !isset($securitydataArray[0])){
                 $exitString = "BLOCKED";
             }else if(microtime(1) * 1000000 - $securitydataArray[1] < uploadblockinterval){
                 $exitString = "TOO MANY UPLOADS IN PERIOD; BLOCKED";
@@ -44,17 +44,43 @@
             setcookie("id", $id, time() + (86400 * 1000), "/");
             setcookie("key", $key, time() + (86400 * 1000), "/");
         }
+        define("captchaimages", protectedPrivatePath . "captchaimages/");
         session_start();
-        if(isset($_POST["captcha"]) && isset($_SESSION["captcha"]) && $_POST["captcha"] == $_SESSION["captcha"]){
-            header("Location: /");
-            securitydataSetup();
-            session_destroy();
-        }else{
-            if(isset($_SESSION["captcha"])){
-                echo "0";
+        function createCaptcha(){
+            $langJSON = $GLOBALS["langJSON"];
+            for($i = 0; $i < 9; $i++){
+                $_SESSION["captcha" . $i] = "";
             }
-            $_SESSION["captcha"] = "test123";
-            exit(file_get_contents(htmlPath . "security.html"));
+            $_SESSION["captcha" . random_int(0, 8)] = 0;
+            for($i = 0; $i < 9; $i++){
+                if($_SESSION["captcha" . $i] != 0){
+                    $_SESSION["captcha" . $i] = random_int(0, count(scandir(captchaimages)) - 3);
+                }
+            }
+            function getCaptchaImage($n){
+                $path = captchaimages . $_SESSION["captcha" . $n];
+                echo "data:image/png;base64," . base64_encode(file_get_contents($path));
+            }
+            include(phpPath . "securityhtml.php");
+            exit;
+        }
+        if(isset($_POST["submit"])){
+            $correct = 1;
+            for($i = 0; $i < 9; $i++){
+                if(!((($_SESSION["captcha" . $i] == 0) && isset($_POST["captcha" . $i])) || (($_SESSION["captcha" . $i] != 0) && !isset($_POST["captcha" . $i])))){
+                    $correct = 0;
+                    break;
+                }
+            }
+            if($correct){
+                securitydataSetup();
+                session_destroy();
+            }else{
+                createCaptcha();
+            }
+            header("Location: " . $_SERVER["REQUEST_URI"]);
+        }else{
+            createCaptcha();
         }
     }
 ?>
