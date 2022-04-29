@@ -59,28 +59,41 @@
             }
             function getCaptchaImage($n){
                 $path = captchaimages . $_SESSION["captcha" . $n];
-                echo "data:image/png;base64," . base64_encode(file_get_contents($path));
+                $img0 = imagecreatetruecolor(128, 128);
+                for($i = 0; $i < 128; $i+=4){
+                    for($j = 0; $j < 128; $j+=4){
+                        imagesetpixel($img0, $i, $j, imagecolorallocate($img0, random_int(0, 255), random_int(0, 255), random_int(0, 255)));
+                        imagesetpixel($img0, random_int(0, 127), random_int(0, 127), imagecolorallocate($img0, random_int(0, 255), random_int(0, 255), random_int(0, 255)));
+                    }
+                }
+                $img1 = imagecreatefrompng($path);
+                imagecopymerge($img1, $img0, 0, 0, 0, 0, 128, 128, 50);
+                ob_start();
+                imagepng($img1);
+                echo "data:image/png;base64," . base64_encode(ob_get_clean());
             }
             include(phpPath . "securityhtml.php");
             exit;
         }
-        if(isset($_POST["submit"])){
-            $correct = 1;
-            for($i = 0; $i < 9; $i++){
-                if(!((($_SESSION["captcha" . $i] == 0) && isset($_POST["captcha" . $i])) || (($_SESSION["captcha" . $i] != 0) && !isset($_POST["captcha" . $i])))){
-                    $correct = 0;
-                    break;
+        if(!defined("nocaptcha")){
+            if(isset($_POST["submit"])){
+                $correct = 1;
+                for($i = 0; $i < 9; $i++){
+                    if(!((($_SESSION["captcha" . $i] == 0) && isset($_POST["captcha" . $i])) || (($_SESSION["captcha" . $i] != 0) && !isset($_POST["captcha" . $i])))){
+                        $correct = 0;
+                        break;
+                    }
                 }
-            }
-            if($correct){
-                securitydataSetup();
-                session_destroy();
+                if($correct){
+                    securitydataSetup();
+                    session_destroy();
+                }else{
+                    createCaptcha();
+                }
+                header("Location: " . $_SERVER["REQUEST_URI"]);
             }else{
                 createCaptcha();
             }
-            header("Location: " . $_SERVER["REQUEST_URI"]);
-        }else{
-            createCaptcha();
         }
     }
 ?>

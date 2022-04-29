@@ -50,14 +50,14 @@
             exit;
         }
     }
+    if(!empty($_GET["download"])){
+        include(phpPath . "download.php");
+    }
     header("X-Frame-Options: DENY");
     require(phpPath . "security.php");
     include(phpPath . "uploadphotovideo.php");
     include(phpPath . "uploadstring.php");
     include(phpPath . "uploadvoice.php");
-    if(!empty($_GET["download"])){
-        include(phpPath . "download.php");
-    }
     if(!defined("notmain")){
         if(isset($_GET["noscript"])){
             $indexHTML = file_get_contents(htmlPath . "indexnoscript.html");

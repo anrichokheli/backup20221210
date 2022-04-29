@@ -79,5 +79,6 @@
     "security": "Security",
     "done": "Done",
     "incorrectdata": "Incorrect data",
-    "choosecorrectimages": "Choose correct image(s)"
+    "choosecorrectimages": "Choose correct image(s)",
+    "rules": "Rules"
 }

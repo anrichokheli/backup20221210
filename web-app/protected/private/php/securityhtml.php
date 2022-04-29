@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="<?php echo $GLOBALS["lang"]; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,6 @@
         #main{
             text-align: center;
             font-family: sans-serif;
-            min-height: 100vh;
         }
         .pedestrian {
             color: #256aff;
@@ -35,11 +34,21 @@
         button *{
             vertical-align: middle;
         }
-        form div{
+        form div, form div label{
             display: inline-block;
             border: 2px solid #0000ff;
             margin: 1px;
             padding: 1px;
+        }
+        form div{
+            border-width: 1px;
+        }
+        input[type="checkbox"]:checked + label{
+            border: 2px solid #0080ff;
+        }
+        .infotext{
+            font-weight: bold;
+            font-size: 20px;
         }
     </style>
 </head>
@@ -58,8 +67,8 @@
             </h2>
         </div>
         <br>
-        <?php if(isset($GLOBALS["correct"]) && !$GLOBALS["correct"]){echo '<div style="color:#ff0000;">' . $langJSON["incorrectdata"] . '</div>';} ?>
-        <?php echo $langJSON["choosecorrectimages"]; ?>
+        <?php if(isset($GLOBALS["correct"]) && !$GLOBALS["correct"]){echo '<div style="color:#ff0000;" class="infotext">' . $langJSON["incorrectdata"] . '</div>';} ?>
+        <?php echo '<div class="infotext">' . $langJSON["choosecorrectimages"] . '</div>'; ?>
         <form method="post">
             <input type="hidden" name="submit">
             <div>
@@ -80,7 +89,6 @@
                     <img width="128" height="128" src="<?php getCaptchaImage(2); ?>">
                 </label>
             </div>
-            <br>
             <div>
                 <input type="checkbox" name="captcha3" id="3">
                 <label for="3">
@@ -99,7 +107,6 @@
                     <img width="128" height="128" src="<?php getCaptchaImage(5); ?>">
                 </label>
             </div>
-            <br>
             <div>
                 <input type="checkbox" name="captcha6" id="6">
                 <label for="6">
@@ -124,6 +131,9 @@
                 <button><img width="32" height="32" src="/images/submit.svg"> <span><?php echo $langJSON["done"]; ?></span></button>
             </label>
         </form>
+        <br>
     </div>
+    <a href="/rules">rules</a>
 </body>
 </html>
+<?php echoConsoleWarningScript(); ?>
