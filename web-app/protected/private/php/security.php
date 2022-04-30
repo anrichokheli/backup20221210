@@ -59,6 +59,15 @@
             }
             function getCaptchaImage($n){
                 $path = captchaimages . $_SESSION["captcha" . $n];
+                $img1 = imagecreatefrompng($path);
+                $randomQuantity = random_int(2, 10);
+                for($i = 0; $i < $randomQuantity; $i++){
+                    $x0 = random_int(0, 127);
+                    $y0 = random_int(0, 127);
+                    $x1 = $x0 + random_int(10, 20);
+                    $y1 = $y0 + random_int(10, 20);
+                    imagefilledrectangle($img1, $x0, $y0, $x1, $y1, imagecolorallocate($img1, random_int(0, 255), random_int(0, 255), random_int(0, 255)));
+                }
                 $img0 = imagecreatetruecolor(128, 128);
                 for($i = 0; $i < 128; $i+=4){
                     for($j = 0; $j < 128; $j+=4){
@@ -66,7 +75,6 @@
                         imagesetpixel($img0, random_int(0, 127), random_int(0, 127), imagecolorallocate($img0, random_int(0, 255), random_int(0, 255), random_int(0, 255)));
                     }
                 }
-                $img1 = imagecreatefrompng($path);
                 imagecopymerge($img1, $img0, 0, 0, 0, 0, 128, 128, 50);
                 ob_start();
                 imagepng($img1);

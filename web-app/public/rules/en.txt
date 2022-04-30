@@ -1,6 +1,7 @@
 Users of this software can upload photos and videos.
 If location coordinates detected, they will be automatically attached to uploaded file.
 Everything uploaded is public. Anyone can see, share, download uploaded data.
+Identity of uploader is anonymous.
 If you upload data, for security reasons, you cannot delete it.
 
 This software is for publishing content about problems (for example: violating pedestrian rights, damaging environment, etc..). Uploading inappropriate content, which is not about problems (for example: entertainment, business, etc..), uploading data with evil purposes (for example: "justification" of environment pollution, encouraging malice, etc..), uploading data to interference our services (for example: to overflow storage, etc..), is prohibited and they may be deleted from our server.
