@@ -1,20 +1,35 @@
 <?php
     define("userKeys", protectedPrivatePath . "secret/userkeys/");
     define("securityData", protectedPrivatePath . "securitydata/");
-    define("uploadminmicrointerval", 50000);
-    define("uploadblockinterval", 10000);
+    //define("uploadminmicrointerval", 50000);
+    //define("uploadblockinterval", 10000);
+    define("maxuploadsperinterval", 1000);
+    define("uploadcountresetinterval", 60);
+    define("maxuploadsperintervalblock", 2000);
     if(!empty($_COOKIE["id"]) && ctype_digit($_COOKIE["id"]) && !empty($_COOKIE["key"]) && file_exists(userKeys . $_COOKIE["id"]) && password_verify($_COOKIE["key"], file_get_contents(userKeys . $_COOKIE["id"]))){
-        if(isset($_FILES["photovideo"]) || isset($_POST["filelink"])){
+        if(isset($_FILES["photovideo"]) || isset($_POST["filelink"]) || (isset($_POST["n"]) && isset($_POST["key"]))){
             $securitydataArray = unserialize(file_get_contents(securityData . $_COOKIE["id"]));
             if((isset($securitydataArray[0]) && !$securitydataArray[0]) || !isset($securitydataArray[0])){
-                $exitString = "BLOCKED";
-            }else if(microtime(1) * 1000000 - $securitydataArray[1] < uploadblockinterval){
+                http_response_code(403);
+                exit("BLOCKED");
+            }/*else if(microtime(1) * 1000000 - $securitydataArray[1] < uploadblockinterval){
                 $exitString = "TOO MANY UPLOADS IN PERIOD; BLOCKED";
                 $securitydataArray[0] = 0;
             }else if(microtime(1) * 1000000 - $securitydataArray[1] < uploadminmicrointerval){
                 $exitString = "TOO MANY UPLOADS IN PERIOD";
+            }*/
+            //$securitydataArray[1] = microtime(1) * 1000000;
+            if(++$securitydataArray[2] > maxuploadsperinterval){
+                $exitString = "TOO MANY UPLOADS IN PERIOD";
+                if($securitydataArray[2] > maxuploadsperintervalblock){
+                    $exitString = "TOO MANY UPLOADS IN PERIOD; BLOCKED";
+                    $securitydataArray[0] = 0;
+                }
             }
-            $securitydataArray[1] = microtime(1) * 1000000;
+            if(time() - $securitydataArray[1] >= uploadcountresetinterval){
+                $securitydataArray[2] = 0;
+                $securitydataArray[1] = time();
+            }
             file_put_contents(securityData . $_COOKIE["id"], serialize($securitydataArray));
             if(!empty($exitString)){
                 http_response_code(403);
@@ -40,7 +55,7 @@
             $id = hrtime(1) . random_int(0, 9);
             $key = getKey(1000);
             file_put_contents(userKeys . $id, password_hash($key, PASSWORD_DEFAULT));
-            file_put_contents(securityData . $id, serialize([1, 0]));
+            file_put_contents(securityData . $id, serialize([1, 0, 0]));
             setcookie("id", $id, time() + (86400 * 1000), "/");
             setcookie("key", $key, time() + (86400 * 1000), "/");
         }

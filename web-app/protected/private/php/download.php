@@ -24,7 +24,26 @@
                     $timezone = date('O');
                     return $datetime . ";\n" . $timezone . ";\n" . $t;
                 }
-                $zipphotovideos = "photovideos";
+                function addData($zipdir, $path){
+                    $GLOBALS["zip"]->addEmptyDir($zipdir);
+                    $dirpath = $path . $_GET["download"];
+                    if(!file_exists($dirpath)){
+                        return;
+                    }
+                    $files = array_slice(scandir($dirpath), 2);
+                    foreach($files as $file){
+                        $GLOBALS["zip"]->addFile($dirpath . "/" . $file, $zipdir . "/" . $file);
+                    }
+                }
+                addData("photovideos", photovideos);
+                addData("photovideotimes", photovideotimes);
+                addData("locations", locations);
+                addData("locationtimes", locationtimes);
+                addData("descriptions", descriptions);
+                addData("descriptiontimes", descriptiontimes);
+                addData("voices", voices);
+                addData("voicetimes", voicetimes);
+                /*$zipphotovideos = "photovideos";
                 $zip->addEmptyDir($zipphotovideos);
                 $pvdirpath = photovideos . $_GET["download"];
                 $pvfiles = array_slice(scandir($pvdirpath), 2);
@@ -53,7 +72,7 @@
                     $voicePath = glob(voices . $_GET["download"] . ".*")[0];
                     $zip->addFile($voicePath, "voice." . pathinfo($voicePath, PATHINFO_EXTENSION));
                     $zip->addFromString("voicetime.txt", getT($vtimePath));
-                }
+                }*/
                 $zip->close();
                 header("Content-Type: " . mime_content_type($zipFileName));
                 header('Content-Disposition: attachment; filename="' . $_GET["download"] . '.zip"');

@@ -225,10 +225,10 @@
                 }
                 $html = setValue("PHOTOVIDEO", $photovideoHTML, $html);
             }
-            $locationPath = locations . $n . ".txt";
+            $locationPath = locations . $n . "/0.txt";
             if(file_exists($locationPath))    {
                 $locationData = file_get_contents($locationPath);
-                $locationTime = getT(file_get_contents(locationtimes . $n . ".txt"));
+                $locationTime = getT(file_get_contents(locationtimes . $n . "/0.txt"));
             }
             else    {
                 $locationData = "-; -; -; -";
@@ -265,7 +265,7 @@
                     $html = str_replace("<!--MAPS-->", $maps, $html);
                 }
                 if(!empty($locationTime))    {
-                    $locationPublicPath = "?view&v=uploads/strings/locations/" . basename($locationPath);
+                    $locationPublicPath = "?view&v=uploads/strings/locations/" . $n . "/" . basename($locationPath);
                     $locationButtons = "<div class=\"buttonsdivs\">";
                     $locationButtons .= "<a href=\"" . $locationPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"> <span class=\"open\"><string>open</string></span></a>";
                     $locationButtons .= "<a target=\"_blank\" href=\"" . $locationPublicPath . "\" class=\"buttons\"> <img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a>";
@@ -281,7 +281,7 @@
                 $html = setValue("LTIME", $locationTime, $html);
                 $html = setValue("LBUTTONS", $locationButtons, $html);
             }
-            $descriptionPath = descriptions . $n . ".txt";
+            $descriptionPath = descriptions . $n . "/0.txt";
             if(file_exists($descriptionPath))    {
                 $descriptionData = htmlspecialchars(file_get_contents($descriptionPath));
                 if(!$rawData){
@@ -300,7 +300,7 @@
                         $descriptionData = substr_replace($descriptionData, "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;vertical-align:initial;\">", $moreTextIndex, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore\" style=\"display:none;\">...>></button>";
                     }
                 }
-                $descriptionTime = getT(file_get_contents(descriptiontimes . $n . ".txt"));
+                $descriptionTime = getT(file_get_contents(descriptiontimes . $n . "/0.txt"));
                 
             }
             else    {
@@ -316,7 +316,7 @@
             }
             else    {
                 if(!empty($descriptionTime))    {
-                    $descriptionPublicPath = "?view&v=uploads/strings/descriptions/" . basename($descriptionPath);
+                    $descriptionPublicPath = "?view&v=uploads/strings/descriptions/" . $n . "/" . basename($descriptionPath);
                     $descriptionButtons = "<div class=\"buttonsdivs\">";
                     $descriptionButtons .= "<a href=\"" . $descriptionPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"> <span class=\"open\"><string>open</string></span></a>";
                     $descriptionButtons .= "<a target=\"_blank\" href=\"" . $descriptionPublicPath . "\" class=\"buttons\"> <img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a>";
@@ -329,12 +329,12 @@
                 $html = setValue("DBUTTONS", $descriptionButtons, $html);
                 $html = setValue("DTIME", $descriptionTime, $html);
             }
-            $vtimePath = voicetimes . $n . ".txt";
+            $vtimePath = voicetimes . $n . "/0.txt";
             $voicePath = "";
             if(file_exists($vtimePath))    {
-                $voicePath = glob(voices . $n . ".*")[0];
-                $voicePublicPath = "?view&v=uploads/files/voices/" . basename($voicePath);
-                $voiceTime = getT(file_get_contents(voicetimes . $n . ".txt"));
+                $voicePath = glob(voices . $n . "/0.*")[0];
+                $voicePublicPath = "?view&v=uploads/files/voices/" . $n . "/" . basename($voicePath);
+                $voiceTime = getT(file_get_contents(voicetimes . $n . "/0.txt"));
             }
             else    {
                 $voiceTag = getNoData();
@@ -390,6 +390,7 @@
         echo getData($_GET["n"], $rawData);
     }
     else    {
+        echo '<a href="?view&v=uploads/">..uploads/</a>';
         if(/*!file_exists(photovideotimes)*/count(scandir(photovideotimes)) == 2){
             if($rawData){
                 echo "0";
@@ -397,7 +398,7 @@
                 echo("<br><br>" . getNoData());
             }
         }else{
-            $files0 = array_slice(scandir(photovideotimes), 2);
+            /*$files0 = array_slice(scandir(photovideotimes), 2);
             $filestimes = [];
             foreach($files0 as $file){
                 array_push($filestimes, file_get_contents(photovideotimes . $file . "/0.txt"));
@@ -409,7 +410,9 @@
                 $index = array_search($filetime, $filestimes0);
                 array_push($files, $files0[$index]);
                 unset($filestimes0[$index]);
-            }
+            }*/
+            $files = array_slice(scandir(photovideotimes), 2);
+            $files = array_reverse($files);
             if(!$rawData || ($rawData && ((isset($_GET["t"]) && ctype_digit($_GET["t"])) || (isset($_GET["p"]) && ctype_digit($_GET["p"])))))    {
                 define("maxQuantity", 10);
                 if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
@@ -443,9 +446,9 @@
                     echo '<br><button class="buttons" id="viewmore" onclick="viewMore(this)" page="' . ($page + 1) . '" topn="' . $topN . '"><img width="32" height="32" src="images/viewmore.svg"> <span class="viewmore">' . $langJSON["viewmore"] . '</span></button><br>';
                 }
                 if(!$ajax){
-                    if($nextAvailable){
+                    //if($nextAvailable){
                         echo '<div id="newcontent"></div><div class="loader" id="loader"></div><br><div id="loaderror"></div>';
-                    }
+                    //}
                     if($page){
                         echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\"><<</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
                     }

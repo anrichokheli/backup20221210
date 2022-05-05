@@ -55,7 +55,14 @@
             return $protocol . "://" . $_SERVER["HTTP_HOST"];
         }
         //$filesQuantity = count(scandir(photovideos)) - 2;
-        $filesName = hrtime(1);
+        //$filesName = hrtime(1);
+        function getID(){
+            $t = microtime(/*1*/);
+            //return $t * 10**strlen(substr($t, strpos($t, ".") + 1));
+            $t = explode(" ", $t);
+            return $t[1] . substr($t[0], 2, -2);
+        }
+        $filesName = getID();
         /*if($filesQuantity >= maxFilesQuantity)    {
             exit("server total files quantity limit: " . maxFilesQuantity);
         }*/
