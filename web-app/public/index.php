@@ -46,7 +46,7 @@
         }
         if(ctype_digit($_GET["n"]) || isset($_GET["view"]))    {
             include(phpPath . "view.php");
-            echoConsoleWarningScript();
+            //echoConsoleWarningScript();
             exit;
         }
     }
@@ -75,5 +75,5 @@
         $indexHTML = setLanguage($indexHTML);
         echo $indexHTML;
     }
-    echoConsoleWarningScript();
+    //echoConsoleWarningScript();
 ?>

@@ -50,5 +50,6 @@
             </div>
         </div>
         <script src="../scripts/view2.js"></script>
+        <script>try{function consoleWarning(a,b){for(var i=0;i<3;i++){console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");console.log("%c"+a+"!","color:#ff0000;font-size:32px;font-weight:bold;");console.log("%c"+b,"font-size:25px");console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");}}consoleWarning("<?php echo $GLOBALS["langJSON"]["warning"]; ?>","<?php echo $GLOBALS["langJSON"]["consolewarning"]; ?>");}catch(e){}</script>
     </body>
 </html>

@@ -284,8 +284,17 @@ function uploadDescription(n, key, descriptionValue, input, button, element)    
     uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, descriptionValue, element, input, button);
 }
 var maxVoiceFileSize = 25000000;
-function uploadVoice(n, key, statusElement, voiceinput, button, formdata0)  {
-    if(!formdata0 && voiceinput.files[0].size > maxVoiceFileSize){
+function uploadVoice(n, key, statusElement, voiceinput, button, /*formdata0*/voicefiles0)  {
+    var voicefiles;
+    if(voicefiles0){
+        voicefiles = voicefiles0;
+    }else{
+        voicefiles = voiceinput.files[0];
+    }
+    if(!voicefiles){
+        return;
+    }
+    if(/*!formdata0 && */voicefiles.size > maxVoiceFileSize){
         alert(getString("maxvoicefilesize")+": "+(maxVoiceFileSize/1000000)+"MB");
         return;
     }
@@ -301,12 +310,12 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0)  {
     div.style.borderColor = "#ffff00";
     statusElement.insertBefore(div, statusElement.childNodes[0]);
     var formData;
-    if(formdata0){
-        formData = formdata0[0];
-    }else{
+    //if(formdata0){
+        //formData = formdata0[0];
+    //}else{
         formData = new FormData();
-        formData.append("voice", voiceinput.files[0]);
-    }
+        formData.append("voice", voicefiles);
+    //}
     formData.append("n", n);
     formData.append("key", key);
     var ajax = new XMLHttpRequest();
@@ -331,7 +340,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0)  {
             div.innerHTML = img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             // button.disabled = 0;
-            addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, formdata0);}, statusElement);
+            addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, /*formdata0*/voicefiles0);}, statusElement);
         }
         statusElement.insertBefore(div, statusElement.childNodes[0]);
     };
@@ -344,7 +353,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0)  {
         div.style.borderColor = "#ff0000";
         statusElement.insertBefore(div, statusElement.childNodes[0]);
         // button.disabled = 0;
-        addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, formdata0);}, statusElement);
+        addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, /*formdata0*/voicefiles0);}, statusElement);
     };
     ajax.open("POST", "/");
     ajax.send(formData);
@@ -477,9 +486,130 @@ try{
 }catch(e){}
 try{
     var n_key = [];
+    var attachFiles = [];
     var descriptionTexts = [];
     var voiceFiles = [];
 }catch(e){}
+var fileTypeArray2;
+var fileType2;
+var fileExtension2;
+function displayUploadError(text, element){
+    var div = document.createElement("div");
+    div.style.border = "2px solid #ff0000";
+    div.innerText = text;
+    element.insertBefore(div, element.childNodes[0]);
+}
+function checkFile(file, element){
+    try{
+        if(file.size > maxFileSize)    {
+            try{
+                displayUploadError(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB. (" + file.name + ")", element);
+            }catch(e){}
+            return false;
+        }
+        fileTypeArray2 = file.type.split('/');
+        fileType2 = fileTypeArray2[0];
+        fileExtension2 = fileTypeArray2[1];
+        if(fileType2 != "image" && fileType2 != "video")    {
+            try{
+                displayUploadError(getString("onlyimgvid") + " (" + file.name + ")", element);
+            }catch(e){}
+            return false;
+        }
+        if(allowedFileExtensions.indexOf(fileExtension2) == -1)    {
+            try{
+                displayUploadError(getString("allowedext") + ": ." + allowedFileExtensions.join(", .") + ". (" + file.name + ")", element);
+            }catch(e){}
+            return false;
+        }
+        return true;
+    }catch(e){}
+}
+function filesAttach(n, key, files/*, formdata0*/){
+    var element = document.getElementById('q'+n);
+    var formData;
+    /*if(formdata0){
+        formData = formdata0;
+    }else{
+        if(!files.length){
+            return;
+        }
+        formData = new FormData();
+        for(var i = 0; i < files.length; i++){
+            if(checkFile(files[i], element)){
+                formData.append("photovideo[]", files[i]);
+            }
+        }
+    }
+    formData.append("n", n);
+    formData.append("key", key);*/
+    if(!files.length){
+        return;
+    }
+    formData = new FormData();
+    formData.append("n", n);
+    formData.append("key", key);
+    for(var i = 0; i < files.length; i++){
+        if(checkFile(files[i], element)){
+            formData.append("photovideo[]", files[i]);
+        }
+    }
+    var div = document.createElement("div");
+    try{
+        div.classList.add("statusText");
+    }catch(e){}
+    try{
+        div.className = "statusText";
+    }catch(e){}
+    var text = '<span class="file(s)">' + getString("file(s)") + '</span>' + "; ";
+    var img = "<img width=\"16\" height=\"16\" src=\"images/photovideo.svg\"> ";
+    div.innerHTML = img+text+'<span class="uploading">'+getString("uploading")+'</span>';
+    div.style.borderColor = "#ffff00";
+    element.insertBefore(div, element.childNodes[0]);
+    var ajax = new XMLHttpRequest();
+    ajax.onload = function(){
+        div = document.createElement("div");
+        try{
+            div.classList.add("statusText");
+        }catch(e){}
+        try{
+            div.className = "statusText";
+        }catch(e){}
+        if(this.responseText == "1"){
+            div.innerHTML = img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
+            div.style.borderColor = "#00ff00";
+        }else{
+            div.innerHTML = img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
+            div.style.borderColor = "#ff0000";
+            addRetryButton(function(){filesAttach(n, key, files/*, formData*/);}, element);
+        }
+        element.insertBefore(div, element.childNodes[0]);
+    };
+    ajax.onerror = function(){
+        div = document.createElement("div");
+        try{
+            div.classList.add("statusText");
+        }catch(e){}
+        try{
+            div.className = "statusText";
+        }catch(e){}
+        div.innerHTML = img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
+        div.style.borderColor = "#ff0000";
+        element.insertBefore(div, element.childNodes[0]);
+        addRetryButton(function(){filesAttach(n, key, files/*, formData*/);}, element);
+    };
+    ajax.open("POST", "/");
+    ajax.send(formData);
+}
+function filesPreAttach(id, value, div){
+    if(!attachFiles[id]){
+        attachFiles[id] = [];
+    }
+    attachFiles[id].push(value);
+    var statusText = document.createElement("div");
+    statusText.innerHTML = '<img width="16" height="16" src="images/photovideo.svg"> <span class="file(s)">' + getString("file(s)") + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
+    div.insertBefore(statusText, div.childNodes[0]);
+}
 function descriptionPreUpload(id, value, div){
     if(!descriptionTexts[id]){
         descriptionTexts[id] = [];
@@ -507,7 +637,7 @@ function voicePreUpload(id, value, div){
     statusText.innerHTML = '<img width="16" height="16" src="images/microphone.svg"> <span class="voice">' + getString("voice") + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
     div.insertBefore(statusText, div.childNodes[0]);
 }
-function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString0, descriptionTexts0, voiceFiles0){
+function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString0, attachFiles0, descriptionTexts0, voiceFiles0){
     var currentUploadID = ++lastUploadID;
     if(!filelink && files === null && !formData0)  {
         files = fileInput.files;
@@ -624,13 +754,34 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         try{
             after.className = "boxs boxs2";
         }catch(e){}
-        var html = "<div class=\"descriptioninput\"><textarea id=\""+currentUploadID+"\" class=\"texts writedescription\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\" maxlength=\""+maxDescriptionLength+"\"></textarea><br><span id=\"charnum"+currentUploadID+"\">0</span> / "+maxDescriptionLength+"</div>";
+        var html = '<div><input type="file" accept="image/*,video/*" id="f'+currentUploadID+'" name="photovideo[]" required multiple style=\"width:0;height:0;\"><button class="buttons afteruploadbuttons" onclick=document.getElementById("f'+currentUploadID+'").click()><img width="32" height="32" src="images/photovideo.svg">&nbsp;<span class="choosefiles">'+getString("choosefiles")+'</span></button></div><br>';
+        html += "<div class=\"descriptioninput\"><textarea id=\""+currentUploadID+"\" class=\"texts writedescription\" rows=\"2\" cols=\"10\" placeholder=\""+getString("writedescription")+"...\" maxlength=\""+maxDescriptionLength+"\"></textarea><br><span id=\"charnum"+currentUploadID+"\">0</span> / "+maxDescriptionLength+"</div>";
         html += "<div class=\"buttonsDivs\"><div><button id=\"b"+currentUploadID+"\" class=\"texts buttons afteruploadbuttons\" disabled><img width=\"32\" height=\"32\" src=\"images/description.svg\">&nbsp;<span class=\"uploaddescription\">"+getString("uploaddescription")+"</span></button></div>";
         html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+currentUploadID+"\" style=\"width:0;height:0;\"><button id=\"vb"+currentUploadID+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+currentUploadID+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;<span class=\"uploadvoice\">"+getString("uploadvoice")+"</span></button><span class=\"maxvoicefilesize\">"+getString("maxvoicefilesize")+"</span>: "+(maxVoiceFileSize/1000000)+"MB</div></div>";
         var after0 = document.createElement("div");
         after0.innerHTML = html;
         after.appendChild(after0);
         subbox.insertBefore(after, subbox.childNodes[0]);
+        var filesInput = document.getElementById("f"+currentUploadID);
+        filesInput.addEventListener("change", function(){
+            var n;
+            var key;
+            try{
+                n = n_key[currentUploadID][0];
+                key = n_key[currentUploadID][1];
+            }catch(e){}
+            if(n && key){
+                filesAttach(n, key, this.files);
+            }else{
+                /*var filesFormData = new FormData();
+                for(var i = 0; i < this.files.length; i++){
+                    if(checkFile(this.files[i], statusDiv)){
+                        formData.append("photovideo[]", this.files[i]);
+                    }
+                }*/
+                filesPreAttach(currentUploadID, /*filesFormData*/this.files, statusDiv);
+            }
+        });
         var textarea = document.getElementById(currentUploadID);
         var button = document.getElementById("b"+currentUploadID);
         button.addEventListener("click", function(){
@@ -649,6 +800,9 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
             textarea.value = '';
             document.getElementById("charnum"+currentUploadID).innerText = 0;
         });
+        if(attachFiles0){
+            filesPreAttach(currentUploadID, attachFiles0, statusDiv);
+        }
         if(descriptionTexts0){
             descriptionPreUpload(currentUploadID, descriptionTexts0, statusDiv);
         }
@@ -677,9 +831,9 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                     alert(getString("maxvoicefilesize")+": "+(maxVoiceFileSize/1000000)+"MB");
                     return;
                 }
-                var voiceFormData = new FormData();
-                voiceFormData.append("voice", this.files[0]);
-                voicePreUpload(currentUploadID, voiceFormData, statusDiv);
+                /*var voiceFormData = new FormData();
+                voiceFormData.append("voice", this.files[0]);*/
+                voicePreUpload(currentUploadID, /*voiceFormData*/this.files[0], statusDiv);
             }
         });
         if(!filelink && (files.length == 1)){
@@ -709,43 +863,13 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         formData = formData0;
     }else{
         var formData = new FormData();
-        var fileTypeArray2;
-        var fileType2;
-        var fileExtension2;
-        function displayUploadError(text){
-            var div = document.createElement("div");
-            div.style.border = "2px solid #ff0000";
-            div.innerText = text;
-            subbox.insertBefore(div, subbox.childNodes[0]);
-        }
         if(filelink){
             formData.append("filelink", filelink);
         }else{
             for(var file in files){
-                try{
-                    if(files[file].size > maxFileSize)    {
-                        try{
-                            displayUploadError(getString("maxfilesize") + " " + (maxFileSize / 1000000) + "MB. (" + files[file].name + ")");
-                        }catch(e){}
-                        continue;
-                    }
-                    fileTypeArray2 = files[file].type.split('/');
-                    fileType2 = fileTypeArray2[0];
-                    fileExtension2 = fileTypeArray2[1];
-                    if(fileType2 != "image" && fileType2 != "video")    {
-                        try{
-                            displayUploadError(getString("onlyimgvid") + " (" + files[file].name + ")");
-                        }catch(e){}
-                        continue;
-                    }
-                    if(allowedFileExtensions.indexOf(fileExtension2) == -1)    {
-                        try{
-                            displayUploadError(getString("allowedext") + ": ." + allowedFileExtensions.join(", .") + ". (" + files[file].name + ")");
-                        }catch(e){}
-                        continue;
-                    }
-                }catch(e){}
-                formData.append("photovideo[]", files[file]);
+                if(checkFile(files[file], subbox)){
+                    formData.append("photovideo[]", files[file]);
+                }
             }
             if(fileInput)fileInput.value = null;
         }
@@ -794,6 +918,15 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 addShareButton(after, fullLink);
             }catch(e){}
             try{
+                if(attachFiles[currentUploadID]){
+                    for(var i = 0; i < attachFiles[currentUploadID].length; i++){
+                        if(attachFiles[currentUploadID][i]){
+                            filesAttach(n, key, /*null, */attachFiles[currentUploadID][i]);
+                        }
+                    }
+                }
+            }catch(e){}
+            try{
                 if(descriptionTexts[currentUploadID]){
                     for(var i = 0; i < descriptionTexts[currentUploadID].length; i++){
                         if(descriptionTexts[currentUploadID][i] && descriptionTexts[currentUploadID][i] != ""){
@@ -833,7 +966,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
             if(currentUploadID == lastUploadID){
                 bottomProgressVisible(0);
             }
-            addRetryButton(function(){filesUpload(files, fileInput, filelink, formData, typeImg, typeString, descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
+            addRetryButton(function(){filesUpload(files, fileInput, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
         }
         try{
             statusText.classList.add("statusText");
@@ -862,7 +995,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
             bottomProgressVisible(0);
         }
         status.insertBefore(statusText, status.childNodes[0]);
-        addRetryButton(function(){filesUpload(files, fileInput, filelink, formData, typeImg, typeString, descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
+        addRetryButton(function(){filesUpload(files, fileInput, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
     };
     var progressPercent;
     ajax.upload.onprogress = function(e){

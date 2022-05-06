@@ -35,5 +35,6 @@
         </div>
         <canvas id="canvas"></canvas>
         <script src="../scripts/camera.js"></script>
+        <?php echoConsoleWarningScript(); ?>
     </body>
 </html>

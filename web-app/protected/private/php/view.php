@@ -390,7 +390,9 @@
         echo getData($_GET["n"], $rawData);
     }
     else    {
-        echo '<a href="?view&v=uploads/">..uploads/</a>';
+        if(!$rawData){
+            echo '<a href="?view&v=uploads/">..uploads/</a>';
+        }
         if(/*!file_exists(photovideotimes)*/count(scandir(photovideotimes)) == 2){
             if($rawData){
                 echo "0";
@@ -411,8 +413,9 @@
                 array_push($files, $files0[$index]);
                 unset($filestimes0[$index]);
             }*/
-            $files = array_slice(scandir(photovideotimes), 2);
-            $files = array_reverse($files);
+            //$files = array_slice(scandir(photovideotimes), 2);
+            //$files = array_reverse($files);
+            $files = array_slice(scandir(photovideotimes, 1), 0, -2);
             if(!$rawData || ($rawData && ((isset($_GET["t"]) && ctype_digit($_GET["t"])) || (isset($_GET["p"]) && ctype_digit($_GET["p"])))))    {
                 define("maxQuantity", 10);
                 if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
@@ -431,9 +434,10 @@
             if(!$rawData){
                 echo '<div id="content">';
             }
-            for($i = 0; $i < count($files); $i++)    {
+            $filesQuantity = count($files);
+            for($i = 0; $i < $filesQuantity; $i++)    {
                 echo getData($files[$i], $rawData);
-                if($rawData && ($i < (count($files) - 1))){
+                if($rawData && ($i < ($filesQuantity - 1))){
                     echo ">";
                 }
             }
@@ -464,6 +468,8 @@
         }
     }
     if(!$rawData && !$ajax)    {
-        echo "<br><br></div><script src=\"scripts/view.js\"></script></body></html>";
+        echo "<br><br></div><script src=\"scripts/view.js\"></script>";
+        echoConsoleWarningScript();
+        echo "</body></html>";
     }
 ?>

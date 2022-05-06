@@ -70,24 +70,28 @@
                     else    {
                         $voiceHTML = "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/microphone.svg\"> <string>voice</string>; <string>uploadcompleted</string></div>";
                     }*/
+                    $filesHTML = file_get_contents(htmlPath . "uploadfiles.html");
+                    $filesHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $filesHTML));
                     $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
                     $descriptionHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $descriptionHTML));
                     $descriptionHTML = str_replace("<php>MAX_DESCRIPTION_LENGTH</php>", maxDescriptionLength, $descriptionHTML);
-                    if(file_exists(descriptions . $_POST["n"] . "/0.txt"))    {
+                    //if(file_exists(descriptions . $_POST["n"] . "/0.txt"))    {
                         $descriptionHTML .= "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/description.svg\"> <string>description</string>; <string>uploadcompleted</string></div>";
-                    }
+                    //}
                     define("maxVoiceFileSize", 25000000);
                     $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
                     $voiceHTML = str_replace("<php>MAX_VOICE_SIZE</php>", maxVoiceFileSize / 1000000, $voiceHTML);
                     $voiceHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $voiceHTML));
-                    if(glob(voices . $_POST["n"] . "/0.*"))    {
+                    /*if(glob(voices . $_POST["n"] . "/0.*"))    {
                         $voiceHTML .= "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/microphone.svg\"> <string>voice</string>; <string>uploadcompleted</string></div>";
-                    }
+                    }*/
                     if(isset($_POST["ps"])){
-                        echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?" . $_POST["n"] . "\">view upload</a></div>", file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php"))));
+                        $psContent = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
+                        echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?" . $_POST["n"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
+                        $filesHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $filesHTML);
                         $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
                         $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
-                        echo '<div id="afterupload">' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '</div>';
+                        echo '<div id="afterupload">' . setLanguage($filesHTML) . '<br>' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '</div>';
                     }else{
                         if($lang != defaultLang)    {
                             $langget = "&lang=" . $lang;
@@ -98,6 +102,7 @@
                         }
                         if(isset($_GET["noscript"])){
                             $noscript = "noscript";
+                            $filesHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $filesHTML);
                             $descriptionHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $descriptionHTML);
                             $voiceHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $voiceHTML);
                         }else{
@@ -105,6 +110,8 @@
                         }
                         $html = "<div class=\"boxs texts\">";
                         $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><div><label for=\"link" . $_POST["n"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?" . $_POST["n"] . "\" id=\"link" . $_POST["n"] . "\"></div><a href=\"?" . $_POST["n"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?" . $_POST["n"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a><br><br>";
+                        $html .= $filesHTML;
+                        $html .= "<br><br>";
                         $html .= $descriptionHTML;
                         $html .= "<br><br>";
                         $html .= $voiceHTML;
