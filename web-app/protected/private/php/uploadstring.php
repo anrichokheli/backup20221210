@@ -19,17 +19,22 @@
         if(!file_exists($keyPath))    {
             exit("-1");
         }
+        function getID(){
+            $t = microtime();
+            $t = explode(" ", $t);
+            return $t[1] . substr($t[0], 2, -2);
+        }
         function saveData($dataPath, $timePath, $string)  {
             $dirPath = $dataPath . $_POST["n"] . "/";
             if(!file_exists($dirPath))    {
                 mkdir($dirPath);
             }
-            $path = $dirPath . (count(scandir($dirPath)) - 2) . ".txt";
+            $path = $dirPath . /*(count(scandir($dirPath)) - 2)*/getID() . ".txt";
             $dirPathT = $timePath . $_POST["n"] . "/";
             if(!file_exists($dirPathT))    {
                 mkdir($dirPathT);
             }
-            $pathT = $dirPathT . (count(scandir($dirPathT)) - 2) . ".txt";
+            $pathT = $dirPathT . /*(count(scandir($dirPathT)) - 2)*/getID() . ".txt";
             if(!password_verify($_POST["key"], file_get_contents($GLOBALS["keyPath"])))    {
                 exit("-4");
             }

@@ -148,7 +148,7 @@
                         exitError("-6");
                     }
                 }
-                $path = $dirPath . $fileIndex . '.' . $extension;
+                $path = $dirPath . /*$fileIndex*/getID() . '.' . $extension;
                 if(($httppostuploadfile && move_uploaded_file($filePath, $path)) || rename($filePath, $path))  {
                     $t = time();
                     $dirPath = photovideotimes . $GLOBALS["filesName"] . '/';
@@ -156,7 +156,7 @@
                         mkdir($dirPath);
                     }
                     if(file_exists($dirPath)){
-                        $dirFilePath = $dirPath . $fileIndex . ".txt";
+                        $dirFilePath = $dirPath . /*$fileIndex*/getID() . ".txt";
                         file_put_contents($dirFilePath, $t);
                         if(!file_exists($dirFilePath)){
                             echoError("-4 (" . $fileName . ")");

@@ -68,12 +68,17 @@
         if(!file_exists($dirvoicepath)){
             mkdir($dirvoicepath);
         }
-        $voicepath = $dirvoicepath . (count(scandir($dirvoicepath)) - 2) . '.' . $extension;
+        function getID(){
+            $t = microtime();
+            $t = explode(" ", $t);
+            return $t[1] . substr($t[0], 2, -2);
+        }
+        $voicepath = $dirvoicepath . /*(count(scandir($dirvoicepath)) - 2)*/getID() . '.' . $extension;
         $dirvoicepathT = voicetimes . $_POST["n"] . "/";
         if(!file_exists($dirvoicepathT)){
             mkdir($dirvoicepathT);
         }
-        $voicepathT = $dirvoicepathT . (count(scandir($dirvoicepathT)) - 2) . ".txt";
+        $voicepathT = $dirvoicepathT . /*(count(scandir($dirvoicepathT)) - 2)*/getID() . ".txt";
         if(move_uploaded_file($_FILES["voice"]["tmp_name"], $voicepath))  {
             $t = time();
             if(!file_put_contents($voicepathT, $t)){

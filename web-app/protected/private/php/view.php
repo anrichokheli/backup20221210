@@ -225,10 +225,11 @@
                 }
                 $html = setValue("PHOTOVIDEO", $photovideoHTML, $html);
             }
-            $locationPath = locations . $n . "/0.txt";
+            $locationPath = locations . $n . "/";
             if(file_exists($locationPath))    {
+                $locationPath .= scandir($locationPath)[2];
                 $locationData = file_get_contents($locationPath);
-                $locationTime = getT(file_get_contents(locationtimes . $n . "/0.txt"));
+                $locationTime = getT(file_get_contents(locationtimes . $n . "/" . scandir(locationtimes . $n)[2]));
             }
             else    {
                 $locationData = "-; -; -; -";
@@ -281,8 +282,9 @@
                 $html = setValue("LTIME", $locationTime, $html);
                 $html = setValue("LBUTTONS", $locationButtons, $html);
             }
-            $descriptionPath = descriptions . $n . "/0.txt";
+            $descriptionPath = descriptions . $n . "/";
             if(file_exists($descriptionPath))    {
+                $descriptionPath .= scandir($descriptionPath)[2];
                 $descriptionData = htmlspecialchars(file_get_contents($descriptionPath));
                 if(!$rawData){
                     if((substr_count($descriptionData, "\n") + 1) > textNewlineDisplay){
@@ -300,7 +302,7 @@
                         $descriptionData = substr_replace($descriptionData, "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;vertical-align:initial;\">", $moreTextIndex, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore\" style=\"display:none;\">...>></button>";
                     }
                 }
-                $descriptionTime = getT(file_get_contents(descriptiontimes . $n . "/0.txt"));
+                $descriptionTime = getT(file_get_contents(descriptiontimes . $n . "/" . scandir(descriptiontimes . $n)[2]));
                 
             }
             else    {
@@ -329,12 +331,15 @@
                 $html = setValue("DBUTTONS", $descriptionButtons, $html);
                 $html = setValue("DTIME", $descriptionTime, $html);
             }
-            $vtimePath = voicetimes . $n . "/0.txt";
+            $vtimePath = voicetimes . $n . "/";
             $voicePath = "";
             if(file_exists($vtimePath))    {
-                $voicePath = glob(voices . $n . "/0.*")[0];
+                $vtimePath .= scandir($vtimePath)[2];
+                //$voicePath = glob(voices . $n . "/0.*")[0];
+                $voicePath = voices . $n . "/";
+                $voicePath .= scandir($voicePath)[2];
                 $voicePublicPath = "?view&v=uploads/files/voices/" . $n . "/" . basename($voicePath);
-                $voiceTime = getT(file_get_contents(voicetimes . $n . "/0.txt"));
+                $voiceTime = getT(file_get_contents(voicetimes . $n . "/" . scandir(voicetimes . $n)[2]));
             }
             else    {
                 $voiceTag = getNoData();
@@ -390,8 +395,8 @@
         echo getData($_GET["n"], $rawData);
     }
     else    {
-        if(!$rawData){
-            echo '<a href="?view&v=uploads/">..uploads/</a>';
+        if(!$rawData && !$ajax){
+            echo '<a href="?view&v=uploads/">..uploads/</a><br>';
         }
         if(/*!file_exists(photovideotimes)*/count(scandir(photovideotimes)) == 2){
             if($rawData){
