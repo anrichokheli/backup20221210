@@ -88,6 +88,8 @@
                 exitError("link is empty");
             }else if(!filter_var($_POST["filelink"], FILTER_VALIDATE_URL)){
                 exitError("invalid URL");
+            }else if(parse_url($_POST["filelink"], PHP_URL_SCHEME) != "http" && parse_url($_POST["filelink"], PHP_URL_SCHEME) != "https"){
+                exitError("only http protocol is allowed");
             }
         }
         if($GLOBALS["correct"]){
@@ -172,13 +174,13 @@
                     echoError("-1 (" . $fileName . ")");
                 }
             }
+            $directoryPath = photovideos . $GLOBALS["filesName"];
+            if(file_exists($directoryPath)){
+                $dirFilesQuantity = count(scandir($directoryPath)) - 2;
+            }else{
+                $dirFilesQuantity = 0;
+            }
             if(isset($_FILES["photovideo"])){
-                $directoryPath = photovideos . $GLOBALS["filesName"];
-                if(file_exists($directoryPath)){
-                    $dirFilesQuantity = count(scandir($directoryPath)) - 2;
-                }else{
-                    $dirFilesQuantity = 0;
-                }
                 if(is_countable($_FILES["photovideo"]["tmp_name"])){
                     $uploadedFilesQuantity = count($_FILES["photovideo"]["tmp_name"]);
                     define("maxNumFiles", 10);

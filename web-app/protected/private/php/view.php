@@ -227,9 +227,20 @@
             }
             $locationPath = locations . $n . "/";
             if(file_exists($locationPath))    {
-                $locationPath .= scandir($locationPath)[2];
-                $locationData = file_get_contents($locationPath);
-                $locationTime = getT(file_get_contents(locationtimes . $n . "/" . scandir(locationtimes . $n)[2]));
+                //$locationPath .= scandir($locationPath)[2];
+                //$locationData = file_get_contents($locationPath);
+                //$locationTime = getT(file_get_contents(locationtimes . $n . "/" . scandir(locationtimes . $n)[2]));
+                $locationPaths = array_slice(scandir($locationPath), 2);
+                $locationData = [];
+                foreach($locationPaths as $path){
+                    array_push($locationData, file_get_contents($locationPath . $path));
+                }
+                $locationTimePath = locationtimes . $n . "/";
+                $locationTime = [];
+                $locationTimePaths = array_slice(scandir($locationTimePath), 2);
+                foreach($locationTimePaths as $path){
+                    array_push($locationTime, getT(file_get_contents($locationTimePath . $path)));
+                }
             }
             else    {
                 $locationData = "-; -; -; -";
@@ -239,6 +250,8 @@
                 array_push($dataArray, $locationData, $locationTime);
             }
             else    {
+                $locationData = $locationData[0];
+                $locationTime = $locationTime[0];
                 $locationArray = explode("; ", $locationData);
                 for($i = 0; $i < count($locationArray); $i++){
                     if($locationArray[$i] == "-"){
@@ -284,9 +297,22 @@
             }
             $descriptionPath = descriptions . $n . "/";
             if(file_exists($descriptionPath))    {
-                $descriptionPath .= scandir($descriptionPath)[2];
-                $descriptionData = htmlspecialchars(file_get_contents($descriptionPath));
+                //$descriptionPath .= scandir($descriptionPath)[2];
+                //$descriptionData = htmlspecialchars(file_get_contents($descriptionPath));
+                $descriptionData = [];
+                $descriptionTime = [];
+                $descriptionTimePath = descriptiontimes . $n . "/";
+                $descriptionPaths = array_slice(scandir($descriptionPath), 2);
+                foreach($descriptionPaths as $path){
+                    array_push($descriptionData, htmlspecialchars(file_get_contents($descriptionPath . $path)));
+                }
+                $descriptionTimePaths = array_slice(scandir($descriptionTimePath), 2);
+                foreach($descriptionTimePaths as $path){
+                    array_push($descriptionTime, getT(file_get_contents($descriptionTimePath . $path)));
+                }
                 if(!$rawData){
+                    $descriptionData = $descriptionData[0];
+                    $descriptionTime = $descriptionTime[0];
                     if((substr_count($descriptionData, "\n") + 1) > textNewlineDisplay){
                         $lastPos = 0;
                         for($i = 0; $i < textNewlineDisplay; $i++){
@@ -302,7 +328,7 @@
                         $descriptionData = substr_replace($descriptionData, "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;vertical-align:initial;\">", $moreTextIndex, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore\" style=\"display:none;\">...>></button>";
                     }
                 }
-                $descriptionTime = getT(file_get_contents(descriptiontimes . $n . "/" . scandir(descriptiontimes . $n)[2]));
+                //$descriptionTime = getT(file_get_contents(descriptiontimes . $n . "/" . scandir(descriptiontimes . $n)[2]));
                 
             }
             else    {
@@ -334,12 +360,23 @@
             $vtimePath = voicetimes . $n . "/";
             $voicePath = "";
             if(file_exists($vtimePath))    {
-                $vtimePath .= scandir($vtimePath)[2];
+                //$vtimePath .= scandir($vtimePath)[2];
                 //$voicePath = glob(voices . $n . "/0.*")[0];
-                $voicePath = voices . $n . "/";
-                $voicePath .= scandir($voicePath)[2];
-                $voicePublicPath = "?view&v=uploads/files/voices/" . $n . "/" . basename($voicePath);
-                $voiceTime = getT(file_get_contents(voicetimes . $n . "/" . scandir(voicetimes . $n)[2]));
+                $voiceFiles = array_slice(scandir(voices . $n . "/"), 2);
+                //$voicePath .= scandir($voicePath)[2];
+                //$voicePublicPath = "?view&v=uploads/files/voices/" . $n . "/" . basename($voicePath);
+                $voicePath = "?view&v=uploads/files/voices/" . $n . "/";
+                $voicePublicPath = [];
+                foreach($voiceFiles as $file){
+                    array_push($voicePublicPath, $voicePath . $file);
+                }
+                $voiceTimePath = voicetimes . $n . "/";
+                $voiceTimeFiles = array_slice(scandir($voiceTimePath), 2);
+                $voiceTime = [];
+                foreach($voiceTimeFiles as $file){
+                    array_push($voiceTime, getT(file_get_contents($voiceTimePath . $file)));
+                }
+                //$voiceTime = getT(file_get_contents( . scandir(voicetimes . $n)[2]));
             }
             else    {
                 $voiceTag = getNoData();
@@ -351,6 +388,8 @@
             }
             else    {
                 if(!empty($voicePath))    {
+                    $voicePublicPath = $voicePublicPath[0];
+                    $voiceTime = $voiceTime[0];
                     $voiceTag = "<audio controls src=\"" . $voicePublicPath . "\"></audio>";
                     $voiceButtons = "<div class=\"buttonsdivs\">";
                     $voiceButtons .= "<a href=\"" . $voicePublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/open.svg\"> <span class=\"open\"><string>open</string></span></a>";

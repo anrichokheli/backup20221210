@@ -266,6 +266,9 @@ function uploadString(n, key, post, location, value, element, input, button) {
         element.insertBefore(div, element.childNodes[0]);
         addRetryButton(function(){uploadString(n, key, post, location, value, element, input, button);}, element);
     };
+    try{
+        uploadProgressSetup(ajax, div);
+    }catch(e){}
     ajax.open("POST", "/");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+post);
@@ -357,6 +360,9 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
         // button.disabled = 0;
         addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voicefiles0*/);}, statusElement);
     };
+    try{
+        uploadProgressSetup(ajax, div);
+    }catch(e){}
     ajax.open("POST", "/");
     ajax.send(formData);
 }
@@ -527,8 +533,10 @@ function checkFile(file, element){
         return true;
     }catch(e){}
 }
-function filesAttach(n, key, files, formdata0){
-    var element = document.getElementById('q'+n);
+function filesAttach(n, key, files, formdata0, element){
+    if(!element){
+        var element = document.getElementById('q'+n);
+    }
     var formData;
     if(formdata0){
         formData = formdata0;
@@ -600,6 +608,9 @@ function filesAttach(n, key, files, formdata0){
         element.insertBefore(div, element.childNodes[0]);
         addRetryButton(function(){filesAttach(n, key, files, /*formData*/formdata0);}, element);
     };
+    try{
+        uploadProgressSetup(ajax, div);
+    }catch(e){}
     ajax.open("POST", "/");
     ajax.send(formData);
 }
@@ -638,6 +649,49 @@ function voicePreUpload(id, value, div){
     var statusText = document.createElement("div");
     statusText.innerHTML = '<img width="16" height="16" src="images/microphone.svg"> <span class="voice">' + getString("voice") + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
     div.insertBefore(statusText, div.childNodes[0]);
+}
+function addProgressBar(element){
+    var progress = document.createElement("div");
+    element.appendChild(progress);
+    var progressBar0 = document.createElement("div");
+    try{
+        progressBar0.classList.add("progressbar0");
+    }catch(e){}
+    try{
+        progressBar0.className = "progressbar0";
+    }catch(e){}
+    element.appendChild(progressBar0);
+    var progressBar = document.createElement("div");
+    try{
+        progressBar.classList.add("progressbar");
+    }catch(e){}
+    try{
+        progressBar.className = "progressbar";
+    }catch(e){}
+    progressBar0.appendChild(progressBar);
+    return [progressBar, progress];
+}
+function getProgressPercent(e){
+    return ((e.loaded / e.total) * 100).toFixed(2) + '%';
+}
+function getProgressText(progressPercent, e){
+    return progressPercent + " (" + e.loaded + " / " + e.total + ")";
+}
+function uploadProgressSetup(ajax, div, currentUploadID){
+    var progressArray = addProgressBar(div);
+    var progressBar = progressArray[0];
+    var progress = progressArray[1];
+    var progressPercent;
+    ajax.upload.onprogress = function(e){
+        progressPercent = getProgressPercent(e);
+        progress.innerText = getProgressText(progressPercent, e);
+        progressBar.style.width = progressPercent;
+        if(currentUploadID){
+            if(currentUploadID == lastUploadID){
+                bottomProgressBar.style.width = progressPercent;
+            }
+        }
+    };
 }
 function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString0, attachFiles0, descriptionTexts0, voiceFiles0){
     var currentUploadID = ++lastUploadID;
@@ -718,18 +772,9 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         }catch(e){}
         statusText.innerHTML = typeImg + ' ' + typeString + '<span class="uploading">' + getString("uploading") + '</span>';
         statusDiv.appendChild(statusText);
-        var progress = document.createElement("div");
-        statusDiv.appendChild(progress);
-        var progressBar0 = document.createElement("div");
-        try{
-            progressBar0.className = "progressbar0";
-        }catch(e){}
-        statusDiv.appendChild(progressBar0);
-        var progressBar = document.createElement("div");
-        try{
-            progressBar.className = "progressbar";
-        }catch(e){}
-        progressBar0.appendChild(progressBar);
+        /*var progressArray = addProgressBar(statusDiv);
+        var progressBar = progressArray[0];
+        var progress = progressArray[1];*/
         var color = "#ffff00";
         if(filelink){
             var linkDiv = document.createElement("div");
@@ -786,7 +831,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 }
                 filesPreAttach(currentUploadID, filesFormData/*this.files*/, statusDiv);
             }
-            this.files = null;
+            this.value = null;
         });
         var textarea = document.getElementById(currentUploadID);
         var button = document.getElementById("b"+currentUploadID);
@@ -847,7 +892,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 voiceFormData.append("voice", this.files[0]);
                 voicePreUpload(currentUploadID, voiceFormData/*this.files[0]*/, statusDiv);
             }
-            this.files = null;
+            this.value = null;
         });
         if(!filelink && (files.length == 1)){
             var downloadButton = document.createElement("a");
@@ -1010,15 +1055,18 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         status.insertBefore(statusText, status.childNodes[0]);
         addRetryButton(function(){filesUpload(files, fileInput, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
     };
-    var progressPercent;
+    /*var progressPercent;
     ajax.upload.onprogress = function(e){
-        progressPercent = ((e.loaded / e.total) * 100).toFixed(2) + '%';
-        progress.innerText = progressPercent + " (" + e.loaded + " / " + e.total + ")";
+        progressPercent = getProgressPercent(e);
+        progress.innerText = getProgressText(progressPercent, e);
         progressBar.style.width = progressPercent;
         if(currentUploadID == lastUploadID){
             bottomProgressBar.style.width = progressPercent;
         }
-    };
+    };*/
+    try{
+        uploadProgressSetup(ajax, statusDiv, currentUploadID);
+    }catch(e){}
     ajax.open("POST", "/");
     ajax.send(formData);
 }
@@ -1716,6 +1764,25 @@ try{
                 var element = document.createElement("div");
                 element.id = 'i'+i;
                 myUploadBox.appendChild(element);
+                var filesUpload = document.createElement("button");
+                filesUpload.innerHTML = '<img width="32" height="32" src="images/photovideo.svg"> <span class="choosefiles">'+getString("choosefiles")+'</span>';
+                filesUpload.classList.add("buttons", "afteruploadbuttons");
+                filesUpload.id = "fb"+i;
+                var fileInput = document.createElement("input");
+                fileInput.type = "file";
+                fileInput.accept = "image/*,video/*";
+                fileInput.id = 'f'+i;
+                fileInput.oninput = function(){
+                    var i = this.id.substring(1);
+                    var element = document.getElementById('i'+i);
+                    filesAttach(uploadsData[i][0], uploadsData[i][1], this.files, null, element);
+                };
+                fileInput.hidden = 1;
+                myUploadBox.appendChild(fileInput);
+                filesUpload.onclick = function(){
+                    document.getElementById("f"+this.id.substring(2)).click();
+                }
+                myUploadBox.insertBefore(filesUpload, element);
                 // if(uploadsData[i][2]){
                     var descriptionForm = document.createElement("form");
                     descriptionForm.innerHTML = '<textarea class="writedesciption" rows="2" cols="10" placeholder="'+getString("writedescription")+'..." maxlength="'+maxDescriptionLength+'"></textarea><br><span>0</span> / '+maxDescriptionLength+'<br><button type="submit" class="buttons afteruploadbuttons" disabled><img width="32" height="32" src="images/description.svg"> <span class="uploaddescription">'+getString("uploaddescription")+'</span></button>';

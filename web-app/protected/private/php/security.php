@@ -56,10 +56,11 @@
             $key = getKey(1000);
             file_put_contents(userKeys . $id, password_hash($key, PASSWORD_DEFAULT));
             file_put_contents(securityData . $id, serialize([1, 0, 0]));
-            setcookie("id", $id, time() + (86400 * 1000), "/");
-            setcookie("key", $key, time() + (86400 * 1000), "/");
+            setcookie("id", $id, time() + (86400 * 1000), "", "", "", TRUE);
+            setcookie("key", $key, time() + (86400 * 1000), "", "", "", TRUE);
         }
         define("captchaimages", protectedPrivatePath . "captchaimages/");
+        session_set_cookie_params(array("httponly"=>TRUE));
         session_start();
         function createCaptcha(){
             $langJSON = $GLOBALS["langJSON"];
