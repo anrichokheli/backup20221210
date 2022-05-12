@@ -243,50 +243,55 @@
                 }
             }
             else    {
-                $locationData = "-; -; -; -";
+                $locationData = "";
                 $locationTime = "";
             }
             if($rawData)    {
                 array_push($dataArray, $locationData, $locationTime);
             }
             else    {
-                $locationData = $locationData[0];
-                $locationTime = $locationTime[0];
-                $locationArray = explode("; ", $locationData);
-                for($i = 0; $i < count($locationArray); $i++){
-                    if($locationArray[$i] == "-"){
-                        $locationArray[$i] = getNoData();
-                    }
-                }
-                if(strpos($locationArray[0], ", ") !== FALSE){
-                    $latlongarray = explode(", ", $locationArray[0]);
-                    $latitude = $latlongarray[0];
-                    $longitude = $latlongarray[1];
-                    $maps = '
-                        <div class="boxs">
-                            <div>
-                                <img width="32" height="32" src="images/maps.svg">
-                                <span class="maps title"><string>maps</string></span>
-                            </div>
-                            <br>
-                            <div>
-                                <a target="_blank" href="https://www.bing.com/maps?where1=' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/bingmaps.ico"> <span>Bing Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
-                                <a target="_blank" href="https://www.google.com/maps/place/' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/googlemaps.ico"> <span>Google Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
-                                <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $latitude . '&mlon=' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/openstreetmap.png"> <span>OpenStreetMap</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
-                            </div>
-                        </div>
-                    ';
-                    $html = str_replace("<!--MAPS-->", $maps, $html);
-                }
                 if(!empty($locationTime))    {
-                    $locationPublicPath = "?view&v=uploads/strings/locations/" . $n . "/" . basename($locationPath);
+                    $locationData = $locationData[0];
+                    $locationTime = $locationTime[0];
+                    $locationArray = explode("; ", $locationData);
+                    for($i = 0; $i < count($locationArray); $i++){
+                        if($locationArray[$i] == "-"){
+                            $locationArray[$i] = getNoData();
+                        }
+                    }
+                    if(strpos($locationArray[0], ", ") !== FALSE){
+                        $latlongarray = explode(", ", $locationArray[0]);
+                        $latitude = $latlongarray[0];
+                        $longitude = $latlongarray[1];
+                        $maps = '
+                            <div class="boxs">
+                                <div>
+                                    <img width="32" height="32" src="images/maps.svg">
+                                    <span class="maps title"><string>maps</string></span>
+                                </div>
+                                <br>
+                                <div>
+                                    <a target="_blank" href="https://www.bing.com/maps?where1=' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/bingmaps.ico"> <span>Bing Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
+                                    <a target="_blank" href="https://www.google.com/maps/place/' . $latitude . ',' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/googlemaps.ico"> <span>Google Maps</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
+                                    <a target="_blank" href="https://www.openstreetmap.org/?mlat=' . $latitude . '&mlon=' . $longitude . '" class="buttons"><img width="32" height="32" src="images/maps/openstreetmap.png"> <span>OpenStreetMap</span> <img width="32" height="32" src="images/newtab.svg"> <img width="32" height="32" src="images/leaving.svg"></a>
+                                </div>
+                            </div>
+                        ';
+                        $html = str_replace("<!--MAPS-->", $maps, $html);
+                    }
+                    $locationPublicPath = "?view&v=uploads/strings/locations/" . $n . "/" . basename($locationPaths[0]);
                     $locationButtons = "<div class=\"buttonsdivs\">";
                     $locationButtons .= "<a href=\"" . $locationPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"> <span class=\"open\"><string>open</string></span></a>";
                     $locationButtons .= "<a target=\"_blank\" href=\"" . $locationPublicPath . "\" class=\"buttons\"> <img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a>";
                     $locationButtons .= "<a href=\"" . $locationPublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
                     $locationButtons .= "</div>";
+                    $link = '<a href="?view&v=uploads/strings/locations/' . $n . '">..locations/' . $n . '</a>';
+                    $link2 = '<a href="?view&v=uploads/strings/locationtimes/' . $n . '">..locationtimes/' . $n . '</a>';
                 }else{
+                    $locationArray = [getNoData(), getNoData(), getNoData(), getNoData()];
                     $locationButtons = "";
+                    $link = '';
+                    $link2 = '';
                 }
                 $html = setValue("LATLONG", $locationArray[0], $html);
                 $html = setValue("Z", $locationArray[1], $html);
@@ -294,6 +299,8 @@
                 $html = setValue("ACCURACYZ", $locationArray[3], $html);
                 $html = setValue("LTIME", $locationTime, $html);
                 $html = setValue("LBUTTONS", $locationButtons, $html);
+                $html = setValue("LLINK", $link, $html);
+                $html = setValue("LTLINK", $link2, $html);
             }
             $descriptionPath = descriptions . $n . "/";
             if(file_exists($descriptionPath))    {
@@ -344,18 +351,24 @@
             }
             else    {
                 if(!empty($descriptionTime))    {
-                    $descriptionPublicPath = "?view&v=uploads/strings/descriptions/" . $n . "/" . basename($descriptionPath);
+                    $descriptionPublicPath = "?view&v=uploads/strings/descriptions/" . $n . "/" . $descriptionPaths[0];
                     $descriptionButtons = "<div class=\"buttonsdivs\">";
                     $descriptionButtons .= "<a href=\"" . $descriptionPublicPath . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"> <span class=\"open\"><string>open</string></span></a>";
                     $descriptionButtons .= "<a target=\"_blank\" href=\"" . $descriptionPublicPath . "\" class=\"buttons\"> <img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a>";
                     $descriptionButtons .= "<a href=\"" . $descriptionPublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
                     $descriptionButtons .= "</div>";
+                    $link = '<a href="?view&v=uploads/strings/descriptions/' . $n . '">..descriptions/' . $n . '</a>';
+                    $link2 = '<a href="?view&v=uploads/strings/descriptiontimes/' . $n . '">..descriptiontimes/' . $n . '</a>';
                 }else{
                     $descriptionButtons = "";
+                    $link = '';
+                    $link2 = '';
                 }
                 $html = setValue("DESCRIPTION", $descriptionData, $html);
                 $html = setValue("DBUTTONS", $descriptionButtons, $html);
                 $html = setValue("DTIME", $descriptionTime, $html);
+                $html = setValue("DLINK", $link, $html);
+                $html = setValue("DTLINK", $link2, $html);
             }
             $vtimePath = voicetimes . $n . "/";
             $voicePath = "";
@@ -396,12 +409,18 @@
                     $voiceButtons .= "<a target=\"_blank\" href=\"" . $voicePublicPath . "\" class=\"buttons\"> <img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a>";
                     $voiceButtons .= "<a href=\"" . $voicePublicPath . "\" download=\"" . $n . "\" class=\"buttons\"><img width=\"32\" height=\"32\" src=\"images/download.svg\"><span class=\"download\"><string>download</string></span></a>";
                     $voiceButtons .= "</div>";
+                    $link = '<a href="?view&v=uploads/files/voices/' . $n . '">..voices/' . $n . '</a>';
+                    $link2 = '<a href="?view&v=uploads/strings/voicetimes/' . $n . '">..voicetimes/' . $n . '</a>';
                 }else{
                     $voiceButtons = "";
+                    $link = '';
+                    $link2 = '';
                 }
                 $html = setValue("VOICE", $voiceTag, $html);
                 $html = setValue("VBUTTONS", $voiceButtons, $html);
                 $html = setValue("VTIME", $voiceTime, $html);
+                $html = setValue("VLINK", $link, $html);
+                $html = setValue("VTLINK", $link2, $html);
             }
         }
         if($rawData)    {
