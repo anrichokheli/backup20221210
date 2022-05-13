@@ -56,6 +56,18 @@
                 echo nl2br(file_get_contents($lang . ".txt"));
             ?>
         </div>
+        <form style="border: 2px dotted #256aff;padding: 4px;display: inline-block;" method="get">
+            <label for="lang">
+                <img width="26" height="26" src="../images/language.svg">
+                <?php echo $langJSON["language"]; ?>
+            </label>
+            <select name="lang" id="lang" required>
+                <option value="" disabled selected>...</option>
+                <option value="en">English</option>
+                <option value="ka">ქართული</option>
+            </select>
+            <button type="submit"><?php echo $langJSON["open"]; ?></button>
+        </form>
     </div>
 </body>
 </html>

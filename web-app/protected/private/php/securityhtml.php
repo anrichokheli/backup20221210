@@ -133,7 +133,13 @@
         </form>
         <br>
     </div>
-    <a href="/rules">rules</a>
+    <div>
+        <a href="/rules">rules</a>
+        &nbsp;|&nbsp;
+        <a href="/?view">view</a>
+        &nbsp;|&nbsp;
+        <a href="/api">API</a>
+    </div>
 </body>
 </html>
 <?php echoConsoleWarningScript(); ?>

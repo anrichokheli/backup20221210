@@ -46,14 +46,6 @@
             }
             return $key;
         }
-        function getMainWebAddress(){
-            if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"){
-                $protocol = "https";
-            }else{
-                $protocol = "http";
-            }
-            return $protocol . "://" . $_SERVER["HTTP_HOST"];
-        }
         //$filesQuantity = count(scandir(photovideos)) - 2;
         //$filesName = hrtime(1);
         function getID(){
@@ -243,7 +235,7 @@
                     $voiceHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $voiceHTML));
                     if(isset($_POST["ps"]))    {
                         $psContent = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
-                        echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?" . $GLOBALS["filesName"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
+                        echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?view&n=" . $GLOBALS["filesName"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
                         $filesHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $filesHTML);
                         $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
                         $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
@@ -263,7 +255,7 @@
                             $noscript = "";
                         }
                         $html = "<div class=\"boxs\" id=\"afterupload\">";
-                        $html .= "<div class=\"texts\">#: " . $GLOBALS["filesName"] . "</div><div><label for=\"link" . $GLOBALS["filesName"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?" . $GLOBALS["filesName"] . "\" id=\"link" . $GLOBALS["filesName"] . "\"></div><a href=\"?" . $GLOBALS["filesName"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?" . $GLOBALS["filesName"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"/images/newtab.svg\"></a><br><br>";
+                        $html .= "<div class=\"texts\">#: " . $GLOBALS["filesName"] . "</div><div><label for=\"link" . $GLOBALS["filesName"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?view&n=" . $GLOBALS["filesName"] . "\" id=\"link" . $GLOBALS["filesName"] . "\"></div><a href=\"?view&n=" . $GLOBALS["filesName"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?view&n=" . $GLOBALS["filesName"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"/images/newtab.svg\"></a><br><br>";
                         $html .= $filesHTML;
                         $html .= "<br><br>";
                         $html .= $descriptionHTML;

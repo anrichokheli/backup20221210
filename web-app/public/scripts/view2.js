@@ -182,7 +182,7 @@ function getID(){
 }
 function openID(){
     var ajax = new XMLHttpRequest();
-    ajax.open("GET", "../?" + getID() + "&raw=1");
+    ajax.open("GET", "../?view&n=" + getID() + "&raw=1");
     ajax.onload = function(){
         if(this.responseText != ""){
             var array = JSON.parse(this.responseText);
@@ -192,10 +192,10 @@ function openID(){
     ajax.send();
 }
 document.getElementById("open").onclick = function(){
-    location.assign("../?" + getID());
+    location.assign("../?view&n=" + getID());
 };
 document.getElementById("opennewtab").onclick = function(){
-    window.open("../?" + getID());
+    window.open("../?view&n=" + getID());
 };
 document.getElementById("download").onclick = function(){
     var a = document.createElement("a");
@@ -209,10 +209,10 @@ document.getElementById("share").onclick = function(){
 var openAll = document.getElementById("openall");
 var openAllNewTab = document.getElementById("openallnewtab");
 openAll.onclick = function(){
-    location.assign("../?" + getID() + "&all");
+    location.assign("../?view&n=" + getID() + "&all");
 };
 openAllNewTab.onclick = function(){
-    window.open("../?" + getID() + "&all");
+    window.open("../?view&n=" + getID() + "&all");
 };
 function openWindow(content, array){
     if(array[1].length > 1){

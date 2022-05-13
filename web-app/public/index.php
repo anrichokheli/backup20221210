@@ -9,6 +9,14 @@
     if(file_exists(phpPath . "setup.php")){
         require_once(phpPath . "setup.php");
     }
+    function getMainWebAddress(){
+        if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"){
+            $protocol = "https";
+        }else{
+            $protocol = "http";
+        }
+        return $protocol . "://" . $_SERVER["HTTP_HOST"];
+    }
     if(!empty($_GET["lang"])){
         $lang = $_GET["lang"];
     }
@@ -37,18 +45,22 @@
             echo '<script>try{function consoleWarning(a,b){for(var i=0;i<3;i++){console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");console.log("%c"+a+"!","color:#ff0000;font-size:32px;font-weight:bold;");console.log("%c"+b,"font-size:25px");console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");}}consoleWarning("' . $GLOBALS["langJSON"]["warning"] . '","' . $GLOBALS["langJSON"]["consolewarning"] . '");}catch(e){}</script>';
         }
     }
-    if(strpos($_SERVER["REQUEST_URI"], /*"/" . basename(getcwd()) . */"/?") === 0)    {
-        if(strpos($_SERVER["REQUEST_URI"], "&") !== FALSE)    {
-            $_GET["n"] = substr($_SERVER["REQUEST_URI"], /*6*/2, strpos($_SERVER["REQUEST_URI"], "&") - 2);
-        }
-        else    {
-            $_GET["n"] = substr($_SERVER["REQUEST_URI"], /*6*/2);
-        }
-        if(ctype_digit($_GET["n"]) || isset($_GET["view"]))    {
-            include(phpPath . "view.php");
-            //echoConsoleWarningScript();
-            exit;
-        }
+    // if(strpos($_SERVER["REQUEST_URI"], /*"/" . basename(getcwd()) . */"/?") === 0)    {
+    //     if(strpos($_SERVER["REQUEST_URI"], "&") !== FALSE)    {
+    //         $_GET["n"] = substr($_SERVER["REQUEST_URI"], /*6*/2, strpos($_SERVER["REQUEST_URI"], "&") - 2);
+    //     }
+    //     else    {
+    //         $_GET["n"] = substr($_SERVER["REQUEST_URI"], /*6*/2);
+    //     }
+    //     if(ctype_digit($_GET["n"]) || isset($_GET["view"]))    {
+    //         include(phpPath . "view.php");
+    //         //echoConsoleWarningScript();
+    //         exit;
+    //     }
+    // }
+    if((isset($_GET["view"]) && isset($_GET["n"]) && ctype_digit($_GET["n"])) || isset($_GET["view"]))    {
+        include(phpPath . "view.php");
+        exit;
     }
     if(!empty($_GET["download"])){
         include(phpPath . "download.php");

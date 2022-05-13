@@ -958,11 +958,11 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 n_key[currentUploadID] = [n, key];
             }catch(e){}
             try{
-                var fullLink = window.location.href+"?"+n;
+                var fullLink = window.location.href+"?view&n="+n;
                 html = "<div class=\"boxs boxs2\"><span class=\"uploadedid\">" + getString("uploadedid") + "</span>: #" + n + "</div>";
                 html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
-                html += "<button onclick=location.assign(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span></button>";
-                html += "<button onclick=window.open(\"?" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></button>";
+                html += "<button onclick=location.assign(\"?view&n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span></button>";
+                html += "<button onclick=window.open(\"?view&n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></button>";
                 html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
                 var after2 = document.createElement("div");
                 after2.innerHTML = html;
@@ -1752,7 +1752,7 @@ try{
                 myUploadView.classList.add("buttons", "afteruploadbuttons");
                 myUploadView.innerHTML = '<img width="32" height="32" src="images/viewicon.svg"> <span class="viewupload">' + getString("viewupload") + '</span> <img width="32" height="32" src="images/newtab.svg">';
                 myUploadView.target = "_blank";
-                myUploadView.href = "?" + uploadsData[i][0];
+                myUploadView.href = "?view&n=" + uploadsData[i][0];
                 myUploadBox.appendChild(myUploadView);
                 var myUploadDownload = document.createElement("a");
                 myUploadDownload.classList.add("buttons", "afteruploadbuttons");
@@ -1760,7 +1760,7 @@ try{
                 myUploadDownload.download = "";
                 myUploadDownload.href = "?download=" + uploadsData[i][0];
                 myUploadBox.appendChild(myUploadDownload);
-                addShareButton(myUploadBox, window.location.href+"?"+uploadsData[i][0]);
+                addShareButton(myUploadBox, window.location.href.replace(window.location.hash, "")+"?view&n="+uploadsData[i][0]);
                 var element = document.createElement("div");
                 element.id = 'i'+i;
                 myUploadBox.appendChild(element);

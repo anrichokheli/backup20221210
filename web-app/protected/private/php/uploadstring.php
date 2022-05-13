@@ -46,14 +46,6 @@
             }
             return FALSE;
         }
-        function getMainWebAddress(){
-            if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"){
-                $protocol = "https";
-            }else{
-                $protocol = "http";
-            }
-            return $protocol . "://" . $_SERVER["HTTP_HOST"];
-        }
         if(isset($_POST["description"]))    {
             define("maxDescriptionLength", 100000);
             if(saveData(descriptions, descriptiontimes, mb_substr($_POST["description"], 0, maxDescriptionLength))){
@@ -92,7 +84,7 @@
                     }*/
                     if(isset($_POST["ps"])){
                         $psContent = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
-                        echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?" . $_POST["n"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
+                        echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?view&n=" . $_POST["n"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
                         $filesHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $filesHTML);
                         $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
                         $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
@@ -114,7 +106,7 @@
                             $noscript = "";
                         }
                         $html = "<div class=\"boxs texts\">";
-                        $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><div><label for=\"link" . $_POST["n"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?" . $_POST["n"] . "\" id=\"link" . $_POST["n"] . "\"></div><a href=\"?" . $_POST["n"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?" . $_POST["n"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a><br><br>";
+                        $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><div><label for=\"link" . $_POST["n"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?view&n=" . $_POST["n"] . "\" id=\"link" . $_POST["n"] . "\"></div><a href=\"?view&n=" . $_POST["n"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?view&n=" . $_POST["n"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a><br><br>";
                         $html .= $filesHTML;
                         $html .= "<br><br>";
                         $html .= $descriptionHTML;
