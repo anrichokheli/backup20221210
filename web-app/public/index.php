@@ -34,6 +34,18 @@
         $lang = defaultLang;
     }
     $langJSON = json_decode(file_get_contents(jsonLanguagesPath . $lang . ".json"), 1);
+    function getLangOptions(){
+        $langOptions = '';
+        $jsonLangFiles = array_slice(scandir(jsonLanguagesPath), 2);
+        foreach($jsonLangFiles as $file){
+            $file = jsonLanguagesPath . $file;
+            $langOptions .= '<option value="' . pathinfo($file, PATHINFO_FILENAME) . '">' . json_decode(file_get_contents($file), TRUE)["langname"] . '</option>';
+        }
+        return $langOptions;
+    }
+    if(isset($_GET["gethtml"]) && $_GET["gethtml"] == "settings"){
+        exit(str_replace("<php>langoptions</php>", getLangOptions(), file_get_contents(htmlPath . "settings.html")));
+    }
     function setLanguage($html) {
         foreach($GLOBALS["langJSON"] as $key => $val)   {
             $html = str_replace("<string>" . $key . "</string>", $val, $html);
@@ -84,6 +96,7 @@
         }
         $indexHTML = str_replace("<php>LANG</php>", $langget, $indexHTML);
         $indexHTML = str_replace("<htmllang>lang</htmllang>", $lang, $indexHTML);
+        $indexHTML = str_replace("<php>langoptions</php>", getLangOptions(), $indexHTML);
         $indexHTML = setLanguage($indexHTML);
         echo $indexHTML;
     }

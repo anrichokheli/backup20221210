@@ -1,5 +1,6 @@
 <?php
     define("notmain", "");
+    define("nocaptcha", "");
     include("../index.php");
 ?>
 <!DOCTYPE html>
@@ -161,5 +162,6 @@
             </div>
         </div>
     </div>
+    <?php echoConsoleWarningScript(); ?>
 </body>
 </html>

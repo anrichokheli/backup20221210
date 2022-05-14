@@ -209,10 +209,10 @@ document.getElementById("share").onclick = function(){
 var openAll = document.getElementById("openall");
 var openAllNewTab = document.getElementById("openallnewtab");
 openAll.onclick = function(){
-    location.assign("../?view&n=" + getID() + "&all");
+    location.assign("../?view&n=" + getID() + "&all=file");
 };
 openAllNewTab.onclick = function(){
-    window.open("../?view&n=" + getID() + "&all");
+    window.open("../?view&n=" + getID() + "&all=file");
 };
 function openWindow(content, array){
     if(array[1].length > 1){

@@ -1,4 +1,5 @@
 {
+    "langname": "English",
     "title": "Pedestrian SOS!",
     "pedestrian": "Pedestrian",
     "webapp": "web application",
@@ -82,5 +83,7 @@
     "choosecorrectimages": "Choose correct image(s)",
     "rules": "Rules",
     "uploadstartafterfile": "Upload will be started after file will be uploaded",
-    "viewall": "View All"
+    "viewall": "View All",
+    "error": "Error",
+    "pagenotfound": "Page not found"
 }

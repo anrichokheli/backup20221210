@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $langJSON["rules"]; ?> | <?php echo $langJSON["pedestrian"] ?> SOS!</title>
+    <title><?php echo $langJSON["error"]; ?> 404 | <?php echo $langJSON["pedestrian"] ?> SOS!</title>
     <style>
         body{
             margin: 0;
@@ -25,48 +25,41 @@
         .sos    {
             color: #ec0400;
         }
-        #top *{
+        .top *{
             display: inline-block;
             vertical-align: middle;
             text-decoration: none;
         }
         #content{
-            text-align: initial;
-            margin: 1%;
-            padding: 1%;
-            border: 2px solid #256aff80;
+            border: 2px solid #ff0000;
+            padding: 2px;
         }
     </style>
 </head>
 <body>
     <div id="main">
-        <div id="top">
-            <a href="../">
-                <img width="64" height="64" src="../images/pedestriansos.svg">
+        <div class="top">
+            <a href="/">
+                <img width="64" height="64" src="/images/pedestriansos.svg">
                 <h1>
                     <span class="pedestrian"><?php echo $langJSON["pedestrian"]; ?></span>&nbsp;<span class="sos">SOS!</span>
                 </h1>
             </a>
         </div>
-        <h2>
-            <?php echo $langJSON["rules"]; ?>
-        </h2>
         <div id="content">
-            <?php
-                echo nl2br(file_get_contents($lang . ".txt"));
-            ?>
+            <div class="top">
+                <img width="32" height="32" src="/images/404.svg">
+                <h2>
+                    <span><?php echo $langJSON["error"]; ?> 404</span>
+                </h2>
+            </div>
+            <h3>
+                <?php echo $langJSON["pagenotfound"]; ?>
+            </h3>
+            <div>
+                URL: "<?php echo htmlspecialchars($_SERVER["REQUEST_URI"]); ?>"
+            </div>
         </div>
-        <form style="border: 2px dotted #256aff;padding: 4px;display: inline-block;" method="get">
-            <label for="lang">
-                <img width="26" height="26" src="../images/language.svg">
-                <?php echo $langJSON["language"]; ?>
-            </label>
-            <select name="lang" id="lang" required>
-                <option value="" disabled selected hidden>...</option>
-                <?php echo getLangOptions(); ?>
-            </select>
-            <button type="submit"><?php echo $langJSON["open"]; ?></button>
-        </form>
     </div>
     <?php echoConsoleWarningScript(); ?>
 </body>

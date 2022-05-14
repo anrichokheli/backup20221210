@@ -103,9 +103,13 @@
             if(isset($_POST["submit"])){
                 $correct = 1;
                 for($i = 0; $i < 9; $i++){
-                    if(!((($_SESSION["captcha" . $i] == 0) && isset($_POST["captcha" . $i])) || (($_SESSION["captcha" . $i] != 0) && !isset($_POST["captcha" . $i])))){
-                        $correct = 0;
-                        break;
+                    if(isset($_SESSION["captcha" . $i])){
+                        if(!((($_SESSION["captcha" . $i] == 0) && isset($_POST["captcha" . $i])) || (($_SESSION["captcha" . $i] != 0) && !isset($_POST["captcha" . $i])))){
+                            $correct = 0;
+                            break;
+                        }
+                    }else{
+                        exit("SESSION COOKIE ERROR!");
                     }
                 }
                 if($correct){

@@ -251,9 +251,8 @@
                     <string>language</string>
                 </label>
                 <select name="lang" id="lang" required>
-                    <option value="" disabled selected>...</option>
-                    <option value="en">English</option>
-                    <option value="ka">ქართული</option>
+                    <option value="" disabled selected hidden>...</option>
+                    <php>langoptions</php>
                 </select>
                 <button type="submit"><string>open</string></button>
             </form>
@@ -268,7 +267,7 @@
         <div style="border: 2px solid #ff0000;padding: 2px;font-size: 25px;text-align: center;">
             <br>
             <div style="border: 2px solid #ff0000;padding: 2px;display: inline-block;">
-                <a href="?noscript">noscript</a>
+                <a href="?noscript"><string>pedestrian</string> SOS! 2</a>
             </div>
             <br><br>
             <div style="border: 2px solid #ff0000;padding: 2px;display: inline-block;">
@@ -277,7 +276,7 @@
             <br><br>
         </div>
         <div>
-            <a href="/rules">rules</a>
+            <a href="/rules"><string>rules</string></a>
             &nbsp;|&nbsp;
             <a href="/api">API</a>
         </div>

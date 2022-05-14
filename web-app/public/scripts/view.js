@@ -341,11 +341,15 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 try{
-    var view2url;
-    if(window.location.href.includes("?view")){
+    var view2url = "view2";
+    /*if(window.location.href.includes("?view")){
         view2url = "view2";
     }else{
         view2url = "view2?n=" + window.location.href.substring(window.location.href.indexOf("?") + 1);
+    }*/
+    var n = (new URL(window.location.href)).searchParams.get("n");
+    if(n){
+        view2url += "?n=" + n;
     }
     var br0 = document.createElement("br");
     mainDiv.insertBefore(br0, topDiv.nextElementSibling);

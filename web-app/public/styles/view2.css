@@ -89,6 +89,12 @@ body{
     border-bottom: 1px solid #256aff80;
     overflow-x: auto;
 }
+#windowtop > div{
+    display: flex;
+    border: 1px #256aff80;
+    border-radius: 8px;
+    border-style: none solid;
+}
 #windowcontent{
     height: calc(100% - 49px);
     display: flex;

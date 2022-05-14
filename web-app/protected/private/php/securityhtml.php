@@ -132,14 +132,25 @@
             </label>
         </form>
         <br>
+        <form style="border: 2px dotted #256aff;padding: 4px;display: inline-block;" method="get">
+        <label for="lang">
+            <img width="26" height="26" src="../images/language.svg">
+            <?php echo $langJSON["language"]; ?>
+        </label>
+        <select name="lang" id="lang" required>
+            <option value="" disabled selected hidden>...</option>
+            <?php echo getLangOptions(); ?>
+        </select>
+        <button type="submit"><?php echo $langJSON["open"]; ?></button>
+    </form>
     </div>
     <div>
-        <a href="/rules">rules</a>
+        <a href="/rules?lang=<?php echo $GLOBALS["lang"]; ?>"><?php echo $langJSON["rules"]; ?></a>
         &nbsp;|&nbsp;
-        <a href="/?view">view</a>
+        <a href="/?view&lang=<?php echo $GLOBALS["lang"]; ?>"><?php echo $langJSON["viewuploads"]; ?></a>
         &nbsp;|&nbsp;
         <a href="/api">API</a>
     </div>
+    <?php echoConsoleWarningScript(); ?>
 </body>
 </html>
-<?php echoConsoleWarningScript(); ?>

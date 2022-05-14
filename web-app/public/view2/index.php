@@ -1,5 +1,6 @@
 <?php
     define("notmain", "");
+    define("nocaptcha", "");
     include($_SERVER["DOCUMENT_ROOT"] . "/index.php");
 ?>
 <!DOCTYPE html>
@@ -24,18 +25,22 @@
                     <a href="../" id="icon">
                         <img width="32" height="32" src="../images/pedestriansos.svg">
                     </a>
-                    <button id="open">
-                        <img width="32" height="32" src="../images/open.svg">
-                    </button>
-                    <button id="opennewtab">
-                        <img width="32" height="32" src="../images/newtab.svg">
-                    </button>
-                    <button id="openall">
-                        <img width="32" height="32" src="../images/multiple.svg">
-                    </button>
-                    <button id="openallnewtab">
-                        <img width="32" height="32" src="../images/newtab.svg">
-                    </button>
+                    <div>
+                        <button id="open">
+                            <img width="32" height="32" src="../images/open.svg">
+                        </button>
+                        <button id="opennewtab">
+                            <img width="32" height="32" src="../images/newtab.svg">
+                        </button>
+                    </div>
+                    <div>
+                        <button id="openall">
+                            <img width="32" height="32" src="../images/multiple.svg">
+                        </button>
+                        <button id="openallnewtab">
+                            <img width="32" height="32" src="../images/newtab.svg">
+                        </button>
+                    </div>
                     <button id="download">
                         <img width="32" height="32" src="../images/download.svg">
                     </button>

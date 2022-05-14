@@ -1488,7 +1488,7 @@ try{
         settingsContent.innerHTML = '<div class="loader"></div>';
         setWindowDarkMode(settingsWindowOverlay, settingsWindow);
         var ajax = new XMLHttpRequest();
-        ajax.open("GET", "?view&v=html/settings.html");
+        ajax.open("GET", "?gethtml=settings");
         ajax.onload = function(){
             settingsContent.innerHTML = translateHTML(this.responseText);
             if(!settingsSetup){

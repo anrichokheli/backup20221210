@@ -1,4 +1,5 @@
 {
+    "langname": "ქართული",
     "title": "ქვეითი SOS!",
     "pedestrian": "ქვეითი",
     "webapp": "ვებ აპლიკაცია",
@@ -82,5 +83,7 @@
     "choosecorrectimages": "აირჩიეთ სწორი სურათ(ებ)ი",
     "rules": "წესები",
     "uploadstartafterfile": "ატვირთვა დაიწყება მას შემდეგ რაც ფაილი აიტვირთება",
-    "viewall": "ყველას ნახვა"
+    "viewall": "ყველას ნახვა",
+    "error": "შეცდომა",
+    "pagenotfound": "გვერდი ვერ მოიძებნა"
 }
