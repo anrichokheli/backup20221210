@@ -13,7 +13,9 @@
         define("voices", uploadfiles . "voices/");
         //define("maxFilesQuantity", 1000);
         define("secretPath", protectedPrivatePath . "secret/");
-        define("keysPath", secretPath . "keys/");
+        define("uploadSecretsPath", secretPath . "uploads/");
+        define("idsPath", uploadSecretsPath . "ids/");
+        define("keysPath", uploadSecretsPath . "keys/");
         define("tmpPath", protectedPrivatePath . "tmp/");
         $htmlMode = (isset($_POST["submitform"]) || isset($_POST["submit"]) || isset($_POST["ps"]));
         function returnError($error){
@@ -32,9 +34,14 @@
             echoError($error);
             $GLOBALS["correct"] = 0;
         }
-        function getKey($n)   {
+        function getKey($n/*, $digitsOnly = 0*/)   {
             $key = "";
             for($i = 0; $i < $n; $i++)   {
+                /*if($digitsOnly){
+                    $mode = 0;
+                }else{
+                    $mode = random_int(0, 2);
+                }*/
                 $mode = random_int(0, 2);
                 if($mode == 0){
                     $key .= random_int(0, 9);
@@ -54,17 +61,15 @@
             $t = explode(" ", $t);
             return $t[1] . substr($t[0], 2, -2);
         }
-        if(isset($_POST["n"]) && isset($_POST["key"]) && ctype_digit($_POST["n"])){
-            $uploadID = $_POST["n"];
+        if(isset($_POST["id"]) && isset($_POST["key"]) && ctype_alnum($_POST["id"]) && ctype_alnum($_POST["key"])/*ctype_digit($_POST["id"])*/){
+            $uploadID = $_POST["id"];
             $uploadKey = $_POST["key"];
+            $idPath = idsPath . $uploadID;
             $keyPath = keysPath . $uploadID;
-            if(!file_exists($keyPath))    {
+            if(!(file_exists($idPath) && file_exists($keyPath) && password_verify($uploadKey, file_get_contents($keyPath))))    {
                 exit("-7");
             }
-            if(!password_verify($uploadKey, file_get_contents($keyPath))){
-                exit("-8");
-            }
-            $filesName = $uploadID;
+            $filesName = file_get_contents($idPath);
         }else{
             $filesName = getID();
         }
@@ -209,11 +214,18 @@
                 }
             }
             if($GLOBALS["uploaded"]){
-                if(isset($GLOBALS["uploadKey"])){
+                if(isset($GLOBALS["uploadID"]) && ctype_digit($GLOBALS["uploadID"]) && isset($GLOBALS["uploadKey"])){
+                    $id = $GLOBALS["uploadID"];
                     $key = $GLOBALS["uploadKey"];
                 }else{
+                $id = getKey(32/*, 1*/);
+                    $secretIDpath = idsPath . $id;
+                    file_put_contents($secretIDpath, $GLOBALS["filesName"]);
+                    if(!file_exists($secretIDpath)){
+                        echoError("-8");
+                    }
                     $key = getKey(1000);
-                    $keyPath = keysPath . $GLOBALS["filesName"];
+                    $keyPath = keysPath . $id;
                     file_put_contents($keyPath, password_hash($key, PASSWORD_DEFAULT));
                     if(!file_exists($keyPath)){
                         echoError("-5");
@@ -230,16 +242,20 @@
                     $descriptionHTML = str_replace("<php>MAX_DESCRIPTION_LENGTH</php>", maxDescriptionLength, $descriptionHTML);
                     $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
                     $voiceHTML = str_replace("<php>MAX_VOICE_SIZE</php>", maxVoiceFileSize / 1000000, $voiceHTML);
-                    $filesHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $filesHTML));
-                    $descriptionHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $descriptionHTML));
-                    $voiceHTML = str_replace("value_n", $GLOBALS["filesName"], str_replace("value_key", $key, $voiceHTML));
+                    $filesHTML = str_replace("value_id", $id, str_replace("value_key", $key, $filesHTML));
+                    $descriptionHTML = str_replace("value_id", $id, str_replace("value_key", $key, $descriptionHTML));
+                    $voiceHTML = str_replace("value_id", $id, str_replace("value_key", $key, $voiceHTML));
+                    $uploadLocationAfterGot = !file_exists(locations . $GLOBALS["filesName"]);
+                    ob_start();
+                    include(phpPath . "locationjs.php");
+                    $locationHTML = ob_get_clean();
                     if(isset($_POST["ps"]))    {
                         $psContent = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
                         echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?view&n=" . $GLOBALS["filesName"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
                         $filesHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $filesHTML);
                         $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
                         $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
-                        echo '<div id="afterupload">' . setLanguage($filesHTML) . '<br>' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '</div>';
+                        echo '<div>' . setLanguage($filesHTML) . '<br>' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '<br>' . $locationHTML . '</div>';
                     }else{
                         if($GLOBALS["lang"] != defaultLang)    {
                             $langget = "&lang=" . $GLOBALS["lang"];
@@ -254,13 +270,15 @@
                         }else{
                             $noscript = "";
                         }
-                        $html = "<div class=\"boxs\" id=\"afterupload\">";
+                        $html = "<div class=\"boxs\">";
                         $html .= "<div class=\"texts\">#: " . $GLOBALS["filesName"] . "</div><div><label for=\"link" . $GLOBALS["filesName"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?view&n=" . $GLOBALS["filesName"] . "\" id=\"link" . $GLOBALS["filesName"] . "\"></div><a href=\"?view&n=" . $GLOBALS["filesName"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?view&n=" . $GLOBALS["filesName"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"/images/newtab.svg\"></a><br><br>";
                         $html .= $filesHTML;
                         $html .= "<br><br>";
                         $html .= $descriptionHTML;
                         $html .= "<br><br>";
                         $html .= $voiceHTML;
+                        $html .= "<br><br>";
+                        $html .= $locationHTML;
                         $html .= "</div>";
                         $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents(htmlPath . "index" . $noscript . ".html")));
                         $html = str_replace("<htmllang>lang</htmllang>", $GLOBALS["lang"], $html);
@@ -268,15 +286,12 @@
                         $html = str_replace("<php>LANG</php>", $langget, $html);
                         echo $html;
                     }
-                    if(!isset($GLOBALS["uploadID"])){
-                        echo "<script>if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(a){var b=new XMLHttpRequest();b.onload=function(){if(this.responseText===\"1\"){var c=document.createElement(\"div\");c.innerHTML='<img width=\"16\" height=\"16\" src=\"/images/location.svg\"> " . $GLOBALS["langJSON"]["locationcoordinates"] . "; " . $GLOBALS["langJSON"]["uploadcompleted"] . "<br>'+a.coords.latitude+\", \"+a.coords.longitude+\"; \"+a.coords.altitude+\"; \"+a.coords.accuracy+\"; \"+a.coords.altitudeAccuracy;c.style.border=\"2px solid #00ff00\";c.style.marginTop=\"4px\";document.getElementById(\"afterupload\").appendChild(c);}};b.open(\"POST\",\"/\");b.setRequestHeader(\"Content-type\",\"application/x-www-form-urlencoded\");b.send(\"n=\"+encodeURIComponent(\"" . $GLOBALS["filesName"] . "\")+\"&key=\"+encodeURIComponent(\"" . $key . "\")+\"&latitude=\"+encodeURIComponent(a.coords.latitude)+\"&longitude=\"+encodeURIComponent(a.coords.longitude)+\"&altitude=\"+encodeURIComponent(a.coords.altitude)+\"&accuracy=\"+encodeURIComponent(a.coords.accuracy)+\"&altitudeAccuracy=\"+encodeURIComponent(a.coords.altitudeAccuracy));})}</script>";
-                    }
                 }
                 else    {
                     if(isset($GLOBALS["uploadID"])){
                         echo "1";
                     }else{
-                        echo '#' . $GLOBALS["filesName"] . '|' . $key;
+                        echo '#' . $GLOBALS["filesName"] . '|' . $id . '|' . $key;
                     }
                 }
             }

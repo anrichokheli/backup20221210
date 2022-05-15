@@ -6,8 +6,8 @@
     define("maxuploadsperinterval", 1000);
     define("uploadcountresetinterval", 60);
     define("maxuploadsperintervalblock", 2000);
-    if(!empty($_COOKIE["id"]) && ctype_digit($_COOKIE["id"]) && !empty($_COOKIE["key"]) && file_exists(userKeys . $_COOKIE["id"]) && password_verify($_COOKIE["key"], file_get_contents(userKeys . $_COOKIE["id"]))){
-        if(isset($_FILES["photovideo"]) || isset($_POST["filelink"]) || (isset($_POST["n"]) && isset($_POST["key"]))){
+    if(!empty($_COOKIE["id"]) && ctype_alnum($_COOKIE["id"]) && ctype_alnum($_COOKIE["key"]) && !empty($_COOKIE["key"]) && file_exists(userKeys . $_COOKIE["id"]) && password_verify($_COOKIE["key"], file_get_contents(userKeys . $_COOKIE["id"]))){
+        if(isset($_FILES["photovideo"]) || isset($_POST["filelink"]) || (isset($_POST["id"]) && isset($_POST["key"]))){
             $securitydataArray = unserialize(file_get_contents(securityData . $_COOKIE["id"]));
             if((isset($securitydataArray[0]) && !$securitydataArray[0]) || !isset($securitydataArray[0])){
                 http_response_code(403);
@@ -52,12 +52,13 @@
                 }
                 return $key;
             }
-            $id = hrtime(1) . random_int(0, 9);
+            //$id = hrtime(1) . random_int(0, 9);
+            $id = getKey(32);
             $key = getKey(1000);
             file_put_contents(userKeys . $id, password_hash($key, PASSWORD_DEFAULT));
             file_put_contents(securityData . $id, serialize([1, 0, 0]));
-            setcookie("id", $id, time() + (86400 * 1000), "", "", "", TRUE);
-            setcookie("key", $key, time() + (86400 * 1000), "", "", "", TRUE);
+            setcookie("id", $id, time() + (86400 * 1000), "/", "", "", TRUE);
+            setcookie("key", $key, time() + (86400 * 1000), "/", "", "", TRUE);
         }
         define("captchaimages", protectedPrivatePath . "captchaimages/");
         session_set_cookie_params(array("httponly"=>TRUE));

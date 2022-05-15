@@ -1,24 +1,25 @@
 <?php
-    if(!empty($_FILES["voice"]["tmp_name"]) && isset($_POST["n"]) && isset($_POST["key"]) && ctype_digit($_POST["n"])/* && ctype_digit($_POST["key"])*/)    {
+    if(!empty($_FILES["voice"]["tmp_name"]) && isset($_POST["id"]) && isset($_POST["key"]) && ctype_alnum($_POST["id"]) && ctype_alnum($_POST["key"])/*ctype_digit($_POST["id"])*//* && ctype_digit($_POST["key"])*/)    {
         define("upload", protectedPublicPath . "uploads/");
         define("uploadfiles", upload . "files/");
         define("uploadstrings", upload . "strings/");
         define("voices", uploadfiles . "voices/");
         define("voicetimes", uploadstrings . "voicetimes/");
         define("secretPath", protectedPrivatePath . "secret/");
-        define("keysPath", secretPath . "keys/");
+        define("uploadSecretsPath", secretPath . "uploads/");
+        define("idsPath", uploadSecretsPath . "ids/");
+        define("keysPath", uploadSecretsPath . "keys/");
         define("maxVoiceFileSize", 25000000);
         if(filesize($_FILES["voice"]["tmp_name"]) > maxVoiceFileSize)    {
             echoError("maximum voice file size is: " . (maxVoiceFileSize / 1000000) . "MB. (" . $_FILES["voice"]["name"] . ")");
             return;
         }
-        $keyPath = keysPath . $_POST["n"];
-        if(!file_exists($keyPath))    {
+        $idPath = idsPath . $_POST["id"];
+        $keyPath = keysPath . $_POST["id"];
+        if(!(file_exists($idPath) && file_exists($keyPath) && password_verify($_POST["key"], file_get_contents($keyPath))))    {
             exit("-1");
         }
-        if(!password_verify($_POST["key"], file_get_contents($keyPath)))    {
-            exit("-2");
-        }
+        $n = file_get_contents($idPath);
         $allowedExtensions = array("avi", "mpeg", "ogv", "ts", "webm", "3gp", "3g2", "aac", "mp3", "oga", "opus", "wav", "weba", "mp4");
         //$extension = pathinfo($_FILES["voice"]["name"], PATHINFO_EXTENSION);
         $mimeContentType = mime_content_type($_FILES["voice"]["tmp_name"]);
@@ -56,7 +57,7 @@
         if(!in_array($extension, $allowedExtensions))    {
             exit("allowed extensions are: " . implode(", ", $allowedExtensions) . '.');
         }
-        $dirvoicepath = voices . $_POST["n"] . "/";
+        $dirvoicepath = voices . $GLOBALS["n"] . "/";
         if(!file_exists($dirvoicepath)){
             mkdir($dirvoicepath);
         }
@@ -66,7 +67,7 @@
             return $t[1] . substr($t[0], 2, -2);
         }
         $voicepath = $dirvoicepath . /*(count(scandir($dirvoicepath)) - 2)*/getID() . '.' . $extension;
-        $dirvoicepathT = voicetimes . $_POST["n"] . "/";
+        $dirvoicepathT = voicetimes . $GLOBALS["n"] . "/";
         if(!file_exists($dirvoicepathT)){
             mkdir($dirvoicepathT);
         }
@@ -77,45 +78,51 @@
                 echo("-6");
             }
             if(isset($_POST["submit"]) || isset($_POST["ps"]))    {
-                /*if(!file_exists(uploadstrings . "descriptions/" . $_POST["n"] . ".txt"))    {
+                /*if(!file_exists(uploadstrings . "descriptions/" . $_POST["id"] . ".txt"))    {
                     define("maxDescriptionLength", 100000);
                     $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
-                    $descriptionHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $descriptionHTML));
+                    $descriptionHTML = str_replace("value_n", $_POST["id"], str_replace("value_key", $_POST["key"], $descriptionHTML));
                     $descriptionHTML = str_replace("<php>MAX_DESCRIPTION_LENGTH</php>", maxDescriptionLength, $descriptionHTML);
                 }
                 else    {
                     $descriptionHTML = "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/description.svg\"> <string>description</string>; <string>uploadcompleted</string></div>";
                 }
-                if(!file_exists(glob(voices . $_POST["n"] . ".*")[0]))    {
+                if(!file_exists(glob(voices . $_POST["id"] . ".*")[0]))    {
                     $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
                     $voiceHTML = str_replace("<php>MAX_VOICE_SIZE</php>", maxVoiceFileSize / 1000000, $voiceHTML);
-                    $voiceHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $voiceHTML));
+                    $voiceHTML = str_replace("value_n", $_POST["id"], str_replace("value_key", $_POST["key"], $voiceHTML));
                 }
                 else    {
                     $voiceHTML = "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/microphone.svg\"> <string>voice</string>; <string>uploadcompleted</string></div>";
                 }*/
                 $filesHTML = file_get_contents(htmlPath . "uploadfiles.html");
-                $filesHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $filesHTML));
+                $filesHTML = str_replace("value_id", $_POST["id"], str_replace("value_key", $_POST["key"], $filesHTML));
                 define("maxDescriptionLength", 100000);
                 $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
-                $descriptionHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $descriptionHTML));
+                $descriptionHTML = str_replace("value_id", $_POST["id"], str_replace("value_key", $_POST["key"], $descriptionHTML));
                 $descriptionHTML = str_replace("<php>MAX_DESCRIPTION_LENGTH</php>", maxDescriptionLength, $descriptionHTML);
-                /*if(file_exists(uploadstrings . "descriptions/" . $_POST["n"] . "/0.txt"))    {
+                /*if(file_exists(uploadstrings . "descriptions/" . $_POST["id"] . "/0.txt"))    {
                     $descriptionHTML .= "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/description.svg\"> <string>description</string>; <string>uploadcompleted</string></div>";
                 }*/
                 $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
                 $voiceHTML = str_replace("<php>MAX_VOICE_SIZE</php>", maxVoiceFileSize / 1000000, $voiceHTML);
-                $voiceHTML = str_replace("value_n", $_POST["n"], str_replace("value_key", $_POST["key"], $voiceHTML));
-                //if(glob(voices . $_POST["n"] . "/0.*"))    {
+                $voiceHTML = str_replace("value_id", $_POST["id"], str_replace("value_key", $_POST["key"], $voiceHTML));
+                //if(glob(voices . $_POST["id"] . "/0.*"))    {
                     $voiceHTML .= "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/microphone.svg\"> <string>voice</string>; <string>uploadcompleted</string></div>";
                 //}
+                $id = $_POST["id"];
+                $key = $_POST["key"];
+                $uploadLocationAfterGot = !file_exists(uploadstrings . "locations/" . $n);
+                ob_start();
+                include(phpPath . "locationjs.php");
+                $locationHTML = ob_get_clean();
                 if(isset($_POST["ps"])){
                     $psContent = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
-                    echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?view&n=" . $_POST["n"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
+                    echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?view&n=" . $n . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
                     $filesHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $filesHTML);
                     $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
                     $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
-                    echo '<div id="afterupload">' . setLanguage($filesHTML) . '<br>' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '</div>';
+                    echo '<div>' . setLanguage($filesHTML) . '<br>' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '<br>' . $locationHTML . '</div>';
                 }else{
                     if($lang != defaultLang)    {
                         $langget = "&lang=" . $lang;
@@ -133,12 +140,14 @@
                         $noscript = "";
                     }
                     $html = "<div class=\"boxs texts\">";
-                    $html .= "<div class=\"texts\">#: " . $_POST["n"] . "</div><div><label for=\"link" . $_POST["n"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?view&n=" . $_POST["n"] . "\" id=\"link" . $_POST["n"] . "\"></div><a href=\"?view&n=" . $_POST["n"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?view&n=" . $_POST["n"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a><br><br>";
+                    $html .= "<div class=\"texts\">#: " . $n . "</div><div><label for=\"link" . $n . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?view&n=" . $n . "\" id=\"link" . $n . "\"></div><a href=\"?view&n=" . $n . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?view&n=" . $n . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></a><br><br>";
                     $html .= $filesHTML;
                     $html .= "<br><br>";
                     $html .= $descriptionHTML;
                     $html .= "<br><br>";
                     $html .= $voiceHTML;
+                    $html .= "<br><br>";
+                    $html .= $locationHTML;
                     $html .= "</div>";
                     $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents(htmlPath . "index" . $noscript . ".html")));
                     $html = str_replace("<htmllang>lang</htmllang>", $lang, $html);

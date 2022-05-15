@@ -271,7 +271,7 @@ function uploadString(n, key, post, location, value, element, input, button) {
     }catch(e){}
     ajax.open("POST", "/");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+post);
+    ajax.send("id="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+post);
 }
 function getLocationString(data){
     if(data){
@@ -321,7 +321,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
         formData = new FormData();
         formData.append("voice", voicefiles);
     }
-    formData.append("n", n);
+    formData.append("id", n);
     formData.append("key", key);
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
@@ -345,7 +345,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
             div.innerHTML = img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             // button.disabled = 0;
-            addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voicefiles0*/);}, statusElement);
+            addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, formData/*formdata0*//*voicefiles0*/);}, statusElement);
         }
         statusElement.insertBefore(div, statusElement.childNodes[0]);
     };
@@ -358,7 +358,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
         div.style.borderColor = "#ff0000";
         statusElement.insertBefore(div, statusElement.childNodes[0]);
         // button.disabled = 0;
-        addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voicefiles0*/);}, statusElement);
+        addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, formData/*formdata0*//*voicefiles0*/);}, statusElement);
     };
     try{
         uploadProgressSetup(ajax, div);
@@ -533,7 +533,7 @@ function checkFile(file, element){
         return true;
     }catch(e){}
 }
-function filesAttach(n, key, files, formdata0, element){
+function filesAttach(n, id, key, files, formdata0, element){
     if(!element){
         var element = document.getElementById('q'+n);
     }
@@ -551,7 +551,7 @@ function filesAttach(n, key, files, formdata0, element){
             }
         }
     }
-    formData.append("n", n);
+    formData.append("id", id);
     formData.append("key", key);
     /*if(!files.length){
         return;
@@ -591,7 +591,7 @@ function filesAttach(n, key, files, formdata0, element){
         }else{
             div.innerHTML = img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
-            addRetryButton(function(){filesAttach(n, key, files, /*formData*/formdata0);}, element);
+            addRetryButton(function(){filesAttach(n, id, key, files, formData, element/*formdata0*/);}, element);
         }
         element.insertBefore(div, element.childNodes[0]);
     };
@@ -606,7 +606,7 @@ function filesAttach(n, key, files, formdata0, element){
         div.innerHTML = img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         div.style.borderColor = "#ff0000";
         element.insertBefore(div, element.childNodes[0]);
-        addRetryButton(function(){filesAttach(n, key, files, /*formData*/formdata0);}, element);
+        addRetryButton(function(){filesAttach(n, id, key, files, formData, element/*formdata0*/);}, element);
     };
     try{
         uploadProgressSetup(ajax, div);
@@ -815,13 +815,15 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 return;
             }
             var n;
+            var id;
             var key;
             try{
                 n = n_key[currentUploadID][0];
-                key = n_key[currentUploadID][1];
+                id = n_key[currentUploadID][1];
+                key = n_key[currentUploadID][2];
             }catch(e){}
-            if(n && key){
-                filesAttach(n, key, this.files);
+            if(n && id && key){
+                filesAttach(n, id, key, this.files);
             }else{
                 var filesFormData = new FormData();
                 for(var i = 0; i < this.files.length; i++){
@@ -837,13 +839,15 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         var button = document.getElementById("b"+currentUploadID);
         button.addEventListener("click", function(){
             var n;
+            var id;
             var key;
             try{
                 n = n_key[currentUploadID][0];
-                key = n_key[currentUploadID][1];
+                id = n_key[currentUploadID][1];
+                key = n_key[currentUploadID][2];
             }catch(e){}
-            if(n && key){
-                uploadDescription(n,key,textarea.value,textarea,button,document.getElementById('q'+n));
+            if(n && id && key){
+                uploadDescription(id,key,textarea.value,textarea,button,document.getElementById('q'+n));
             }else{
                 descriptionPreUpload(currentUploadID, textarea.value, statusDiv);
             }
@@ -876,13 +880,15 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         var vinput = document.getElementById("v"+currentUploadID);
         vinput.addEventListener("change", function(){
             var n;
+            var id;
             var key;
             try{
                 n = n_key[currentUploadID][0];
-                key = n_key[currentUploadID][1];
+                id = n_key[currentUploadID][1];
+                key = n_key[currentUploadID][2];
             }catch(e){}
-            if(n && key){
-                uploadVoice(n, key, document.getElementById('q'+n), document.getElementById('v'+currentUploadID), document.getElementById("vb"+currentUploadID));
+            if(n && id && key){
+                uploadVoice(id, key, document.getElementById('q'+n), document.getElementById('v'+currentUploadID), document.getElementById("vb"+currentUploadID));
             }else{
                 if(this.files[0].size > maxVoiceFileSize){
                     alert(getString("maxvoicefilesize")+": "+(maxVoiceFileSize/1000000)+"MB");
@@ -937,7 +943,8 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         if(this.responseText.charAt(0) == '#')    {
             var responseArray = this.responseText.substring(1).split('|');
             var n = responseArray[0];
-            var key = responseArray[1];
+            var id = responseArray[1];
+            var key = responseArray[2];
             try{
                 if(localStorage.getItem("saveuploads") == "true"){
                     var uploadsStorage = localStorage.getItem("uploads");
@@ -947,7 +954,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                         uploadsStorage = [];
                     }
                     // var storage_ID = uploadsStorage.push([n, key, true, true]) - 1;
-                    uploadsStorage.push([n, key]);
+                    uploadsStorage.push([n, id, key]);
                     localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
                 }
             }catch(e){}
@@ -955,7 +962,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 setUploadStatusTop(fileUploadStatus, fileUploadString, 1);
             }catch(e){}
             try{
-                n_key[currentUploadID] = [n, key];
+                n_key[currentUploadID] = [n, id, key];
             }catch(e){}
             try{
                 var fullLink = window.location.href+"?view&n="+n;
@@ -979,7 +986,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 if(attachFiles[currentUploadID]){
                     for(var i = 0; i < attachFiles[currentUploadID].length; i++){
                         if(attachFiles[currentUploadID][i]){
-                            filesAttach(n, key, null, attachFiles[currentUploadID][i]);
+                            filesAttach(n, id, key, null, attachFiles[currentUploadID][i]);
                         }
                     }
                 }
@@ -988,7 +995,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 if(descriptionTexts[currentUploadID]){
                     for(var i = 0; i < descriptionTexts[currentUploadID].length; i++){
                         if(descriptionTexts[currentUploadID][i] && descriptionTexts[currentUploadID][i] != ""){
-                            uploadDescription(n,key,descriptionTexts[currentUploadID][i],null,button,element);
+                            uploadDescription(id,key,descriptionTexts[currentUploadID][i],null,button,element);
                         }
                     }
                 }
@@ -997,15 +1004,15 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 if(voiceFiles[currentUploadID]){
                     for(var i = 0; i < voiceFiles[currentUploadID].length; i++){
                         if(voiceFiles[currentUploadID][i]){
-                            uploadVoice(n,key,element,null,button,voiceFiles[currentUploadID][i]);
+                            uploadVoice(id,key,element,null,button,voiceFiles[currentUploadID][i]);
                         }
                     }
                 }
             }catch(e){}
             if(latitude != null && longitude != null)    {
-                uploadLocation(n, key, element);
+                uploadLocation(id, key, element);
             }else{
-                locationUploadArray.push([n, key]);
+                locationUploadArray.push([id, key]);
             }
             if(!locationWait){
                 unloadWarning--;
@@ -1775,7 +1782,7 @@ try{
                 fileInput.oninput = function(){
                     var i = this.id.substring(1);
                     var element = document.getElementById('i'+i);
-                    filesAttach(uploadsData[i][0], uploadsData[i][1], this.files, null, element);
+                    filesAttach(uploadsData[i][0], uploadsData[i][1], uploadsData[i][2], this.files, null, element);
                 };
                 fileInput.hidden = 1;
                 myUploadBox.appendChild(fileInput);
@@ -1797,7 +1804,7 @@ try{
                         e.preventDefault();
                         var i = this.id.substring(1);
                         var element = document.getElementById('i'+i);
-                        uploadDescription(uploadsData[i][0], uploadsData[i][1], this.children[0].value, this.children[0], this.children[1], element);
+                        uploadDescription(uploadsData[i][1], uploadsData[i][2], this.children[0].value, this.children[0], this.children[1], element);
                         this.children[0].value = '';
                         this.children[2].innerText = "0";
                         this.children[4].disabled = 1;
@@ -1816,7 +1823,7 @@ try{
                     voiceInput.oninput = function(){
                         var i = this.id.substring(1);
                         var element = document.getElementById('i'+i);
-                        uploadVoice(uploadsData[i][0], uploadsData[i][1], element, this, document.getElementById("vb"+i));
+                        uploadVoice(uploadsData[i][1], uploadsData[i][2], element, this, document.getElementById("vb"+i));
                     };
                     voiceInput.hidden = 1;
                     myUploadBox.appendChild(voiceInput);
