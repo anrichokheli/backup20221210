@@ -91,7 +91,7 @@ statusBox.addEventListener("click", function(){
 var status2 = document.getElementById("status2");
 var statusLocation = document.getElementById("statuslocation");
 var locationUploadArray = [];
-function uploadLocation(n, key){
+function uploadLocation(n, id, key){
     if(!locationWait){
         unloadWarning++;
     }
@@ -115,14 +115,14 @@ function uploadLocation(n, key){
         var retryButton = document.createElement("button");
         retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
         retryButton.onclick = function(){
-            uploadLocation(n, key);
+            uploadLocation(n, id, key);
         };
         retryButton.classList.add("buttons");
         addStatus("location", "ff0000", "#" + n + "<br>" + this.Error, retryButton);
-        var onlineFunc = function(){window.removeEventListener("online", onlineFunc);uploadLocation(n, key);};
+        var onlineFunc = function(){window.removeEventListener("online", onlineFunc);uploadLocation(n, id, key);};
         window.addEventListener("online", onlineFunc);
     };
-    ajax.send("n="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+"&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy));
+    ajax.send("id="+encodeURIComponent(id)+"&key="+encodeURIComponent(key)+"&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy));
 }
 var latitude;
 var longitude;
@@ -145,7 +145,7 @@ function afterLocation(position)  {
     altitudeAccuracy = position.coords.altitudeAccuracy;
     if(locationUploadArray.length > 0){
         for(var key in locationUploadArray){
-            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1]);
+            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1], locationUploadArray[key][2]);
             locationUploadArray.shift();
         }
     }
@@ -236,11 +236,12 @@ function uploadFile(file){
         if(this.responseText.charAt(0) == '#'){
             var responseArray = this.responseText.substring(1).split('|');
             var n = responseArray[0];
-            var key = responseArray[1];
+            var id = responseArray[1];
+            var key = responseArray[2];
             if(latitude != null && longitude != null)    {
-                uploadLocation(n, key);
+                uploadLocation(n, id, key);
             }else{
-                locationUploadArray.push([n, key]);
+                locationUploadArray.push([n, id, key]);
             }
             topProgressBar.style.backgroundColor = "#00ff00";
             status2.style.borderColor = "#00ff00";
@@ -258,7 +259,7 @@ function uploadFile(file){
                     }else{
                         uploadsStorage = [];
                     }
-                    uploadsStorage.push([n, key, true, true]);
+                    uploadsStorage.push([n, id, key, true, true]);
                     localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
                 }
             }catch(e){}
