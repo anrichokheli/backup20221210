@@ -154,6 +154,7 @@
                     $html = setLanguage($html);
                     $html = str_replace("<php>LANG</php>", $langget, $html);
                     $html = str_replace("<!--LANG-->", $langinput, $html);
+                    $html = str_replace("<php>langoptions</php>", getLangOptions(), $html);
                     echo $html;
                 }
             }
