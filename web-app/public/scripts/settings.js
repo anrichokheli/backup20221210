@@ -91,7 +91,7 @@ try{
         localStorage.setItem("saveuploads", this.checked);
     };
 }catch(e){}
-try{
+/*try{
     var colorFilterCheckbox = document.getElementById("colorfiltercheckbox");
     var colorFilterRange = document.getElementById("colorfilterrange");
     var colorFilterNumber = document.getElementById("colorfilternumber");
@@ -121,7 +121,7 @@ try{
         setFilterValue(this.value);
         colorFilterRange.value = this.value;
     };
-}catch(e){}
+}catch(e){}*/
 function setLoadOnScroll(){
     if(localStorage.getItem("loadonscroll") != "false"){
         loadOnScroll.checked = 1;
@@ -165,9 +165,9 @@ try{
                 saveUploads.checked = 0;
             }
         }catch(e){}
-        try{
+        /*try{
             setColorFilterSettings();
-        }catch(e){}
+        }catch(e){}*/
         try{
             setLoadOnScroll();
         }catch(e){}
@@ -202,8 +202,8 @@ try{
             setCookie("lang", "");
             setCookie("settingstimezone", "");
             localStorage.setItem("saveuploads", true);
-            localStorage.removeItem("colorfilterenabled");
-            localStorage.setItem("colorfiltervalue", colorFilterDefaultValue);
+            //localStorage.removeItem("colorfilterenabled");
+            //localStorage.setItem("colorfiltervalue", colorFilterDefaultValue);
             localStorage.removeItem("lightcolor");
             localStorage.removeItem("lightbackgroundcolor");
             localStorage.removeItem("darkcolor");
@@ -211,7 +211,7 @@ try{
             localStorage.removeItem("loadonscroll");
             darkmode();
             language();
-            colorfilter();
+            //colorfilter();
             setSettingsWindow(true);
         }
     };

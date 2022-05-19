@@ -36,7 +36,7 @@ try{
     }
     darkMode();
 }catch(e){}
-try{
+/*try{
     var colorFilterDefaultValue = 90;
     var lightFilter = document.createElement("div");
     lightFilter.className = "overlay";
@@ -79,7 +79,7 @@ try{
         }
     }
     colorfilter();
-}catch(e){}
+}catch(e){}*/
 try{
     window.onstorage = function(){
         try{
@@ -88,9 +88,9 @@ try{
         try{
             setLanguage();
         }catch(e){}
-        try{
+        /*try{
             colorfilter();
-        }catch(e){}
+        }catch(e){}*/
     };
 }catch(e){}
 var contentDiv = document.getElementById("content");

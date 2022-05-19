@@ -73,7 +73,7 @@ try{
     }
     setLanguage();
 }catch(e){}
-try{
+/*try{
     var colorFilterDefaultValue = 90;
     var lightFilter = document.createElement("div");
     lightFilter.className = "overlay";
@@ -117,7 +117,7 @@ try{
         }
     }
     colorfilter();
-}catch(e){}
+}catch(e){}*/
 function addShareButton(n, element){
     var shareButton = document.createElement("button");
     shareButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/share.svg\"> <span class=\"share\">"+getString("share")+"</span>";
@@ -322,9 +322,9 @@ try{
         try{
             setLanguage();
         }catch(e){}
-        try{
+        /*try{
             colorfilter();
-        }catch(e){}
+        }catch(e){}*/
         try{
             if(localStorage.getItem("loadonscroll") == "false"){
                 window.removeEventListener("scroll", scrollLoad);

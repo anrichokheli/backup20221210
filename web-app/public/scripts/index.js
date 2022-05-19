@@ -1377,7 +1377,7 @@ try{
         return html;
     }
 }catch(e){}
-try{
+/*try{
     var colorFilterDefaultValue = 90;
     var lightFilter = document.createElement("div");
     lightFilter.className = "overlay";
@@ -1421,7 +1421,7 @@ try{
         }
     }
     colorfilter();
-}catch(e){}
+}catch(e){}*/
 try{
     var loaderStyle = document.createElement("link");
     loaderStyle.rel = "stylesheet";
@@ -1437,7 +1437,7 @@ try{
     function closeSettingsWindow(){
         document.body.style.overflow = "visible";
         settingsWindowOverlay.style.display = "none";
-        lightFilter.style.position = "absolute";
+        //lightFilter.style.position = "absolute";
     }
     var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
     settingsWindowOverlay.style.zIndex = "1";
@@ -1521,7 +1521,7 @@ try{
         settingsWindowOverlay.style.display = "block";
         settingsWindowOverlay.style.display = "flex";
         document.body.style.overflow = "hidden";
-        lightFilter.style.position = "";
+        //lightFilter.style.position = "";
         if(disableSettingsWindowLoad)    {
             return;
         }
@@ -1887,9 +1887,9 @@ try{
         try{
             language();
         }catch(e){}
-        try{
+        /*try{
             colorfilter();
-        }catch(e){}
+        }catch(e){}*/
     });
 }catch(e){}
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);
