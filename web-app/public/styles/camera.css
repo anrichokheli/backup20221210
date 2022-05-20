@@ -81,7 +81,7 @@
     #rotate{
         right: 0;
     }
-    #flash{
+    #flashlight{
         top: 64px;
         right: 0;
     }
@@ -99,7 +99,7 @@
     #rotate{
         left: 64px;
     }
-    #flash{
+    #flashlight{
         bottom: 0;
         left: 0;
     }

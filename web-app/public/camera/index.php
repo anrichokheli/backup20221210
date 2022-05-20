@@ -19,8 +19,8 @@
             </div>
             <button id="takephotodraggable" class="buttons"><div><div></div></div></button>
             <button id="rotate" class="buttons singlebuttons"><img width="32" height="32" src="../images/rotate.svg"></button>
-            <button id="flash" class="buttons singlebuttons"><img width="32" height="32" src="../images/flash0.svg"></button>
-            <a href="../" style="text-decoration: none;top: 0;left: 0;" class="buttons singlebuttons">
+            <button id="flashlight" class="buttons singlebuttons" disabled><img width="32" height="32" src="../images/flashlight0.svg"></button>
+            <a href="../" style="text-decoration: none;top: 0;left: 0;" class="buttons singlebuttons" id="psbutton">
                 <img width="32" height="32" src="../images/pedestriansos.svg">
             </a>
             <div id="statusBox">

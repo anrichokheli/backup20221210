@@ -172,6 +172,7 @@ var closeWindowButton = document.getElementById("closewindow");
 function closeWindow(){
     windowOverlay.style.display = "none";
     document.getElementsByTagName("BODY")[0].style.overflow = "visible";
+    windowContent.innerHTML = '';
 }
 closeWindowButton.onclick = function(){
     closeWindow();

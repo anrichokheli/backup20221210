@@ -1,23 +1,27 @@
 var video = document.getElementById("video");
-var flash = document.getElementById("flash");
+var flashLight = document.getElementById("flashlight");
 var cameraFacing = localStorage.getItem("camerafacing");
 if(!cameraFacing){
     cameraFacing = "environment";
 }
-var flashState = false;
+var flashLightState = false;
 function cameraSetup(stream){
     video.srcObject = stream;
-    flash.onclick = function(){
-        flashState = !flashState;
-        stream.getVideoTracks()[0].applyConstraints({
-            advanced: [{torch: flashState}]
-        });
-        if(flashState){
-            flash.childNodes[0].src = "../images/flash1.svg";
-        }else{
-            flash.childNodes[0].src = "../images/flash0.svg";
-        }
-    };
+    var track = stream.getVideoTracks()[0];
+    if(track.getCapabilities().torch){
+        flashLight.onclick = function(){
+            flashLightState = !flashLightState;
+            track.applyConstraints({
+                advanced: [{torch: flashLightState}]
+            });
+            if(flashLightState){
+                flashLight.childNodes[0].src = "../images/flashlight1.svg";
+            }else{
+                flashLight.childNodes[0].src = "../images/flashlight0.svg";
+            }
+        };
+        flashLight.disabled = 0;
+    }
 }
 function cameraStart(){
     navigator.mediaDevices.getUserMedia({
@@ -428,4 +432,57 @@ try{
         }
     }
     dragElement(takePhotoDraggable);
+}catch(e){}
+try{
+    var bottomButtons = document.getElementById("bottombuttons");
+    var rotate = document.getElementById("rotate");
+    var psbutton = document.getElementById("psbutton");
+    function setScreenOrientation(){
+        if(screen.orientation.type == "portrait-primary"){
+            bottomButtons.style.right = "initial";
+            bottomButtons.style.left = "0";
+            bottomButtons.style.bottom = "0";
+            rotate.style.right = "0";
+            rotate.style.left = "initial";
+            flashLight.style.right = "0";
+            flashLight.style.left = "initial";
+            psbutton.style.right = "initial";
+            psbutton.style.left = "0";
+            takePhotoDraggable.style.left = "0";
+            takePhotoDraggable.style.right = "initial";
+        }
+        else if(screen.orientation.type == "landscape-primary"){
+            bottomButtons.style.left = "initial";
+            bottomButtons.style.right = "0";
+            rotate.style.right = "initial";
+            rotate.style.left = "64px";
+            flashLight.style.right = "initial";
+            flashLight.style.left = "0";
+            psbutton.style.right = "initial";
+            psbutton.style.left = "0";
+            takePhotoDraggable.style.left = "0";
+            takePhotoDraggable.style.right = "initial";
+        }
+        else if(screen.orientation.type == "landscape-secondary"){
+            bottomButtons.style.right = "initial";
+            bottomButtons.style.left = "0";
+            rotate.style.left = "initial";
+            rotate.style.right = "64px";
+            flashLight.style.left = "initial";
+            flashLight.style.right = "0";
+            psbutton.style.left = "initial";
+            psbutton.style.right = "0";
+            takePhotoDraggable.style.right = "0";
+            takePhotoDraggable.style.left = "initial";
+        }
+        takePhotoDraggable.style.top = "calc(50% - 72px)";
+    }
+    window.onorientationchange = function(){
+        setScreenOrientation();
+    };
+    window.onload = function(){
+        if(screen.orientation.type == "landscape-secondary"){
+            setScreenOrientation();
+        }
+    };
 }catch(e){}
