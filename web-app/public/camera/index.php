@@ -25,6 +25,7 @@
             </a>
             <div id="statusBox">
                 <div id="status2" class="progressbardiv">
+                    <img width="32" height="32" id="statusphotovideo">
                     <div id="progressbartop" class="progressbar"></div>
                 </div>
                 <div id="statuslocation">

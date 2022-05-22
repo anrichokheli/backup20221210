@@ -103,13 +103,13 @@ body    {
     margin: 4px;
     padding: 4px;
 }
-.uploadbuttondiv,.buttonsDivs>.uploadforms{
+.uploadbuttondiv,.buttonsDivs .uploadforms{
     display: inline-block;
 }
-.uploadforms:invalid>.uploadbuttondiv{
+.uploadforms:invalid .uploadbuttondiv{
     cursor: not-allowed;
 }
-.uploadforms:invalid>.uploadbuttondiv>button{
+.uploadforms:invalid .uploadbuttondiv>button{
     pointer-events: none;
     opacity: 0.5;
     border-color: #ec0400;

@@ -173,6 +173,9 @@ function closeWindow(){
     windowOverlay.style.display = "none";
     document.getElementsByTagName("BODY")[0].style.overflow = "visible";
     windowContent.innerHTML = '';
+    if(contentDiv.innerHTML == ""){
+        loadContent();
+    }
 }
 closeWindowButton.onclick = function(){
     closeWindow();
@@ -305,6 +308,7 @@ window.onpopstate = function(){
 window.onload = function(){
     if(getID()){
         openID();
+    }else{
+        loadContent();
     }
 };
-loadContent();

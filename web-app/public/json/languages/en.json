@@ -75,7 +75,7 @@
     "consolewarning": "This is window for developers, where code can be written. Code may be harmful! For your security, you should not paste anything here if you do not understand what is it.",
     "timezone": "Time zone",
     "uploadedispublic": "Uploaded data is public",
-    "locationwillbeattached": "If location coordinates detected, it will be automatically published after file upload",
+    "locationwillbeattached": "If location coordinates detected, it will be automatically published after file upload (if enabled)",
     "uploadstatus": "Upload status",
     "security": "Security",
     "done": "Done",
@@ -85,5 +85,7 @@
     "uploadstartafterfile": "Upload will be started after file will be uploaded",
     "viewall": "View All",
     "error": "Error",
-    "pagenotfound": "Page not found"
+    "pagenotfound": "Page not found",
+    "attachmylocation": "Attach my location",
+    "locationattachafterdetect": "After file upload, location coordinates will be attached after detected"
 }

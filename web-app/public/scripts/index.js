@@ -84,8 +84,17 @@ function afterLocation(position)  {
     accuracy = position.coords.accuracy;
     altitudeAccuracy = position.coords.altitudeAccuracy;
     if(locationUploadArray.length > 0){
+        var coordinatesArray = [latitude, longitude, altitude, accuracy, altitudeAccuracy];
         for(var key in locationUploadArray){
-            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1], document.getElementById('q'+locationUploadArray[key][0]));
+            var element;
+            try{
+                element = document.getElementById('q'+n_key[locationUploadArray[key][0]][0]);
+            }catch(e){}
+            if(element){
+                uploadLocation(n_key[locationUploadArray[key][0]][1], n_key[locationUploadArray[key][0]][2], element, locationUploadArray[key][1], coordinatesArray);
+            }else{
+                locationPreUpload(locationUploadArray[key][0], coordinatesArray, locationUploadArray[key][2]);
+            }
             locationUploadArray.shift();
         }
     }
@@ -151,8 +160,8 @@ function addRetryButton(func, element){
     window.addEventListener("online", onlineFunc);
 }
 var uploadStatuses = document.getElementById("uploadstatuses");
-function uploadString(n, key, post, location, value, element, input, button) {
-    if((location && !locationWait) || !location){
+function uploadString(n, key, post, location, cameraCapture, value, element, input, button) {
+    if((cameraCapture && location && !locationWait) || !location){
         unloadWarning++;
     }
     try{
@@ -235,7 +244,7 @@ function uploadString(n, key, post, location, value, element, input, button) {
             div2.innerText = this.responseText;
             div2.style.border = borderStyle + color;
             div.appendChild(div2);
-            addRetryButton(function(){uploadString(n, key, post, location, value, element, input, button);}, element);
+            addRetryButton(function(){uploadString(n, key, post, location, cameraCapture, value, element, input, button);}, element);
         }
         try{
             div.style.borderColor = color;
@@ -264,7 +273,7 @@ function uploadString(n, key, post, location, value, element, input, button) {
         div2.style.border = borderStyle + color;
         div.appendChild(div2);
         element.insertBefore(div, element.childNodes[0]);
-        addRetryButton(function(){uploadString(n, key, post, location, value, element, input, button);}, element);
+        addRetryButton(function(){uploadString(n, key, post, location, cameraCapture, value, element, input, button);}, element);
     };
     try{
         uploadProgressSetup(ajax, div);
@@ -280,11 +289,11 @@ function getLocationString(data){
         return "-";
     }
 }
-function uploadLocation(n, key, element)   {
-    uploadString(n, key, "&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeAccuracy="+encodeURIComponent(altitudeAccuracy), true, getLocationString(latitude) + ", " + getLocationString(longitude) + "; " + getLocationString(altitude) + "; " + getLocationString(accuracy) + "; " + getLocationString(altitudeAccuracy), element);
+function uploadLocation(n, key, element, cameraCapture, coordinates)   {
+    uploadString(n, key, "&latitude="+encodeURIComponent(coordinates[0])+"&longitude="+encodeURIComponent(coordinates[1])+"&altitude="+encodeURIComponent(coordinates[2])+"&accuracy="+encodeURIComponent(coordinates[3])+"&altitudeAccuracy="+encodeURIComponent(coordinates[4]), true, cameraCapture, getLocationString(coordinates[0]) + ", " + getLocationString(coordinates[1]) + "; " + getLocationString(coordinates[2]) + "; " + getLocationString(coordinates[3]) + "; " + getLocationString(coordinates[4]), element);
 }
 function uploadDescription(n, key, descriptionValue, input, button, element)    {
-    uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, descriptionValue, element, input, button);
+    uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, null, descriptionValue, element, input, button);
 }
 var maxVoiceFileSize = 25000000;
 function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voicefiles0*/)  {
@@ -494,6 +503,7 @@ try{
 }catch(e){}
 try{
     var n_key = [];
+    var locationCoordinates = [];
     var attachFiles = [];
     var descriptionTexts = [];
     var voiceFiles = [];
@@ -614,17 +624,55 @@ function filesAttach(n, id, key, files, formdata0, element){
     ajax.open("POST", "/");
     ajax.send(formData);
 }
+function preUpload(id, value, div, imageName, stringName, array, displayValue){
+    if(!array[id]){
+        array[id] = [];
+    }
+    array[id].push(value);
+    var statusText = document.createElement("div");
+    statusText.innerHTML = '<img width="16" height="16" src="images/' + imageName + '.svg"> <span class="' + stringName + '">' + getString(stringName) + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
+    var div2 = document.createElement("div");
+    div2.innerText = displayValue;
+    try{
+        var borderStyle = "1px dotted ";
+        div2.style.border = borderStyle + color;
+        div2.style.overflowY = "auto";
+        div2.style.maxHeight = "50vh";
+    }catch(e){}
+    statusText.appendChild(div2);
+    div.insertBefore(statusText, div.childNodes[0]);
+}
+function locationPreUpload(id, value, div){
+    /*if(!locationCoordinates[id]){
+        locationCoordinates[id] = [];
+    }
+    locationCoordinates[id].push(value);
+    var statusText = document.createElement("div");
+    statusText.innerHTML = '<img width="16" height="16" src="images/location.svg"> <span class="locationcoordinates">' + getString("locationcoordinates") + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
+    var div2 = document.createElement("div");
+    div2.innerText = value.join("; ");
+    try{
+        var borderStyle = "1px dotted ";
+        div2.style.border = borderStyle + color;
+        div2.style.overflowY = "auto";
+        div2.style.maxHeight = "50vh";
+    }catch(e){}
+    statusText.appendChild(div2);
+    div.insertBefore(statusText, div.childNodes[0]);*/
+    preUpload(id, value, div, "location", "locationcoordinates", locationCoordinates, value.join("; "));
+}
 function filesPreAttach(id, value, div){
-    if(!attachFiles[id]){
+    /*if(!attachFiles[id]){
         attachFiles[id] = [];
     }
     attachFiles[id].push(value);
     var statusText = document.createElement("div");
     statusText.innerHTML = '<img width="16" height="16" src="images/photovideo.svg"> <span class="file(s)">' + getString("file(s)") + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
-    div.insertBefore(statusText, div.childNodes[0]);
+    div.insertBefore(statusText, div.childNodes[0]);*/
+    preUpload(id, value, div, "photovideo", "file(s)", attachFiles);
 }
 function descriptionPreUpload(id, value, div){
-    if(!descriptionTexts[id]){
+    /*if(!descriptionTexts[id]){
         descriptionTexts[id] = [];
     }
     descriptionTexts[id].push(value);
@@ -639,16 +687,18 @@ function descriptionPreUpload(id, value, div){
         div2.style.maxHeight = "50vh";
     }catch(e){}
     statusText.appendChild(div2);
-    div.insertBefore(statusText, div.childNodes[0]);
+    div.insertBefore(statusText, div.childNodes[0]);*/
+    preUpload(id, value, div, "description", "description", descriptionTexts, value);
 }
 function voicePreUpload(id, value, div){
-    if(!voiceFiles[id]){
+    /*if(!voiceFiles[id]){
         voiceFiles[id] = [];
     }
     voiceFiles[id].push(value);
     var statusText = document.createElement("div");
     statusText.innerHTML = '<img width="16" height="16" src="images/microphone.svg"> <span class="voice">' + getString("voice") + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
-    div.insertBefore(statusText, div.childNodes[0]);
+    div.insertBefore(statusText, div.childNodes[0]);*/
+    preUpload(id, value, div, "microphone", "voice", voiceFiles);
 }
 function addProgressBar(element){
     var progress = document.createElement("div");
@@ -693,7 +743,32 @@ function uploadProgressSetup(ajax, div, currentUploadID){
         }
     };
 }
-function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString0, attachFiles0, descriptionTexts0, voiceFiles0){
+function uploadLocationFunc(currentUploadID, cameraCapture, statusDiv, status){
+    if(latitude != null && longitude != null)    {
+        var n;
+        var id;
+        var key;
+        try{
+            n = n_key[currentUploadID][0];
+            id = n_key[currentUploadID][1];
+            key = n_key[currentUploadID][2];
+        }catch(e){}
+        if(n && id && key){
+            uploadLocation(id, key, document.getElementById('q'+currentUploadID), cameraCapture, [latitude, longitude, altitude, accuracy, altitudeAccuracy]);
+        }else{
+            locationPreUpload(currentUploadID, [latitude, longitude, altitude, accuracy, altitudeAccuracy], statusDiv);
+        }
+    }else{
+        locationUploadArray.push([currentUploadID, cameraCapture, statusDiv]);
+        var div = document.createElement("div");
+        div.style.border = "2px solid #0000ff";
+        div.style.margin = "2px";
+        div.style.padding = "2px";
+        div.innerHTML = '<img width="16" height="16" src="images/location.svg"><img width="16" height="16" src="images/uploadicon.svg"> <span class="locationattachafterdetect">' + getString("locationattachafterdetect") + '</span>';
+        status.insertBefore(div, status.childNodes[0]);
+    }
+}
+function filesUpload(files, fileInput, cameraCapture, filelink, formData0, typeImg0, typeString0, attachFiles0, locationCoordinates0, descriptionTexts0, voiceFiles0){
     var currentUploadID = ++lastUploadID;
     if(!filelink && files === null && !formData0)  {
         files = fileInput.files;
@@ -807,6 +882,21 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         html += "<div><input type=\"file\" accept=\"audio/*\" id=\"v"+currentUploadID+"\" style=\"width:0;height:0;\"><button id=\"vb"+currentUploadID+"\" class=\"texts buttons afteruploadbuttons\" onclick=document.getElementById(\"v"+currentUploadID+"\").click()><img width=\"32\" height=\"32\" src=\"images/microphone.svg\">&nbsp;<span class=\"uploadvoice\">"+getString("uploadvoice")+"</span></button><span class=\"maxvoicefilesize\">"+getString("maxvoicefilesize")+"</span>: "+(maxVoiceFileSize/1000000)+"MB</div></div>";
         var after0 = document.createElement("div");
         after0.innerHTML = html;
+        var uploadMyLocation = document.createElement("button");
+        uploadMyLocation.innerHTML = '<img width="32" height="32" src="images/location.svg"><img width="32" height="32" src="images/uploadicon.svg"> <span class="attachmylocation">' + getString("attachmylocation") + '</span>';
+        try{
+            uploadMyLocation.classList.add("buttons", "afteruploadbuttons");
+        }catch(e){}
+        try{
+            uploadMyLocation.className = "buttons afteruploadbuttons";
+        }catch(e){}
+        uploadMyLocation.onclick = function(){
+            uploadLocationFunc(currentUploadID, cameraCapture, statusDiv, status);
+        };
+        after0.appendChild(uploadMyLocation);
+        if(!locationCoordinates0 && cameraCapture){
+            uploadLocationFunc(currentUploadID, cameraCapture, statusDiv, status);
+        }
         after.appendChild(after0);
         subbox.insertBefore(after, subbox.childNodes[0]);
         var filesInput = document.getElementById("f"+currentUploadID);
@@ -860,6 +950,11 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 filesPreAttach(currentUploadID, attachFiles0[i], statusDiv);
             }
         }
+        if(locationCoordinates0){
+            for(var i = 0; i < locationCoordinates0.length; i++){
+                locationPreUpload(currentUploadID, locationCoordinates0[i], statusDiv);
+            }
+        }
         if(descriptionTexts0){
             for(var i = 0; i < descriptionTexts0.length; i++){
                 descriptionPreUpload(currentUploadID, descriptionTexts0[i], statusDiv);
@@ -867,7 +962,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
         }
         if(voiceFiles0){
             for(var i = 0; i < voiceFiles0.length; i++){
-                voicePreUpload(currentUploadID, voiceFiles0[0], statusDiv);
+                voicePreUpload(currentUploadID, voiceFiles0[i], statusDiv);
             }
         }
         var charNumSpan = document.getElementById("charnum"+currentUploadID);
@@ -992,6 +1087,15 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                 }
             }catch(e){}
             try{
+                if(locationCoordinates[currentUploadID]){
+                    for(var i = 0; i < locationCoordinates[currentUploadID].length; i++){
+                        if(locationCoordinates[currentUploadID][i]){
+                            uploadLocation(id, key, element, cameraCapture, locationCoordinates[currentUploadID][i]);
+                        }
+                    }
+                }
+            }catch(e){}
+            try{
                 if(descriptionTexts[currentUploadID]){
                     for(var i = 0; i < descriptionTexts[currentUploadID].length; i++){
                         if(descriptionTexts[currentUploadID][i] && descriptionTexts[currentUploadID][i] != ""){
@@ -1009,12 +1113,19 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
                     }
                 }
             }catch(e){}
-            if(latitude != null && longitude != null)    {
-                uploadLocation(id, key, element);
+            /*if(cameraCapture){
+                if(latitude != null && longitude != null)    {
+                    uploadLocation(id, key, element, true);
+                }else{
+                    locationUploadArray.push([n, id, key, true]);
+                }
+                if(!locationWait){
+                    unloadWarning--;
+                }
             }else{
-                locationUploadArray.push([id, key]);
-            }
-            if(!locationWait){
+                unloadWarning--;
+            }*/
+            if((cameraCapture && !locationWait) || !cameraCapture){
                 unloadWarning--;
             }
         }
@@ -1031,7 +1142,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
             if(currentUploadID == lastUploadID){
                 bottomProgressVisible(0);
             }
-            addRetryButton(function(){filesUpload(files, fileInput, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
+            addRetryButton(function(){filesUpload(files, fileInput, cameraCapture, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], locationCoordinates[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
         }
         try{
             statusText.classList.add("statusText");
@@ -1060,7 +1171,7 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
             bottomProgressVisible(0);
         }
         status.insertBefore(statusText, status.childNodes[0]);
-        addRetryButton(function(){filesUpload(files, fileInput, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
+        addRetryButton(function(){filesUpload(files, fileInput, cameraCapture, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], locationCoordinates[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
     };
     /*var progressPercent;
     ajax.upload.onprogress = function(e){
@@ -1078,25 +1189,25 @@ function filesUpload(files, fileInput, filelink, formData0, typeImg0, typeString
     ajax.send(formData);
 }
 var unloadWarning = 0;
-function uploadFunction(input){
+function uploadFunction(input, div, cameraCapture){
     try{
-        filesUpload(null, input);
+        filesUpload(null, input, cameraCapture);
     }catch(e){
         try{
-            input.parentNode.parentNode.submit();
+            input.parentNode.submit();
         }catch(e){
-            button.style.display = "inline-block";
+            div.style.display = "inline-block";
             input.style.width = "initial";
             input.style.height = "initial";
         }
     }
 }
-function buttonSetup(id0) {
+function buttonSetup(id0, cameraCapture) {
     var input = document.getElementById(id0 + "input");
-    var upload = document.getElementById(id0 + "upload");
+    var div = document.getElementById(id0 + "div");
     function uploadIfInput(){
         if(input.value){
-            uploadFunction(input);
+            uploadFunction(input, div, cameraCapture);
         }
     }
     input.addEventListener("change", function(){uploadIfInput();});
@@ -1107,13 +1218,13 @@ function buttonSetup(id0) {
         input.click();
     };
     button.tabIndex = "";
-    upload.style.display = "none";
+    div.style.display = "none";
     input.style.width = "0";
     input.style.height = "0";
 }
 try{
-    buttonSetup("takephoto");
-    buttonSetup("recordvideo");
+    buttonSetup("takephoto", 1);
+    buttonSetup("recordvideo", 1);
     buttonSetup("choosephoto");
     buttonSetup("choosevideo");
     buttonSetup("choosefiles");
@@ -1128,7 +1239,7 @@ try{
     var fileLink = document.getElementById("filelink");
     fileLinkForm.addEventListener("submit", function(e){
         e.preventDefault();
-        filesUpload(null, null, fileLink.value);
+        filesUpload(null, null, null, fileLink.value);
         fileLink.value = "";
     });
 }catch(e){}
@@ -1208,6 +1319,9 @@ function getCookie(cname) {
     }
     return "";
 }
+try{
+    document.getElementById("camerabuttonsdiv").innerHTML = '<button class="buttons" onclick=location.assign("camera") id="camerabutton">                        <svg width="64" height="64" viewBox="0 0 1e3 999" class="icons">                            <g transform="translate(0 999) scale(.1 -.1)">                                <path d="m4690 9479c-1477-105-2788-910-3554-2182-557-926-758-2045-560-3127 177-964 686-1874 1415-2524 472-422 1001-730 1589-926 1130-377 2387-284 3449 255 1281 650 2183 1879 2411 3287 117 721 58 1463-170 2148-316 948-938 1763-1765 2315-206 137-321 204-530 307-699 344-1508 502-2285 447zm732-483c1072-116 2041-646 2714-1482 502-624 800-1367 874-2179 13-142 13-548 0-690-103-1129-652-2141-1538-2833-603-471-1318-754-2102-834-179-18-600-15-787 5-672 75-1254 284-1809 653-1753 1161-2315 3478-1291 5319 80 144 267 419 380 560 483 600 1138 1055 1868 1298 324 108 678 175 1054 201 114 7 500-4 637-18z"/>                                <path d="m4775 8724c-22-2-92-9-155-15-843-79-1662-468-2269-1078-69-70-143-147-163-172l-38-46 35-129c144-525 333-1022 599-1569 97-198 288-560 306-578 4-5 49 54 101 130 427 637 941 1158 1509 1529 264 173 859 490 1252 668 369 167 833 339 1187 440l153 43-117 85c-506 366-1103 596-1750 673-122 15-563 28-650 19z"/>                                <path d="m7355 7824c-539-155-851-267-1286-459-288-128-930-456-928-474 0-3 59-44 130-91 598-388 1146-928 1524-1500 179-270 488-843 666-1235 176-389 373-918 464-1252 16-57 31-103 35-103 7 0 88 112 167 230 314 473 517 1035 589 1630 22 181 25 628 6 800-86 748-340 1367-803 1959-91 116-479 512-501 510-7-1-35-8-63-15z"/>                                <path d="m1952 7157c-264-367-466-804-577-1245-323-1288 50-2639 987-3573 70-70 147-143 171-163l44-36 149 41c464 126 1007 334 1504 575 227 110 630 324 630 333-1 3-33 26-73 51-111 69-347 240-502 365-444 355-792 735-1090 1189-184 279-471 817-661 1234-173 379-368 906-459 1240-16 56-31 102-35 102s-43-51-88-113z"/>                                <path d="m4855 5930c-196-31-381-126-525-270-356-356-373-904-41-1299 103-123 305-247 476-293 119-31 347-31 465 1 225 60 429 201 549 380 260 384 217 882-104 1207-118 119-275 210-440 254-92 24-286 34-380 20z"/>                                <path d="m6815 4728c-187-285-438-598-678-845-456-468-879-762-1692-1173-548-277-1077-489-1584-634l-153-43 117-85c1345-973 3207-922 4513 125 131 105 349 311 454 429l59 67-46 163c-146 521-359 1066-627 1603-106 213-269 515-277 515-3 0-42-55-86-122z"/>                            </g>                        </svg>                        &nbsp;                        <span class="camera">' + getString("camera") + '</span>                    </button>                    <button class="buttons" onclick=window.open("camera")>                        <svg width="64" height="64" viewBox="0 0 512 512" class="icons">                            <g transform="translate(0 512) scale(.1 -.1)">                                <path d="m685 4428c-3-7-4-852-3-1878l3-1865h1875 1875l3 938 2 937h-190-190v-750-750h-1500-1500v1500 1500h750 750v190 190h-935c-739 0-937-3-940-12z"/>                                <path d="m3210 4165 265-265-528-528c-290-290-527-532-527-537 0-6 92-102 205-215l205-205 738 738c174 174 321 317 327 317 5 0 130-120 277-267l268-268v748 747h-747-748l265-265z"/>                            </g>                        </svg>                    </button>';
+}catch(e){}
 try{
     var topDiv = document.getElementById("top");
     var topScrollDiv = document.createElement("div");
@@ -1339,7 +1453,7 @@ try{
                 if(!urlInput.checkValidity()){
                     return;
                 }
-                filesUpload(null, null, s);
+                filesUpload(null, null, null, s);
             });
             return;
         }
@@ -1372,7 +1486,11 @@ try{
     }catch(e){}
     function translateHTML(html){
         for(var key in strings) {
-            html = html.replaceAll("<string>"+key+"</string>", strings[key]);
+            try{
+                html = html.replaceAll("<string>"+key+"</string>", strings[key]);
+            }catch(e){
+                html = html.replace("<string>"+key+"</string>", strings[key]);
+            }
         }
         return html;
     }
@@ -1476,16 +1594,22 @@ try{
         disableSettingsWindowLoad = 1;
         if(!settingsMain){
             settingsMain = document.createElement("div");
-            settingsMain.style.fontFamily = "sans-serif";
+            try{
+                settingsMain.style.fontFamily = "sans-serif";
+            }catch(e){}
             settingsMain.style.height = "100%";
             settingsMain.innerHTML = '<div id="settingstop" style="display: flex;justify-content: space-between;align-items: center;padding: 4px;"><div style="display: flex;align-items: center;"><img width="32" height="32" src="images/settings.svg">&nbsp;<h3 style="margin: 0;"><span class="settings">' + getString("settings") + '</span></h3></div><button id="settingsclosewindow" class="closeButtons">&times;</button></div><div class="settingsbottomline"></div>';
         }
         if(!settingsContent){
             settingsContent = document.createElement("div");
             settingsContent.id = "settingscontent";
-            settingsContent.style.display = "flex";
-            settingsContent.style.flexDirection = "column";
-            settingsContent.style.alignItems = "center";
+            try{
+                settingsContent.style.display = "flex";
+                settingsContent.style.flexDirection = "column";
+                settingsContent.style.alignItems = "center";
+            }catch(e){
+                settingsContent.style.display = "block";
+            }
             settingsContent.style.padding = "4px";
             settingsContent.style.maxHeight = "calc(100% - 49px)";
             settingsContent.style.overflowY = "auto";
@@ -1493,7 +1617,9 @@ try{
             settingsWindow.appendChild(settingsMain);
         }
         settingsContent.innerHTML = '<div class="loader"></div>';
-        setWindowDarkMode(settingsWindowOverlay, settingsWindow);
+        try{
+            setWindowDarkMode(settingsWindowOverlay, settingsWindow);
+        }catch(e){}
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "?gethtml=settings");
         ajax.onload = function(){

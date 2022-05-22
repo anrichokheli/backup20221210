@@ -63,6 +63,11 @@ function videoSetup(){
     .then(function(){startRecording(video.captureStream());});
 }
 document.getElementById("rotate").onclick = function(){
+    flashLight.disabled = 1;
+    if(flashLightState){
+        flashLightState = 0;
+        flashLight.childNodes[0].src = "../images/flashlight0.svg";
+    }
     if(cameraFacing == "environment"){
         cameraFacing = "user";
     }else{
@@ -93,6 +98,7 @@ statusBox.addEventListener("click", function(){
     }
 });
 var status2 = document.getElementById("status2");
+var statusPhotovideo = document.getElementById("statusphotovideo");
 var statusLocation = document.getElementById("statuslocation");
 var locationUploadArray = [];
 function uploadLocation(n, id, key){
@@ -169,7 +175,7 @@ function getCurrentDateTime(){
 function preImg(image){
     var img = document.createElement("img");
     img.src = image;
-    img.style.display = "none";
+    //img.style.display = "none";
     document.body.appendChild(img);
     img.remove();
 }
@@ -207,6 +213,10 @@ function uploadFile(file){
         imageName = "photo";
     }else if(fileType == "video"){
         imageName = "video";
+    }
+    statusPhotovideo.src = "../images/" + imageName + ".svg";
+    if(statusPhotovideo.style.display != "block"){
+        statusPhotovideo.style.display = "block";
     }
     var downloadButton = document.createElement("a");
     downloadButton.innerHTML = '<img width="32" height="32" src="../images/download.svg">';

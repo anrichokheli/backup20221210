@@ -137,6 +137,10 @@
 #status2{
     height: 32px;
 }
+#statusphotovideo{
+    position: absolute;
+    display: none;
+}
 #statuslocation{
     display: flex;
     justify-content: center;

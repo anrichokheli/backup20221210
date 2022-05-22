@@ -1,8 +1,8 @@
 <div style="border:2px solid #0000ff;padding:2px;">
     <img width="16" height="16" src="/images/location.svg"> <?php echo $langJSON["currentlocation"]; ?>:
     <div id="currentlocation"></div>
-    <button disabled onclick="uploadLocation()" id="uploadlocation"><img width="16" height="16" src="/images/uploadicon.svg"> <?php echo $langJSON["upload"]; ?></button>
-    <div id="locationuploadstatus"></div>
+    <button disabled onclick="uploadLocation0()" id="uploadlocation"><img width="16" height="16" src="/images/uploadicon.svg"> <?php echo $langJSON["upload"]; ?></button>
+    <div id="locationuploadstatus0"></div>
 </div>
 <script>
     var id = "<?php echo $id; ?>";
@@ -10,7 +10,7 @@
     try{
         var currentLocationDiv = document.getElementById("currentlocation");
         var uploadLocationButton = document.getElementById("uploadlocation");
-        var locationUploadStatus = document.getElementById("locationuploadstatus");
+        var locationUploadStatus0 = document.getElementById("locationuploadstatus0");
     }catch(e){}
     var latitude;
     var longitude;
@@ -27,17 +27,17 @@
             currentLocationDiv.innerText = latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy;
             uploadLocationButton.disabled = 0;
         }catch(e){}
-        <?php if($uploadLocationAfterGot){echo 'uploadLocation();';} ?>
+        <?php if((isset($_POST["location"]) && $_POST["location"] == 1) && $uploadLocationAfterGot){echo 'uploadLocation0();';} ?>
     }
     function addLocationUploadDiv(color, locationString, text){
         try{
             var div = document.createElement("div");
             div.style.border = "1px solid " + color;
             div.innerText += text + "\n" + locationString;
-            locationUploadStatus.appendChild(div);
+            locationUploadStatus0.appendChild(div);
         }catch(e){}
     }
-    function uploadLocation(){
+    function uploadLocation0(){
         var latitude0 = latitude;
         var longitude0 = longitude;
         var altitude0 = altitude;

@@ -37,12 +37,23 @@
                                 <span class="takephoto"><string>takephoto</string></span>
                             </label>
                         </button>
-                        <div class="uploadbuttondiv">
-                            <button type="submit" class="buttons" id="takephotoupload">
-                                <img width="64" height="64" src="images/uploadicon.svg">
-                                &nbsp;
-                                <span><string>upload</string></span>
-                            </button>
+                        <div id="takephotodiv">
+                            <div class="uploadbuttondiv">
+                                <button type="submit" class="buttons" id="takephotoupload">
+                                    <img width="64" height="64" src="images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>upload</string></span>
+                                </button>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" name="location" value="1" checked>
+                                    <img width="16" height="16" src="../images/location.svg">
+                                    <img width="16" height="16" src="../images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>attachmylocation</string></span>
+                                </label>
+                            </div>
                         </div>
                     </form>
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
@@ -59,12 +70,23 @@
                                 <span class="recordvideo"><string>recordvideo</string></span>
                             </label>
                         </button>
-                        <div class="uploadbuttondiv">
-                            <button type="submit" class="buttons" id="recordvideoupload">
-                                <img width="64" height="64" src="images/uploadicon.svg">
-                                &nbsp;
-                                <span><string>upload</string></span>
-                            </button>
+                        <div id="recordvideodiv">
+                            <div class="uploadbuttondiv">
+                                <button type="submit" class="buttons" id="recordvideoupload">
+                                    <img width="64" height="64" src="images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>upload</string></span>
+                                </button>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" name="location" value="1" checked>
+                                    <img width="16" height="16" src="../images/location.svg">
+                                    <img width="16" height="16" src="../images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>attachmylocation</string></span>
+                                </label>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -84,12 +106,23 @@
                                 <span class="choosephotos"><string>choosephotos</string></span>
                             </label>
                         </button>
-                        <div class="uploadbuttondiv">
-                            <button type="submit" class="buttons" id="choosephotoupload">
-                                <img width="64" height="64" src="images/uploadicon.svg">
-                                &nbsp;
-                                <span><string>upload</string></span>
-                            </button>
+                        <div id="choosephotodiv">
+                            <div class="uploadbuttondiv">
+                                <button type="submit" class="buttons" id="choosephotoupload">
+                                    <img width="64" height="64" src="images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>upload</string></span>
+                                </button>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" name="location" value="1">
+                                    <img width="16" height="16" src="../images/location.svg">
+                                    <img width="16" height="16" src="../images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>attachmylocation</string></span>
+                                </label>
+                            </div>
                         </div>
                     </form>
                     <form method="post" enctype="multipart/form-data" class="uploadforms">
@@ -107,12 +140,23 @@
                                 <span class="choosevideos"><string>choosevideos</string></span>
                             </label>
                         </button>
-                        <div class="uploadbuttondiv">
-                            <button type="submit" class="buttons" id="choosevideoupload">
-                                <img width="64" height="64" src="images/uploadicon.svg">
-                                &nbsp;
-                                <span><string>upload</string></span>
-                            </button>
+                        <div id="choosevideodiv">
+                            <div class="uploadbuttondiv">
+                                <button type="submit" class="buttons" id="choosevideoupload">
+                                    <img width="64" height="64" src="images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>upload</string></span>
+                                </button>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" name="location" value="1">
+                                    <img width="16" height="16" src="../images/location.svg">
+                                    <img width="16" height="16" src="../images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>attachmylocation</string></span>
+                                </label>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -136,36 +180,26 @@
                                 <span class="choosefiles"><string>choosefiles</string></span>
                             </label>
                         </button>
-                        <div class="uploadbuttondiv">
-                            <button type="submit" class="buttons" id="choosefilesupload">
-                                <img width="64" height="64" src="images/uploadicon.svg">
-                                &nbsp;
-                                <span><string>upload</string></span>
-                            </button>
+                        <div id="choosefilesdiv">
+                            <div class="uploadbuttondiv">
+                                <button type="submit" class="buttons" id="choosefilesupload">
+                                    <img width="64" height="64" src="images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>upload</string></span>
+                                </button>
+                            </div>
+                            <div>
+                                <label>
+                                    <input type="checkbox" name="location" value="1">
+                                    <img width="16" height="16" src="../images/location.svg">
+                                    <img width="16" height="16" src="../images/uploadicon.svg">
+                                    &nbsp;
+                                    <span><string>attachmylocation</string></span>
+                                </label>
+                            </div>
                         </div>
                     </form>
-                    <button class="buttons" onclick="location.assign('camera')" id="camerabutton">
-                        <svg width="64" height="64" viewBox="0 0 1e3 999" class="icons">
-                            <g transform="translate(0 999) scale(.1 -.1)">
-                                <path d="m4690 9479c-1477-105-2788-910-3554-2182-557-926-758-2045-560-3127 177-964 686-1874 1415-2524 472-422 1001-730 1589-926 1130-377 2387-284 3449 255 1281 650 2183 1879 2411 3287 117 721 58 1463-170 2148-316 948-938 1763-1765 2315-206 137-321 204-530 307-699 344-1508 502-2285 447zm732-483c1072-116 2041-646 2714-1482 502-624 800-1367 874-2179 13-142 13-548 0-690-103-1129-652-2141-1538-2833-603-471-1318-754-2102-834-179-18-600-15-787 5-672 75-1254 284-1809 653-1753 1161-2315 3478-1291 5319 80 144 267 419 380 560 483 600 1138 1055 1868 1298 324 108 678 175 1054 201 114 7 500-4 637-18z"/>
-                                <path d="m4775 8724c-22-2-92-9-155-15-843-79-1662-468-2269-1078-69-70-143-147-163-172l-38-46 35-129c144-525 333-1022 599-1569 97-198 288-560 306-578 4-5 49 54 101 130 427 637 941 1158 1509 1529 264 173 859 490 1252 668 369 167 833 339 1187 440l153 43-117 85c-506 366-1103 596-1750 673-122 15-563 28-650 19z"/>
-                                <path d="m7355 7824c-539-155-851-267-1286-459-288-128-930-456-928-474 0-3 59-44 130-91 598-388 1146-928 1524-1500 179-270 488-843 666-1235 176-389 373-918 464-1252 16-57 31-103 35-103 7 0 88 112 167 230 314 473 517 1035 589 1630 22 181 25 628 6 800-86 748-340 1367-803 1959-91 116-479 512-501 510-7-1-35-8-63-15z"/>
-                                <path d="m1952 7157c-264-367-466-804-577-1245-323-1288 50-2639 987-3573 70-70 147-143 171-163l44-36 149 41c464 126 1007 334 1504 575 227 110 630 324 630 333-1 3-33 26-73 51-111 69-347 240-502 365-444 355-792 735-1090 1189-184 279-471 817-661 1234-173 379-368 906-459 1240-16 56-31 102-35 102s-43-51-88-113z"/>
-                                <path d="m4855 5930c-196-31-381-126-525-270-356-356-373-904-41-1299 103-123 305-247 476-293 119-31 347-31 465 1 225 60 429 201 549 380 260 384 217 882-104 1207-118 119-275 210-440 254-92 24-286 34-380 20z"/>
-                                <path d="m6815 4728c-187-285-438-598-678-845-456-468-879-762-1692-1173-548-277-1077-489-1584-634l-153-43 117-85c1345-973 3207-922 4513 125 131 105 349 311 454 429l59 67-46 163c-146 521-359 1066-627 1603-106 213-269 515-277 515-3 0-42-55-86-122z"/>
-                            </g>
-                        </svg>
-                        &nbsp;
-                        <span class="camera"><string>camera</string></span>
-                    </button>
-                    <button class="buttons" onclick="window.open('camera')">
-                        <svg width="64" height="64" viewBox="0 0 512 512" class="icons">
-                            <g transform="translate(0 512) scale(.1 -.1)">
-                                <path d="m685 4428c-3-7-4-852-3-1878l3-1865h1875 1875l3 938 2 937h-190-190v-750-750h-1500-1500v1500 1500h750 750v190 190h-935c-739 0-937-3-940-12z"/>
-                                <path d="m3210 4165 265-265-528-528c-290-290-527-532-527-537 0-6 92-102 205-215l205-205 738 738c174 174 321 317 327 317 5 0 130-120 277-267l268-268v748 747h-747-748l265-265z"/>
-                            </g>
-                        </svg>
-                    </button>
+                    <div id="camerabuttonsdiv"></div>
                 </div>
                 <div class="buttonsDivs">
                     <form method="post" class="uploadforms" id="filelinkform">
