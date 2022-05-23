@@ -754,7 +754,7 @@ function uploadLocationFunc(currentUploadID, cameraCapture, statusDiv, status){
             key = n_key[currentUploadID][2];
         }catch(e){}
         if(n && id && key){
-            uploadLocation(id, key, document.getElementById('q'+currentUploadID), cameraCapture, [latitude, longitude, altitude, accuracy, altitudeAccuracy]);
+            uploadLocation(id, key, document.getElementById('q'+n), cameraCapture, [latitude, longitude, altitude, accuracy, altitudeAccuracy]);
         }else{
             locationPreUpload(currentUploadID, [latitude, longitude, altitude, accuracy, altitudeAccuracy], statusDiv);
         }
