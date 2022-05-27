@@ -15,6 +15,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 4px;
 }
 .switch {
     position: relative;
@@ -87,7 +88,7 @@ input:checked + .slider:before, input:checked + .slider img {
     padding: 1%;
     cursor: pointer;
 }
-.settingsbox input[type="checkbox"]{
+.settingsbox input[type="checkbox"], .settingsbox input[type="radio"]{
     cursor: pointer;
     width: 25px;
     height: 25px;

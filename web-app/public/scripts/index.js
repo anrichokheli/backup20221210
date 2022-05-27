@@ -160,8 +160,8 @@ function addRetryButton(func, element){
     window.addEventListener("online", onlineFunc);
 }
 var uploadStatuses = document.getElementById("uploadstatuses");
-function uploadString(n, key, post, location, cameraCapture, value, element, input, button) {
-    if((cameraCapture && location && !locationWait) || !location){
+function uploadString(n, key, post, location, automaticLocation, value, element, input, button) {
+    if((automaticLocation && location && !locationWait) || !location){
         unloadWarning++;
     }
     try{
@@ -244,7 +244,7 @@ function uploadString(n, key, post, location, cameraCapture, value, element, inp
             div2.innerText = this.responseText;
             div2.style.border = borderStyle + color;
             div.appendChild(div2);
-            addRetryButton(function(){uploadString(n, key, post, location, cameraCapture, value, element, input, button);}, element);
+            addRetryButton(function(){uploadString(n, key, post, location, automaticLocation, value, element, input, button);}, element);
         }
         try{
             div.style.borderColor = color;
@@ -273,7 +273,7 @@ function uploadString(n, key, post, location, cameraCapture, value, element, inp
         div2.style.border = borderStyle + color;
         div.appendChild(div2);
         element.insertBefore(div, element.childNodes[0]);
-        addRetryButton(function(){uploadString(n, key, post, location, cameraCapture, value, element, input, button);}, element);
+        addRetryButton(function(){uploadString(n, key, post, location, automaticLocation, value, element, input, button);}, element);
     };
     try{
         uploadProgressSetup(ajax, div);
@@ -289,8 +289,8 @@ function getLocationString(data){
         return "-";
     }
 }
-function uploadLocation(n, key, element, cameraCapture, coordinates)   {
-    uploadString(n, key, "&latitude="+encodeURIComponent(coordinates[0])+"&longitude="+encodeURIComponent(coordinates[1])+"&altitude="+encodeURIComponent(coordinates[2])+"&accuracy="+encodeURIComponent(coordinates[3])+"&altitudeAccuracy="+encodeURIComponent(coordinates[4]), true, cameraCapture, getLocationString(coordinates[0]) + ", " + getLocationString(coordinates[1]) + "; " + getLocationString(coordinates[2]) + "; " + getLocationString(coordinates[3]) + "; " + getLocationString(coordinates[4]), element);
+function uploadLocation(n, key, element, automaticLocation, coordinates)   {
+    uploadString(n, key, "&latitude="+encodeURIComponent(coordinates[0])+"&longitude="+encodeURIComponent(coordinates[1])+"&altitude="+encodeURIComponent(coordinates[2])+"&accuracy="+encodeURIComponent(coordinates[3])+"&altitudeAccuracy="+encodeURIComponent(coordinates[4]), true, automaticLocation, getLocationString(coordinates[0]) + ", " + getLocationString(coordinates[1]) + "; " + getLocationString(coordinates[2]) + "; " + getLocationString(coordinates[3]) + "; " + getLocationString(coordinates[4]), element);
 }
 function uploadDescription(n, key, descriptionValue, input, button, element)    {
     uploadString(n, key, "&description="+encodeURIComponent(descriptionValue), false, null, descriptionValue, element, input, button);
@@ -743,7 +743,7 @@ function uploadProgressSetup(ajax, div, currentUploadID){
         }
     };
 }
-function uploadLocationFunc(currentUploadID, cameraCapture, statusDiv, status){
+function uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, status){
     if(latitude != null && longitude != null)    {
         var n;
         var id;
@@ -754,12 +754,12 @@ function uploadLocationFunc(currentUploadID, cameraCapture, statusDiv, status){
             key = n_key[currentUploadID][2];
         }catch(e){}
         if(n && id && key){
-            uploadLocation(id, key, document.getElementById('q'+n), cameraCapture, [latitude, longitude, altitude, accuracy, altitudeAccuracy]);
+            uploadLocation(id, key, document.getElementById('q'+n), automaticLocation, [latitude, longitude, altitude, accuracy, altitudeAccuracy]);
         }else{
             locationPreUpload(currentUploadID, [latitude, longitude, altitude, accuracy, altitudeAccuracy], statusDiv);
         }
     }else{
-        locationUploadArray.push([currentUploadID, cameraCapture, statusDiv]);
+        locationUploadArray.push([currentUploadID, automaticLocation, statusDiv]);
         var div = document.createElement("div");
         div.style.border = "2px solid #0000ff";
         div.style.margin = "2px";
@@ -768,7 +768,7 @@ function uploadLocationFunc(currentUploadID, cameraCapture, statusDiv, status){
         status.insertBefore(div, status.childNodes[0]);
     }
 }
-function filesUpload(files, fileInput, cameraCapture, filelink, formData0, typeImg0, typeString0, attachFiles0, locationCoordinates0, descriptionTexts0, voiceFiles0){
+function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0, typeString0, attachFiles0, locationCoordinates0, descriptionTexts0, voiceFiles0){
     var currentUploadID = ++lastUploadID;
     if(!filelink && files === null && !formData0)  {
         files = fileInput.files;
@@ -890,12 +890,22 @@ function filesUpload(files, fileInput, cameraCapture, filelink, formData0, typeI
         try{
             uploadMyLocation.className = "buttons afteruploadbuttons";
         }catch(e){}
+        var automaticLocation = false;
+        try{
+            if(localStorage.getItem(inputMode + "locationattach") == "true"){
+                automaticLocation = true;
+            }
+        }catch(e){
+            if(inputMode == "takephoto" || inputMode == "recordvideo"){
+                automaticLocation = true;
+            }
+        }
         uploadMyLocation.onclick = function(){
-            uploadLocationFunc(currentUploadID, cameraCapture, statusDiv, status);
+            uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, status);
         };
         after0.appendChild(uploadMyLocation);
-        if(!locationCoordinates0 && cameraCapture){
-            uploadLocationFunc(currentUploadID, cameraCapture, statusDiv, status);
+        if(!locationCoordinates0 && automaticLocation){
+            uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, status);
         }
         after.appendChild(after0);
         subbox.insertBefore(after, subbox.childNodes[0]);
@@ -1090,7 +1100,7 @@ function filesUpload(files, fileInput, cameraCapture, filelink, formData0, typeI
                 if(locationCoordinates[currentUploadID]){
                     for(var i = 0; i < locationCoordinates[currentUploadID].length; i++){
                         if(locationCoordinates[currentUploadID][i]){
-                            uploadLocation(id, key, element, cameraCapture, locationCoordinates[currentUploadID][i]);
+                            uploadLocation(id, key, element, automaticLocation, locationCoordinates[currentUploadID][i]);
                         }
                     }
                 }
@@ -1113,7 +1123,7 @@ function filesUpload(files, fileInput, cameraCapture, filelink, formData0, typeI
                     }
                 }
             }catch(e){}
-            /*if(cameraCapture){
+            /*if(automaticLocation){
                 if(latitude != null && longitude != null)    {
                     uploadLocation(id, key, element, true);
                 }else{
@@ -1125,7 +1135,7 @@ function filesUpload(files, fileInput, cameraCapture, filelink, formData0, typeI
             }else{
                 unloadWarning--;
             }*/
-            if((cameraCapture && !locationWait) || !cameraCapture){
+            if((automaticLocation && !locationWait) || !automaticLocation){
                 unloadWarning--;
             }
         }
@@ -1142,7 +1152,7 @@ function filesUpload(files, fileInput, cameraCapture, filelink, formData0, typeI
             if(currentUploadID == lastUploadID){
                 bottomProgressVisible(0);
             }
-            addRetryButton(function(){filesUpload(files, fileInput, cameraCapture, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], locationCoordinates[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
+            addRetryButton(function(){filesUpload(files, fileInput, inputMode, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], locationCoordinates[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
         }
         try{
             statusText.classList.add("statusText");
@@ -1171,7 +1181,7 @@ function filesUpload(files, fileInput, cameraCapture, filelink, formData0, typeI
             bottomProgressVisible(0);
         }
         status.insertBefore(statusText, status.childNodes[0]);
-        addRetryButton(function(){filesUpload(files, fileInput, cameraCapture, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], locationCoordinates[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
+        addRetryButton(function(){filesUpload(files, fileInput, inputMode, filelink, formData, typeImg, typeString, attachFiles[currentUploadID], locationCoordinates[currentUploadID], descriptionTexts[currentUploadID], voiceFiles[currentUploadID]);}, status);
     };
     /*var progressPercent;
     ajax.upload.onprogress = function(e){
@@ -1189,9 +1199,14 @@ function filesUpload(files, fileInput, cameraCapture, filelink, formData0, typeI
     ajax.send(formData);
 }
 var unloadWarning = 0;
-function uploadFunction(input, div, cameraCapture){
+function uploadFunction(input, div, inputMode){
     try{
-        filesUpload(null, input, cameraCapture);
+        filesUpload(null, input, inputMode);
+        /*try{
+            if(localStorage.getItem(inputMode + "reopen")){
+                input.click();
+            }
+        }catch(e){}*/
     }catch(e){
         try{
             input.parentNode.submit();
@@ -1202,12 +1217,12 @@ function uploadFunction(input, div, cameraCapture){
         }
     }
 }
-function buttonSetup(id0, cameraCapture) {
+function buttonSetup(id0) {
     var input = document.getElementById(id0 + "input");
     var div = document.getElementById(id0 + "div");
     function uploadIfInput(){
         if(input.value){
-            uploadFunction(input, div, cameraCapture);
+            uploadFunction(input, div, id0);
         }
     }
     input.addEventListener("change", function(){uploadIfInput();});
@@ -1223,10 +1238,10 @@ function buttonSetup(id0, cameraCapture) {
     input.style.height = "0";
 }
 try{
-    buttonSetup("takephoto", 1);
-    buttonSetup("recordvideo", 1);
-    buttonSetup("choosephoto");
-    buttonSetup("choosevideo");
+    buttonSetup("takephoto");
+    buttonSetup("recordvideo");
+    buttonSetup("choosephotos");
+    buttonSetup("choosevideos");
     buttonSetup("choosefiles");
     var uploadForms = document.getElementsByClassName("uploadforms");
     for(var i = 0; i < uploadForms.length; i++){
@@ -1239,7 +1254,7 @@ try{
     var fileLink = document.getElementById("filelink");
     fileLinkForm.addEventListener("submit", function(e){
         e.preventDefault();
-        filesUpload(null, null, null, fileLink.value);
+        filesUpload(null, null, "enterlink", fileLink.value);
         fileLink.value = "";
     });
 }catch(e){}
@@ -1366,8 +1381,8 @@ try{
     }
     addTopButton("takephotobutton");
     addTopButton("recordvideobutton");
-    addTopButton("choosephotobutton");
-    addTopButton("choosevideobutton");
+    addTopButton("choosephotosbutton");
+    addTopButton("choosevideosbutton");
     addTopButton("choosefilesbutton");
     addTopButton("camerabutton");
     mainDiv.appendChild(topScrollDiv);
@@ -1427,7 +1442,7 @@ try{
         for(var i = 0; i < items.length; i++){
             files.push(items[i].getAsFile());
         }
-        filesUpload(files);
+        filesUpload(files, null, "enterlink");
         dragOverlay.style.display = "none";
     });
     mainDiv.addEventListener("dragenter", function(e){
@@ -1453,7 +1468,7 @@ try{
                 if(!urlInput.checkValidity()){
                     return;
                 }
-                filesUpload(null, null, null, s);
+                filesUpload(null, null, "enterlink", s);
             });
             return;
         }
@@ -1464,7 +1479,7 @@ try{
         for(var i = 0; i < items.length; i++){
             files.push(items[i].getAsFile());
         }
-        filesUpload(files);
+        filesUpload(files, "choosefiles");
     });
     try{
         var pasteElement = document.createElement("div");
@@ -2018,4 +2033,10 @@ try{
         }catch(e){}*/
     });
 }catch(e){}
+/*try{
+    var startupSetting = localStorage.getItem("startupmode");
+    if(startupSetting && startupSetting != "default"){
+        document.getElementById(startupSetting + "input").click();
+    }
+}catch(e){}*/
 setCookie("timezone", (new Date()).getTimezoneOffset(), 1000);

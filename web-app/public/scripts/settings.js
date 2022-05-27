@@ -82,15 +82,90 @@ try{
     };
     
 }catch(e){}
+function checkboxSettingSetup(id, checkbox, storagename){
+    if(!checkbox){
+        var checkbox = document.getElementById(id);
+    }
+    if(!storagename){
+        storagename = id;
+    }
+    if(localStorage.getItem(storagename) == "true"){
+        checkbox.checked = 1;
+    }else{
+        checkbox.checked = 0;
+    }
+    checkbox.onchange = function(){
+        localStorage.setItem(storagename, this.checked);
+    };
+}
 try{
     var saveUploads = document.getElementById("saveuploads");
-    if(localStorage.getItem("saveuploads") == "true"){
+    /*if(localStorage.getItem("saveuploads") == "true"){
         saveUploads.checked = 1;
     }
     saveUploads.onchange = function(){
         localStorage.setItem("saveuploads", this.checked);
-    };
+    };*/
+    checkboxSettingSetup(null, saveUploads, "saveuploads");
 }catch(e){}
+try{
+    var locationAttachSettingsNames = ["takephotolocationattach", "recordvideolocationattach", "choosephotoslocationattach", "choosevideoslocationattach", "choosefileslocationattach", "enterlinklocationattach", "cameratakephotolocationattach", "camerarecordvideolocationattach"];
+    var locationAttachSettingsValues = [true, true, false, false, false, false, true, true];
+    function setLocationAttachSettings(){
+        for(var i = 0; i < locationAttachSettingsNames.length; i++){
+            checkboxSettingSetup(locationAttachSettingsNames[i]);
+        }
+    }
+    function resetLocationAttachSettings(){
+        for(var i = 0; i < locationAttachSettingsNames.length; i++){
+            localStorage.setItem(locationAttachSettingsNames[i], locationAttachSettingsValues[i]);
+        }
+    }
+    if(!localStorage.getItem(locationAttachSettingsNames[0])){
+        resetLocationAttachSettings();
+    }
+    setLocationAttachSettings();
+}catch(e){}
+/*try{
+    var reopenSettingsNames = ["takephotoreopen", "recordvideoreopen", "choosephotosreopen", "choosevideosreopen", "choosefilesreopen"];
+    var reopenSettingsValues = [false, false, false, false, false, false];
+    function setReopenSettings(){
+        for(var i = 0; i < reopenSettingsNames.length; i++){
+            checkboxSettingSetup(reopenSettingsNames[i]);
+        }
+    }
+    function resetReopenSettings(){
+        for(var i = 0; i < reopenSettingsNames.length; i++){
+            localStorage.setItem(reopenSettingsNames[i], reopenSettingsValues[i]);
+        }
+    }
+    if(!localStorage.getItem(reopenSettingsNames[0])){
+        resetReopenSettings();
+    }
+    setReopenSettings();
+}catch(e){}*/
+/*try{
+    function startupRadioSetup(id0){
+        document.getElementById(id0 + "startup").onchange = function(){
+            localStorage.setItem("startupmode", id0);
+        };
+    }
+    function startupSettingSetup(){
+        var startupCurrentVal = localStorage.getItem("startupmode");
+        if(!startupCurrentVal){
+            startupCurrentVal = "default";
+        }
+        document.getElementById(startupCurrentVal + "startup").checked = 1;
+    }
+    startupRadioSetup("default");
+    startupRadioSetup("takephoto");
+    startupRadioSetup("recordvideo");
+    startupRadioSetup("choosephotos");
+    startupRadioSetup("choosevideos");
+    startupRadioSetup("choosefiles");
+    startupSettingSetup();
+    
+}catch(e){}*/
 /*try{
     var colorFilterCheckbox = document.getElementById("colorfiltercheckbox");
     var colorFilterRange = document.getElementById("colorfilterrange");
@@ -165,6 +240,15 @@ try{
                 saveUploads.checked = 0;
             }
         }catch(e){}
+        try{
+            setLocationAttachSettings();
+        }catch(e){}
+        /*try{
+            startupSettingSetup();
+        }catch(e){}*/
+        /*try{
+            setReopenSettings();
+        }catch(e){}*/
         /*try{
             setColorFilterSettings();
         }catch(e){}*/
@@ -202,6 +286,9 @@ try{
             setCookie("lang", "");
             setCookie("settingstimezone", "");
             localStorage.setItem("saveuploads", true);
+            resetLocationAttachSettings();
+            //resetReopenSettings();
+            //localStorage.removeItem("startupmode");
             //localStorage.removeItem("colorfilterenabled");
             //localStorage.setItem("colorfiltervalue", colorFilterDefaultValue);
             localStorage.removeItem("lightcolor");

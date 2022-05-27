@@ -101,12 +101,12 @@ var status2 = document.getElementById("status2");
 var statusPhotovideo = document.getElementById("statusphotovideo");
 var statusLocation = document.getElementById("statuslocation");
 var locationUploadArray = [];
-function uploadLocation(n, id, key){
+function uploadLocation(n, id, key, coordinates){
     if(!locationWait){
         unloadWarning++;
     }
     statusLocation.style.backgroundColor = "#ffff00";
-    addStatus("location", "ffff00", "#" + n + "<br>" + latitude + ", " + longitude + "; " + altitude + "; " + accuracy + "; " + altitudeAccuracy);
+    addStatus("location", "ffff00", "#" + n + "<br>" + coordinates[0] + ", " + coordinates[1] + "; " + coordinates[2] + "; " + coordinates[3] + "; " + coordinates[4]);
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -125,14 +125,14 @@ function uploadLocation(n, id, key){
         var retryButton = document.createElement("button");
         retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
         retryButton.onclick = function(){
-            uploadLocation(n, id, key);
+            uploadLocation(n, id, key, coordinates);
         };
         retryButton.classList.add("buttons");
         addStatus("location", "ff0000", "#" + n + "<br>" + this.Error, retryButton);
-        var onlineFunc = function(){window.removeEventListener("online", onlineFunc);uploadLocation(n, id, key);};
+        var onlineFunc = function(){window.removeEventListener("online", onlineFunc);uploadLocation(n, id, key, coordinates);};
         window.addEventListener("online", onlineFunc);
     };
-    ajax.send("id="+encodeURIComponent(id)+"&key="+encodeURIComponent(key)+"&latitude="+encodeURIComponent(latitude)+"&longitude="+encodeURIComponent(longitude)+"&altitude="+encodeURIComponent(altitude)+"&accuracy="+encodeURIComponent(accuracy)+"&altitudeaccuracy="+encodeURIComponent(altitudeAccuracy));
+    ajax.send("id="+encodeURIComponent(id)+"&key="+encodeURIComponent(key)+"&latitude="+encodeURIComponent(coordinates[0])+"&longitude="+encodeURIComponent(coordinates[1])+"&altitude="+encodeURIComponent(coordinates[2])+"&accuracy="+encodeURIComponent(coordinates[3])+"&altitudeaccuracy="+encodeURIComponent(coordinates[4]));
 }
 var latitude;
 var longitude;
@@ -153,10 +153,17 @@ function afterLocation(position)  {
     altitude = position.coords.altitude;
     accuracy = position.coords.accuracy;
     altitudeAccuracy = position.coords.altitudeAccuracy;
+    var locationCoordinatesArray = [latitude, longitude, altitude, accuracy, altitudeAccuracy];
     if(locationUploadArray.length > 0){
         for(var key in locationUploadArray){
-            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1], locationUploadArray[key][2]);
+            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1], locationUploadArray[key][2], locationCoordinatesArray);
             locationUploadArray.shift();
+        }
+    }
+    if(locationPreUploadElements.length > 0){
+        for(var key in locationPreUploadElements){
+            preUpload(locationCoordinates, locationPreUploadElements[key][0], locationCoordinatesArray, locationPreUploadElements[key][1]);
+            locationPreUploadElements.shift();
         }
     }
     statusLocation.style.borderColor = "#00ff0080";
@@ -201,7 +208,16 @@ function addStatus(imageName, color, text, html){
 }
 var unloadWarning = 0;
 var topProgressBar = document.getElementById("progressbartop");
-function uploadFile(file){
+var lastUploadID = 0;
+var locationCoordinates = [];
+var locationPreUploadElements = [];
+function preUpload(array, id, value, element){
+    array[id] = value;
+    var div = addStatus("location", "ffff00", value.join("; "));
+    element.appendChild(div);
+}
+function uploadFile(file, cameraMode, id0){
+    var currentUploadID = ++lastUploadID;
     unloadWarning++;
     statusLocation.style.backgroundColor = "";
     topProgressBar.style.width = "0";
@@ -244,6 +260,16 @@ function uploadFile(file){
     progressBarDiv.classList.add("progressbardiv");
     progressBar.classList.add("progressbar");
     statusDiv.prepend(progressBarDiv);
+    var locationUploadEnabled = (localStorage.getItem("camera" + cameraMode + "locationattach") == "true");
+    if(id0){
+        preUpload(locationCoordinates, currentUploadID, locationCoordinates[id0], statusDiv);
+    }else if(locationUploadEnabled){
+        if(latitude != null && longitude != null)    {
+            preUpload(locationCoordinates, currentUploadID, [latitude, longitude, altitude, accuracy, altitudeAccuracy], statusDiv);
+        }else{
+            locationPreUploadElements.push([currentUploadID, statusDiv]);
+        }
+    }
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
     ajax.onload = function(){
@@ -252,10 +278,17 @@ function uploadFile(file){
             var n = responseArray[0];
             var id = responseArray[1];
             var key = responseArray[2];
-            if(latitude != null && longitude != null)    {
+            /*if(latitude != null && longitude != null)    {
                 uploadLocation(n, id, key);
             }else{
                 locationUploadArray.push([n, id, key]);
+            }*/
+            if(locationUploadEnabled){
+                if(locationCoordinates[currentUploadID]){
+                    uploadLocation(n, id, key, locationCoordinates[currentUploadID]);
+                }else{
+                    locationUploadArray.push([n, id, key]);
+                }
             }
             topProgressBar.style.backgroundColor = "#00ff00";
             status2.style.borderColor = "#00ff00";
@@ -286,7 +319,7 @@ function uploadFile(file){
             var retryButton = document.createElement("button");
             retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
             retryButton.onclick = function(){
-                uploadFile(file);
+                uploadFile(file, cameraMode, currentUploadID);
             };
             retryButton.classList.add("buttons");
             addStatus(imageName, "ff0000", this.responseText, retryButton);
@@ -298,11 +331,11 @@ function uploadFile(file){
         var retryButton = document.createElement("button");
         retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
         retryButton.onclick = function(){
-            uploadFile(file);
+            uploadFile(file, cameraMode, currentUploadID);
         };
         retryButton.classList.add("buttons");
         addStatus(imageName, "ff0000", this.Error, retryButton);
-        var onlineFunc = function(){window.removeEventListener("online", onlineFunc);uploadFile(file);};
+        var onlineFunc = function(){window.removeEventListener("online", onlineFunc);uploadFile(file, cameraMode, currentUploadID);};
         window.addEventListener("online", onlineFunc);
     }
     ajax.upload.onprogress = function(e){
@@ -319,7 +352,7 @@ function takePhoto(){
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-    uploadFile(dataURItoBlob(canvas.toDataURL("image/png")));
+    uploadFile(dataURItoBlob(canvas.toDataURL("image/png")), "takephoto");
 }
 document.getElementById("takephoto").addEventListener("click", function(){
     takePhoto();
@@ -335,7 +368,7 @@ function onVideoStop(){
     recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "50%";
     recordVideoButton.disabled = 0;
     if(recordedBlob != ""){
-        uploadFile(recordedBlob);
+        uploadFile(recordedBlob, "recordvideo");
     }
 }
 function startRecording(stream){
