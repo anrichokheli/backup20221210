@@ -90,5 +90,6 @@
     "locationattachafterdetect": "After file upload, location coordinates will be attached after detected",
     "//openatstartup": "Open at startup",
     "//default": "Default",
-    "//reopenafteruploadstart": "Reopen after upload start"
+    "//reopenafteruploadstart": "Reopen after upload start",
+    "copy": "Copy"
 }

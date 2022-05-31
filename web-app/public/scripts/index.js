@@ -1072,7 +1072,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
             try{
                 var fullLink = window.location.href+"?view&n="+n;
                 html = "<div class=\"boxs boxs2\"><span class=\"uploadedid\">" + getString("uploadedid") + "</span>: #" + n + "</div>";
-                html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"></div>';
+                html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"><button class="buttons afteruploadbuttons" onclick="copyString(this.previousElementSibling.value, this.nextElementSibling)"><img width="32" height="32" src="images/copy.svg"> <span class="copy">'+getString("copy")+'</span></button><span></span></div>';
                 html += "<button onclick=location.assign(\"?view&n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span></button>";
                 html += "<button onclick=window.open(\"?view&n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"images/newtab.svg\"></button>";
                 html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
@@ -1510,6 +1510,10 @@ try{
         return html;
     }
 }catch(e){}
+function copyString(string, copiedElement){
+    navigator.clipboard.writeText(string);
+    copiedElement.innerText = string;
+}
 /*try{
     var colorFilterDefaultValue = 90;
     var lightFilter = document.createElement("div");
