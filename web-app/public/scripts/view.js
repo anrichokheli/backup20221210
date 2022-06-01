@@ -138,10 +138,24 @@ function addShareButton(n, element){
     });
     element.appendChild(shareButton);
 }
+function copyString(string, copiedElement){
+    navigator.clipboard.writeText(string);
+    copiedElement.innerText = string;
+    copiedElement.style.display = "inline";
+}
+function addCopyLinkButton(element){
+    element.innerHTML += '<button class="buttons afteruploadbuttons" onclick="copyString(this.previousElementSibling.value, this.nextElementSibling)"><img width="32" height="32" src="images/copy.svg"> <span class="copy">'+getString("copy")+'</span></button><span style="padding:1px;border:1px solid #00ff00;display:none;"></span>';
+}
 try{
     var buttonsDivs = document.querySelectorAll(".one > .buttonsdivs");
     for(var key in buttonsDivs){
         addShareButton(buttonsDivs[key].parentNode.id, buttonsDivs[key]);
+    }
+}catch(e){}
+try{
+    var linksDivs = document.querySelectorAll(".one > .linksdivs");
+    for(var key in linksDivs){
+        addCopyLinkButton(linksDivs[key]);
     }
 }catch(e){}
 try{
@@ -279,11 +293,19 @@ function onContentLoad(ajax, nextPage){
     div.id = "newdiv"+nextPage;
     div.innerHTML = ajax.responseText;
     newContentDiv.appendChild(div);
-    addDescriptionSeeMore(document.querySelectorAll('#newdiv'+nextPage+' .descriptiondiv'));
+    try{
+        addDescriptionSeeMore(document.querySelectorAll('#newdiv'+nextPage+' .descriptiondiv'));
+    }catch(e){}
     var buttonsDivs = document.querySelectorAll("#newdiv"+nextPage+" .one > .buttonsdivs");
     try{
         for(var key in buttonsDivs){
             addShareButton(buttonsDivs[key].parentNode.id, buttonsDivs[key]);
+        }
+    }catch(e){}
+    var linksDivs = document.querySelectorAll("#newdiv"+nextPage+" .one > .linksdivs");
+    try{
+        for(var key in linksDivs){
+            addCopyLinkButton(linksDivs[key]);
         }
     }catch(e){}
 }
