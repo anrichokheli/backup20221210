@@ -412,7 +412,7 @@ function flexCenter(element, columnDirection) {
 }
 try{
     var uploadStatusBottom = document.getElementById("uploadstatusbottom");
-    try{
+    /*try{
         uploadStatusBottom.addEventListener("click", function(){
             if(timeout1 != undefined)    {
                 clearTimeout(timeout1);
@@ -423,7 +423,7 @@ try{
             this.style.display = "none";
             this.style.bottom = "-8vh";
         });
-    }catch(e){}
+    }catch(e){}*/
     var bottomProgressBar = document.createElement("div");
     uploadStatusBottom.appendChild(bottomProgressBar);
     var uploadstatusesdisplayed = 0;
@@ -739,6 +739,9 @@ function uploadProgressSetup(ajax, div, currentUploadID){
         if(currentUploadID){
             if(currentUploadID == lastUploadID){
                 bottomProgressBar.style.width = progressPercent;
+                uploadStatusBottom.onclick = function(){
+                    scrollIntoViewFunc(progress);
+                };
             }
         }
     };
