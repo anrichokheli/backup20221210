@@ -82,6 +82,7 @@
     include(phpPath . "uploadphotovideo.php");
     include(phpPath . "uploadstring.php");
     include(phpPath . "uploadvoice.php");
+    include(phpPath . "live.php");
     if(!defined("notmain")){
         if(isset($_GET["noscript"])){
             $indexHTML = file_get_contents(htmlPath . "indexnoscript.html");

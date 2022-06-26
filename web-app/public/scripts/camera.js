@@ -50,7 +50,7 @@ video.onclick = function(){
 var videoRecording;
 var recorder;
 var data;
-function videoSetup(){
+function videoSetup(live){
     navigator.mediaDevices.getUserMedia({
         audio: true,
         video: {
@@ -60,7 +60,7 @@ function videoSetup(){
         }
     })
     .then(function(stream){cameraSetup(stream);})
-    .then(function(){startRecording(video.captureStream());});
+    .then(function(){startRecording(video.captureStream(), live);});
 }
 document.getElementById("rotate").onclick = function(){
     flashLight.disabled = 1;
@@ -358,28 +358,45 @@ document.getElementById("takephoto").addEventListener("click", function(){
     takePhoto();
 });
 var recordVideoButton = document.getElementById("recordvideo");
-function onVideoStop(){
+function onVideoStop(live){
     var recordedBlob = new Blob(data, {type: "video/webm"});
-    if(recordedBlob == ""){
-        cameraStop();
-    }
-    cameraStart();
-    videoRecording = 0;
-    recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "50%";
-    recordVideoButton.disabled = 0;
-    if(recordedBlob != ""){
-        uploadFile(recordedBlob, "recordvideo");
+    if(live){
+        // data = [];
+        // recorder.start();
+        // liveStreamTimeout = setTimeout(function(){
+        //     recorder.stop();
+        // }, 1000);
+    }else{
+        if(recordedBlob == ""){
+            cameraStop();
+        }
+        cameraStart();
+        videoRecording = 0;
+        recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "50%";
+        recordVideoButton.disabled = 0;
+        if(recordedBlob != ""){
+            uploadFile(recordedBlob, "recordvideo");
+        }
     }
 }
-function startRecording(stream){
+function startRecording(stream, live){
     recorder = new MediaRecorder(stream);
-    data = [];
-    recorder.ondataavailable = function(e){data.push(e.data)};
-    recorder.start();
-    videoRecording = 1;
-    recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "0";
-    recorder.onstop = function(){onVideoStop();};
-    recordVideoButton.disabled = 0;
+    if(live){
+        recorder.ondataavailable = function(e){
+            sendLiveChunk(new Blob([e.data], {type: "video/webm"}));
+        };
+        recorder.start(1000);
+    }else{
+        data = [];
+        recorder.ondataavailable = function(e){data.push(e.data);};
+        recorder.start();
+        videoRecording = 1;
+        recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "0";
+    }
+    recorder.onstop = function(){onVideoStop(live);};
+    if(!live){
+        recordVideoButton.disabled = 0;
+    }
 }
 recordVideoButton.addEventListener("click", function(){
     recordVideoButton.disabled = 1;
@@ -405,7 +422,7 @@ window.addEventListener("offline", function(){
     });
 });
 window.addEventListener("beforeunload", function(e){
-    if(unloadWarning || videoRecording)    {
+    if(unloadWarning || videoRecording || liveStreaming || (liveUploadedChunks.innerText != liveTotalChunks.innerText))    {
         e.preventDefault();
         e.returnValue = '';
     }
@@ -526,6 +543,70 @@ try{
     window.onload = function(){
         if(screen.orientation.type == "landscape-secondary"){
             setScreenOrientation();
+        }
+    };
+}catch(e){}
+function ajax(method, url, onload, formdata){
+    var ajax = new XMLHttpRequest();
+    ajax.onload = function(){
+        onload(this);
+    };
+    ajax.open(method, url);
+    ajax.send(formdata);
+}
+try{
+    var liveStreaming = false;
+    var liveButton = document.getElementById("live");
+    var liveN;
+    var liveID;
+    var liveKey;
+    function liveSetup(){
+        addStatus("live", "ffff00");
+        ajax("GET", "../?live=1&setup=1", function(ajax){
+            if(ajax.response.charAt(0) == '#'){
+                var responseArray = ajax.responseText.substring(1).split('|');
+                liveN = responseArray[0];
+                liveID = responseArray[1];
+                liveKey = responseArray[2];
+                videoSetup(true);
+                var liveChunksStatus = document.createElement("div");
+                liveChunksStatus.innerHTML = '<div style="background-color:#256aff80;"><span style="background-color:#00ff0080;" id="liveuploadedchunks'+liveN+'">0</span> / <span style="background-color:#0000ff80;" id="livetotalchunks'+liveN+'">0</span><br><span style="background-color:#ff000080;" id="liveerrorchunks'+liveN+'">0</span></div>';
+                addStatus("live", "00ff00", "#" + liveN, liveChunksStatus);
+                liveUploadedChunks = document.getElementById("liveuploadedchunks"+liveN);
+                liveTotalChunks = document.getElementById("livetotalchunks"+liveN);
+                liveErrorChunks = document.getElementById("liveerrorchunks"+liveN);
+            }else{
+                addStatus("live", "ff0000", "#" + liveN);
+            }
+        });
+    }
+    var liveUploadedChunks;
+    var liveTotalChunks;
+    var liveErrorChunks;
+    function sendLiveChunk(chunk){
+        var formData = new FormData();
+        formData.append("id", liveID);
+        formData.append("key", liveKey);
+        formData.append("chunk", chunk);
+        liveTotalChunks.innerText = parseInt(liveTotalChunks.innerText) + 1;
+        ajax("POST", "../?live=1", function(ajax){
+            if(ajax.response == "1"){
+                liveUploadedChunks.innerText = parseInt(liveUploadedChunks.innerText) + 1;
+            }else{
+                liveErrorChunks.innerText = parseInt(liveErrorChunks.innerText) + 1;
+            }
+        }, formData);
+    }
+    liveButton.onclick = function(){
+        cameraStop();
+        if(!liveStreaming){
+            liveStreaming = true;
+            recordVideoButton.disabled = 1;
+            liveSetup();
+        }else{
+            liveStreaming = false;
+            recordVideoButton.disabled = 0;
+            cameraStart();
         }
     };
 }catch(e){}
