@@ -33,6 +33,10 @@
                 </div>
             </div>
             <div id="statusBigBox"></div>
+            <div id="recordstatus">
+                <img width="32" height="32" id="recordicon">
+                <span id="recordduration"></span>
+            </div>
         </div>
         <canvas id="canvas"></canvas>
         <script src="../scripts/camera.js"></script>

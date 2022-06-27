@@ -378,7 +378,16 @@ function onVideoStop(live){
             uploadFile(recordedBlob, "recordvideo");
         }
     }
+    clearInterval(recordDurationInterval);
+    recordStatus.style.display = "none";
 }
+try{
+    var recordStatus = document.getElementById("recordstatus");
+    var recordIcon = document.getElementById("recordicon");
+    var recordDuration = document.getElementById("recordduration");
+    var recordDurationData;
+    var recordDurationInterval;
+}catch(e){}
 function startRecording(stream, live){
     recorder = new MediaRecorder(stream);
     if(live){
@@ -386,13 +395,21 @@ function startRecording(stream, live){
             sendLiveChunk(new Blob([e.data], {type: "video/webm"}));
         };
         recorder.start(1000);
+        recordIcon.src = "../images/live.svg";
     }else{
         data = [];
         recorder.ondataavailable = function(e){data.push(e.data);};
         recorder.start();
         videoRecording = 1;
         recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "0";
+        recordIcon.src = "../images/record_video.svg";
     }
+    recordDurationData = 0;
+    recordDuration.innerText = recordDurationData;
+    recordDurationInterval = setInterval(function(){
+        recordDuration.innerText = ++recordDurationData;
+    }, 1000);
+    recordStatus.style.display = "flex";
     recorder.onstop = function(){onVideoStop(live);};
     if(!live){
         recordVideoButton.disabled = 0;
