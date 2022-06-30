@@ -122,12 +122,11 @@
     left: 25%;
     right: 25%;
     width: 50%;
-    background-color: #256aff80;
+    background-color: #256aff40;
     border-radius: 0 0 8px 8px;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    opacity: 0.5;
     padding: 2px;
 }
 .progressbardiv{
@@ -212,9 +211,8 @@
     left: 40%;
     right: 40%;
     width: 20%;
-    background-color: #256aff80;
+    background-color: #256aff40;
     border-radius: 8px;
-    opacity: 0.5;
     padding: 2px;
     justify-content: space-evenly;
     align-items: center;

@@ -62,7 +62,8 @@ function videoSetup(live){
     .then(function(stream){cameraSetup(stream);})
     .then(function(){startRecording(video.captureStream(), live);});
 }
-document.getElementById("rotate").onclick = function(){
+var rotate = document.getElementById("rotate");
+rotate.onclick = function(){
     flashLight.disabled = 1;
     if(flashLightState){
         flashLightState = 0;
@@ -105,23 +106,23 @@ function uploadLocation(n, id, key, coordinates){
     if(!locationWait){
         unloadWarning++;
     }
-    statusLocation.style.backgroundColor = "#ffff00";
+    statusLocation.style.backgroundColor = "#ffff0080";
     addStatus("location", "ffff00", "#" + n + "<br>" + coordinates[0] + ", " + coordinates[1] + "; " + coordinates[2] + "; " + coordinates[3] + "; " + coordinates[4]);
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     ajax.onload = function(){
         if(this.responseText === "1"){
-            statusLocation.style.backgroundColor = "#00ff00";
+            statusLocation.style.backgroundColor = "#00ff0080";
             addStatus("location", "00ff00", "#" + n);
             unloadWarning--;
         }else{
-            statusLocation.style.backgroundColor = "#ff0000";
+            statusLocation.style.backgroundColor = "#ff000080";
             addStatus("location", "ff0000", "#" + n + "<br>" + this.responseText);
         }
     };
     ajax.onerror = function(){
-        statusLocation.style.backgroundColor = "#ff0000";
+        statusLocation.style.backgroundColor = "#ff000080";
         var retryButton = document.createElement("button");
         retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
         retryButton.onclick = function(){
@@ -182,7 +183,9 @@ function getCurrentDateTime(){
 function preImg(image){
     var img = document.createElement("img");
     img.src = image;
-    //img.style.display = "none";
+    img.width = "0";
+    img.height = "0";
+    img.style.display = "block";
     document.body.appendChild(img);
     img.remove();
 }
@@ -221,8 +224,8 @@ function uploadFile(file, cameraMode, id0){
     unloadWarning++;
     statusLocation.style.backgroundColor = "";
     topProgressBar.style.width = "0";
-    topProgressBar.style.backgroundColor = "#ffff00";
-    status2.style.borderColor = "#ffff00";
+    topProgressBar.style.backgroundColor = "#ffff0080";
+    status2.style.borderColor = "#ffff0080";
     var imageName;
     var fileType = file.type.split('/')[0];
     if(fileType == "image"){
@@ -290,8 +293,8 @@ function uploadFile(file, cameraMode, id0){
                     locationUploadArray.push([n, id, key]);
                 }
             }
-            topProgressBar.style.backgroundColor = "#00ff00";
-            status2.style.borderColor = "#00ff00";
+            topProgressBar.style.backgroundColor = "#00ff0080";
+            status2.style.borderColor = "#00ff0080";
             var viewButton = document.createElement("a");
             viewButton.innerHTML = '<img width="32" height="32" src="../images/viewicon.svg">';
             viewButton.classList.add("buttons");
@@ -314,8 +317,8 @@ function uploadFile(file, cameraMode, id0){
                 unloadWarning--;
             }
         }else{
-            topProgressBar.style.backgroundColor = "#ff0000";
-            status2.style.borderColor = "#ff0000";
+            topProgressBar.style.backgroundColor = "#ff000080";
+            status2.style.borderColor = "#ff000080";
             var retryButton = document.createElement("button");
             retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
             retryButton.onclick = function(){
@@ -326,8 +329,8 @@ function uploadFile(file, cameraMode, id0){
         }
     };
     ajax.onerror = function(){
-        topProgressBar.style.backgroundColor = "#ff0000";
-        status2.style.borderColor = "#ff0000";
+        topProgressBar.style.backgroundColor = "#ff000080";
+        status2.style.borderColor = "#ff000080";
         var retryButton = document.createElement("button");
         retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
         retryButton.onclick = function(){
@@ -374,9 +377,9 @@ function onVideoStop(live){
         videoRecording = 0;
         recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "50%";
         recordVideoButton.disabled = 0;
-        if(recordedBlob != ""){
-            uploadFile(recordedBlob, "recordvideo");
-        }
+    }
+    if(recordedBlob != ""){
+        uploadFile(recordedBlob, "recordvideo");
     }
     clearInterval(recordDurationInterval);
     recordStatus.style.display = "none";
@@ -391,8 +394,12 @@ try{
 function startRecording(stream, live){
     recorder = new MediaRecorder(stream);
     if(live){
+        data = [];
         recorder.ondataavailable = function(e){
-            sendLiveChunk(new Blob([e.data], {type: "video/webm"}));
+            if(navigator.onLine){
+                sendLiveChunk(new Blob([e.data], {type: "video/webm"}));
+            }
+            data.push(e.data);
         };
         recorder.start(1000);
         recordIcon.src = "../images/live.svg";
@@ -407,7 +414,9 @@ function startRecording(stream, live){
     recordDurationData = 0;
     recordDuration.innerText = recordDurationData;
     recordDurationInterval = setInterval(function(){
-        recordDuration.innerText = ++recordDurationData;
+        // if(navigator.onLine || videoRecording){
+            recordDuration.innerText = ++recordDurationData;
+        // }
     }, 1000);
     recordStatus.style.display = "flex";
     recorder.onstop = function(){onVideoStop(live);};
@@ -419,12 +428,23 @@ recordVideoButton.addEventListener("click", function(){
     recordVideoButton.disabled = 1;
     cameraStop();
     if(!videoRecording){
+        liveButton.disabled = 1;
+        rotate.disabled = 1;
         videoSetup();
+    }else{
+        liveButton.disabled = 0;
+        rotate.disabled = 0;
     }
 });
 getLocation();
 var offlineImg;
 window.addEventListener("offline", function(){
+    statusBox.style.backgroundColor = "#ec040040";
+    if(liveStreaming){
+        recordStatus.style.backgroundColor = "#ec040040";
+        recordStatus.style.opacity = "0.5";
+        // recorder.pause();
+    }
     if(offlineImg){
         offlineImg.style.display = "block";
         return;
@@ -436,6 +456,12 @@ window.addEventListener("offline", function(){
     statusBox.prepend(offlineImg);
     window.addEventListener("online", function(){
         offlineImg.style.display = "none";
+        statusBox.style.backgroundColor = "#256aff40";
+        if(liveStreaming){
+            recordStatus.style.backgroundColor = "#256aff40";
+            recordStatus.style.opacity = "1";
+            // recorder.resume();
+        }
     });
 });
 window.addEventListener("beforeunload", function(e){
@@ -512,7 +538,6 @@ try{
 }catch(e){}
 try{
     var bottomButtons = document.getElementById("bottombuttons");
-    var rotate = document.getElementById("rotate");
     var psbutton = document.getElementById("psbutton");
     function setScreenOrientation(){
         if(screen.orientation.type == "portrait-primary"){
@@ -563,10 +588,13 @@ try{
         }
     };
 }catch(e){}
-function ajax(method, url, onload, formdata){
+function ajax(method, url, onload, onerror, formdata){
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
         onload(this);
+    };
+    ajax.onerror = function(){
+        onerror(this);
     };
     ajax.open(method, url);
     ajax.send(formdata);
@@ -577,52 +605,62 @@ try{
     var liveN;
     var liveID;
     var liveKey;
+    function liveSetupAjaxOnload(ajax){
+        if(ajax.response.charAt(0) == '#'){
+            var responseArray = ajax.responseText.substring(1).split('|');
+            liveN = responseArray[0];
+            liveID = responseArray[1];
+            liveKey = responseArray[2];
+            videoSetup(true);
+            var liveChunksStatus = document.createElement("div");
+            liveChunksStatus.innerHTML = '<div style="background-color:#256aff80;"><span style="background-color:#00ff0080;" id="liveuploadedchunks'+liveN+'">0</span> / <span style="background-color:#0000ff80;" id="livetotalchunks'+liveN+'">0</span><br><span style="background-color:#ff000080;" id="liveerrorchunks'+liveN+'">0</span></div>';
+            addStatus("live", "00ff00", "#" + liveN, liveChunksStatus);
+            liveUploadedChunks = document.getElementById("liveuploadedchunks"+liveN);
+            liveTotalChunks = document.getElementById("livetotalchunks"+liveN);
+            liveErrorChunks = document.getElementById("liveerrorchunks"+liveN);
+        }else{
+            liveSetupAjaxOnerror(ajax);
+        }
+    }
+    function liveSetupAjaxOnerror(ajax){
+        addStatus("live", "ff0000", ajax.Error);
+    }
     function liveSetup(){
         addStatus("live", "ffff00");
-        ajax("GET", "../?live=1&setup=1", function(ajax){
-            if(ajax.response.charAt(0) == '#'){
-                var responseArray = ajax.responseText.substring(1).split('|');
-                liveN = responseArray[0];
-                liveID = responseArray[1];
-                liveKey = responseArray[2];
-                videoSetup(true);
-                var liveChunksStatus = document.createElement("div");
-                liveChunksStatus.innerHTML = '<div style="background-color:#256aff80;"><span style="background-color:#00ff0080;" id="liveuploadedchunks'+liveN+'">0</span> / <span style="background-color:#0000ff80;" id="livetotalchunks'+liveN+'">0</span><br><span style="background-color:#ff000080;" id="liveerrorchunks'+liveN+'">0</span></div>';
-                addStatus("live", "00ff00", "#" + liveN, liveChunksStatus);
-                liveUploadedChunks = document.getElementById("liveuploadedchunks"+liveN);
-                liveTotalChunks = document.getElementById("livetotalchunks"+liveN);
-                liveErrorChunks = document.getElementById("liveerrorchunks"+liveN);
-            }else{
-                addStatus("live", "ff0000", "#" + liveN);
-            }
-        });
+        ajax("GET", "../?live=1&setup=1", liveSetupAjaxOnload, liveSetupAjaxOnerror);
     }
     var liveUploadedChunks;
     var liveTotalChunks;
     var liveErrorChunks;
+    function sendLiveChunkAjaxOnload(ajax){
+        if(ajax.response == "1"){
+            liveUploadedChunks.innerText = parseInt(liveUploadedChunks.innerText) + 1;
+        }else{
+            sendLiveChunkAjaxOnerror(ajax);
+        }
+    }
+    function sendLiveChunkAjaxOnerror(ajax){
+        liveErrorChunks.innerText = parseInt(liveErrorChunks.innerText) + 1;
+    }
     function sendLiveChunk(chunk){
         var formData = new FormData();
         formData.append("id", liveID);
         formData.append("key", liveKey);
         formData.append("chunk", chunk);
         liveTotalChunks.innerText = parseInt(liveTotalChunks.innerText) + 1;
-        ajax("POST", "../?live=1", function(ajax){
-            if(ajax.response == "1"){
-                liveUploadedChunks.innerText = parseInt(liveUploadedChunks.innerText) + 1;
-            }else{
-                liveErrorChunks.innerText = parseInt(liveErrorChunks.innerText) + 1;
-            }
-        }, formData);
+        ajax("POST", "../?live=1", sendLiveChunkAjaxOnload, sendLiveChunkAjaxOnerror, formData);
     }
     liveButton.onclick = function(){
         cameraStop();
         if(!liveStreaming){
             liveStreaming = true;
             recordVideoButton.disabled = 1;
+            rotate.disabled = 1;
             liveSetup();
         }else{
             liveStreaming = false;
             recordVideoButton.disabled = 0;
+            rotate.disabled = 0;
             cameraStart();
         }
     };
