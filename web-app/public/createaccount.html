@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/createaccount.css">
+</head>
+<body>
+    <div id="main">
+        <div id="top">
+            <a href="/" style="text-decoration: none;">
+                <img width="64" height="64" src="images/pedestriansos.svg">
+                <h1>
+                    <span class="pedestrian"></span>&nbsp;<span class="sos">SOS!</span>
+                </h1>
+            </a>
+        </div>
+        <h2>
+            <span class="account"></span>
+        </h2>
+        <div id="warningDiv">
+            <div id="warningTitle">
+                <span class="warning"></span>!!!
+            </div>
+            <div id="warningDescription">
+                <span class="accountcreationwarning"></span>
+            </div>
+            <br>
+            <div>
+                <input id="agreeverifycheckbox" type="checkbox">
+                <label for="agreeverifycheckbox">
+                    <span class="agreeverifytext"></span>
+                </label>
+                <br><br>
+                <div>
+                    <button id="goback">
+                        <<&nbsp;<span class="goback"></span>
+                    </button>
+                    &nbsp;
+                    <button disabled id="agreeverifybutton">
+                        <span class="startregistration"></span>&nbsp;>>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div id="registerDiv" class="disabled">
+            <form id="registerForm">
+                <div class="bigDivs">
+                    <h3>
+                        <span class="basicinfo"></span>
+                    </h3>
+                    <div>
+                        <span class="optional"></span>.&nbsp;<span class="influencesaccounttechnicalfunctions"></span>
+                    </div>
+                    <hr><br>
+                    <div class="inputsDivs">
+                        <div class="inputDivs">
+                            <label for="username">
+                                <span class="usernametitle"></span>
+                            </label>
+                            <input type="text" id="username">
+                            <div>
+                                <span class="usernamedescription"></span>
+                            </div>
+                            <div>
+                                <img width="16" height="16" src="images/public.svg">
+                                <span class="public"></span>
+                            </div>
+                            <div>
+                                <span class="optional"></span>
+                            </div>
+                        </div>
+                        <div class="inputDivs">
+                            <label for="repeatusername">
+                                <span class="repeattitle"></span>
+                                <span class="usernametitle"></span>
+                            </label>
+                            <input type="text" id="repeatusername">
+                            <div>
+                                <span class="repeatdescription"></span>
+                                <span class="usernametitle"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inputsDivs">
+                        <div class="inputDivs">
+                            <label for="password">
+                                <span class="passwordtitle"></span>
+                            </label>
+                            <input type="password" id="password">
+                            <div>
+                                <span class="passworddescription"></span>
+                            </div>
+                            <div>
+                                <span class="optional"></span>
+                            </div>
+                        </div>
+                        <div class="inputDivs">
+                            <label for="repeatpassword">
+                                <span class="repeattitle"></span>
+                                <span class="passwordtitle"></span>
+                            </label>
+                            <input type="password" id="repeatpassword">
+                            <div>
+                                <span class="repeatdescription"></span>
+                                <span class="passwordtitle"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bigDivs">
+                    <h3>
+                        <span class="additionalinfo"></span>
+                    </h3>
+                    <div>
+                        <span class="optional"></span>.&nbsp;<span class="notinfluencesaccounttechnicalfunctions"></span>
+                    </div>
+                    <hr><br>
+                    <div class="inputDivs">
+                        <label for="name">
+                            <span class="nametitle"></span>
+                        </label>
+                        <input type="text" id="name">
+                        <div>
+                            <span class="namedescription"></span>
+                        </div>
+                        <div>
+                            <img width="16" height="16" src="images/public.svg">
+                            <span class="public"></span>
+                        </div>
+                        <div>
+                            <span class="optional"></span>
+                        </div>
+                    </div>
+                    <div class="inputDivs">
+                        <label for="birthdate">
+                            <span class="birthdatetitle"></span>
+                        </label>
+                        <input type="date" id="birthdate">
+                        <div>
+                            <span class="birthdatedescription"></span>
+                        </div>
+                        <div>
+                            <img width="16" height="16" src="images/public.svg">
+                            <span class="public"></span>
+                        </div>
+                        <div>
+                            <span class="optional"></span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="scripts/createaccount.js"></script>
+</body>
+</html>

@@ -44,9 +44,6 @@ function cameraStop(){
     video.srcObject = null;
 }
 cameraStart();
-video.onclick = function(){
-    document.documentElement.requestFullscreen();
-};
 var videoRecording;
 var recorder;
 var data;
@@ -379,7 +376,19 @@ function onVideoStop(live){
         recordVideoButton.disabled = 0;
     }
     if(recordedBlob != ""){
-        uploadFile(recordedBlob, "recordvideo");
+        if(live){
+            var downloadButton = document.createElement("a");
+            downloadButton.innerHTML = '<img width="32" height="32" src="../images/download.svg">';
+            downloadButton.classList.add("buttons");
+            downloadButton.href = URL.createObjectURL(recordedBlob);
+            downloadButton.download = (new Date()).getTime();
+            addStatus("live", "00ff00", "#" + liveN, downloadButton);
+            if(parseInt(liveErrorChunks.innerText) > 0){
+                uploadFile(recordedBlob, "recordvideo");
+            }
+        }else{
+            uploadFile(recordedBlob, "recordvideo");
+        }
     }
     clearInterval(recordDurationInterval);
     recordStatus.style.display = "none";
@@ -664,4 +673,47 @@ try{
             cameraStart();
         }
     };
+}catch(e){}
+try{
+    var onlyVideo;
+    video.onclick = function(){
+        document.documentElement.requestFullscreen();
+        onlyVideo = !onlyVideo;
+        if(onlyVideo){
+            var display = "none";
+        }else{
+            var display = "flex";
+        }
+        var elements = document.querySelectorAll(".buttons,#statusBox,#recordstatus");
+        for(var i = 0; i < elements.length; i++){
+            if(elements[i].id == "recordstatus" && display == "flex"){
+                if(videoRecording || liveStreaming){
+                    elements[i].style.display = display;
+                }
+            }else{
+                elements[i].style.display = display;
+            }
+        }
+    };
+    var blackscreenOverlay = document.createElement("div");
+    blackscreenOverlay.style.position = "absolute";
+    blackscreenOverlay.style.top = "0";
+    blackscreenOverlay.style.left = "0";
+    blackscreenOverlay.style.width = "100vw";
+    blackscreenOverlay.style.height = "100vh";
+    blackscreenOverlay.style.backgroundColor = "#000000";
+    blackscreenOverlay.style.zIndex = "2";
+    blackscreenOverlay.style.display = "none";
+    document.body.appendChild(blackscreenOverlay);
+    var blackscreenOverlayEnabled;
+    function blackscreenfunc(){
+        blackscreenOverlayEnabled = !blackscreenOverlayEnabled;
+        if(blackscreenOverlayEnabled){
+            blackscreenOverlay.style.display = "none";
+        }else{
+            blackscreenOverlay.style.display = "block";
+        }
+    }
+    video.ondblclick = function(){blackscreenfunc();};
+    blackscreenOverlay.ondblclick = function(){blackscreenfunc();};
 }catch(e){}

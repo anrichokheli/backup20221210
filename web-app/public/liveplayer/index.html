@@ -16,7 +16,46 @@
     <video id="video" controls></video>
     <script>
         var video = document.getElementById("video");
-        video.src = "../?view&v=uploads/livevideos/" + (new URL(window.location.href)).searchParams.get("n") + ".webm";
+        var videoData;
+        function loadVideo(){
+            var ajax = new XMLHttpRequest();
+            ajax.onload = function(){
+                console.log(this.response)
+                var fileReader = new FileReader();
+                fileReader.onload = function(){
+                    video.src = this.result;
+                    loadLastChunk();
+                };
+                fileReader.readAsDataURL(this.response);
+                fileReader = new FileReader();
+                fileReader.onload = function(){
+                    videoData = this.result;
+                };
+                fileReader.readAsText(this.response);
+            };
+            ajax.responseType = "blob";
+            ajax.open("GET", "../?view&v=uploads/livevideos/" + (new URL(window.location.href)).searchParams.get("n") + ".webm");
+            ajax.send();
+        }
+        function loadLastChunk(){
+            var ajax = new XMLHttpRequest();
+            ajax.onload = function(){
+                console.log(this.response)
+                var fileReader = new FileReader();
+                fileReader.onload = function(){
+                    var fileReader = new FileReader();
+                    fileReader.onload = function(){
+                        video.src = this.result;
+                    };
+                    fileReader.readAsDataURL(new Blob([videoData + this.response]));
+                };
+                fileReader.readAsText(this.response);
+            };
+            ajax.responseType = "blob";
+            ajax.open("GET", "../?view&v=uploads/livevideos/" + (new URL(window.location.href)).searchParams.get("n") + "lastlivechunk");
+            ajax.send();
+        }
+        loadVideo();
     </script>
 </body>
 </html>
