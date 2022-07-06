@@ -47,6 +47,7 @@
                     echo "-2";
                 }
                 fclose($fileResource);
+                move_uploaded_file($_FILES["chunk"]["tmp_name"], livevideos . file_get_contents(liveIdsPath . $_POST["id"]) . "lastlivechunk");
             }else{
                 echo "-1";
             }
