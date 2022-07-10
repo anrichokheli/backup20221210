@@ -40,7 +40,7 @@ body    {
 .inputDivs div *{
     vertical-align: middle;
 }
-.inputDivs input{
+.inputDivs input, .inputDivs select{
     font-size: 16px;
 }
 .inputsDivs{
@@ -73,4 +73,8 @@ body    {
 }
 #warningDescription{
     font-size: 32px;
+}
+#warning2{
+    font-weight: bold;
+    color: #ec0400;
 }

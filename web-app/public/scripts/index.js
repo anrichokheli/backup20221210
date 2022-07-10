@@ -1017,6 +1017,22 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
             downloadButton.href = URL.createObjectURL(files[0]);
             downloadButton.download = (new Date()).getTime();
             status.appendChild(downloadButton);
+            try{
+                var previewDiv = document.createElement("div");
+                previewDiv.style.border = "1px dotted #256aff";
+                previewDiv.style.margin = "1px";
+                previewDiv.style.padding = "1px";
+                try{
+                    previewDiv.style.display = "flex";
+                    previewDiv.style.justifyContent = "center";
+                }catch(e){}
+                if(fileType == "image"){
+                    previewDiv.innerHTML = '<img style="max-width:100%;min-height:25vh;max-height:75vh;object-fit:contain;" src="'+downloadButton.href+'">';
+                }else{
+                    previewDiv.innerHTML = '<video style="max-width:100%;min-height:25vh;max-height:75vh;" controls src="'+downloadButton.href+'"></video>';
+                }
+                status.appendChild(previewDiv);
+            }catch(e){}
         }
     }catch(e){}
     try{

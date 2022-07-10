@@ -149,13 +149,9 @@ window.addEventListener("storage", function(){
         language();
     }catch(e){}
 });
-var goBackBtn = document.getElementById("goback");
 var agreeVerifyBtn = document.getElementById("agreeverifybutton");
 var agreeVerifyCheckbox = document.getElementById("agreeverifycheckbox");
 var registerDiv = document.getElementById("registerDiv");
-goBackBtn.onclick = function(){
-    history.back();
-};
 agreeVerifyCheckbox.onchange = function(){
     agreeVerifyBtn.disabled = !this.checked;
     if(!this.checked){

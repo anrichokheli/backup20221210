@@ -24,6 +24,9 @@
             </div>
             <div id="warningDescription">
                 <span class="accountcreationwarning"></span>
+                <div id="warning2">
+                    <span class="accountcreationwarning2"></span>
+                </div>
             </div>
             <br>
             <div>
@@ -33,9 +36,11 @@
                 </label>
                 <br><br>
                 <div>
-                    <button id="goback">
-                        <<&nbsp;<span class="goback"></span>
-                    </button>
+                    <a href="/" style="text-decoration: none;">
+                        <button>
+                            <img width="32" height="32" src="images/homepage.svg">&nbsp;<span class="gomainpage"></span>
+                        </button>
+                    </a>
                     &nbsp;
                     <button disabled id="agreeverifybutton">
                         <span class="startregistration"></span>&nbsp;>>
@@ -117,6 +122,26 @@
                         <span class="optional"></span>.&nbsp;<span class="notinfluencesaccounttechnicalfunctions"></span>
                     </div>
                     <hr><br>
+                    <div class="inputDivs">
+                        <label for="accounttype">
+                            <span class="accounttypetitle"></span>
+                        </label>
+                        <select id="accounttype">
+                            <option value="notchosen" class="notchosen"></option>
+                            <option value="personal" class="personal"></option>
+                            <option value="notpersonal" class="notpersonal"></option>
+                        </select>
+                        <div>
+                            <span class="accounttypedescription"></span>
+                        </div>
+                        <div>
+                            <img width="16" height="16" src="images/public.svg">
+                            <span class="public"></span>
+                        </div>
+                        <div>
+                            <span class="optional"></span>
+                        </div>
+                    </div>
                     <div class="inputDivs">
                         <label for="name">
                             <span class="nametitle"></span>

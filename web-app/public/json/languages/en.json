@@ -94,8 +94,9 @@
     "copy": "Copy",
     "account": "Account",
     "accountcreationwarning": "Creating account is not compulsory and you can still use our services without account. You can still upload everything without account. Account is optional and it is just for to have your own public history. If you upload file with account, your account identity will be publicly displayed to uploaded file. Everything you enter in registration form (except password) will be public and you will not be able to remove them or change their visibility. Even if you edit any data, it will be still publicly visible in edit history and you cannot remove it. You cannot remove account and you cannot change visibility of it. After registration will be completed, your account and data will be permanently public. Accordingly, if you want to anonymously upload data, do not enter any personal information or do not create account.",
+    "accountcreationwarning2": "Please keep in mind!!! Public information means that it will be accesible to everyone, including evil people! Some people may use them for evil purposes! Also, if you are signed in with account and upload file, it will be publicly visible that you uploaded it!!! If you create account, please, verify all information before account creation, because after creation, they will be public and you will not be able to change visibility or remove them!",
     "agreeverifytext": "I read, understood and agree",
-    "goback": "Go back",
+    "gomainpage": "Go to main page",
     "startregistration": "Start registration",
     "public": "Public",
     "optional": "Optional",
@@ -109,8 +110,13 @@
     "passworddescription": "If you do not enter password, you will be logged in with key saved in this browser.",
     "additionalinfo": "Additional information",
     "notinfluencesaccounttechnicalfunctions": "Not influences account technical functions. If filled in, they are only informational and do not affect any functions of our services.",
+    "accounttypetitle": "Account type",
+    "notchosen": "Not chosen",
+    "personal": "Personal",
+    "notpersonal": "Not personal",
+    "accounttypedescription": "This field is optional and does not affect anything. If chosen, it indicates type of account. Personal account means that it is for specific person. Not personal is for example: \"Pedestrian SOS!\"",
     "nametitle": "Name",
     "namedescription": "You can enter first name and last name both in this field, but it is not compulsory and you can enter anything. This field is optional and it is not compulsory to enter your real name. You can enter anything, even it is not human name.",
     "birthdatetitle": "Date of birth",
-    "birthdatedescription": "This field is optional and does not affect anything. Anyone can completely use our services, regardless of age. It does not matter what date you enter here, you can enter any date and completely use our services without any restriction, despite date of birth."
+    "birthdatedescription": "This field is optional and does not affect anything. Anyone can completely use our services, regardless of age. It does not matter what date you enter here, you can enter any date and completely use our services without any restriction, despite date of birth. Also, it is not compulsory to enter your real date of birth. You can enter any date, even if it is not human birth date."
 }

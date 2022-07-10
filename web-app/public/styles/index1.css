@@ -44,6 +44,10 @@
     bottom: 0;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
+}
+.overlay > *{
+    cursor: initial;
 }
 #dragoverlay    {
     background-color: #256aff80;
