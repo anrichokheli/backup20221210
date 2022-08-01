@@ -544,6 +544,16 @@ try{
         }
     }
     dragElement(takePhotoDraggable);
+    if(localStorage.getItem("cameramoveabletakephotobutton") == "true"){
+        takePhotoDraggable.style.display = "inline-block";
+    }
+    window.addEventListener("storage", function(){
+        if(localStorage.getItem("cameramoveabletakephotobutton") == "true"){
+            takePhotoDraggable.style.display = "inline-block";
+        }else{
+            takePhotoDraggable.style.display = "none";
+        }
+    });
 }catch(e){}
 try{
     var bottomButtons = document.getElementById("bottombuttons");
@@ -559,8 +569,10 @@ try{
             flashLight.style.left = "initial";
             psbutton.style.right = "initial";
             psbutton.style.left = "0";
-            takePhotoDraggable.style.left = "0";
-            takePhotoDraggable.style.right = "initial";
+            try{
+                takePhotoDraggable.style.left = "0";
+                takePhotoDraggable.style.right = "initial";
+            }catch(e){}
         }
         else if(screen.orientation.type == "landscape-primary"){
             bottomButtons.style.left = "initial";
@@ -571,8 +583,10 @@ try{
             flashLight.style.left = "0";
             psbutton.style.right = "initial";
             psbutton.style.left = "0";
-            takePhotoDraggable.style.left = "0";
-            takePhotoDraggable.style.right = "initial";
+            try{
+                takePhotoDraggable.style.left = "0";
+                takePhotoDraggable.style.right = "initial";
+            }catch(e){}
         }
         else if(screen.orientation.type == "landscape-secondary"){
             bottomButtons.style.right = "initial";
@@ -583,10 +597,14 @@ try{
             flashLight.style.right = "0";
             psbutton.style.left = "initial";
             psbutton.style.right = "0";
-            takePhotoDraggable.style.right = "0";
-            takePhotoDraggable.style.left = "initial";
+            try{
+                takePhotoDraggable.style.right = "0";
+                takePhotoDraggable.style.left = "initial";
+            }catch(e){}
         }
-        takePhotoDraggable.style.top = "calc(50% - 72px)";
+        try{
+            takePhotoDraggable.style.top = "calc(50% - 72px)";
+        }catch(e){}
     }
     window.onorientationchange = function(){
         setScreenOrientation();
@@ -595,6 +613,13 @@ try{
         if(screen.orientation.type == "landscape-secondary"){
             setScreenOrientation();
         }
+    };
+    window.onresize = function(){
+        try{
+            takePhotoDraggable.style.left = "0";
+            takePhotoDraggable.style.right = "initial";
+            takePhotoDraggable.style.top = "calc(50% - 72px)";
+        }catch(e){}
     };
 }catch(e){}
 function ajax(method, url, onload, onerror, formdata){
@@ -675,23 +700,29 @@ try{
     };
 }catch(e){}
 try{
+    document.documentElement.onclick = function(){
+        if(localStorage.getItem("camerafullscreenonclick") == "true"){
+            this.requestFullscreen();
+        }
+    };
     var onlyVideo;
     video.onclick = function(){
-        document.documentElement.requestFullscreen();
-        onlyVideo = !onlyVideo;
-        if(onlyVideo){
-            var display = "none";
-        }else{
-            var display = "flex";
-        }
-        var elements = document.querySelectorAll(".buttons,#statusBox,#recordstatus");
-        for(var i = 0; i < elements.length; i++){
-            if(elements[i].id == "recordstatus" && display == "flex"){
-                if(videoRecording || liveStreaming){
+        if(localStorage.getItem("cameravideoonlyonclick") == "true"){
+            onlyVideo = !onlyVideo;
+            if(onlyVideo){
+                var display = "none";
+            }else{
+                var display = "flex";
+            }
+            var elements = document.querySelectorAll(".buttons,#statusBox,#recordstatus");
+            for(var i = 0; i < elements.length; i++){
+                if(elements[i].id == "recordstatus" && display == "flex"){
+                    if(videoRecording || liveStreaming){
+                        elements[i].style.display = display;
+                    }
+                }else{
                     elements[i].style.display = display;
                 }
-            }else{
-                elements[i].style.display = display;
             }
         }
     };
@@ -714,6 +745,10 @@ try{
             blackscreenOverlay.style.display = "block";
         }
     }
-    video.ondblclick = function(){blackscreenfunc();};
+    video.ondblclick = function(){
+        if(localStorage.getItem("camerablackscreenondblclick") == "true"){
+            blackscreenfunc();
+        }
+    };
     blackscreenOverlay.ondblclick = function(){blackscreenfunc();};
 }catch(e){}

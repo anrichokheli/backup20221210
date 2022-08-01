@@ -186,7 +186,7 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
         try{
             div.className = "statusText";
         }catch(e){}
-        div.innerHTML = img+text+'<span class="uploading">'+getString("uploading")+'</span>';
+        div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploading">'+getString("uploading")+'</span>';
         var color = "#ffff00";
         try{
             div.style.borderColor = color;
@@ -217,7 +217,7 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
                     setUploadStatusTop(locationUploadStatus, locationUploadString, 1);
                 }
             }catch(e){}
-            div.innerHTML = img + text + '<span class="uploadcompleted">' + getString("uploadcompleted") + '</span>';
+            div.innerHTML = getCurrentDateTime() + "<br>" + img + text + '<span class="uploadcompleted">' + getString("uploadcompleted") + '</span>';
             color = "#00ff00";
             unloadWarning--;
             // try{
@@ -234,7 +234,7 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
                     setUploadStatusTop(locationUploadStatus, locationUploadString, -1);
                 }
             }catch(e){}
-            div.innerHTML = img + text + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
+            div.innerHTML = getCurrentDateTime() + "<br>" + img + text + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
             color = "#ff0000";
             // if(!location)    {
             //     input.disabled = 0;
@@ -261,7 +261,7 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
         try{
             div.className = "statusText";
         }catch(e){}
-        div.innerHTML = img + text + '<span class="uploaderror">' + getString("uploaderror") + '</span>';
+        div.innerHTML = getCurrentDateTime() + "<br>" + img + text + '<span class="uploaderror">' + getString("uploaderror") + '</span>';
         color = "#ff0000";
         div.style.borderColor = color;
         // if(!location)    {
@@ -320,7 +320,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
     }catch(e){}
     var text = '<span class="voice">' + getString("voice") + '</span>' + "; ";
     var img = "<img width=\"16\" height=\"16\" src=\"images/microphone.svg\"> ";
-    div.innerHTML = img+text+'<span class="uploading">'+getString("uploading")+'</span>';
+    div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploading">'+getString("uploading")+'</span>';
     div.style.borderColor = "#ffff00";
     statusElement.insertBefore(div, statusElement.childNodes[0]);
     var formData;
@@ -339,7 +339,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
             div.className = "statusText";
         }catch(e){}
         if(this.responseText === "1")    {
-            div.innerHTML = img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
+            div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
             div.style.borderColor = "#00ff00";
             unloadWarning--;
             // try{
@@ -351,7 +351,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
             // }catch(e){}
         }
         else    {
-            div.innerHTML = img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
+            div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             // button.disabled = 0;
             addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, formData/*formdata0*//*voicefiles0*/);}, statusElement);
@@ -363,7 +363,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
         try{
             div.className = "statusText";
         }catch(e){}
-        div.innerHTML = img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
+        div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         div.style.borderColor = "#ff0000";
         statusElement.insertBefore(div, statusElement.childNodes[0]);
         // button.disabled = 0;
@@ -399,6 +399,14 @@ function bottomProgressVisible(visible)    {
             }, 3000);
         }
     }catch(e){}
+}
+function getCurrentDateTime(){
+    try{
+        var d = new Date();
+        return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    }catch(e){
+        return "";
+    }
 }
 function flexCenter(element, columnDirection) {
     try{
@@ -583,7 +591,7 @@ function filesAttach(n, id, key, files, formdata0, element){
     }catch(e){}
     var text = '<span class="file(s)">' + getString("file(s)") + '</span>' + "; ";
     var img = "<img width=\"16\" height=\"16\" src=\"images/photovideo.svg\"> ";
-    div.innerHTML = img+text+'<span class="uploading">'+getString("uploading")+'</span>';
+    div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploading">'+getString("uploading")+'</span>';
     div.style.borderColor = "#ffff00";
     element.insertBefore(div, element.childNodes[0]);
     var ajax = new XMLHttpRequest();
@@ -596,10 +604,10 @@ function filesAttach(n, id, key, files, formdata0, element){
             div.className = "statusText";
         }catch(e){}
         if(this.responseText == "1"){
-            div.innerHTML = img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
+            div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
             div.style.borderColor = "#00ff00";
         }else{
-            div.innerHTML = img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
+            div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             addRetryButton(function(){filesAttach(n, id, key, files, formData, element/*formdata0*/);}, element);
         }
@@ -613,7 +621,7 @@ function filesAttach(n, id, key, files, formdata0, element){
         try{
             div.className = "statusText";
         }catch(e){}
-        div.innerHTML = img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
+        div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         div.style.borderColor = "#ff0000";
         element.insertBefore(div, element.childNodes[0]);
         addRetryButton(function(){filesAttach(n, id, key, files, formData, element/*formdata0*/);}, element);
@@ -630,12 +638,16 @@ function preUpload(id, value, div, imageName, stringName, array, displayValue){
     }
     array[id].push(value);
     var statusText = document.createElement("div");
-    statusText.innerHTML = '<img width="16" height="16" src="images/' + imageName + '.svg"> <span class="' + stringName + '">' + getString(stringName) + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
+    statusText.innerHTML = getCurrentDateTime() + "<br>" + '<img width="16" height="16" src="images/' + imageName + '.svg"> <span class="' + stringName + '">' + getString(stringName) + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
     var div2 = document.createElement("div");
     div2.innerText = displayValue;
     try{
-        var borderStyle = "1px dotted ";
-        div2.style.border = borderStyle + color;
+        statusText.style.margin = "1px";
+        statusText.style.padding = "1px";
+        div2.style.margin = "1px";
+        div2.style.padding = "1px";
+        statusText.style.border = "1px dashed #ffff00";
+        div2.style.border = "1px dotted #ffff00";
         div2.style.overflowY = "auto";
         div2.style.maxHeight = "50vh";
     }catch(e){}
@@ -725,13 +737,17 @@ function getProgressPercent(e){
     return ((e.loaded / e.total) * 100).toFixed(2) + '%';
 }
 function getProgressText(progressPercent, e){
-    return progressPercent + " (" + e.loaded + " / " + e.total + ")";
+    return progressPercent + " (" + e.loaded + "B / " + e.total + "B)";
 }
 function uploadProgressSetup(ajax, div, currentUploadID){
     var progressArray = addProgressBar(div);
     var progressBar = progressArray[0];
     var progress = progressArray[1];
     var progressPercent;
+    var lastTime = (new Date()).getTime() / 1000;
+    var lastData;
+    var bytesInSecond;
+    var timeLeft;
     ajax.upload.onprogress = function(e){
         progressPercent = getProgressPercent(e);
         progress.innerText = getProgressText(progressPercent, e);
@@ -744,6 +760,15 @@ function uploadProgressSetup(ajax, div, currentUploadID){
                 };
             }
         }
+        try{
+            bytesInSecond = (e.loaded - lastData) / ((new Date()).getTime() / 1000 - lastTime);
+            timeLeft = (e.total - e.loaded) / bytesInSecond;
+            if(!isNaN(bytesInSecond) && !isNaN(timeLeft)){
+                progress.innerText += "\n" + bytesInSecond + "B/s" + "\n" + timeLeft + "s";
+            }
+            lastData = e.loaded;
+            lastTime = (new Date()).getTime() / 1000;
+        }catch(e){}
     };
 }
 function uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, status){
@@ -848,7 +873,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
                 typeString += "; ";
             }
         }catch(e){}
-        statusText.innerHTML = typeImg + ' ' + typeString + '<span class="uploading">' + getString("uploading") + '</span>';
+        statusText.innerHTML = getCurrentDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploading">' + getString("uploading") + '</span>';
         statusDiv.appendChild(statusText);
         /*var progressArray = addProgressBar(statusDiv);
         var progressBar = progressArray[0];
@@ -1099,7 +1124,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
                 after2.innerHTML = html;
                 after.appendChild(after2);
                 var element = document.getElementById('q'+n);
-                statusText.innerHTML += typeImg + ' ' + typeString + '<span class="uploadcompleted">' + getString("uploadcompleted")+'</span>'+"\n(#" + n + ")";
+                statusText.innerHTML += getCurrentDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploadcompleted">' + getString("uploadcompleted")+'</span>'+"\n(#" + n + ")";
                 color = "#00ff00";
                 if(currentUploadID == lastUploadID){
                     bottomProgressVisible(0);
@@ -1162,7 +1187,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
             try{
                 setUploadStatusTop(fileUploadStatus, fileUploadString, -1);
             }catch(e){}
-            statusText.innerHTML += typeImg + ' ' + typeString + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
+            statusText.innerHTML += getCurrentDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
             var errorDiv = document.createElement("div");
             errorDiv.style.border = "1px dotted #ff0000";
             errorDiv.innerText = this.responseText;
@@ -1189,7 +1214,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
         try{
             setUploadStatusTop(fileUploadStatus, fileUploadString, -1);
         }catch(e){}
-        statusText.innerHTML += typeImg + ' ' + typeString + '<span class="uploaderror">' + getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
+        statusText.innerHTML += getCurrentDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploaderror">' + getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         try{
             statusText.className = "statusText";
         }catch(e){}
@@ -1813,11 +1838,11 @@ try{
         });
     });
 }catch(e){}
-try{
+/*try{
     if(localStorage.getItem("saveuploads") == null){
         localStorage.setItem("saveuploads", true);
     }
-}catch(e){}
+}catch(e){}*/
 try{
     var myUploadsButton = document.createElement("button");
     myUploadsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 256 256" class="icons"><g transform="translate(0 256) scale(.1 -.1)"><path d="m705 2254c-326-72-588-347-646-680-16-93-6-270 21-364 94-328 381-569 723-605l67-7v31c0 30-2 31-42 31-24 0-79 9-123 19-355 86-595 390-597 756-2 305 159 563 441 704 142 72 357 96 515 57 190-46 362-167 472-333l36-55-176-177c-161-163-176-181-176-213 0-72 73-118 128-82 15 10 73 63 130 117l102 100v-240-240l-49-69c-98-140-244-252-398-305-31-10-58-19-60-19-1 0-3 38-3 85 0 89-15 137-45 149-37 14-86 6-110-19-28-27-29-54-25-410 2-173 8-197 56-215 39-15 1416-13 1449 2 51 23 55 45 55 327v259l-26 31c-19 23-34 31-59 31-88 0-95-20-95-275v-205h-600-600v95c0 88 1 95 20 95 32 0 150 48 222 91 76 44 172 129 230 202l38 49v-102c0-134 19-169 92-170 28 0 42 7 62 31l26 31v396 396l113-111c66-65 123-113 140-117 32-8 81 14 97 43 28 53 19 66-197 283-194 195-210 208-244 208-24 0-45-8-63-25-28-26-36-22-11 5 15 16 11 24-46 99-104 139-238 234-409 292-85 29-109 32-230 35-95 3-156-1-205-12z"/><path d="m762 1919c-125-62-177-214-116-337 94-188 364-188 458 0 32 64 35 152 7 213-21 46-88 111-137 131-52 22-161 18-212-7z"/><path d="m701 1405c-136-38-227-149-239-291-4-53-2-64 16-82 39-39 87-43 425-40 304 3 324 4 357 24 34 19 35 22 38 88 5 120-58 220-176 278-65 32-69 33-217 35-109 2-165-1-204-12z"/></g></svg> <span class="myuploads">' + getString("myuploads") + '</span>';

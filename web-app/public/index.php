@@ -78,7 +78,7 @@
         include(phpPath . "download.php");
     }
     header("X-Frame-Options: DENY");
-    require(phpPath . "security.php");
+    // require(phpPath . "security.php");
     include(phpPath . "uploadphotovideo.php");
     include(phpPath . "uploadstring.php");
     include(phpPath . "uploadvoice.php");

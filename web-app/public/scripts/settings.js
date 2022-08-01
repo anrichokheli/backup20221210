@@ -212,6 +212,21 @@ try{
     };
 }catch(e){}
 try{
+    var cameramoveabletakephotobutton = document.getElementById("cameramoveabletakephotobutton");
+    var camerafullscreenonclick = document.getElementById("camerafullscreenonclick");
+    var cameravideoonlyonclick = document.getElementById("cameravideoonlyonclick");
+    var camerablackscreenondblclick = document.getElementById("camerablackscreenondblclick");
+}catch(e){}
+try{
+    function setCheckboxOnstorage(checkbox, storageid){
+        try{
+            if(localStorage.getItem(storageid) == "true"){
+                checkbox.checked = 1;
+            }else{
+                checkbox.checked = 0;
+            }
+        }catch(e){}
+    }
     window.addEventListener("storage", function(){
         try{
             if(this.localStorage.getItem("darkmode")=="true"){
@@ -233,13 +248,7 @@ try{
                 defaultLang.checked=0;
             }
         }catch(e){}
-        try{
-            if(localStorage.getItem("saveuploads") == "true"){
-                saveUploads.checked = 1;
-            }else{
-                saveUploads.checked = 0;
-            }
-        }catch(e){}
+        setCheckboxOnstorage(saveUploads, "saveuploads");
         try{
             setLocationAttachSettings();
         }catch(e){}
@@ -255,6 +264,10 @@ try{
         try{
             setLoadOnScroll();
         }catch(e){}
+        setCheckboxOnstorage(cameramoveabletakephotobutton, "cameramoveabletakephotobutton");
+        setCheckboxOnstorage(camerafullscreenonclick, "camerafullscreenonclick");
+        setCheckboxOnstorage(cameravideoonlyonclick, "cameravideoonlyonclick");
+        setCheckboxOnstorage(camerablackscreenondblclick, "camerablackscreenondblclick");
     });
 }catch(e){}
 try{
@@ -285,7 +298,8 @@ try{
             localStorage.removeItem("timezone");
             setCookie("lang", "");
             setCookie("settingstimezone", "");
-            localStorage.setItem("saveuploads", true);
+            // localStorage.setItem("saveuploads", true);
+            localStorage.removeItem("saveuploads");
             resetLocationAttachSettings();
             //resetReopenSettings();
             //localStorage.removeItem("startupmode");
@@ -299,7 +313,17 @@ try{
             darkmode();
             language();
             //colorfilter();
+            localStorage.removeItem("cameramoveabletakephotobutton");
+            localStorage.removeItem("camerafullscreenonclick");
+            localStorage.removeItem("cameravideoonlyonclick");
+            localStorage.removeItem("camerablackscreenondblclick");
             setSettingsWindow(true);
         }
     };
+}catch(e){}
+try{
+    checkboxSettingSetup(null, cameramoveabletakephotobutton, "cameramoveabletakephotobutton");
+    checkboxSettingSetup(null, camerafullscreenonclick, "camerafullscreenonclick");
+    checkboxSettingSetup(null, cameravideoonlyonclick, "cameravideoonlyonclick");
+    checkboxSettingSetup(null, camerablackscreenondblclick, "camerablackscreenondblclick");
 }catch(e){}
