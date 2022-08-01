@@ -629,7 +629,12 @@
     }
     else    {
         if(!$rawData && !$ajax){
-            echo '<a href="?view&v=uploads/">..uploads/</a><br>';
+            echo '<br><a href="?view&v=uploads/">..uploads/</a><br><br>';
+            echo '
+            <a href="/" class="buttons">
+                <img width="32" height="32" src="images/homepage.svg">&nbsp;<span class="gomainpage"><string>gomainpage</string></span>
+            </a>
+            ';
         }
         if(/*!file_exists(photovideotimes)*/count(scandir(photovideotimes)) == 2){
             if($rawData){
