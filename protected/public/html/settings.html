@@ -1,0 +1,389 @@
+<div class="settingsbox">
+    <div id="darkmodediv" class="xycenter">
+        <span class="darkmode"><string>darkmode</string></span>
+        <div>
+            <label class="switch">
+                <input type="checkbox" id="darkmodecheckbox">
+                <span class="slider round"><img width="26" height="26" src="images/darkmode0.png"></span>
+            </label>
+        </div>
+    </div>
+    <div class="xycenter">
+        <input type="checkbox" id="defaulttheme">
+        <label class="devicedefault checkboxlabel" for="defaulttheme"><string>devicedefault</string></label>
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <label for="setlang" class="xycenter">
+            <img width="26" height="26" src="images/language.svg">
+            &nbsp;
+            <span class="language"><string>language</string></span>
+        </label>
+        <select id="setlang">
+            <php>langoptions</php>
+        </select>
+    </div>
+    <div class="xycenter">
+        <input type="checkbox" id="defaultlang">
+        <label class="devicedefault checkboxlabel" for="defaultlang"><string>devicedefault</string></label>
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <label for="settimezone" class="xycenter">
+            <img width="26" height="26" src="images/timezone.svg">
+            &nbsp;
+            <span class="timezone"><string>timezone</string></span>
+        </label>
+    </div>
+    <div class="xycenter">
+        <div id="timezonevalue"></div>
+        <select id="settimezone">
+            <option value="-12">-12</option>
+            <option value="-11">-11</option>
+            <option value="-10">-10</option>
+            <option value="-9">-9</option>
+            <option value="-8">-8</option>
+            <option value="-7">-7</option>
+            <option value="-6">-6</option>
+            <option value="-5">-5</option>
+            <option value="-4">-4</option>
+            <option value="-3">-3</option>
+            <option value="-2">-2</option>
+            <option value="-1">-1</option>
+            <option value="0">0</option>
+            <option value="1">+1</option>
+            <option value="2">+2</option>
+            <option value="3">+3</option>
+            <option value="4">+4</option>
+            <option value="5">+5</option>
+            <option value="6">+6</option>
+            <option value="7">+7</option>
+            <option value="8">+8</option>
+            <option value="9">+9</option>
+            <option value="10">+10</option>
+            <option value="11">+11</option>
+            <option value="12">+12</option>
+            <option value="13">+13</option>
+            <option value="14">+14</option>
+        </select>
+    </div>
+    <div class="xycenter">
+        <input type="checkbox" id="defaulttimezone">
+        <label class="devicedefault checkboxlabel" for="defaulttimezone"><string>devicedefault</string></label>
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <label for="saveuploads" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/save.svg">
+            <img width="26" height="26" src="images/myuploads.svg">
+            &nbsp;
+            <span class="savemyuploadsinthisbrowser"><string>savemyuploadsinthisbrowser</string></span>
+        </label>
+        <input type="checkbox" id="saveuploads">
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <img width="30" height="30" src="../images/location.svg">
+        <img width="30" height="30" src="../images/uploadicon.svg">
+        &nbsp;
+        <h4><span class="attachmylocation"><string>attachmylocation</string></span></h4>
+    </div>
+    <div class="settingsbottomline"></div>
+    <div class="xycenter">
+        <label for="takephotolocationattach" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/take_photo.svg">
+            &nbsp;
+            <span class="takephoto"><string>takephoto</string></span>
+        </label>
+        <input type="checkbox" id="takephotolocationattach">
+    </div>
+    <div class="xycenter">
+        <label for="recordvideolocationattach" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/record_video.svg">
+            &nbsp;
+            <span class="recordvideo"><string>recordvideo</string></span>
+        </label>
+        <input type="checkbox" id="recordvideolocationattach">
+    </div>
+    <div class="xycenter">
+        <label for="choosephotoslocationattach" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/photo.svg">
+            &nbsp;
+            <span class="choosephotos"><string>choosephotos</string></span>
+        </label>
+        <input type="checkbox" id="choosephotoslocationattach">
+    </div>
+    <div class="xycenter">
+        <label for="choosevideoslocationattach" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/video.svg">
+            &nbsp;
+            <span class="choosevideos"><string>choosevideos</string></span>
+        </label>
+        <input type="checkbox" id="choosevideoslocationattach">
+    </div>
+    <div class="xycenter">
+        <label for="choosefileslocationattach" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/photovideo.svg">
+            &nbsp;
+            <span class="choosefiles"><string>choosefiles</string></span>
+        </label>
+        <input type="checkbox" id="choosefileslocationattach">
+    </div>
+    <div class="xycenter">
+        <label for="enterlinklocationattach" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/link.svg">
+            &nbsp;
+            <span class="enterlink"><string>enterlink</string></span>
+        </label>
+        <input type="checkbox" id="enterlinklocationattach">
+    </div>
+    <div class="settingsbox">
+        <div class="xycenter">
+            <img width="30" height="30" src="../images/camera.svg">
+            &nbsp;
+            <h4><span class="camera"><string>camera</string></span></h4>
+        </div>
+        <div class="settingsbottomline"></div>
+        <div class="xycenter">
+            <label for="cameratakephotolocationattach" class="xycenter checkboxlabel">
+                <img width="26" height="26" src="images/take_photo.svg">
+                &nbsp;
+                <span class="takephoto"><string>takephoto</string></span>
+            </label>
+            <input type="checkbox" id="cameratakephotolocationattach">
+        </div>
+        <div class="xycenter">
+            <label for="camerarecordvideolocationattach" class="xycenter checkboxlabel">
+                <img width="26" height="26" src="images/record_video.svg">
+                &nbsp;
+                <span class="recordvideo"><string>recordvideo</string></span>
+            </label>
+            <input type="checkbox" id="camerarecordvideolocationattach">
+        </div>
+    </div>
+</div>
+<!--<div class="settingsbox">
+    <div class="xycenter">
+        <img width="30" height="30" src="../images/homepage.svg">
+        &nbsp;
+        <h4><span class="openatstartup"><string>openatstartup</string></span></h4>
+    </div>
+    <div class="settingsbottomline"></div>
+    <div class="xycenter">
+        <label for="defaultstartup" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/homepage.svg">
+            &nbsp;
+            <span class="default"><string>default</string></span>
+        </label>
+        <input type="radio" name="startupradioinputs" id="defaultstartup">
+    </div>
+    <div class="xycenter">
+        <label for="takephotostartup" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/take_photo.svg">
+            &nbsp;
+            <span class="takephoto"><string>takephoto</string></span>
+        </label>
+        <input type="radio" name="startupradioinputs" id="takephotostartup">
+    </div>
+    <div class="xycenter">
+        <label for="recordvideostartup" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/record_video.svg">
+            &nbsp;
+            <span class="recordvideo"><string>recordvideo</string></span>
+        </label>
+        <input type="radio" name="startupradioinputs" id="recordvideostartup">
+    </div>
+    <div class="xycenter">
+        <label for="choosephotosstartup" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/photo.svg">
+            &nbsp;
+            <span class="choosephotos"><string>choosephotos</string></span>
+        </label>
+        <input type="radio" name="startupradioinputs" id="choosephotosstartup">
+    </div>
+    <div class="xycenter">
+        <label for="choosevideosstartup" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/video.svg">
+            &nbsp;
+            <span class="choosevideos"><string>choosevideos</string></span>
+        </label>
+        <input type="radio" name="startupradioinputs" id="choosevideosstartup">
+    </div>
+    <div class="xycenter">
+        <label for="choosefilesstartup" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/photovideo.svg">
+            &nbsp;
+            <span class="choosefiles"><string>choosefiles</string></span>
+        </label>
+        <input type="radio" name="startupradioinputs" id="choosefilesstartup">
+    </div>
+</div>-->
+<!--<div class="settingsbox">
+    <div class="xycenter">
+        <img width="30" height="30" src="../images/retry.svg">
+        &nbsp;
+        <h4><span class="reopenafteruploadstart"><string>reopenafteruploadstart</string></span></h4>
+    </div>
+    <div class="settingsbottomline"></div>
+    <div class="xycenter">
+        <label for="takephotoreopen" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/take_photo.svg">
+            &nbsp;
+            <span class="takephoto"><string>takephoto</string></span>
+        </label>
+        <input type="checkbox" id="takephotoreopen">
+    </div>
+    <div class="xycenter">
+        <label for="recordvideoreopen" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/record_video.svg">
+            &nbsp;
+            <span class="recordvideo"><string>recordvideo</string></span>
+        </label>
+        <input type="checkbox" id="recordvideoreopen">
+    </div>
+    <div class="xycenter">
+        <label for="choosephotosreopen" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/photo.svg">
+            &nbsp;
+            <span class="choosephotos"><string>choosephotos</string></span>
+        </label>
+        <input type="checkbox" id="choosephotosreopen">
+    </div>
+    <div class="xycenter">
+        <label for="choosevideosreopen" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/video.svg">
+            &nbsp;
+            <span class="choosevideos"><string>choosevideos</string></span>
+        </label>
+        <input type="checkbox" id="choosevideosreopen">
+    </div>
+    <div class="xycenter">
+        <label for="choosefilesreopen" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/photovideo.svg">
+            &nbsp;
+            <span class="choosefiles"><string>choosefiles</string></span>
+        </label>
+        <input type="checkbox" id="choosefilesreopen">
+    </div>
+</div>-->
+<!--<div class="settingsbox">
+    <div class="xycenter">
+        <label for="colorfiltercheckbox" class="xycenter">
+            <img width="26" height="26" src="images/colorfilter.svg">
+            &nbsp;
+            <span class="colorfilter"><string>colorfilter</string></span>
+        </label>
+        &nbsp;
+        <div>
+            <label class="switch">
+                <input type="checkbox" id="colorfiltercheckbox">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+    <input type="range" min="0" max="100" id="colorfilterrange">
+    <br>
+    <input type="number" min="0" max="100" id="colorfilternumber">%
+</div>-->
+<div class="settingsbox">
+    <table>
+        <tr>
+            <td>
+                <label for="lightcolor" class="lightcolor"><string>lightcolor</string></label>
+            </td>
+            <td>
+                <input type="color" id="lightcolor">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="lightbackgroundcolor" class="lightbackgroundcolor"><string>lightbackgroundcolor</string></label>
+            </td>
+            <td>
+                <input type="color" id="lightbackgroundcolor">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="darkcolor" class="darkcolor"><string>darkcolor</string></label>
+            </td>
+            <td>
+                <input type="color" id="darkcolor">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="darkbackgroundcolor" class="darkbackgroundcolor"><string>darkbackgroundcolor</string></label>
+            </td>
+            <td>
+                <input type="color" id="darkbackgroundcolor">
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <img width="30" height="30" src="images/viewicon.svg">
+        &nbsp;
+        <h4><span class="viewuploads"><string>viewuploads</string></span></h4>
+    </div>
+    <div class="settingsbottomline"></div>
+    <div class="xycenter">
+        <label for="loadonscroll" class="xycenter checkboxlabel">
+            <img width="26" height="26" src="images/viewmore.svg">
+            <img width="26" height="26" src="images/scroll.svg">
+            &nbsp;
+            <span class="loadnewcontentwhenscroll"><string>loadnewcontentwhenscroll</string></span>
+        </label>
+        <input type="checkbox" id="loadonscroll">
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <img width="30" height="30" src="images/camera.svg">
+        &nbsp;
+        <h4><span class="camera"><string>camera</string></span></h4>
+    </div>
+    <div class="settingsbottomline"></div>
+    <div class="xycenter">
+        <label for="cameramoveabletakephotobutton" class="xycenter checkboxlabel">
+            <!-- <img width="26" height="26" src="">
+            &nbsp; -->
+            <span class="cameramoveabletakephotobutton"><string>cameramoveabletakephotobutton</string></span>
+        </label>
+        <input type="checkbox" id="cameramoveabletakephotobutton">
+    </div>
+    <div class="xycenter">
+        <label for="camerafullscreenonclick" class="xycenter checkboxlabel">
+            <!-- <img width="26" height="26" src="">
+            &nbsp; -->
+            <span class="camerafullscreenonclick"><string>camerafullscreenonclick</string></span>
+        </label>
+        <input type="checkbox" id="camerafullscreenonclick">
+    </div>
+    <div class="xycenter">
+        <label for="cameravideoonlyonclick" class="xycenter checkboxlabel">
+            <!-- <img width="26" height="26" src="">
+            &nbsp; -->
+            <span class="cameravideoonlyonclick"><string>cameravideoonlyonclick</string></span>
+        </label>
+        <input type="checkbox" id="cameravideoonlyonclick">
+    </div>
+    <div class="xycenter">
+        <label for="camerablackscreenondblclick" class="xycenter checkboxlabel">
+            <!-- <img width="26" height="26" src="">
+            &nbsp; -->
+            <span class="camerablackscreenondblclick"><string>camerablackscreenondblclick</string></span>
+        </label>
+        <input type="checkbox" id="camerablackscreenondblclick">
+    </div>
+</div>
+<div class="settingsbox">
+    <button class="buttons" id="resetsettings">
+        <span style="color:#ec0400;font-size:32px;">&times;</span> <span class="resetsettings" style="font-size: 16px;"><string>resetsettings</string></span>
+    </button>
+</div>
