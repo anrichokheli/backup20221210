@@ -41,7 +41,7 @@ try{
             };
         }
         var ajax = new XMLHttpRequest();
-        ajax.open("GET", "json/languages/" + lang + ".json");
+        ajax.open("GET", "json/languages/main/" + lang + ".json");
         ajax.onload = function()    {
             if(this.status == 200){
                 document.documentElement.lang = lang;
@@ -56,14 +56,14 @@ try{
                         }
                     }
                 }
-                document.title = strings["title"];
+                document.title = strings["viewuploads"] + " | " + strings["title"];
             }
             else{
                 var getlang = (new URL(window.location.href)).searchParams.get("lang");
                 if(getlang != null && get != 1){
                     lang = getlang;
                     setLanguage(lang,1);
-                }else{
+                }else if(lang != "en"){
                     lang = "en";
                     setLanguage(lang);
                 }
@@ -169,11 +169,13 @@ try{
 }catch(e){}
 function loaderSetup(loader, loadError){
     loader.style.display = "none";
+    loader.style.margin = "2%";
     loadError.style.display = "none";
     loadError.innerText = "LOAD ERROR!";
     loadError.style.fontSize = "20px";
     loadError.style.fontWeight = "bold";
     loadError.style.color = "#ff0000";
+    loadError.style.margin = "2%";
 }
 try{
     var loaderEnabled;
@@ -374,7 +376,7 @@ try{
         view2url += "?n=" + n;
     }
     var br0 = document.createElement("br");
-    mainDiv.insertBefore(br0, topDiv.nextElementSibling);
+    mainDiv.insertBefore(br0, topDiv.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling);
     var viewuploads2button = document.createElement("button");
     viewuploads2button.classList.add("buttons");
     viewuploads2button.innerHTML = '<img width="32" height="32" src="images/viewicon.svg">&nbsp;<span class="viewuploads"></span> 2';

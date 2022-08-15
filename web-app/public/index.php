@@ -5,7 +5,7 @@
     define("htmlPath", protectedPublicPath . "html/");
     define("phpPath", protectedPrivatePath . "php/");
     define("defaultLang", "en");
-    define("jsonLanguagesPath", $_SERVER["DOCUMENT_ROOT"] . "/json/languages/");
+    define("jsonLanguagesPath", $_SERVER["DOCUMENT_ROOT"] . "/json/languages/main/");
     if(file_exists(phpPath . "setup.php")){
         require_once(phpPath . "setup.php");
     }

@@ -1,6 +1,6 @@
 <?php
     define("notmain", "");
-    define("nocaptcha", "");
+    // define("nocaptcha", "");
     include("../index.php");
 ?>
 <!DOCTYPE html>
@@ -36,6 +36,11 @@
             padding: 1%;
             border: 2px solid #256aff80;
         }
+        @media(prefers-color-scheme: dark)    {
+            :root   {
+                color-scheme: dark;
+            }
+        }
     </style>
 </head>
 <body>
@@ -53,7 +58,7 @@
         </h2>
         <div id="content">
             <?php
-                echo nl2br(file_get_contents($lang . ".txt"));
+                echo nl2br(file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/text/languages/" . $lang . ".txt"));
             ?>
         </div>
         <form style="border: 2px dotted #256aff;padding: 4px;display: inline-block;" method="get">
@@ -67,6 +72,10 @@
             </select>
             <button type="submit"><?php echo $langJSON["open"]; ?></button>
         </form>
+        <br><br>
+        <a href="/" style="border: 2px solid #256aff;padding: 4px;display: inline-block;">
+            <img width="32" height="32" src="../images/homepage.svg">&nbsp;<span><?php echo $langJSON["gomainpage"]; ?></span>
+        </a>
     </div>
     <?php echoConsoleWarningScript(); ?>
 </body>

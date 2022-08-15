@@ -1,11 +1,11 @@
 var styleTag = document.createElement("link");
 styleTag.rel = "stylesheet";
-styleTag.href = "styles/index1.css";
+styleTag.href = "/styles/index1.css";
 document.head.appendChild(styleTag);
 var mainDiv = document.getElementById("main");
 var strings = null;
 function getString(key)  {
-    if(strings!=null)return strings[key];
+    if(strings && strings[key])return strings[key];
     return key;
 }
 var latitude;
@@ -20,30 +20,182 @@ try{
     locationTop.id = "locationtop";
     locationDiv.appendChild(locationTop);
     var locationImage = document.createElement("img");
-    locationImage.src = "images/location.svg";
     locationImage.width = "32";
     locationImage.height = "32";
     locationTop.appendChild(locationImage);
     var locationTitle = document.createElement("span");
-    locationTitle.className = "currentlocation";
+    locationTitle.innerText = getString("mylocation");
+    try{
+        locationTitle.classList.add("mylocation");
+    }catch(e){}
+    try{
+        locationTitle.className = "mylocation";
+    }catch(e){}
     locationTitle.style.fontSize = "20px";
     locationTop.appendChild(locationTitle);
-    var locationData = document.createElement("div");
-    locationDiv.appendChild(locationData);
+    /*function locationSettingSetup(imageName, textName){
+        var local_div = document.createElement("div");
+        local_div.innerHTML = '<label style="cursor:pointer;"><div style="border:1px solid #256aff;text-align:center;display:inline-block;"><img width="16" height="16" src="images/'+imageName+'.svg" style="vertical-align:middle;">&nbsp;<span class="'+textName+'" style="vertical-align:middle;">'+getString(textName)+'</span></div></label>';
+        var local_checkbox = document.createElement("input");
+        local_checkbox.type = "checkbox";
+        try{
+            local_checkbox.style.verticalAlign = "middle";
+            local_checkbox.style.cursor = "pointer";
+        }catch(e){}
+        local_div.style.display = "inline-block";
+        local_div.children[0].children[0].appendChild(local_checkbox);
+        locationSettingsDiv.appendChild(local_div);
+        local_checkbox.onchange = function(){
+            if(currentLocationCheckbox.checked || initialLocationCheckbox.checked){
+                getLocation2();
+            }else if(watchPositionID){
+                navigator.geolocation.clearWatch(watchPositionID);
+            }
+            localStorage.setItem(textName, JSON.stringify(this.checked));
+        };
+        local_checkbox.checked = JSON.parse(localStorage.getItem(textName));
+        return local_checkbox;
+    }*/
+    function setStorageIfNot(local_name, local_value){
+        if(!localStorage.getItem(local_name)){
+            localStorage.setItem(local_name, local_value);
+        }
+    }
+    function setLocationSettingDiv(storageName, local_div, changed){
+        if(!local_div){
+            local_div = document.getElementById("settingstatus"+storageName);
+        }
+        if(!local_div){
+            return;
+        }
+        if(localStorage.getItem(storageName) == "true"){
+            local_div.style.border = "2px solid #00ff00";
+        }else{
+            local_div.style.border = "2px solid #ff0000";
+        }
+        if(changed){
+            if(localStorage.getItem(storageName) == "true" && (storageName == "currentlocationmode" || storageName == "locationinitializationmode")){
+                getLocation2();
+            }else if(watchPositionID){
+                navigator.geolocation.clearWatch(watchPositionID);
+                watchPositionID = null;
+            }
+        }
+    }
+    function locationModeStatusSetup(imageName/*, textName*/, storageName){
+        var local_div = document.createElement("div");
+        //var cachetimeoutval = '';
+        /*if(storageName == "locationcachemode"){
+            cachetimeoutval = '(<span id="cachetimeoutval">'+(localStorage.getItem("locationcachetimeout") / 1000)+'</span>s)';
+            window.addEventListener("storage", function(){
+                locationCacheValue.innerText = localStorage.getItem("locationcachetimeout") / 1000;
+            });
+        }*/
+        //local_div.innerHTML = '<div style="border:1px solid #256aff;text-align:center;display:inline-block;"><img width="16" height="16" src="images/'+imageName+'.svg">&nbsp;<span class="'+textName+'">'+getString(textName)+'</span>'+cachetimeoutval+'</div>';
+        local_div.innerHTML = '<img width="16" height="16" src="images/'+imageName+'.svg">';
+        local_div.style.display = "inline-block";
+        local_div.id = "settingstatus"+storageName;
+        setLocationSettingDiv(storageName, local_div);
+        window.addEventListener("storage", function(){
+            setLocationSettingDiv(storageName, local_div, true);
+        });
+        locationModeStatusDiv.appendChild(local_div);
+    }
+    var locationTable = document.createElement("table");
+    var locationTbody = document.createElement("tbody");
+    locationTable.appendChild(locationTbody);
+    locationDiv.appendChild(locationTable);
+    var geolocationSupported;
+    try{
+        if(navigator.geolocation){
+            geolocationSupported = true;
+            locationImage.src = "images/waitinglocation.svg";
+            /*var locationSettingsDiv = document.createElement("div");
+            try{
+                locationSettingsDiv.style.textAlign = "center";
+                locationSettingsDiv.style.borderBottom = "2px solid #256aff";
+            }catch(e){}
+            locationDiv.insertBefore(locationSettingsDiv, locationTable);
+            var currentLocationCheckbox;
+            var highAccuracyModeCheckbox;
+            var locationOnLoadCheckbox;
+            var locationCacheCheckbox;
+            var locationCacheInput;
+            if(!localStorage.getItem("highaccuracy")){
+                localStorage.setItem("highaccuracy", JSON.stringify(true));
+            }
+            currentLocationCheckbox = locationSettingSetup("currentlocation", "currentlocation");
+            highAccuracyModeCheckbox = locationSettingSetup("locationhighaccuracy", "highaccuracy");
+            initialLocationCheckbox = locationSettingSetup("initialization", "initiallocation");
+            locationCacheCheckbox = locationSettingSetup("cache", "locationcache");
+            var locationCacheLabel = document.createElement("label");
+            try{
+                locationCacheLabel.style.border = "1px solid #256aff";
+                locationCacheLabel.style.display = "inline-block";
+            }catch(e){}
+            locationCacheLabel.innerHTML = '<span class="cachetimeout">'+getString("cachetimeout")+'</span>';
+            locationCacheInput = document.createElement("input");
+            locationCacheInput.type = "number";
+            locationCacheInput.min = "0";
+            locationCacheInput.oninput = function(){
+                localStorage.setItem("locationcachetimeout", this.value);
+            };
+            if(!localStorage.getItem("locationcachetimeout")){
+                localStorage.setItem("locationcachetimeout", 60);
+            }
+            locationCacheInput.value = localStorage.getItem("locationcachetimeout");
+            locationCacheLabel.appendChild(locationCacheInput);
+            var local_text = document.createTextNode("s");
+            locationCacheLabel.appendChild(locationCacheInput);
+            locationCacheLabel.appendChild(local_text);
+            locationSettingsDiv.appendChild(locationCacheLabel);*/
+            var locationModeStatusDiv = document.createElement("div");
+            //locationModeStatusDiv.innerHTML = '<img width="16" height="16" src="/images/settings.svg"><span class="settings">'+getString("settings")+'</span><br>';
+            try{
+                locationModeStatusDiv.style.textAlign = "center";
+                locationModeStatusDiv.style.borderBottom = "2px solid #256aff";
+            }catch(e){}
+            locationDiv.insertBefore(locationModeStatusDiv, locationTable);
+            /*var currentLocationStatus;
+            var highAccuracyModeStatus;
+            var locationOnLoadStatus;
+            var locationCacheStatus;
+            currentLocationStatus = locationModeStatusSetup("currentlocation", "currentlocation", "currentlocationmode");
+            highAccuracyModeStatus = locationModeStatusSetup("locationhighaccuracy", "locationhighaccuracy", "locationhighaccuracymode");
+            locationOnLoadStatus = locationModeStatusSetup("initialization", "initiallocation", "locationinitializationmode");
+            locationCacheStatus = locationModeStatusSetup("cache", "locationcache", "locationcachemode");*/
+            locationModeStatusSetup("currentlocation", "currentlocationmode");
+            locationModeStatusSetup("locationhighaccuracy", "locationhighaccuracymode");
+            locationModeStatusSetup("initialization", "locationinitializationmode");
+            locationModeStatusSetup("cache", "locationcachemode");
+            //var locationCacheValue = document.getElementById("cachetimeoutval");
+            try{
+                setStorageIfNot("locationhighaccuracymode", true);
+                setStorageIfNot("locationcachemode", true);
+                setStorageIfNot("locationcachetimeout", 1000);
+            }catch(e){}
+        }else{
+            locationTbody.innerHTML = "<tr><th>Geolocation not supported by this browser.</th></tr>";
+            locationDiv.style.backgroundColor = "#ff000080";
+            locationImage.src = "images/nolocation.svg";
+        }
+    }catch(e){}
+    locationDiv.style.display = "inline-block";
 }catch(e){}
 function addLocationElements(text)  {
-    var div = document.createElement("div");
-    div.className = "locationDivs";
-    locationData.appendChild(div);
-    var title = document.createElement("span");
-    title.className = "locationTitles";
-    title.innerText = ": ";
-    var titleText = document.createElement("span");
-    titleText.className = text;
-    title.insertBefore(titleText, title.childNodes[0]);
-    div.appendChild(title);
-    var data = document.createElement("span");
-    div.appendChild(data);
+    var tr = document.createElement("tr");
+    var title = document.createElement("th");
+    try{
+        title.classList.add(text);
+    }catch(e){}
+    try{
+        title.className = text;
+    }catch(e){}
+    title.innerText = getString(text);
+    tr.appendChild(title);
+    var data = document.createElement("td");
+    tr.appendChild(data);
+    locationTbody.appendChild(tr);
     return data;
 }
 function showLocation(element, data)    {
@@ -59,25 +211,48 @@ function showLocation(element, data)    {
     element.innerText = data;
 }
 try{
-    var latitudeLongitudeData = addLocationElements("latitudelongitude");
-    var altitudeData = addLocationElements("altitude");
-    var accuracyData = addLocationElements("accuracy");
-    var altitudeAccuracyData = addLocationElements("altitudeaccuracy");
-    locationDiv.style.display = "inline-block";
+    if(geolocationSupported){
+        var latitudeLongitudeData = addLocationElements("latitudelongitude");
+        var altitudeData = addLocationElements("altitude");
+        var accuracyData = addLocationElements("accuracy");
+        var altitudeAccuracyData = addLocationElements("altitudeaccuracy");
+        var locationTimeData = addLocationElements("detectdatetime");
+    }
 }catch(e){}
 var locationUploadArray = [];
-var locationWait;
-function getLocation()  {
-    if(navigator.geolocation)    {
-        locationWait = 1;
-        navigator.geolocation.watchPosition(afterLocation, locationError);
+var watchPositionID;
+var detectingLocation;
+function getLocation(continuousUpdate, highAccuracy, cacheData, cacheTimeout)  {
+    detectingLocation = true;
+    if(watchPositionID){
+        navigator.geolocation.clearWatch(watchPositionID);
+        watchPositionID = null;
     }
-    else    {
-        locationData.innerText = "Geolocation not supported by this browser.";
-        locationDiv.style.backgroundColor = "#ff000080";
+    if(continuousUpdate){
+        if(cacheData){
+            watchPositionID = navigator.geolocation.watchPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy, maximumAge: cacheTimeout});
+        }else{
+            watchPositionID = navigator.geolocation.watchPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy});
+        }
+    }else{
+        if(cacheData){
+            navigator.geolocation.getCurrentPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy, maximumAge: cacheTimeout});
+        }else{
+            navigator.geolocation.getCurrentPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy});
+        }
     }
+    locationImage.src = "images/detectinglocation.svg";
+}
+function getLocation2(){
+    //getLocation(currentLocationCheckbox.checked, highAccuracyModeCheckbox.checked, locationCacheCheckbox.checked, locationCacheInput.value * 1000);
+    getLocation(localStorage.getItem("currentlocationmode") == "true", localStorage.getItem("locationhighaccuracymode") == "true", localStorage.getItem("locationcachemode") == "true", parseInt(localStorage.getItem("locationcachetimeout")));
 }
 function afterLocation(position)  {
+    detectingLocation = false;
+    try{
+        locationImage.src = "images/location.svg";
+        // locationUploadStatus.children[0].src = "images/location.svg";
+    }catch(e){}
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
     altitude = position.coords.altitude;
@@ -106,37 +281,70 @@ function afterLocation(position)  {
         showLocation(altitudeData, altitude);
         showLocation(accuracyData, accuracy);
         showLocation(altitudeAccuracyData, altitudeAccuracy);
+        showLocation(locationTimeData, getDateTime(position.timestamp) + " (" + position.timestamp + ")");
+    }catch(e){}
+    try{
+        localStorage.setItem("locationallowed", "true");
     }catch(e){}
 }
 var locationErrorDiv = document.createElement("div");
 locationErrorDiv.style.border = "2px solid #ff0000";
 function locationError(error)    {
-    locationDiv.appendChild(locationErrorDiv);
-    switch(error.code)   {
-        case error.PERMISSION_DENIED:
-            locationErrorDiv.innerText = "permission denied. to detect location,";
-            locationErrorDiv.appendChild(document.createElement("br"));
-            var button = document.createElement("button");
-            button.innerText = "allow permission";
-            button.addEventListener("click", function(){
-                getLocation();
-            });
-            locationErrorDiv.appendChild(button);
-            locationWait = 0;
-            break;
-        case error.POSITION_UNAVAILABLE:
-            locationErrorDiv.innerText = "location unavailable";
-            break;
-        case error.TIMEOUT:
-            locationErrorDiv.innerText = "request timed out";
-            break;
-        case error.UNKNOWN_ERROR:
-            locationErrorDiv.innerText = "unknown error";
-            break;
+    detectingLocation = false;
+    locationImage.src = "images/nolocation.svg";
+    if(!locationDiv.contains(locationErrorDiv)){
+        /*try{
+            locationImage.src = "images/nolocation.svg";
+            // locationUploadStatus.children[0].src = "images/nolocation.svg";
+        }catch(e){}*/
+        locationDiv.appendChild(locationErrorDiv);
+        var errorHTML = 'ERROR!<br>';
+        switch(error.code)   {
+            case error.PERMISSION_DENIED:
+                locationErrorDiv.innerHTML = errorHTML + "permission denied";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                locationErrorDiv.innerHTML = errorHTML + "location unavailable";
+                break;
+            case error.TIMEOUT:
+                locationErrorDiv.innerHTML = errorHTML + "request timed out";
+                break;
+            case error.UNKNOWN_ERROR:
+                locationErrorDiv.innerHTML = errorHTML + "unknown error";
+                break;
+        }
+        locationErrorDiv.appendChild(document.createElement("br"));
+        var button = document.createElement("button");
+        button.innerHTML = '<img width="32" height="32" src="/images/retry.svg">&nbsp;<span class="retry">'+getString("retry")+'</span>';
+        button.addEventListener("click", function(){
+            getLocation2();
+        });
+        try{
+            button.classList.add("buttons");
+        }catch(e){}
+        try{
+            button.className = "buttons";
+        }catch(e){}
+        locationErrorDiv.appendChild(button);
     }
-    setTimeout(getLocation, 250);
+    try{
+        if((error.code != error.PERMISSION_DENIED) || (localStorage.getItem("locationallowed") == "true")){
+            setTimeout(getLocation, 250);
+        }
+    }catch(e){
+        setTimeout(getLocation, 250);
+    }
 }
-getLocation();
+try{
+    if(geolocationSupported)    {
+        /*if(initialLocationCheckbox.checked){
+            getLocation2();
+        }*/
+        if(localStorage.getItem("locationinitializationmode") == "true"){
+            getLocation2();
+        }
+    }
+}catch(e){}
 try{
     function preImg(image){
         var img = document.createElement("img");
@@ -147,13 +355,18 @@ try{
         mainDiv.appendChild(img);
         img.remove();
     }
-    preImg("images/offline.svg");
-    preImg("images/retry.svg");
+    preImg("/images/offline.svg");
+    preImg("/images/retry.svg");
 }catch(e){}
 function addRetryButton(func, element){
     var retryButton = document.createElement("button");
     retryButton.innerHTML = "<img width=\"32\" height=\"32\" src=\"images/retry.svg\"> " + getString("retry");
-    retryButton.classList.add("buttons");
+    try{
+        retryButton.classList.add("buttons");
+    }catch(e){}
+    try{
+        retryButton.className = "buttons";
+    }catch(e){}
     retryButton.addEventListener("click", func);
     element.insertBefore(retryButton, element.childNodes[0]);
     var onlineFunc = function(){window.removeEventListener("online", onlineFunc);func();};
@@ -161,9 +374,10 @@ function addRetryButton(func, element){
 }
 var uploadStatuses = document.getElementById("uploadstatuses");
 function uploadString(n, key, post, location, automaticLocation, value, element, input, button) {
-    if((automaticLocation && location && !locationWait) || !location){
+    /*if((automaticLocation && location && !geolocationSupported) || !location){
         unloadWarning++;
-    }
+    }*/
+    unloadWarning++;
     try{
         if(location){
             setUploadStatusTop(locationUploadStatus, locationUploadString, 0);
@@ -186,7 +400,7 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
         try{
             div.className = "statusText";
         }catch(e){}
-        div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploading">'+getString("uploading")+'</span>';
+        div.innerHTML = getDateTime() + "<br>" + img+text+'<span class="uploading">'+getString("uploading")+'</span>';
         var color = "#ffff00";
         try{
             div.style.borderColor = color;
@@ -217,7 +431,7 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
                     setUploadStatusTop(locationUploadStatus, locationUploadString, 1);
                 }
             }catch(e){}
-            div.innerHTML = getCurrentDateTime() + "<br>" + img + text + '<span class="uploadcompleted">' + getString("uploadcompleted") + '</span>';
+            div.innerHTML = getDateTime() + "<br>" + img + text + '<span class="uploadcompleted">' + getString("uploadcompleted") + '</span>';
             color = "#00ff00";
             unloadWarning--;
             // try{
@@ -234,7 +448,7 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
                     setUploadStatusTop(locationUploadStatus, locationUploadString, -1);
                 }
             }catch(e){}
-            div.innerHTML = getCurrentDateTime() + "<br>" + img + text + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
+            div.innerHTML = getDateTime() + "<br>" + img + text + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
             color = "#ff0000";
             // if(!location)    {
             //     input.disabled = 0;
@@ -261,7 +475,7 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
         try{
             div.className = "statusText";
         }catch(e){}
-        div.innerHTML = getCurrentDateTime() + "<br>" + img + text + '<span class="uploaderror">' + getString("uploaderror") + '</span>';
+        div.innerHTML = getDateTime() + "<br>" + img + text + '<span class="uploaderror">' + getString("uploaderror") + '</span>';
         color = "#ff0000";
         div.style.borderColor = color;
         // if(!location)    {
@@ -320,7 +534,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
     }catch(e){}
     var text = '<span class="voice">' + getString("voice") + '</span>' + "; ";
     var img = "<img width=\"16\" height=\"16\" src=\"images/microphone.svg\"> ";
-    div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploading">'+getString("uploading")+'</span>';
+    div.innerHTML = getDateTime() + "<br>" + img+text+'<span class="uploading">'+getString("uploading")+'</span>';
     div.style.borderColor = "#ffff00";
     statusElement.insertBefore(div, statusElement.childNodes[0]);
     var formData;
@@ -339,7 +553,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
             div.className = "statusText";
         }catch(e){}
         if(this.responseText === "1")    {
-            div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
+            div.innerHTML = getDateTime() + "<br>" + img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
             div.style.borderColor = "#00ff00";
             unloadWarning--;
             // try{
@@ -351,7 +565,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
             // }catch(e){}
         }
         else    {
-            div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
+            div.innerHTML = getDateTime() + "<br>" + img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             // button.disabled = 0;
             addRetryButton(function(){uploadVoice(n, key, statusElement, voiceinput, button, formData/*formdata0*//*voicefiles0*/);}, statusElement);
@@ -363,7 +577,7 @@ function uploadVoice(n, key, statusElement, voiceinput, button, formdata0/*voice
         try{
             div.className = "statusText";
         }catch(e){}
-        div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
+        div.innerHTML = getDateTime() + "<br>" + img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         div.style.borderColor = "#ff0000";
         statusElement.insertBefore(div, statusElement.childNodes[0]);
         // button.disabled = 0;
@@ -400,9 +614,13 @@ function bottomProgressVisible(visible)    {
         }
     }catch(e){}
 }
-function getCurrentDateTime(){
+function getDateTime(millisecond){
     try{
-        var d = new Date();
+        if(millisecond){
+            var d = new Date(millisecond);
+        }else{
+            var d = new Date();
+        }
         return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
     }catch(e){
         return "";
@@ -461,23 +679,34 @@ function addShareButton(element, fullurl){
 }
 try{
     var uploadStatusTop = document.getElementById("uploadstatustop");
-    uploadStatusTop.style.border = "1px solid #256aff";
-    uploadStatusTop.innerHTML = '<div><img width="16" height="16" src="images/uploadicon.svg"> <span class="uploadstatus">' + getString("uploadstatus") + '</span></div>';
-    var fileUploadStatus = document.createElement("div");
-    fileUploadStatus.style.border = "2px solid #256aff";
-    fileUploadStatus.style.margin = "1px";
-    fileUploadStatus.style.padding = "1px";
-    fileUploadStatus.innerHTML = '<img width="16" height="16" src="images/photovideo.svg"> <span class="file(s)">' + getString("file(s)") + '</span>; ';
-    var fileUploadString = document.createElement("span");
-    fileUploadStatus.appendChild(fileUploadString);
-    uploadStatusTop.appendChild(fileUploadStatus);
-    var locationUploadStatus = document.createElement("div");
-    locationUploadStatus.style.border = "2px solid #256aff";
-    locationUploadStatus.style.margin = "1px";
-    locationUploadStatus.style.padding = "1px";
-    locationUploadStatus.innerHTML = '<img width="16" height="16" src="images/location.svg"> <span class="locationcoordinates">' + getString("locationcoordinates") + '</span>; ';
-    var locationUploadString = document.createElement("span");
-    locationUploadStatus.appendChild(locationUploadString);
+    var fileUploadStatus;
+    var fileUploadString;
+    var locationUploadString;
+    var locationUploadStatus;
+    function uploadStatusTopSetup(){
+        try{
+            if(uploadStatusTop.innerHTML == ""){
+                uploadStatusTop.style.border = "1px solid #256aff";
+                uploadStatusTop.innerHTML = '<div><img width="16" height="16" src="images/uploadicon.svg"> <span class="uploadstatus">' + getString("uploadstatus") + '</span></div>';
+                fileUploadStatus = document.createElement("div");
+                fileUploadStatus.style.border = "2px solid #256aff";
+                fileUploadStatus.style.margin = "1px";
+                fileUploadStatus.style.padding = "1px";
+                fileUploadStatus.innerHTML = '<img width="16" height="16" src="images/photovideo.svg"> <span class="file(s)">' + getString("file(s)") + '</span>; ';
+                fileUploadString = document.createElement("span");
+                fileUploadStatus.appendChild(fileUploadString);
+                uploadStatusTop.appendChild(fileUploadStatus);
+                locationUploadStatus = document.createElement("div");
+                locationUploadStatus.style.border = "2px solid #256aff";
+                locationUploadStatus.style.margin = "1px";
+                locationUploadStatus.style.padding = "1px";
+                locationUploadStatus.innerHTML = '<img width="16" height="16" src="images/location.svg"> <span class="locationcoordinates">' + getString("locationcoordinates") + '</span>; ';
+                locationUploadString = document.createElement("span");
+                locationUploadStatus.appendChild(locationUploadString);
+                uploadStatusTop.appendChild(locationUploadStatus);
+            }
+        }catch(e){}
+    }
     try{
         function scrollIntoViewFunc(element){
             try{
@@ -487,11 +716,10 @@ try{
                 }catch(e){}
             }catch(e){}
         }
-        locationUploadStatus.addEventListener("click", function(){
+        /*locationUploadStatus.addEventListener("click", function(){
             scrollIntoViewFunc(locationDiv);
-        });
+        });*/
     }catch(e){}
-    uploadStatusTop.appendChild(locationUploadStatus);
     function setUploadStatusTop(element, stringelement, statusValue){
         if(statusValue == 0){
             element.style.border = "2px solid #ffff00";
@@ -506,6 +734,9 @@ try{
         }else if(statusValue == -1){
             element.style.border = "2px solid #ff0000";
             stringelement.innerText = getString("uploadfailed");
+        }
+        if(uploadStatusTop.style.display == "none"){
+            uploadStatusTop.style.display = "block";
         }
     }
 }catch(e){}
@@ -591,7 +822,7 @@ function filesAttach(n, id, key, files, formdata0, element){
     }catch(e){}
     var text = '<span class="file(s)">' + getString("file(s)") + '</span>' + "; ";
     var img = "<img width=\"16\" height=\"16\" src=\"images/photovideo.svg\"> ";
-    div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploading">'+getString("uploading")+'</span>';
+    div.innerHTML = getDateTime() + "<br>" + img+text+'<span class="uploading">'+getString("uploading")+'</span>';
     div.style.borderColor = "#ffff00";
     element.insertBefore(div, element.childNodes[0]);
     var ajax = new XMLHttpRequest();
@@ -604,10 +835,10 @@ function filesAttach(n, id, key, files, formdata0, element){
             div.className = "statusText";
         }catch(e){}
         if(this.responseText == "1"){
-            div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
+            div.innerHTML = getDateTime() + "<br>" + img+text+'<span class="uploadcompleted">'+getString("uploadcompleted")+'</span>';
             div.style.borderColor = "#00ff00";
         }else{
-            div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
+            div.innerHTML = getDateTime() + "<br>" + img+text+'<span class="uploadfailed">'+getString("uploadfailed")+'</span>'+"\n(" + this.responseText + ")";
             div.style.borderColor = "#ff0000";
             addRetryButton(function(){filesAttach(n, id, key, files, formData, element/*formdata0*/);}, element);
         }
@@ -621,7 +852,7 @@ function filesAttach(n, id, key, files, formdata0, element){
         try{
             div.className = "statusText";
         }catch(e){}
-        div.innerHTML = getCurrentDateTime() + "<br>" + img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
+        div.innerHTML = getDateTime() + "<br>" + img+text+'<span class="uploaderror">'+getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         div.style.borderColor = "#ff0000";
         element.insertBefore(div, element.childNodes[0]);
         addRetryButton(function(){filesAttach(n, id, key, files, formData, element/*formdata0*/);}, element);
@@ -638,7 +869,7 @@ function preUpload(id, value, div, imageName, stringName, array, displayValue){
     }
     array[id].push(value);
     var statusText = document.createElement("div");
-    statusText.innerHTML = getCurrentDateTime() + "<br>" + '<img width="16" height="16" src="images/' + imageName + '.svg"> <span class="' + stringName + '">' + getString(stringName) + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
+    statusText.innerHTML = getDateTime() + "<br>" + '<img width="16" height="16" src="images/' + imageName + '.svg"> <span class="' + stringName + '">' + getString(stringName) + '</span>; <span class="uploadstartafterfile">' + getString("uploadstartafterfile") + '</span>';
     var div2 = document.createElement("div");
     div2.innerText = displayValue;
     try{
@@ -772,7 +1003,8 @@ function uploadProgressSetup(ajax, div, currentUploadID){
     };
 }
 function uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, status){
-    if(latitude != null && longitude != null)    {
+    //if((latitude != null && longitude != null) && currentLocationCheckbox.checked)    {
+    if(latitude != null && longitude != null && localStorage.getItem("currentlocationmode") == "true")    {
         var n;
         var id;
         var key;
@@ -788,6 +1020,17 @@ function uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, statu
         }
     }else{
         locationUploadArray.push([currentUploadID, automaticLocation, statusDiv]);
+        try{
+            /*if(!currentLocationCheckbox.checked){
+                getLocation2();
+            }*/
+            /*if(localStorage.getItem("currentlocationmode") != "true"){
+                getLocation2();
+            }*/
+            if(!watchPositionID && !detectingLocation){
+                getLocation2();
+            }
+        }catch(e){}
         var div = document.createElement("div");
         div.style.border = "2px solid #0000ff";
         div.style.margin = "2px";
@@ -873,7 +1116,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
                 typeString += "; ";
             }
         }catch(e){}
-        statusText.innerHTML = getCurrentDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploading">' + getString("uploading") + '</span>';
+        statusText.innerHTML = getDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploading">' + getString("uploading") + '</span>';
         statusDiv.appendChild(statusText);
         /*var progressArray = addProgressBar(statusDiv);
         var progressBar = progressArray[0];
@@ -920,7 +1163,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
         }catch(e){}
         var automaticLocation = false;
         try{
-            if(localStorage.getItem(inputMode + "locationattach") == "true"){
+            if((localStorage.getItem(inputMode + "locationattach") == "true") || ((!localStorage.getItem(inputMode + "locationattach")) && (inputMode == "takephoto" || inputMode == "recordvideo"))){
                 automaticLocation = true;
             }
         }catch(e){
@@ -1061,14 +1304,13 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
         }
     }catch(e){}
     try{
+        uploadStatusTopSetup();
         setUploadStatusTop(fileUploadStatus, fileUploadString, 0);
     }catch(e){}
     try{
-        fileUploadStatus.addEventListener("click", function(e){
+        uploadStatusTop.addEventListener("click", function(e){
             try{
-                if(e.target.tagName != "A"){
-                    scrollIntoViewFunc(subbox);
-                }
+                scrollIntoViewFunc(subbox);
             }catch(e){}
         });
     }catch(e){}
@@ -1124,7 +1366,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
                 after2.innerHTML = html;
                 after.appendChild(after2);
                 var element = document.getElementById('q'+n);
-                statusText.innerHTML += getCurrentDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploadcompleted">' + getString("uploadcompleted")+'</span>'+"\n(#" + n + ")";
+                statusText.innerHTML += getDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploadcompleted">' + getString("uploadcompleted")+'</span>'+"\n(#" + n + ")";
                 color = "#00ff00";
                 if(currentUploadID == lastUploadID){
                     bottomProgressVisible(0);
@@ -1179,15 +1421,16 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
             }else{
                 unloadWarning--;
             }*/
-            if((automaticLocation && !locationWait) || !automaticLocation){
+            /*if((automaticLocation && !geolocationSupported) || !automaticLocation){
                 unloadWarning--;
-            }
+            }*/
+            unloadWarning--;
         }
         else    {
             try{
                 setUploadStatusTop(fileUploadStatus, fileUploadString, -1);
             }catch(e){}
-            statusText.innerHTML += getCurrentDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
+            statusText.innerHTML += getDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploadfailed">' + getString("uploadfailed") + '</span>';
             var errorDiv = document.createElement("div");
             errorDiv.style.border = "1px dotted #ff0000";
             errorDiv.innerText = this.responseText;
@@ -1214,7 +1457,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
         try{
             setUploadStatusTop(fileUploadStatus, fileUploadString, -1);
         }catch(e){}
-        statusText.innerHTML += getCurrentDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploaderror">' + getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
+        statusText.innerHTML += getDateTime() + "<br>" + typeImg + ' ' + typeString + '<span class="uploaderror">' + getString("uploaderror")+'</span>'+"\n(" + this.Error + ")";
         try{
             statusText.className = "statusText";
         }catch(e){}
@@ -1399,7 +1642,7 @@ try{
     topScrollDiv.style.display = "flex";
     topScrollDiv.style.justifyContent = "space-evenly";
     var psImg = document.createElement("img");
-    psImg.src = "images/pedestriansos.svg";
+    psImg.src = "/images/pedestriansos.svg";
     psImg.style.width = topScrollDivHeight + "px";
     psImg.style.height = topScrollDivHeight + "px";
     psImg.onclick = function(){
@@ -1457,7 +1700,7 @@ try{
         return false;
     }
     window.addEventListener("beforeunload", function(e){
-        if(unloadWarning || inputsHaveContent())    {
+        if(unloadWarning || inputsHaveContent() || locationUploadArray.length)    {
             e.preventDefault();
             e.returnValue = '';
         }
@@ -1502,7 +1745,7 @@ try{
             return;
         }
         var items = e.clipboardData.items;
-        if(items[0].kind == "string"){
+        if(items && items[0] && items[0].kind == "string"){
             items[0].getAsString(function(s){
                 if(!urlInput){
                     var urlInput = document.createElement("input");
@@ -1607,7 +1850,7 @@ function copyString(string, copiedElement){
 try{
     var loaderStyle = document.createElement("link");
     loaderStyle.rel = "stylesheet";
-    loaderStyle.href = "styles/loader.css";
+    loaderStyle.href = "/styles/loader.css";
     document.head.appendChild(loaderStyle);
 }catch(e){}
 try{
@@ -1621,36 +1864,42 @@ try{
         settingsWindowOverlay.style.display = "none";
         //lightFilter.style.position = "absolute";
     }
-    var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
-    settingsWindowOverlay.style.zIndex = "1";
-    settingsWindowOverlay.addEventListener("click", function(e){
-        if((e.target != settingsWindowOverlay) && (e.target.id != "settingsclosewindow")){
-            return;
-        }
-        closeSettingsWindow();
-        history.back();
-    });
-    var settingsWindow = document.createElement("div");
-    settingsWindow.style.maxWidth = "90%";
-    settingsWindow.style.maxHeight = "90%";
-    settingsWindow.id = "settingswindow";
-    settingsWindowOverlay.appendChild(settingsWindow);
+    try{
+        var settingsWindowOverlay = document.getElementById("settingswindowoverlay");
+        settingsWindowOverlay.style.zIndex = "1";
+        settingsWindowOverlay.addEventListener("click", function(e){
+            if((e.target != settingsWindowOverlay) && (e.target.id != "settingsclosewindow")){
+                return;
+            }
+            closeSettingsWindow();
+            history.back();
+        });
+        var settingsWindow = document.createElement("div");
+        settingsWindow.style.maxWidth = "90%";
+        settingsWindow.style.maxHeight = "90%";
+        settingsWindow.id = "settingswindow";
+        settingsWindowOverlay.appendChild(settingsWindow);
+    }catch(e){}
     function setWindowDarkMode(windowOverlay, windowDiv){
-        if(darkModeEnabled){
-            windowOverlay.style.backgroundColor = "#ffffff80";
-            windowDiv.style.backgroundColor = "#000000";
-        }
-        else{
-            windowOverlay.style.backgroundColor = "#00000080";
-            windowDiv.style.backgroundColor = "#ffffff";
-        }
+        try{
+            if(darkModeEnabled){
+                windowOverlay.style.backgroundColor = "#ffffff80";
+                windowDiv.style.backgroundColor = "#000000";
+            }
+            else{
+                windowOverlay.style.backgroundColor = "#00000080";
+                windowDiv.style.backgroundColor = "#ffffff";
+            }
+        }catch(e){}
     }
-    var settingsButton = document.getElementById("settingsbutton");
-    var disableSettingsWindowLoad;
-    var settingsScript;
-    var settingsMain;
-    var settingsContent;
-    var settingsSetup;
+    try{
+        var settingsButton = document.getElementById("settingsbutton");
+        var disableSettingsWindowLoad;
+        var settingsScript;
+        var settingsMain;
+        var settingsContent;
+        var settingsSetup;
+    }catch(e){}
     function setSettingsWindow(reset){
         if(reset){
             settingsScript.remove();
@@ -1692,7 +1941,7 @@ try{
                 settingsSetup = 1;
                 var settingsStyle = document.createElement("link");
                 settingsStyle.rel = "stylesheet";
-                settingsStyle.href = "styles/settings.css";
+                settingsStyle.href = "/styles/settings.css";
                 document.head.appendChild(settingsStyle);
                 settingsContent.style.maxHeight = "calc(100% - 9px - "+document.getElementById("settingstop").clientHeight+"px)";
                 settingsWindow.style.height = settingsContent.clientHeight + "px";
@@ -1735,11 +1984,19 @@ try{
     });
     settingsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 64 64" class="icons"><g transform="translate(0 64) scale(.1 -.1)"><path d="m257 584c-4-4-7-22-7-40 0-23-7-36-26-49-23-15-29-15-64-1l-39 15-64-112 32-26c20-17 31-35 31-51s-11-34-31-51l-32-26 32-56 32-57 36 15c19 8 38 15 42 15 20-1 45-35 50-67l6-38h65 65l6 38c5 32 30 66 50 67 4 0 23-7 42-15l36-15 64 112-32 25c-42 33-42 73 0 106l32 25-32 56-32 55-39-15c-35-14-41-14-64 1-18 12-26 27-28 53l-3 37-60 3c-34 2-64 0-68-4zm128-199c36-35 35-97-1-130-61-57-154-17-154 65 0 56 34 90 90 90 30 0 47-6 65-25z"/></g></svg> <span class="settings"><string>settings</string></span>';
     settingsButton.style.display = "inline-block";
+    try{
+        var settingsButton2 = document.getElementById("settingsbutton2");
+        settingsButton2.addEventListener("click", function(){
+            window.open("/settings");
+        });
+        settingsButton2.innerHTML = '<svg width="64" height="64" viewBox="0 0 512 512" class="icons"><g transform="translate(0 512) scale(.1 -.1)"><path d="m685 4428c-3-7-4-852-3-1878l3-1865h1875 1875l3 938 2 937h-190-190v-750-750h-1500-1500v1500 1500h750 750v190 190h-935c-739 0-937-3-940-12z"/><path d="m3210 4165 265-265-528-528c-290-290-527-532-527-537 0-6 92-102 205-215l205-205 738 738c174 174 321 317 327 317 5 0 130-120 277-267l268-268v748 747h-747-748l265-265z"/></g></svg>';
+        settingsButton2.style.display = "inline-block";
+    }catch(e){}
 }catch(e){}
 try{
     function setLanguage(lang,get)  {
         var ajax = new XMLHttpRequest();
-        ajax.open("GET", "json/languages/" + lang + ".json");
+        ajax.open("GET", "/json/languages/main/" + lang + ".json");
         ajax.onload = function()    {
             if(this.status == 200){
                 document.documentElement.lang = lang;
@@ -1773,7 +2030,7 @@ try{
                 if(getlang != null && get != 1){
                     lang = getlang;
                     setLanguage(lang,1);
-                }else{
+                }else if(lang != "en"){
                     lang = "en";
                     setLanguage(lang);
                 }
@@ -1820,7 +2077,7 @@ try{
         var offlineImg = document.createElement("img");
         offlineImg.width = "64";
         offlineImg.height = "64";
-        offlineImg.src = "images/offline.svg";
+        offlineImg.src = "/images/offline.svg";
         isOffline.appendChild(offlineImg);
         var offlineText = document.createElement("span");
         offlineText.innerText = getString("offline");
@@ -1844,7 +2101,8 @@ try{
     }
 }catch(e){}*/
 try{
-    var myUploadsButton = document.createElement("button");
+    // var myUploadsButton = document.createElement("button");
+    var myUploadsButton = document.getElementById("myUploadsButton");
     myUploadsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 256 256" class="icons"><g transform="translate(0 256) scale(.1 -.1)"><path d="m705 2254c-326-72-588-347-646-680-16-93-6-270 21-364 94-328 381-569 723-605l67-7v31c0 30-2 31-42 31-24 0-79 9-123 19-355 86-595 390-597 756-2 305 159 563 441 704 142 72 357 96 515 57 190-46 362-167 472-333l36-55-176-177c-161-163-176-181-176-213 0-72 73-118 128-82 15 10 73 63 130 117l102 100v-240-240l-49-69c-98-140-244-252-398-305-31-10-58-19-60-19-1 0-3 38-3 85 0 89-15 137-45 149-37 14-86 6-110-19-28-27-29-54-25-410 2-173 8-197 56-215 39-15 1416-13 1449 2 51 23 55 45 55 327v259l-26 31c-19 23-34 31-59 31-88 0-95-20-95-275v-205h-600-600v95c0 88 1 95 20 95 32 0 150 48 222 91 76 44 172 129 230 202l38 49v-102c0-134 19-169 92-170 28 0 42 7 62 31l26 31v396 396l113-111c66-65 123-113 140-117 32-8 81 14 97 43 28 53 19 66-197 283-194 195-210 208-244 208-24 0-45-8-63-25-28-26-36-22-11 5 15 16 11 24-46 99-104 139-238 234-409 292-85 29-109 32-230 35-95 3-156-1-205-12z"/><path d="m762 1919c-125-62-177-214-116-337 94-188 364-188 458 0 32 64 35 152 7 213-21 46-88 111-137 131-52 22-161 18-212-7z"/><path d="m701 1405c-136-38-227-149-239-291-4-53-2-64 16-82 39-39 87-43 425-40 304 3 324 4 357 24 34 19 35 22 38 88 5 120-58 220-176 278-65 32-69 33-217 35-109 2-165-1-204-12z"/></g></svg> <span class="myuploads">' + getString("myuploads") + '</span>';
     myUploadsButton.classList.add("buttons");
     var myUploadsOverlay = document.createElement("div");
@@ -2027,6 +2285,15 @@ try{
         }else{
             myUploadsContent.innerText = getString("nodata");
         }
+        if(localStorage.getItem("saveuploads") != "true"){
+            var savingUploadsDisabled = document.createElement("div");
+            savingUploadsDisabled.style.border = "2px solid #ff0000";
+            savingUploadsDisabled.style.margin = "2px";
+            savingUploadsDisabled.style.padding = "2px";
+            savingUploadsDisabled.classList.add("savinguploadsdisabledinfo");
+            savingUploadsDisabled.innerText = getString("savinguploadsdisabledinfo");
+            myUploadsContent.insertBefore(savingUploadsDisabled, myUploadsContent.childNodes[0]);
+        }
         myUploadsWindow.style.height = myUploadsTop.clientHeight + 1 + myUploadsContent.clientHeight + "px";
         myUploadsContent.style.maxHeight = "calc(100% - 1px - "+myUploadsTop.clientHeight+"px)";
     }
@@ -2035,11 +2302,12 @@ try{
         location.hash = "myuploads" + myuploadsWindowID;
         openMyUploads();
     };
-    mainDiv.insertBefore(myUploadsButton, settingsButton);
-    var br0 = document.createElement("br");
-    mainDiv.insertBefore(br0, myUploadsButton.nextElementSibling);
-    var br = document.createElement("br");
-    mainDiv.insertBefore(br, br0);
+    // mainDiv.insertBefore(myUploadsButton, settingsButton);
+    // var br0 = document.createElement("br");
+    // mainDiv.insertBefore(br0, myUploadsButton.nextElementSibling);
+    // var br = document.createElement("br");
+    // mainDiv.insertBefore(br, br0);
+    myUploadsButton.style.display = "inline-block";
 }catch(e){}
 try{
     var matchmedia = window.matchMedia("(prefers-color-scheme: dark)");

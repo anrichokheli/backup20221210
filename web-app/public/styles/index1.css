@@ -59,13 +59,23 @@
 }
 #location *   {
     margin: 2px;
+    padding: 2px;
+    vertical-align: middle;
 }
-.locationDivs    {
+/* .locationDivs    {
     border-bottom: 1px solid #256aff;
 }
 .locationTitles {
     font-weight: 600;
     border-right: 1px dotted #256aff;
+} */
+#location table, #location th, #location td{
+    border: 1px solid #256aff;
+    border-width: 0 1px 1px 0;
+    border-collapse: collapse;
+}
+#location table{
+    width: 100%;
 }
 #locationtop    {
     display: flex;

@@ -88,23 +88,59 @@ function dataURItoBlob(dataURI){
 }
 var statusBox = document.getElementById("statusBox");
 var statusBigBox = document.getElementById("statusBigBox");
-statusBox.addEventListener("click", function(){
+var statusLocation = document.getElementById("statuslocation");
+statusBox.addEventListener("click", function(e){
+    if(e.target == statusLocation || e.target == statusLocation.children[0]){
+        return;
+    }
     if(statusBigBox.style.display == "flex"){
         statusBigBox.style.display = "none";
+        try{
+            var videos = document.querySelectorAll("#statusBigBox video");
+            for(var i = 0; i < videos.length; i++){
+                videos[i].pause();
+            }
+        }catch(e){}
     }else{
         statusBigBox.style.display = "flex";
     }
 });
 var status2 = document.getElementById("status2");
 var statusPhotovideo = document.getElementById("statusphotovideo");
-var statusLocation = document.getElementById("statuslocation");
+function getNoValIfNoVal(val){
+    if(!val){
+        return "-";
+    }
+    return val;
+}
+function getLocationString(local_latitude, local_longitude, local_altitude, local_accuracy, local_altitudeAccuracy, local_timestamp){
+    local_latitude = getNoValIfNoVal(local_latitude);
+    local_longitude = getNoValIfNoVal(local_longitude);
+    local_altitude = getNoValIfNoVal(local_altitude);
+    local_accuracy = getNoValIfNoVal(local_accuracy);
+    local_altitudeAccuracy = getNoValIfNoVal(local_altitudeAccuracy);
+    var timeStamp = "";
+    if(local_timestamp){
+        timeStamp = "\n" + getDateTime(local_timestamp) + " (" + local_timestamp + ")";
+    }
+    return local_latitude + ", " + local_longitude + "; " + local_altitude + "; " + local_accuracy + "; " + local_altitudeAccuracy + timeStamp;
+}
+var locationDetails = document.getElementById("locationDetails");
+var locationDetailsCoordinates = document.createElement("div");
+locationDetails.appendChild(locationDetailsCoordinates);
+statusLocation.addEventListener("click", function(){
+    if(locationDetails.style.display == "flex"){
+        locationDetails.style.display = "none";
+    }else{
+        locationDetailsCoordinates.innerText = getLocationString(latitude, longitude, altitude, accuracy, altitudeAccuracy, locationTime);
+        locationDetails.style.display = "flex";
+    }
+});
 var locationUploadArray = [];
 function uploadLocation(n, id, key, coordinates){
-    if(!locationWait){
-        unloadWarning++;
-    }
+    unloadWarning++;
     statusLocation.style.backgroundColor = "#ffff0080";
-    addStatus("location", "ffff00", "#" + n + "<br>" + coordinates[0] + ", " + coordinates[1] + "; " + coordinates[2] + "; " + coordinates[3] + "; " + coordinates[4]);
+    addStatus("location", "ffff00", "#" + n + "<br>" + getLocationString(coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4]));
     var ajax = new XMLHttpRequest();
     ajax.open("POST", "../");
     ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -121,7 +157,7 @@ function uploadLocation(n, id, key, coordinates){
     ajax.onerror = function(){
         statusLocation.style.backgroundColor = "#ff000080";
         var retryButton = document.createElement("button");
-        retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
+        retryButton.innerHTML = '<img class="whiteicon" width="32" height="32" src="../images/retry.svg">';
         retryButton.onclick = function(){
             uploadLocation(n, id, key, coordinates);
         };
@@ -137,20 +173,64 @@ var longitude;
 var altitude;
 var accuracy;
 var altitudeAccuracy;
-var locationWait;
-function getLocation()  {
-    if(navigator.geolocation)    {
-        locationWait = 1;
-        navigator.geolocation.watchPosition(afterLocation, locationError);
-        statusLocation.style.borderColor = "#ffff0080";
+var locationTime;
+var geolocationSupported;
+try{
+    function setStorageIfNot(local_name, local_value){
+        if(!localStorage.getItem(local_name)){
+            localStorage.setItem(local_name, local_value);
+        }
     }
+    if(navigator.geolocation){
+        geolocationSupported = true;
+        statusLocation.children[0].src = "../images/waitinglocation.svg";
+        try{
+            setStorageIfNot("locationhighaccuracymode", true);
+            setStorageIfNot("locationcachemode", true);
+            setStorageIfNot("locationcachetimeout", 1000);
+        }catch(e){}
+    }else{
+        statusLocation.style.borderColor = "#ff000080";
+        statusLocation.children[0].src = "../images/nolocation.svg";
+        statusLocation.children[0].classList.remove("whiteicon");
+        locationDetails.style.backgroundColor = "#ec040080";
+    }
+}catch(e){}
+var watchPositionID;
+var detectingLocation;
+function getLocation(continuousUpdate, highAccuracy, cacheData, cacheTimeout)  {
+    detectingLocation = true;
+    if(watchPositionID){
+        navigator.geolocation.clearWatch(watchPositionID);
+        watchPositionID = null;
+    }
+    if(continuousUpdate){
+        if(cacheData){
+            watchPositionID = navigator.geolocation.watchPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy, maximumAge: cacheTimeout});
+        }else{
+            watchPositionID = navigator.geolocation.watchPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy});
+        }
+    }else{
+        if(cacheData){
+            navigator.geolocation.getCurrentPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy, maximumAge: cacheTimeout});
+        }else{
+            navigator.geolocation.getCurrentPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy});
+        }
+    }
+    statusLocation.style.borderColor = "#ffff0080";
+    statusLocation.children[0].src = "../images/detectinglocation.svg";
+}
+function getLocation2(){
+    getLocation(localStorage.getItem("currentlocationmode") == "true", localStorage.getItem("locationhighaccuracymode") == "true", localStorage.getItem("locationcachemode") == "true", parseInt(localStorage.getItem("locationcachetimeout")));
 }
 function afterLocation(position)  {
+    detectingLocation = false;
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;
     altitude = position.coords.altitude;
     accuracy = position.coords.accuracy;
     altitudeAccuracy = position.coords.altitudeAccuracy;
+    locationTime = position.timestamp;
     var locationCoordinatesArray = [latitude, longitude, altitude, accuracy, altitudeAccuracy];
     if(locationUploadArray.length > 0){
         for(var key in locationUploadArray){
@@ -165,17 +245,84 @@ function afterLocation(position)  {
         }
     }
     statusLocation.style.borderColor = "#00ff0080";
-}
-function locationError(error){
-    setTimeout(getLocation, 250);
-    statusLocation.style.borderColor = "#ff000080";
-    if(error.code == error.PERMISSION_DENIED){
-        locationWait = 0;
+    if(!statusLocation.children[0].classList.contains("whiteicon")){
+        statusLocation.children[0].src = "../images/location.svg";
+        statusLocation.children[0].classList.add("whiteicon");
+        locationDetails.style.backgroundColor = "#256aff80";
+    }
+    if(locationDetails.style.display == "flex"){
+        locationDetailsCoordinates.innerText = getLocationString(latitude, longitude, altitude, accuracy, altitudeAccuracy, locationTime);
+    }
+    try{
+        localStorage.setItem("locationallowed", "true");
+    }catch(e){}
+    if(locationErrorDiv){
+        locationErrorDiv.remove();
+        locationErrorDiv = null;
+    }
+    if(locationRetryButton){
+        locationRetryButton.remove();
+        locationRetryButton = null;
     }
 }
-function getCurrentDateTime(){
-    var d = new Date();
-    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+var locationRetryButton;
+var locationErrorDiv;
+function locationError(error){
+    detectingLocation = false;
+    statusLocation.style.borderColor = "#ff000080";
+    statusLocation.children[0].src = "../images/nolocation.svg";
+    statusLocation.children[0].classList.remove("whiteicon");
+    locationDetails.style.backgroundColor = "#ec040080";
+    if(!locationErrorDiv){
+        locationErrorDiv = document.createElement("div");
+        var errorHTML = 'ERROR!<br>';
+        switch(error.code)   {
+            case error.PERMISSION_DENIED:
+                locationErrorDiv.innerHTML = errorHTML + "permission denied";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                locationErrorDiv.innerHTML = errorHTML + "location unavailable";
+                break;
+            case error.TIMEOUT:
+                locationErrorDiv.innerHTML = errorHTML + "request timed out";
+                break;
+            case error.UNKNOWN_ERROR:
+                locationErrorDiv.innerHTML = errorHTML + "unknown error";
+                break;
+        }
+        locationDetails.appendChild(locationErrorDiv);
+        if(!locationRetryButton){
+            locationRetryButton = document.createElement("button");
+            locationRetryButton.innerHTML = '<img class="whiteicon" width="32" height="32" src="../images/retry.svg">';
+            locationRetryButton.classList.add("buttons");
+            locationRetryButton.addEventListener("click", function(){
+                getLocation2();
+            });
+            locationDetails.appendChild(locationRetryButton);
+        }
+    }
+    /*if(error.code == error.PERMISSION_DENIED){
+        locationWait = 0;
+    }*/
+    try{
+        if((error.code != error.PERMISSION_DENIED) || (localStorage.getItem("locationallowed") == "true")){
+            setTimeout(getLocation, 250);
+        }
+    }catch(e){
+        setTimeout(getLocation, 250);
+    }
+}
+function getDateTime(millisecond){
+    try{
+        if(millisecond){
+            var d = new Date(millisecond);
+        }else{
+            var d = new Date();
+        }
+        return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    }catch(e){
+        return "";
+    }
 }
 function preImg(image){
     var img = document.createElement("img");
@@ -199,7 +346,7 @@ function addStatus(imageName, color, text, html){
     }else{
         text = '';
     }
-    statusSubDiv.innerHTML = '<img width="32" height="32" src="../images/'+imageName+'.svg"> <span>'+getCurrentDateTime()+text+'</span>';
+    statusSubDiv.innerHTML = '<img class="whiteicon" width="32" height="32" src="../images/'+imageName+'.svg">&nbsp;<span>'+getDateTime()+text+'</span>';
     if(html){
         statusSubDiv.appendChild(html);
     }
@@ -235,11 +382,27 @@ function uploadFile(file, cameraMode, id0){
         statusPhotovideo.style.display = "block";
     }
     var downloadButton = document.createElement("a");
-    downloadButton.innerHTML = '<img width="32" height="32" src="../images/download.svg">';
+    downloadButton.innerHTML = '<img class="whiteicon" width="32" height="32" src="../images/download.svg">';
     downloadButton.classList.add("buttons");
     downloadButton.href = URL.createObjectURL(file);
     downloadButton.download = (new Date()).getTime();
     var statusDiv = addStatus(imageName, "ffff00", null, downloadButton);
+    try{
+        var previewDiv = document.createElement("div");
+        previewDiv.style.border = "1px solid #256aff80";
+        previewDiv.style.margin = "1px";
+        previewDiv.style.padding = "1px";
+        try{
+            previewDiv.style.display = "flex";
+            previewDiv.style.justifyContent = "center";
+        }catch(e){}
+        if(fileType == "image"){
+            previewDiv.innerHTML = '<img style="max-width:100%;min-height:25vh;max-height:75vh;object-fit:contain;" src="'+downloadButton.href+'">';
+        }else{
+            previewDiv.innerHTML = '<video style="max-width:100%;min-height:25vh;max-height:75vh;" controls src="'+downloadButton.href+'"></video>';
+        }
+        statusDiv.appendChild(previewDiv);
+    }catch(e){}
     var progress = document.createElement("span");
     var progressBarDiv = document.createElement("div");
     progressBarDiv.style.width = "100%";
@@ -260,13 +423,19 @@ function uploadFile(file, cameraMode, id0){
     progressBarDiv.classList.add("progressbardiv");
     progressBar.classList.add("progressbar");
     statusDiv.prepend(progressBarDiv);
-    var locationUploadEnabled = (localStorage.getItem("camera" + cameraMode + "locationattach") == "true");
+    var locationEnabledVal = localStorage.getItem("camera" + cameraMode + "locationattach");
+    var locationUploadEnabled = ((locationEnabledVal == "true") || !locationEnabledVal);
     if(id0){
-        preUpload(locationCoordinates, currentUploadID, locationCoordinates[id0], statusDiv);
+        if(locationCoordinates[id0]){
+            preUpload(locationCoordinates, currentUploadID, locationCoordinates[id0], statusDiv);
+        }
     }else if(locationUploadEnabled){
-        if(latitude != null && longitude != null)    {
+        if(latitude != null && longitude != null && localStorage.getItem("currentlocationmode") == "true")    {
             preUpload(locationCoordinates, currentUploadID, [latitude, longitude, altitude, accuracy, altitudeAccuracy], statusDiv);
         }else{
+            if(!watchPositionID && !detectingLocation){
+                getLocation2();
+            }
             locationPreUploadElements.push([currentUploadID, statusDiv]);
         }
     }
@@ -283,17 +452,28 @@ function uploadFile(file, cameraMode, id0){
             }else{
                 locationUploadArray.push([n, id, key]);
             }*/
-            if(locationUploadEnabled){
-                if(locationCoordinates[currentUploadID]){
+            /*if(locationUploadEnabled){
+                if(locationCoordinates[currentUploadID] && localStorage.getItem("currentlocationmode") == "true"){
                     uploadLocation(n, id, key, locationCoordinates[currentUploadID]);
                 }else{
+                    if(!watchPositionID && !detectingLocation){
+                        getLocation2();
+                    }
                     locationUploadArray.push([n, id, key]);
                 }
+            }*/
+            if(locationCoordinates[currentUploadID]){
+                uploadLocation(n, id, key, locationCoordinates[currentUploadID]);
+            }else{
+                if(!watchPositionID && !detectingLocation){
+                    getLocation2();
+                }
+                locationUploadArray.push([n, id, key]);
             }
             topProgressBar.style.backgroundColor = "#00ff0080";
             status2.style.borderColor = "#00ff0080";
             var viewButton = document.createElement("a");
-            viewButton.innerHTML = '<img width="32" height="32" src="../images/viewicon.svg">';
+            viewButton.innerHTML = '<img class="whiteicon" width="32" height="32" src="../images/viewicon.svg">';
             viewButton.classList.add("buttons");
             viewButton.href = "../view2?n=" + n;
             viewButton.target = "_blank";
@@ -310,14 +490,12 @@ function uploadFile(file, cameraMode, id0){
                     localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
                 }
             }catch(e){}
-            if(!locationWait){
-                unloadWarning--;
-            }
+            unloadWarning--;
         }else{
             topProgressBar.style.backgroundColor = "#ff000080";
             status2.style.borderColor = "#ff000080";
             var retryButton = document.createElement("button");
-            retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
+            retryButton.innerHTML = '<img class="whiteicon" width="32" height="32" src="../images/retry.svg">';
             retryButton.onclick = function(){
                 uploadFile(file, cameraMode, currentUploadID);
             };
@@ -329,7 +507,7 @@ function uploadFile(file, cameraMode, id0){
         topProgressBar.style.backgroundColor = "#ff000080";
         status2.style.borderColor = "#ff000080";
         var retryButton = document.createElement("button");
-        retryButton.innerHTML = '<img width="32" height="32" src="../images/retry.svg">';
+        retryButton.innerHTML = '<img class="whiteicon" width="32" height="32" src="../images/retry.svg">';
         retryButton.onclick = function(){
             uploadFile(file, cameraMode, currentUploadID);
         };
@@ -378,7 +556,7 @@ function onVideoStop(live){
     if(recordedBlob != ""){
         if(live){
             var downloadButton = document.createElement("a");
-            downloadButton.innerHTML = '<img width="32" height="32" src="../images/download.svg">';
+            downloadButton.innerHTML = '<img class="whiteicon" width="32" height="32" src="../images/download.svg">';
             downloadButton.classList.add("buttons");
             downloadButton.href = URL.createObjectURL(recordedBlob);
             downloadButton.download = (new Date()).getTime();
@@ -412,6 +590,7 @@ function startRecording(stream, live){
         };
         recorder.start(1000);
         recordIcon.src = "../images/live.svg";
+        recordIcon.classList.remove("whiteicon");
     }else{
         data = [];
         recorder.ondataavailable = function(e){data.push(e.data);};
@@ -419,6 +598,7 @@ function startRecording(stream, live){
         videoRecording = 1;
         recordVideoButton.childNodes[0].childNodes[0].style.borderRadius = "0";
         recordIcon.src = "../images/record_video.svg";
+        recordIcon.classList.add("whiteicon");
     }
     recordDurationData = 0;
     recordDuration.innerText = recordDurationData;
@@ -445,7 +625,66 @@ recordVideoButton.addEventListener("click", function(){
         rotate.disabled = 0;
     }
 });
-getLocation();
+try{
+    if(geolocationSupported){
+        var locationSettingsStatus = document.createElement("div");
+        locationDetails.appendChild(locationSettingsStatus);
+        function setLocationSettingDiv(storageName, local_div, changed){
+            if(!local_div){
+                local_div = document.getElementById("settingstatus"+storageName);
+            }
+            if(!local_div){
+                return;
+            }
+            if(localStorage.getItem(storageName) == "true"){
+                local_div.style.backgroundColor = "#00ff0080";
+            }else{
+                local_div.style.backgroundColor = "#ff000080";
+            }
+            if(changed){
+                if(localStorage.getItem(storageName) == "true" && (storageName == "currentlocationmode" || storageName == "locationinitializationmode")){
+                    getLocation2();
+                }else if(watchPositionID){
+                    navigator.geolocation.clearWatch(watchPositionID);
+                    watchPositionID = null;
+                }
+            }
+        }
+        function locationModeStatusSetup(imageName, storageName){
+            var local_div = document.createElement("div");
+            //var cachetimeoutval = '';
+            /*if(storageName == "locationcachemode"){
+                cachetimeoutval = '(<span id="cachetimeoutval">'+(localStorage.getItem("locationcachetimeout") / 1000)+'</span>s)';
+                window.addEventListener("storage", function(){
+                    locationCacheValue.innerText = localStorage.getItem("locationcachetimeout") / 1000;
+                });
+            }*/
+            //local_div.innerHTML = '<div style="border:1px solid #256aff;text-align:center;display:inline-block;"><img width="16" height="16" src="images/'+imageName+'.svg">&nbsp;<span class="'+textName+'">'+getString(textName)+'</span>'+cachetimeoutval+'</div>';
+            local_div.innerHTML = '<img class="whiteicon" width="16" height="16" src="/images/'+imageName+'.svg">';
+            local_div.style.display = "inline-flex";
+            local_div.style.margin = "2px";
+            local_div.style.padding = "2px";
+            local_div.style.borderRadius = "50%";
+            local_div.id = "settingstatus"+storageName;
+            setLocationSettingDiv(storageName, local_div);
+            window.addEventListener("storage", function(){
+                setLocationSettingDiv(storageName, local_div, true);
+            });
+            locationSettingsStatus.appendChild(local_div);
+        }
+        locationModeStatusSetup("currentlocation", "currentlocationmode");
+        locationModeStatusSetup("locationhighaccuracy", "locationhighaccuracymode");
+        locationModeStatusSetup("initialization", "locationinitializationmode");
+        locationModeStatusSetup("cache", "locationcachemode");
+    }
+}catch(e){}
+try{
+    if(geolocationSupported)    {
+        if(localStorage.getItem("locationinitializationmode") == "true"){
+            getLocation2();
+        }
+    }
+}catch(e){}
 var offlineImg;
 window.addEventListener("offline", function(){
     statusBox.style.backgroundColor = "#ec040040";
@@ -462,6 +701,7 @@ window.addEventListener("offline", function(){
     offlineImg.width = "32";
     offlineImg.height = "32";
     offlineImg.src = "../images/offline.svg";
+    // offlineImg.style.backgroundColor = "#ffffff";
     statusBox.prepend(offlineImg);
     window.addEventListener("online", function(){
         offlineImg.style.display = "none";
@@ -473,8 +713,15 @@ window.addEventListener("offline", function(){
         }
     });
 });
+function liveChunksUploaded(){
+    try{
+        return (liveUploadedChunks.innerText == liveTotalChunks.innerText);
+    }catch(e){
+        return true;
+    }
+}
 window.addEventListener("beforeunload", function(e){
-    if(unloadWarning || videoRecording || liveStreaming || (liveUploadedChunks.innerText != liveTotalChunks.innerText))    {
+    if(unloadWarning || videoRecording || liveStreaming || !liveChunksUploaded() || locationPreUploadElements.length || locationUploadArray.length)    {
         e.preventDefault();
         e.returnValue = '';
     }

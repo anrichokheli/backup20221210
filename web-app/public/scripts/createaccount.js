@@ -1,41 +1,48 @@
 var mainDiv = document.getElementById("main");
+var strings;
 function setLanguage(lang,get)  {
     var ajax = new XMLHttpRequest();
-    ajax.open("GET", "json/languages/" + lang + ".json");
+    ajax.open("GET", "json/languages/createaccount/" + lang + ".json");
     ajax.onload = function()    {
         if(this.status == 200){
             document.documentElement.lang = lang;
             var json = JSON.parse(this.responseText);
-            strings = json;
-            for(var key in json) {
-                var elements = document.getElementsByClassName(key);
-                if(elements!=null){
-                    for(var element in elements){
-                        if(elements[element]!=null){
-                            if(elements[element].tagName == "INPUT" || elements[element].tagName == "TEXTAREA"){
-                                if(elements[element].placeholder.includes("...")){
-                                    elements[element].placeholder=json[key]+"...";
+            var ajax = new XMLHttpRequest();
+            ajax.onload = function(){
+                json = Object.assign(json, JSON.parse(this.responseText));
+                strings = json;
+                for(var key in json) {
+                    var elements = document.getElementsByClassName(key);
+                    if(elements!=null){
+                        for(var element in elements){
+                            if(elements[element]!=null){
+                                if(elements[element].tagName == "INPUT" || elements[element].tagName == "TEXTAREA"){
+                                    if(elements[element].placeholder.includes("...")){
+                                        elements[element].placeholder=json[key]+"...";
+                                    }else{
+                                        elements[element].placeholder=json[key];
+                                    }
                                 }else{
-                                    elements[element].placeholder=json[key];
+                                    elements[element].innerText=json[key];
                                 }
-                            }else{
-                                elements[element].innerText=json[key];
-                            }
-                        };
+                            };
+                        }
                     }
                 }
-            }
-            document.title = strings["title"];
-            try{
-                consoleWarning(strings["warning"],strings["consolewarning"]);
-            }catch(e){}
+                document.title = strings["title"];
+                try{
+                    consoleWarning(strings["warning"],strings["consolewarning"]);
+                }catch(e){}
+            };
+            ajax.open("GET", "json/languages/main/" + lang + ".json");
+            ajax.send();
         }
         else{
             var getlang = (new URL(window.location.href)).searchParams.get("lang");
             if(getlang != null && get != 1){
                 lang = getlang;
                 setLanguage(lang,1);
-            }else{
+            }else if(lang != "en"){
                 lang = "en";
                 setLanguage(lang);
             }

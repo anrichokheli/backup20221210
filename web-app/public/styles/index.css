@@ -29,6 +29,13 @@ body    {
     margin: 2px;
     display: inline-block;
 }
+.buttonsDivs2{
+    margin: 1% 0;
+}
+.buttonsDivs2 > div{
+    display: inline-block;
+    margin: 1%;
+}
 .buttons {
     display: inline-block;
     font-size: 25px;
@@ -114,9 +121,13 @@ body    {
     opacity: 0.5;
     border-color: #ec0400;
 }
-#uploadstatuses, #location, #uploadstatus, #uploadprogress, #settingsbutton{
+.hiddenonload{
     display: none;
 }
 #filelink{
     font-size: 16px;
+}
+.buttongroup{
+    border: 1px solid #256aff;
+    display: inline-block;
 }

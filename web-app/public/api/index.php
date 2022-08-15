@@ -1,6 +1,6 @@
 <?php
     define("notmain", "");
-    define("nocaptcha", "");
+    // define("nocaptcha", "");
     include("../index.php");
 ?>
 <!DOCTYPE html>
@@ -67,35 +67,43 @@
             <h3>Request</h3>
             <div class="tableDivs">
                 <table>
-                    <tr>
-                        <th>URL</th>
-                        <th>Method</th>
-                    </tr>
-                    <tr>
-                        <td><?php echo getMainWebAddress(); ?>?view&raw=1</td>
-                        <td>GET</td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>URL</th>
+                            <th>Method</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><?php echo getMainWebAddress(); ?>?view&raw=1</td>
+                            <td>GET</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
             <br>
             <div class="tableDivs">
                 <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Value</th>
-                    </tr>
-                    <tr>
-                        <td>n</td>
-                        <td>ID of upload (optional)</td>
-                    </tr>
-                    <tr>
-                        <td>p</td>
-                        <td>Index of page (optional)</td>
-                    </tr>
-                    <tr>
-                        <td>t</td>
-                        <td>Upload ID of where to get from (optional)</td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>n</td>
+                            <td>ID of upload (optional)</td>
+                        </tr>
+                        <tr>
+                            <td>p</td>
+                            <td>Index of page (optional)</td>
+                        </tr>
+                        <tr>
+                            <td>t</td>
+                            <td>Upload ID of where to get from (optional)</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -103,64 +111,76 @@
             <h3>Response</h3>
             <div class="tableDivs">
                 <table>
-                    <tr>
-                        <th>Format</th>
-                    </tr>
-                    <tr>
-                        <td>JSON</td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Format</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>JSON</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
             <br>
             <div class="tableDivs">
                 <table>
-                    <tr>
-                        <th>Key</th>
-                        <th>Value</th>
-                    </tr>
-                    <tr>
-                        <td>0</td>
-                        <td>Upload unique ID (string-int)</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Photo/Video URL path (array[string])</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Photo/Video upload unix time (array[int])</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>File type (image; video) (array[string])</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Location coordinates (array[string-float; string])</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>Location coordinates upload unix time (array[int])</td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>Description (array[string])</td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>Description upload unix time (array[int])</td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td>Voice URL path (array[string])</td>
-                    </tr>
-                    <tr>
-                        <td>9</td>
-                        <td>Voice upload unix time (array[int])</td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td>Upload unique ID (string-int)</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Photo/Video URL path (array[string])</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Photo/Video upload unix time (array[int])</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>File type (image; video) (array[string])</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Location coordinates (array[string-float; string])</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Location coordinates upload unix time (array[int])</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Description (array[string])</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Description upload unix time (array[int])</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Voice URL path (array[string])</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Voice upload unix time (array[int])</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
+        <br><br>
+        <a href="/" style="border: 2px solid #256aff;padding: 4px;display: inline-block;">
+            <img width="32" height="32" src="../images/homepage.svg">&nbsp;<span><?php echo $langJSON["gomainpage"]; ?></span>
+        </a>
     </div>
     <?php echoConsoleWarningScript(); ?>
 </body>

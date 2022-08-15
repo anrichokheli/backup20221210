@@ -25,14 +25,15 @@
             </a>
             <div id="statusBox">
                 <div id="status2" class="progressbardiv">
-                    <img width="32" height="32" id="statusphotovideo">
+                    <img class="whiteicon" width="32" height="32" id="statusphotovideo">
                     <div id="progressbartop" class="progressbar"></div>
                 </div>
                 <div id="statuslocation">
-                    <img width="32" height="32" src="../images/location.svg">
+                    <img width="32" height="32">
                 </div>
             </div>
             <div id="statusBigBox"></div>
+            <div id="locationDetails"></div>
             <div id="recordstatus">
                 <img width="32" height="32" id="recordicon">
                 <span id="recordduration"></span>

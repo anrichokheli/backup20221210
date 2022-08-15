@@ -96,6 +96,9 @@ function checkboxSettingSetup(id, checkbox, storagename){
     }
     checkbox.onchange = function(){
         localStorage.setItem(storagename, this.checked);
+        try{
+            setLocationSettingDiv(storagename, null, true);
+        }catch(e){}
     };
 }
 try{
@@ -107,6 +110,36 @@ try{
         localStorage.setItem("saveuploads", this.checked);
     };*/
     checkboxSettingSetup(null, saveUploads, "saveuploads");
+}catch(e){}
+try{
+    var locationSettingsNames = ["currentlocationmode", "locationhighaccuracymode", "locationinitializationmode", "locationcachemode"];
+    var locationSettingsValues = [false, true, false, true];
+    function setLocationSettings(){
+        for(var i = 0; i < locationSettingsNames.length; i++){
+            checkboxSettingSetup(locationSettingsNames[i]);
+        }
+    }
+    function resetLocationSettings(){
+        for(var i = 0; i < locationSettingsNames.length; i++){
+            localStorage.setItem(locationSettingsNames[i], locationSettingsValues[i]);
+        }
+    }
+    if(!localStorage.getItem(locationSettingsNames[0])){
+        resetLocationSettings();
+    }
+    setLocationSettings();
+    var locationCacheTimeout = document.getElementById("locationcachetimeout");
+    locationCacheTimeout.oninput = function(){
+        localStorage.setItem(this.id, this.value * 1000);
+        //locationCacheValue.innerText = localStorage.getItem("locationcachetimeout") / 1000;
+    };
+    function locationCacheTimeoutInputSetup(){
+        if(!localStorage.getItem("locationcachetimeout")){
+            localStorage.setItem("locationcachetimeout", 1000);
+        }
+        locationCacheTimeout.value = localStorage.getItem("locationcachetimeout") / 1000;
+    }
+    locationCacheTimeoutInputSetup();
 }catch(e){}
 try{
     var locationAttachSettingsNames = ["takephotolocationattach", "recordvideolocationattach", "choosephotoslocationattach", "choosevideoslocationattach", "choosefileslocationattach", "enterlinklocationattach", "cameratakephotolocationattach", "camerarecordvideolocationattach"];
@@ -250,6 +283,12 @@ try{
         }catch(e){}
         setCheckboxOnstorage(saveUploads, "saveuploads");
         try{
+            setLocationSettings();
+        }catch(e){}
+        try{
+            locationCacheTimeoutInputSetup();
+        }catch(e){}
+        try{
             setLocationAttachSettings();
         }catch(e){}
         /*try{
@@ -300,6 +339,13 @@ try{
             setCookie("settingstimezone", "");
             // localStorage.setItem("saveuploads", true);
             localStorage.removeItem("saveuploads");
+            resetLocationSettings();
+            try{
+                for(var i = 0; i < locationSettingsNames.length; i++){
+                    setLocationSettingDiv(locationSettingsNames[i], null, true);
+                }
+            }catch(e){}
+            localStorage.removeItem("locationcachetimeout");
             resetLocationAttachSettings();
             //resetReopenSettings();
             //localStorage.removeItem("startupmode");
@@ -317,7 +363,11 @@ try{
             localStorage.removeItem("camerafullscreenonclick");
             localStorage.removeItem("cameravideoonlyonclick");
             localStorage.removeItem("camerablackscreenondblclick");
-            setSettingsWindow(true);
+            try{
+                setSettingsWindow(true);
+            }catch(e){
+                location.reload();
+            }
         }
     };
 }catch(e){}

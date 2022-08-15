@@ -101,3 +101,15 @@ input:checked + .slider:before, input:checked + .slider img {
     display: flex;
     align-items: center;
 }
+.settingssubbox{
+    border: 1px solid #256aff80;
+    /* display: inline-block; */
+    border-radius: 2px;
+    padding: 2px;
+    margin-top: 2px;
+    flex-wrap: wrap;
+}
+.settingdescription{
+    margin-top: 4px;
+    border-top: 1px solid #256aff80;
+}

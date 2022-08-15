@@ -207,6 +207,23 @@
     justify-content: center;
     align-items: center;
 }
+#locationDetails{
+    display: none;
+    position: absolute;
+    top: 44px;
+    left: 25%;
+    right: 25%;
+    width: 50%;
+    background-color: #256aff80;
+    border-radius: 8px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    overflow-y: auto;
+    z-index: 2;
+    color: #ffffff;
+}
 #recordstatus{
     display: none;
     position: absolute;
@@ -222,4 +239,7 @@
 #recordduration{
     color: #ffffff;
     font-size: 22px;
+}
+.whiteicon{
+    filter: brightness(0) invert(1);
 }
