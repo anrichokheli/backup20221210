@@ -199,7 +199,7 @@
                             </div>
                         </div>
                     </form>
-                    <div id="camerabuttonsdiv"></div>
+                    <div id="camerabuttonsdiv" class="buttongroup"></div>
                 </div>
                 <div class="buttonsDivs">
                     <form method="post" class="uploadforms" id="filelinkform">
@@ -233,31 +233,40 @@
             </div>
             <!--AFTER_UPLOAD-->
             <br><br>
-            <div id="location"></div>
+            <div id="location" class="hiddenonload"></div>
             <br>
-            <div id="uploadstatuses" class="boxs"></div>
+            <div id="uploadstatuses" class="boxs hiddenonload"></div>
             <br>
-            <a id="viewuploadsbutton" class="buttons viewuploadsbuttons" href="?view<php>LANG</php>">
-                <svg width="64" height="64" viewBox="0 0 512 512" class="icons">
-                    <g transform="translate(0 512) scale(.1 -.1)">
-                        <path d="m2240 4144c-558-76-1076-336-1591-799-262-236-662-724-645-788 7-28 153-230 264-367 114-140 450-474 587-584 418-334 860-541 1325-622 126-22 503-30 641-15 324 37 670 149 965 312 442 245 856 615 1195 1069 60 79 116 159 126 177 17 32 17 34 0 66-10 18-66 98-126 177-339 454-753 824-1195 1069-285 157-607 265-919 306-148 19-481 18-627-1zm501-319c564-31 1179-349 1642-846 99-107 232-272 295-366l35-53-35-52c-113-170-322-408-487-556-530-473-1126-696-1764-661-535 30-1055 262-1507 671-170 154-365 377-478 546l-35 52 35 53c113 168 308 392 477 544 452 409 969 640 1501 672 69 4 148 6 175 5 28-2 93-6 146-9z"/>
-                        <path d="m2360 3505c-357-80-630-337-732-691-20-69-23-101-23-254s3-185 23-254c97-334 344-581 678-678 69-20 101-23 254-23s185 3 254 23c334 97 581 344 678 678 20 69 23 101 23 254s-3 185-23 254c-96 333-342 580-673 677-97 28-359 36-459 14z"/>
-                    </g>
-                </svg>
-                &nbsp;
-                <span class="viewuploads"><string>viewuploads</string></span>
-            </a>
-            <a id="viewuploadsbutton2" class="buttons viewuploadsbuttons" href="?view<php>LANG</php>" target="_blank">
-                <svg width="64" height="64" viewBox="0 0 512 512" class="icons">
-                    <g transform="translate(0 512) scale(.1 -.1)">
-                        <path d="m685 4428c-3-7-4-852-3-1878l3-1865h1875 1875l3 938 2 937h-190-190v-750-750h-1500-1500v1500 1500h750 750v190 190h-935c-739 0-937-3-940-12z"/>
-                        <path d="m3210 4165 265-265-528-528c-290-290-527-532-527-537 0-6 92-102 205-215l205-205 738 738c174 174 321 317 327 317 5 0 130-120 277-267l268-268v748 747h-747-748l265-265z"/>
-                    </g>
-                </svg>
-            </a>
-            <br><br>
-            <button id="settingsbutton" class="buttons"></button>
-            <br><br>
+            <div class="buttonsDivs2">
+                <div class="buttongroup">
+                    <a id="viewuploadsbutton" class="buttons viewuploadsbuttons" href="?view<php>LANG</php>">
+                        <svg width="64" height="64" viewBox="0 0 512 512" class="icons">
+                            <g transform="translate(0 512) scale(.1 -.1)">
+                                <path d="m2240 4144c-558-76-1076-336-1591-799-262-236-662-724-645-788 7-28 153-230 264-367 114-140 450-474 587-584 418-334 860-541 1325-622 126-22 503-30 641-15 324 37 670 149 965 312 442 245 856 615 1195 1069 60 79 116 159 126 177 17 32 17 34 0 66-10 18-66 98-126 177-339 454-753 824-1195 1069-285 157-607 265-919 306-148 19-481 18-627-1zm501-319c564-31 1179-349 1642-846 99-107 232-272 295-366l35-53-35-52c-113-170-322-408-487-556-530-473-1126-696-1764-661-535 30-1055 262-1507 671-170 154-365 377-478 546l-35 52 35 53c113 168 308 392 477 544 452 409 969 640 1501 672 69 4 148 6 175 5 28-2 93-6 146-9z"/>
+                                <path d="m2360 3505c-357-80-630-337-732-691-20-69-23-101-23-254s3-185 23-254c97-334 344-581 678-678 69-20 101-23 254-23s185 3 254 23c334 97 581 344 678 678 20 69 23 101 23 254s-3 185-23 254c-96 333-342 580-673 677-97 28-359 36-459 14z"/>
+                            </g>
+                        </svg>
+                        &nbsp;
+                        <span class="viewuploads"><string>viewuploads</string></span>
+                    </a>
+                    <a id="viewuploadsbutton2" class="buttons viewuploadsbuttons" href="?view<php>LANG</php>" target="_blank">
+                        <svg width="64" height="64" viewBox="0 0 512 512" class="icons">
+                            <g transform="translate(0 512) scale(.1 -.1)">
+                                <path d="m685 4428c-3-7-4-852-3-1878l3-1865h1875 1875l3 938 2 937h-190-190v-750-750h-1500-1500v1500 1500h750 750v190 190h-935c-739 0-937-3-940-12z"/>
+                                <path d="m3210 4165 265-265-528-528c-290-290-527-532-527-537 0-6 92-102 205-215l205-205 738 738c174 174 321 317 327 317 5 0 130-120 277-267l268-268v748 747h-747-748l265-265z"/>
+                            </g>
+                        </svg>
+                    </a>
+                </div>
+                <div>
+                    <button id="myUploadsButton" class="buttons hiddenonload"></button>
+                </div>
+                <div class="buttongroup">
+                    <button id="settingsbutton" class="buttons hiddenonload"></button>
+                    <button id="settingsbutton2" class="buttons hiddenonload"></button>
+                </div>
+            </div>
+            <br>
             <div class="info">
                 <span class="maxfilesize"><string>maxfilesize</string></span> 25MB.
                 <hr>
@@ -311,19 +320,18 @@
                 <a href="ps">PS!</a>
             </div>
             <br><br>
+            <div style="border: 2px solid #ff0000;padding: 2px;display: inline-block;">
+                <a href="0">0</a>
+            </div>
+            <br><br>
         </div>
         <div>
             <a href="/rules"><string>rules</string></a>
             &nbsp;|&nbsp;
             <a href="/api">API</a>
+            &nbsp;|&nbsp;
+            <a href="/createaccount.html">createaccount.html</a>
         </div>
-
-        <br><br>
-        <a href="/createaccount.html">createaccount.html</a>
-
-        <br><br>
-        <a href="/pedestriansos.zip">pedestriansos.zip</a>
-
         <div style="height: 25vh;"></div>
         <br><br>
         <script>try{function consoleWarning(a,b){for(var i=0;i<3;i++){console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");console.log("%c"+a+"!","color:#ff0000;font-size:32px;font-weight:bold;");console.log("%c"+b,"font-size:25px");console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");}}consoleWarning("<string>warning</string>","<string>consolewarning</string>");}catch(e){}</script>

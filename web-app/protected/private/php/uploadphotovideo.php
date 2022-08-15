@@ -17,16 +17,23 @@
         define("idsPath", uploadSecretsPath . "ids/");
         define("keysPath", uploadSecretsPath . "keys/");
         define("tmpPath", protectedPrivatePath . "tmp/");
-        $htmlMode = (isset($_POST["submitform"]) || isset($_POST["submit"]) || isset($_POST["ps"]));
-        function returnError($error){
+        $htmlMode = (isset($_POST["submitform"]) || isset($_POST["submit"]) || isset($_POST["ps"]) || isset($_POST["0"]));
+        /*function returnError($error){
             if($GLOBALS["htmlMode"]){
                 return "<div style=\"border:2px solid #ff0000;overflow-wrap:break-word;\">" . $error . "</div>";
             }else{
                 return $error;
             }
+        }*/
+        if($htmlMode){
+            $errorHTML = "";
         }
         function echoError($error){
-            echo returnError($error);
+            if($GLOBALS["htmlMode"]){
+                $GLOBALS["errorHTML"] .= "<div style=\"border:2px solid #ff0000;overflow-wrap:break-word;\">" . $error . "</div>";
+            }else{
+                echo $error;
+            }
         }
         $correct = 1;
         $uploaded = 0;
@@ -81,6 +88,9 @@
                 exitError("file is not chosen");
             }
         }else{
+            if(isset($_POST["filelink"]) && strpos($_POST["filelink"], "http://") !== 0 && strpos($_POST["filelink"], "https://") !== 0){
+                $_POST["filelink"] = "http://" . $_POST["filelink"];
+            }
             if(empty($_POST["filelink"]))    {
                 exitError("link is empty");
             }else if(!filter_var($_POST["filelink"], FILTER_VALIDATE_URL)){
@@ -232,60 +242,64 @@
                     }
                 }
                 if($GLOBALS["htmlMode"])    {
-                    define("maxDescriptionLength", 100000);
-                    define("maxVoiceFileSize", 25000000);
-                    $filesHTML = file_get_contents(htmlPath . "uploadfiles.html");
-                    if(isset($GLOBALS["uploadID"])){
-                        $filesHTML .= "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/photovideo.svg\"> <string>files</string>; <string>uploadcompleted</string></div>";
-                    }
-                    $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
-                    $descriptionHTML = str_replace("<php>MAX_DESCRIPTION_LENGTH</php>", maxDescriptionLength, $descriptionHTML);
-                    $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
-                    $voiceHTML = str_replace("<php>MAX_VOICE_SIZE</php>", maxVoiceFileSize / 1000000, $voiceHTML);
-                    $filesHTML = str_replace("value_id", $id, str_replace("value_key", $key, $filesHTML));
-                    $descriptionHTML = str_replace("value_id", $id, str_replace("value_key", $key, $descriptionHTML));
-                    $voiceHTML = str_replace("value_id", $id, str_replace("value_key", $key, $voiceHTML));
-                    $uploadLocationAfterGot = !file_exists(locations . $GLOBALS["filesName"]);
-                    ob_start();
-                    include(phpPath . "locationjs.php");
-                    $locationHTML = ob_get_clean();
-                    if(isset($_POST["ps"]))    {
-                        $psContent = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
-                        echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1><div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?view&n=" . $GLOBALS["filesName"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
-                        $filesHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $filesHTML);
-                        $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
-                        $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
-                        echo '<div>' . setLanguage($filesHTML) . '<br>' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '<br>' . $locationHTML . '</div>';
+                    if(isset($_POST["0"])){
+                        include $_SERVER["DOCUMENT_ROOT"] . "/0/index.php";
                     }else{
-                        if($GLOBALS["lang"] != defaultLang)    {
-                            $langget = "&lang=" . $GLOBALS["lang"];
-                        }else{
-                            $langget = "";
+                        define("maxDescriptionLength", 100000);
+                        define("maxVoiceFileSize", 25000000);
+                        $filesHTML = file_get_contents(htmlPath . "uploadfiles.html");
+                        if(isset($GLOBALS["uploadID"])){
+                            $filesHTML .= "<div style=\"border:1px solid #00ff00;padding:1px;\"><img width=\"16\" height=\"16\" src=\"/images/photovideo.svg\"> <string>files</string>; <string>uploadcompleted</string></div>";
                         }
-                        if(isset($_POST["submit"])){
-                            $noscript = "noscript";
-                            $filesHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $filesHTML);
-                            $descriptionHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $descriptionHTML);
-                            $voiceHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $voiceHTML);
+                        $descriptionHTML = file_get_contents(htmlPath . "uploaddescription.html");
+                        $descriptionHTML = str_replace("<php>MAX_DESCRIPTION_LENGTH</php>", maxDescriptionLength, $descriptionHTML);
+                        $voiceHTML = file_get_contents(htmlPath . "uploadvoice.html");
+                        $voiceHTML = str_replace("<php>MAX_VOICE_SIZE</php>", maxVoiceFileSize / 1000000, $voiceHTML);
+                        $filesHTML = str_replace("value_id", $id, str_replace("value_key", $key, $filesHTML));
+                        $descriptionHTML = str_replace("value_id", $id, str_replace("value_key", $key, $descriptionHTML));
+                        $voiceHTML = str_replace("value_id", $id, str_replace("value_key", $key, $voiceHTML));
+                        $uploadLocationAfterGot = !file_exists(locations . $GLOBALS["filesName"]);
+                        ob_start();
+                        include(phpPath . "locationjs.php");
+                        $locationHTML = ob_get_clean();
+                        if(isset($_POST["ps"]))    {
+                            $psContent = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
+                            echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1>" . $errorHTML . "<div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?view&n=" . $GLOBALS["filesName"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
+                            $filesHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $filesHTML);
+                            $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
+                            $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
+                            echo '<div>' . setLanguage($filesHTML) . '<br>' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '<br>' . $locationHTML . '</div>';
                         }else{
-                            $noscript = "";
+                            if($GLOBALS["lang"] != defaultLang)    {
+                                $langget = "&lang=" . $GLOBALS["lang"];
+                            }else{
+                                $langget = "";
+                            }
+                            if(isset($_POST["submit"])){
+                                $noscript = "noscript";
+                                $filesHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $filesHTML);
+                                $descriptionHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $descriptionHTML);
+                                $voiceHTML = str_replace("<form", "<form action=\"?noscript" . $langget . "\"", $voiceHTML);
+                            }else{
+                                $noscript = "";
+                            }
+                            $html = "<div class=\"boxs\">";
+                            $html .= "<div class=\"texts\">#: " . $GLOBALS["filesName"] . "</div><div><label for=\"link" . $GLOBALS["filesName"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?view&n=" . $GLOBALS["filesName"] . "\" id=\"link" . $GLOBALS["filesName"] . "\"></div><a href=\"?view&n=" . $GLOBALS["filesName"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?view&n=" . $GLOBALS["filesName"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"/images/newtab.svg\"></a><br><br>";
+                            $html .= $filesHTML;
+                            $html .= "<br><br>";
+                            $html .= $descriptionHTML;
+                            $html .= "<br><br>";
+                            $html .= $voiceHTML;
+                            $html .= "<br><br>";
+                            $html .= $locationHTML;
+                            $html .= "</div>";
+                            $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", $errorHTML . "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents(htmlPath . "index" . $noscript . ".html")));
+                            $html = str_replace("<htmllang>lang</htmllang>", $GLOBALS["lang"], $html);
+                            $html = setLanguage($html);
+                            $html = str_replace("<php>LANG</php>", $langget, $html);
+                            $html = str_replace("<php>langoptions</php>", getLangOptions(), $html);
+                            echo $html;
                         }
-                        $html = "<div class=\"boxs\">";
-                        $html .= "<div class=\"texts\">#: " . $GLOBALS["filesName"] . "</div><div><label for=\"link" . $GLOBALS["filesName"] . "\"><img width=\"16\" height=\"16\" src=\"images/link.svg\"><span class=\"link title\"><string>link</string></span></label><input type=\"text\" readonly value=\"" . getMainWebAddress() . "/?view&n=" . $GLOBALS["filesName"] . "\" id=\"link" . $GLOBALS["filesName"] . "\"></div><a href=\"?view&n=" . $GLOBALS["filesName"] . $langget . "\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span></a><a href=\"?view&n=" . $GLOBALS["filesName"] . $langget . "\" target=\"_blank\" class=\"buttons afteruploadbuttons viewuploadsbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span><string>viewupload</string></span>&nbsp;<img width=\"32\" height=\"32\" src=\"/images/newtab.svg\"></a><br><br>";
-                        $html .= $filesHTML;
-                        $html .= "<br><br>";
-                        $html .= $descriptionHTML;
-                        $html .= "<br><br>";
-                        $html .= $voiceHTML;
-                        $html .= "<br><br>";
-                        $html .= $locationHTML;
-                        $html .= "</div>";
-                        $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents(htmlPath . "index" . $noscript . ".html")));
-                        $html = str_replace("<htmllang>lang</htmllang>", $GLOBALS["lang"], $html);
-                        $html = setLanguage($html);
-                        $html = str_replace("<php>LANG</php>", $langget, $html);
-                        $html = str_replace("<php>langoptions</php>", getLangOptions(), $html);
-                        echo $html;
                     }
                 }
                 else    {

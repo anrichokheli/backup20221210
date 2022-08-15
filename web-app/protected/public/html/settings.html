@@ -4,7 +4,7 @@
         <div>
             <label class="switch">
                 <input type="checkbox" id="darkmodecheckbox">
-                <span class="slider round"><img width="26" height="26" src="images/darkmode0.png"></span>
+                <span class="slider round"><img width="26" height="26" src="/images/darkmode0.png"></span>
             </label>
         </div>
     </div>
@@ -16,7 +16,7 @@
 <div class="settingsbox">
     <div class="xycenter">
         <label for="setlang" class="xycenter">
-            <img width="26" height="26" src="images/language.svg">
+            <img width="26" height="26" src="/images/language.svg">
             &nbsp;
             <span class="language"><string>language</string></span>
         </label>
@@ -32,7 +32,7 @@
 <div class="settingsbox">
     <div class="xycenter">
         <label for="settimezone" class="xycenter">
-            <img width="26" height="26" src="images/timezone.svg">
+            <img width="26" height="26" src="/images/timezone.svg">
             &nbsp;
             <span class="timezone"><string>timezone</string></span>
         </label>
@@ -77,12 +77,70 @@
 <div class="settingsbox">
     <div class="xycenter">
         <label for="saveuploads" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/save.svg">
-            <img width="26" height="26" src="images/myuploads.svg">
+            <img width="26" height="26" src="/images/save.svg">
+            <img width="26" height="26" src="/images/myuploads.svg">
             &nbsp;
             <span class="savemyuploadsinthisbrowser"><string>savemyuploadsinthisbrowser</string></span>
         </label>
         <input type="checkbox" id="saveuploads">
+    </div>
+</div>
+<div class="settingsbox">
+    <div class="xycenter">
+        <img width="30" height="30" src="../images/location.svg">
+        &nbsp;
+        <h4><span class="mylocation"><string>mylocation</string></span></h4>
+    </div>
+    <div class="settingsbottomline"></div>
+    <div class="settingssubbox">
+        <div class="xycenter">
+            <label for="currentlocationmode" class="xycenter checkboxlabel">
+                <img width="26" height="26" src="/images/currentlocation.svg">
+                &nbsp;
+                <span class="currentlocation"><string>currentlocation</string></span>
+            </label>
+            <input type="checkbox" id="currentlocationmode">
+        </div>
+        <div class="settingdescription currentlocationdescription"><string>currentlocationdescription</string></div>
+    </div>
+    <div class="settingssubbox">
+        <div class="xycenter">
+            <label for="locationhighaccuracymode" class="xycenter checkboxlabel">
+                <img width="26" height="26" src="/images/locationhighaccuracy.svg">
+                &nbsp;
+                <span class="locationhighaccuracy"><string>locationhighaccuracy</string></span>
+            </label>
+            <input type="checkbox" id="locationhighaccuracymode">
+        </div>
+        <div class="settingdescription locationhighaccuracydescription"><string>locationhighaccuracydescription</string></div>
+    </div>
+    <div class="settingssubbox">
+        <div class="xycenter">
+            <label for="locationinitializationmode" class="xycenter checkboxlabel">
+                <img width="26" height="26" src="/images/initialization.svg">
+                &nbsp;
+                <span class="initiallocation"><string>initiallocation</string></span>
+            </label>
+            <input type="checkbox" id="locationinitializationmode">
+        </div>
+        <div class="settingdescription locationinitializationdescription"><string>locationinitializationdescription</string></div>
+    </div>
+    <div class="settingssubbox">
+        <div class="xycenter">
+            <label for="locationcachemode" class="xycenter checkboxlabel">
+                <img width="26" height="26" src="/images/cache.svg">
+                &nbsp;
+                <span class="locationcache"><string>locationcache</string></span>
+            </label>
+            <input type="checkbox" id="locationcachemode">
+        </div>
+        <div class="settingssubbox xycenter">
+            <label for="locationcachetimeout" class="xycenter checkboxlabel">
+                <span class="cachetimeout"><string>cachetimeout</string></span>
+            </label>
+            <input type="number" min="0" id="locationcachetimeout" placeholder="s">
+        </div>
+        <div class="settingdescription locationcachedescription"><string>locationcachedescription</string></div>
     </div>
 </div>
 <div class="settingsbox">
@@ -95,7 +153,7 @@
     <div class="settingsbottomline"></div>
     <div class="xycenter">
         <label for="takephotolocationattach" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/take_photo.svg">
+            <img width="26" height="26" src="/images/take_photo.svg">
             &nbsp;
             <span class="takephoto"><string>takephoto</string></span>
         </label>
@@ -103,7 +161,7 @@
     </div>
     <div class="xycenter">
         <label for="recordvideolocationattach" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/record_video.svg">
+            <img width="26" height="26" src="/images/record_video.svg">
             &nbsp;
             <span class="recordvideo"><string>recordvideo</string></span>
         </label>
@@ -111,7 +169,7 @@
     </div>
     <div class="xycenter">
         <label for="choosephotoslocationattach" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/photo.svg">
+            <img width="26" height="26" src="/images/photo.svg">
             &nbsp;
             <span class="choosephotos"><string>choosephotos</string></span>
         </label>
@@ -119,7 +177,7 @@
     </div>
     <div class="xycenter">
         <label for="choosevideoslocationattach" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/video.svg">
+            <img width="26" height="26" src="/images/video.svg">
             &nbsp;
             <span class="choosevideos"><string>choosevideos</string></span>
         </label>
@@ -127,7 +185,7 @@
     </div>
     <div class="xycenter">
         <label for="choosefileslocationattach" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/photovideo.svg">
+            <img width="26" height="26" src="/images/photovideo.svg">
             &nbsp;
             <span class="choosefiles"><string>choosefiles</string></span>
         </label>
@@ -135,7 +193,7 @@
     </div>
     <div class="xycenter">
         <label for="enterlinklocationattach" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/link.svg">
+            <img width="26" height="26" src="/images/link.svg">
             &nbsp;
             <span class="enterlink"><string>enterlink</string></span>
         </label>
@@ -150,7 +208,7 @@
         <div class="settingsbottomline"></div>
         <div class="xycenter">
             <label for="cameratakephotolocationattach" class="xycenter checkboxlabel">
-                <img width="26" height="26" src="images/take_photo.svg">
+                <img width="26" height="26" src="/images/take_photo.svg">
                 &nbsp;
                 <span class="takephoto"><string>takephoto</string></span>
             </label>
@@ -158,7 +216,7 @@
         </div>
         <div class="xycenter">
             <label for="camerarecordvideolocationattach" class="xycenter checkboxlabel">
-                <img width="26" height="26" src="images/record_video.svg">
+                <img width="26" height="26" src="/images/record_video.svg">
                 &nbsp;
                 <span class="recordvideo"><string>recordvideo</string></span>
             </label>
@@ -175,7 +233,7 @@
     <div class="settingsbottomline"></div>
     <div class="xycenter">
         <label for="defaultstartup" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/homepage.svg">
+            <img width="26" height="26" src="/images/homepage.svg">
             &nbsp;
             <span class="default"><string>default</string></span>
         </label>
@@ -183,7 +241,7 @@
     </div>
     <div class="xycenter">
         <label for="takephotostartup" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/take_photo.svg">
+            <img width="26" height="26" src="/images/take_photo.svg">
             &nbsp;
             <span class="takephoto"><string>takephoto</string></span>
         </label>
@@ -191,7 +249,7 @@
     </div>
     <div class="xycenter">
         <label for="recordvideostartup" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/record_video.svg">
+            <img width="26" height="26" src="/images/record_video.svg">
             &nbsp;
             <span class="recordvideo"><string>recordvideo</string></span>
         </label>
@@ -199,7 +257,7 @@
     </div>
     <div class="xycenter">
         <label for="choosephotosstartup" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/photo.svg">
+            <img width="26" height="26" src="/images/photo.svg">
             &nbsp;
             <span class="choosephotos"><string>choosephotos</string></span>
         </label>
@@ -207,7 +265,7 @@
     </div>
     <div class="xycenter">
         <label for="choosevideosstartup" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/video.svg">
+            <img width="26" height="26" src="/images/video.svg">
             &nbsp;
             <span class="choosevideos"><string>choosevideos</string></span>
         </label>
@@ -215,7 +273,7 @@
     </div>
     <div class="xycenter">
         <label for="choosefilesstartup" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/photovideo.svg">
+            <img width="26" height="26" src="/images/photovideo.svg">
             &nbsp;
             <span class="choosefiles"><string>choosefiles</string></span>
         </label>
@@ -231,7 +289,7 @@
     <div class="settingsbottomline"></div>
     <div class="xycenter">
         <label for="takephotoreopen" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/take_photo.svg">
+            <img width="26" height="26" src="/images/take_photo.svg">
             &nbsp;
             <span class="takephoto"><string>takephoto</string></span>
         </label>
@@ -239,7 +297,7 @@
     </div>
     <div class="xycenter">
         <label for="recordvideoreopen" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/record_video.svg">
+            <img width="26" height="26" src="/images/record_video.svg">
             &nbsp;
             <span class="recordvideo"><string>recordvideo</string></span>
         </label>
@@ -247,7 +305,7 @@
     </div>
     <div class="xycenter">
         <label for="choosephotosreopen" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/photo.svg">
+            <img width="26" height="26" src="/images/photo.svg">
             &nbsp;
             <span class="choosephotos"><string>choosephotos</string></span>
         </label>
@@ -255,7 +313,7 @@
     </div>
     <div class="xycenter">
         <label for="choosevideosreopen" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/video.svg">
+            <img width="26" height="26" src="/images/video.svg">
             &nbsp;
             <span class="choosevideos"><string>choosevideos</string></span>
         </label>
@@ -263,7 +321,7 @@
     </div>
     <div class="xycenter">
         <label for="choosefilesreopen" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/photovideo.svg">
+            <img width="26" height="26" src="/images/photovideo.svg">
             &nbsp;
             <span class="choosefiles"><string>choosefiles</string></span>
         </label>
@@ -273,7 +331,7 @@
 <!--<div class="settingsbox">
     <div class="xycenter">
         <label for="colorfiltercheckbox" class="xycenter">
-            <img width="26" height="26" src="images/colorfilter.svg">
+            <img width="26" height="26" src="/images/colorfilter.svg">
             &nbsp;
             <span class="colorfilter"><string>colorfilter</string></span>
         </label>
@@ -291,51 +349,53 @@
 </div>-->
 <div class="settingsbox">
     <table>
-        <tr>
-            <td>
-                <label for="lightcolor" class="lightcolor"><string>lightcolor</string></label>
-            </td>
-            <td>
-                <input type="color" id="lightcolor">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="lightbackgroundcolor" class="lightbackgroundcolor"><string>lightbackgroundcolor</string></label>
-            </td>
-            <td>
-                <input type="color" id="lightbackgroundcolor">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="darkcolor" class="darkcolor"><string>darkcolor</string></label>
-            </td>
-            <td>
-                <input type="color" id="darkcolor">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="darkbackgroundcolor" class="darkbackgroundcolor"><string>darkbackgroundcolor</string></label>
-            </td>
-            <td>
-                <input type="color" id="darkbackgroundcolor">
-            </td>
-        </tr>
+        <tbody>
+            <tr>
+                <td>
+                    <label for="lightcolor" class="lightcolor"><string>lightcolor</string></label>
+                </td>
+                <td>
+                    <input type="color" id="lightcolor">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="lightbackgroundcolor" class="lightbackgroundcolor"><string>lightbackgroundcolor</string></label>
+                </td>
+                <td>
+                    <input type="color" id="lightbackgroundcolor">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="darkcolor" class="darkcolor"><string>darkcolor</string></label>
+                </td>
+                <td>
+                    <input type="color" id="darkcolor">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="darkbackgroundcolor" class="darkbackgroundcolor"><string>darkbackgroundcolor</string></label>
+                </td>
+                <td>
+                    <input type="color" id="darkbackgroundcolor">
+                </td>
+            </tr>
+        </tbody>
     </table>
 </div>
 <div class="settingsbox">
     <div class="xycenter">
-        <img width="30" height="30" src="images/viewicon.svg">
+        <img width="30" height="30" src="/images/viewicon.svg">
         &nbsp;
         <h4><span class="viewuploads"><string>viewuploads</string></span></h4>
     </div>
     <div class="settingsbottomline"></div>
     <div class="xycenter">
         <label for="loadonscroll" class="xycenter checkboxlabel">
-            <img width="26" height="26" src="images/viewmore.svg">
-            <img width="26" height="26" src="images/scroll.svg">
+            <img width="26" height="26" src="/images/viewmore.svg">
+            <img width="26" height="26" src="/images/scroll.svg">
             &nbsp;
             <span class="loadnewcontentwhenscroll"><string>loadnewcontentwhenscroll</string></span>
         </label>
@@ -344,7 +404,7 @@
 </div>
 <div class="settingsbox">
     <div class="xycenter">
-        <img width="30" height="30" src="images/camera.svg">
+        <img width="30" height="30" src="/images/camera.svg">
         &nbsp;
         <h4><span class="camera"><string>camera</string></span></h4>
     </div>

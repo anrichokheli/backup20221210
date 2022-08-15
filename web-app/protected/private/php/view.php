@@ -607,7 +607,7 @@
     }
     $ajax = isset($_GET["ajax"]) && ($_GET["ajax"] == 1);
     if(!$rawData && !$ajax)    {
-        $topHTML = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title><string>pedestrian</string> SOS!</title></head>";
+        $topHTML = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title><string>viewuploads</string> | <string>pedestrian</string> SOS!</title></head>";
         $topHTML .= "<body><div id=\"main\"><div id=\"top\"><a href=\"/\" style=\"text-decoration: none;\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos.svg\"> <h1><span class=\"pedestrian\"><string>pedestrian</string></span>&nbsp;<span id=\"sos\">SOS!</span></h1></a></div>";
         echo setLanguage($topHTML);
     }
@@ -620,6 +620,17 @@
         }
     }
     //echo "<style>.a{font-size:25px;border:solid 2px #0000ff;border-radius:4px;padding:1%;margin:1%;width:90%;text-align:center;}</style>";
+    if(!$rawData && !$ajax){
+        echo '
+        <h2>
+            <span class="viewuploads">' . $langJSON["viewuploads"] . '</span>
+        </h2>
+        <a href="/" class="buttons">
+            <img width="32" height="32" src="images/homepage.svg">&nbsp;<span class="gomainpage">' . $langJSON["gomainpage"] . '</span>
+        </a>
+        <br>
+        ';
+    }
     if(isset($_GET["n"]) && ctype_digit($_GET["n"]))    {
         /*if(!ctype_digit($n))    {
             exit("parameter is not id");
@@ -629,12 +640,7 @@
     }
     else    {
         if(!$rawData && !$ajax){
-            echo '<br><a href="?view&v=uploads/">..uploads/</a><br><br>';
-            echo '
-            <a href="/" class="buttons">
-                <img width="32" height="32" src="images/homepage.svg">&nbsp;<span class="gomainpage"><string>gomainpage</string></span>
-            </a>
-            ';
+            echo '<br><a href="?view&v=uploads/">..uploads/</a><br>';
         }
         if(/*!file_exists(photovideotimes)*/count(scandir(photovideotimes)) == 2){
             if($rawData){
@@ -674,7 +680,7 @@
                 }
                 $files = array_slice($files, maxQuantity * $page, maxQuantity);
             }
-            if(!$rawData){
+            if(!$rawData && !$ajax){
                 echo '<div id="content">';
             }
             $filesQuantity = count($files);
@@ -684,7 +690,7 @@
                     echo ">";
                 }
             }
-            if(!$rawData){
+            if(!$rawData && !$ajax){
                 echo '</div>';
             }
             if(!$rawData)    {
