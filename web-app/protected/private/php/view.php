@@ -602,14 +602,14 @@
             return json_encode($dataArray);
         }
         else    {
-            return setLanguage($html);
+            return setLanguage($html/*, $GLOBALS["langJSON"]*/);
         }
     }
     $ajax = isset($_GET["ajax"]) && ($_GET["ajax"] == 1);
     if(!$rawData && !$ajax)    {
         $topHTML = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta charset=\"UTF-8\"><link rel=\"stylesheet\" href=\"styles/view.css\"><title><string>viewuploads</string> | <string>pedestrian</string> SOS!</title></head>";
         $topHTML .= "<body><div id=\"main\"><div id=\"top\"><a href=\"/\" style=\"text-decoration: none;\"><img width=\"64\" height=\"64\" src=\"images/pedestriansos.svg\"> <h1><span class=\"pedestrian\"><string>pedestrian</string></span>&nbsp;<span id=\"sos\">SOS!</span></h1></a></div>";
-        echo setLanguage($topHTML);
+        echo setLanguage($topHTML/*, $GLOBALS["langJSON"]*/);
     }
     if(!$rawData){
         if($lang != defaultLang){

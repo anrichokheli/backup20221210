@@ -95,7 +95,7 @@
                         $filesHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $filesHTML);
                         $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
                         $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
-                        echo '<div>' . setLanguage($filesHTML) . '<br>' . setLanguage($descriptionHTML) . '<br>' . setLanguage($voiceHTML) . '<br>' . $locationHTML . '</div>';
+                        echo '<div>' . setLanguage($filesHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . setLanguage($descriptionHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . setLanguage($voiceHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . $locationHTML . '</div>';
                     }else{
                         if($lang != defaultLang)    {
                             $langget = "&lang=" . $lang;
@@ -124,7 +124,7 @@
                         $html .= "</div>";
                         $html = str_replace("<!--AFTER_UPLOAD-->", $html, str_replace("<!--UPLOAD_RESPONSE-->", "<div class=\"texts\" style=\"border:1px solid #00ff00;padding:1px;\"><string>uploadcompleted</string></div><br>", file_get_contents(htmlPath . "index" . $noscript . ".html")));
                         $html = str_replace("<htmllang>lang</htmllang>", $lang, $html);
-                        $html = setLanguage($html);
+                        $html = setLanguage($html/*, $GLOBALS["langJSON"]*/);
                         $html = str_replace("<php>LANG</php>", $langget, $html);
                         $html = str_replace("<!--LANG-->", $langinput, $html);
                         $html = str_replace("<php>langoptions</php>", getLangOptions(), $html);

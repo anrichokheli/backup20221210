@@ -7,7 +7,7 @@
     </label>
     <input type="checkbox" id="highaccuracy" checked>
     <label for="highaccuracy">
-        <img width="16" height="16" src="/images/locationhighaccuracy.svg">&nbsp;<span><?php echo $langJSON["highaccuracy"]; ?></span>
+        <img width="16" height="16" src="/images/locationhighaccuracy.svg">&nbsp;<span><?php echo $langJSON["locationhighaccuracy"]; ?></span>
     </label>
     <div id="locationerrordiv" style="display:none;border:2px solid #ff0000"></div>
     <button disabled onclick="uploadLocation0()" id="uploadlocation"><img width="16" height="16" src="/images/uploadicon.svg"> <?php echo $langJSON["upload"]; ?></button>
