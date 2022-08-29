@@ -5,6 +5,7 @@
     define("htmlPath", protectedPublicPath . "html/");
     define("phpPath", protectedPrivatePath . "php/");
     define("defaultLang", "en");
+    //define("jsonLanguagesPath", $_SERVER["DOCUMENT_ROOT"] . "/json/languages/");
     define("jsonLanguagesPath", $_SERVER["DOCUMENT_ROOT"] . "/json/languages/main/");
     if(file_exists(phpPath . "setup.php")){
         require_once(phpPath . "setup.php");
@@ -30,27 +31,32 @@
         $lang = defaultLang;
     }
     $lang = substr($lang, 0, 2);
-    if(!file_exists(jsonLanguagesPath . $lang . ".json")){
+    if(!file_exists(jsonLanguagesPath/* . "main/"*/ . $lang . ".json")){
         $lang = defaultLang;
     }
+    /*function getJSON($path){
+        return json_decode(file_get_contents(jsonLanguagesPath . $path . $GLOBALS["lang"] . ".json"), 1);
+    }*/
+    //$langJSON = getJSON("main/");
     $langJSON = json_decode(file_get_contents(jsonLanguagesPath . $lang . ".json"), 1);
     function getLangOptions(){
         $langOptions = '';
-        $jsonLangFiles = array_slice(scandir(jsonLanguagesPath), 2);
+        $jsonLangFiles = array_slice(scandir(jsonLanguagesPath/* . "main/"*/), 2);
         foreach($jsonLangFiles as $file){
-            $file = jsonLanguagesPath . $file;
+            $file = jsonLanguagesPath/* . "main/"*/ . $file;
             $langOptions .= '<option value="' . pathinfo($file, PATHINFO_FILENAME) . '">' . json_decode(file_get_contents($file), TRUE)["langname"] . '</option>';
         }
         return $langOptions;
     }
-    if(isset($_GET["gethtml"]) && $_GET["gethtml"] == "settings"){
-        exit(str_replace("<php>langoptions</php>", getLangOptions(), file_get_contents(htmlPath . "settings.html")));
-    }
-    function setLanguage($html) {
-        foreach($GLOBALS["langJSON"] as $key => $val)   {
+    function setLanguage($html/*, $json*/) {
+        foreach(/*$json*/$GLOBALS["langJSON"] as $key => $val)   {
             $html = str_replace("<string>" . $key . "</string>", $val, $html);
         }
         return $html;
+    }
+    if(isset($_GET["gethtml"]) && $_GET["gethtml"] == "settings"){
+        //exit(str_replace("<php>langoptions</php>", getLangOptions(), file_get_contents(htmlPath . "settings.html")));
+        exit(/*setLanguage(*/setLanguage(str_replace("<php>langoptions</php>", getLangOptions(), file_get_contents(htmlPath . "settings.html"))/*, $GLOBALS["langJSON"]*/)/*, getJSON("settings/"))*/);
     }
     function echoConsoleWarningScript(){
         if((isset($GLOBALS["rawData"]) && !$GLOBALS["rawData"]) || !isset($GLOBALS["rawData"])){
@@ -98,7 +104,7 @@
         $indexHTML = str_replace("<php>LANG</php>", $langget, $indexHTML);
         $indexHTML = str_replace("<htmllang>lang</htmllang>", $lang, $indexHTML);
         $indexHTML = str_replace("<php>langoptions</php>", getLangOptions(), $indexHTML);
-        $indexHTML = setLanguage($indexHTML);
+        $indexHTML = setLanguage($indexHTML/*, $GLOBALS["langJSON"]*/);
         echo $indexHTML;
     }
     //echoConsoleWarningScript();

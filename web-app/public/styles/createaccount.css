@@ -56,9 +56,10 @@ body    {
     border-radius: 2px;
 }
 .disabled{
-    pointer-events: none;
+    /* pointer-events: none;
     opacity: 0.5;
-    background-color: #ec0400;
+    background-color: #ec0400; */
+    display: none;
 }
 #warningDiv{
     border: 2px solid #ec0400;

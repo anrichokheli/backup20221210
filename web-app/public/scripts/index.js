@@ -6,7 +6,7 @@ var mainDiv = document.getElementById("main");
 var strings = null;
 function getString(key)  {
     if(strings && strings[key])return strings[key];
-    return key;
+    return "!"+key;
 }
 var latitude;
 var longitude;
@@ -82,7 +82,7 @@ try{
             }
         }
     }
-    function locationModeStatusSetup(imageName/*, textName*/, storageName){
+    function locationModeStatusSetup(imageName, textName, storageName){
         var local_div = document.createElement("div");
         //var cachetimeoutval = '';
         /*if(storageName == "locationcachemode"){
@@ -92,7 +92,7 @@ try{
             });
         }*/
         //local_div.innerHTML = '<div style="border:1px solid #256aff;text-align:center;display:inline-block;"><img width="16" height="16" src="images/'+imageName+'.svg">&nbsp;<span class="'+textName+'">'+getString(textName)+'</span>'+cachetimeoutval+'</div>';
-        local_div.innerHTML = '<img width="16" height="16" src="images/'+imageName+'.svg">';
+        local_div.innerHTML = '<img width="16" height="16" src="images/'+imageName+'.svg" class="'+textName+'" title="'+getString(textName)+'">';
         local_div.style.display = "inline-block";
         local_div.id = "settingstatus"+storageName;
         setLocationSettingDiv(storageName, local_div);
@@ -110,6 +110,13 @@ try{
         if(navigator.geolocation){
             geolocationSupported = true;
             locationImage.src = "images/waitinglocation.svg";
+            locationImage.title = getString("locationcoordinates") + " | " + getString("notdetecting");
+            try{
+                locationImage.classList.add("locationcoordinates", "notdetecting");
+            }catch(e){}
+            try{
+                locationImage.className = "locationcoordinates notdetecting";
+            }catch(e){}
             /*var locationSettingsDiv = document.createElement("div");
             try{
                 locationSettingsDiv.style.textAlign = "center";
@@ -164,10 +171,14 @@ try{
             highAccuracyModeStatus = locationModeStatusSetup("locationhighaccuracy", "locationhighaccuracy", "locationhighaccuracymode");
             locationOnLoadStatus = locationModeStatusSetup("initialization", "initiallocation", "locationinitializationmode");
             locationCacheStatus = locationModeStatusSetup("cache", "locationcache", "locationcachemode");*/
-            locationModeStatusSetup("currentlocation", "currentlocationmode");
+            /*locationModeStatusSetup("currentlocation", "currentlocationmode");
             locationModeStatusSetup("locationhighaccuracy", "locationhighaccuracymode");
             locationModeStatusSetup("initialization", "locationinitializationmode");
-            locationModeStatusSetup("cache", "locationcachemode");
+            locationModeStatusSetup("cache", "locationcachemode");*/
+            locationModeStatusSetup("currentlocation", "currentlocation", "currentlocationmode");
+            locationModeStatusSetup("locationhighaccuracy", "locationhighaccuracy", "locationhighaccuracymode");
+            locationModeStatusSetup("initialization", "initiallocation", "locationinitializationmode");
+            locationModeStatusSetup("cache", "locationcache", "locationcachemode");
             //var locationCacheValue = document.getElementById("cachetimeoutval");
             try{
                 setStorageIfNot("locationhighaccuracymode", true);
@@ -178,6 +189,13 @@ try{
             locationTbody.innerHTML = "<tr><th>Geolocation not supported by this browser.</th></tr>";
             locationDiv.style.backgroundColor = "#ff000080";
             locationImage.src = "images/nolocation.svg";
+            locationImage.title = getString("locationcoordinates") + " | " + getString("unavailable");
+            try{
+                locationImage.classList.add("locationcoordinates", "unavailable");
+            }catch(e){}
+            try{
+                locationImage.className = "locationcoordinates unavailable";
+            }catch(e){}
         }
     }catch(e){}
     locationDiv.style.display = "inline-block";
@@ -242,6 +260,13 @@ function getLocation(continuousUpdate, highAccuracy, cacheData, cacheTimeout)  {
         }
     }
     locationImage.src = "images/detectinglocation.svg";
+    locationImage.title = getString("locationcoordinates") + " | " + getString("detecting");
+    try{
+        locationImage.classList.add("locationcoordinates", "detecting");
+    }catch(e){}
+    try{
+        locationImage.className = "locationcoordinates detecting";
+    }catch(e){}
 }
 function getLocation2(){
     //getLocation(currentLocationCheckbox.checked, highAccuracyModeCheckbox.checked, locationCacheCheckbox.checked, locationCacheInput.value * 1000);
@@ -251,6 +276,13 @@ function afterLocation(position)  {
     detectingLocation = false;
     try{
         locationImage.src = "images/location.svg";
+        locationImage.title = getString("locationcoordinates") + " | " + getString("detected");
+        try{
+            locationImage.classList.add("locationcoordinates", "detected");
+        }catch(e){}
+        try{
+            locationImage.className = "locationcoordinates detected";
+        }catch(e){}
         // locationUploadStatus.children[0].src = "images/location.svg";
     }catch(e){}
     latitude = position.coords.latitude;
@@ -292,6 +324,13 @@ locationErrorDiv.style.border = "2px solid #ff0000";
 function locationError(error)    {
     detectingLocation = false;
     locationImage.src = "images/nolocation.svg";
+    locationImage.title = getString("locationcoordinates") + " | " + getString("unavailable");
+    try{
+        locationImage.classList.add("locationcoordinates", "unavailable");
+    }catch(e){}
+    try{
+        locationImage.className = "locationcoordinates unavailable";
+    }catch(e){}
     if(!locationDiv.contains(locationErrorDiv)){
         /*try{
             locationImage.src = "images/nolocation.svg";
@@ -1137,8 +1176,10 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
             uploadstatusesdisplayed = 1;
         }
         statusText = document.createElement("div");
-        bottomProgressBar.style.backgroundColor = color;
-        bottomProgressBar.style.width = "0%";
+        if(currentUploadID == lastUploadID){
+            bottomProgressBar.style.backgroundColor = color;
+            bottomProgressBar.style.width = "0%";
+        }
         bottomProgressVisible(1);
         var after = document.createElement("div");
         try{
@@ -1486,7 +1527,7 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
     ajax.send(formData);
 }
 var unloadWarning = 0;
-function uploadFunction(input, div, inputMode){
+function uploadFunction(input, /*div, */inputMode){
     try{
         filesUpload(null, input, inputMode);
         /*try{
@@ -1498,18 +1539,18 @@ function uploadFunction(input, div, inputMode){
         try{
             input.parentNode.submit();
         }catch(e){
-            div.style.display = "inline-block";
+            /*div.style.display = "inline-block";
             input.style.width = "initial";
-            input.style.height = "initial";
+            input.style.height = "initial";*/
         }
     }
 }
 function buttonSetup(id0) {
     var input = document.getElementById(id0 + "input");
-    var div = document.getElementById(id0 + "div");
+    //var div = document.getElementById(id0 + "div");
     function uploadIfInput(){
         if(input.value){
-            uploadFunction(input, div, id0);
+            uploadFunction(input, /*div, */id0);
         }
     }
     input.addEventListener("change", function(){uploadIfInput();});
@@ -1519,10 +1560,11 @@ function buttonSetup(id0) {
         e.preventDefault();
         input.click();
     };
-    button.tabIndex = "";
+    /*button.tabIndex = "";
     div.style.display = "none";
     input.style.width = "0";
-    input.style.height = "0";
+    input.style.height = "0";*/
+    input.tabIndex = "-1";
 }
 try{
     buttonSetup("takephoto");
@@ -1530,11 +1572,11 @@ try{
     buttonSetup("choosephotos");
     buttonSetup("choosevideos");
     buttonSetup("choosefiles");
-    var uploadForms = document.getElementsByClassName("uploadforms");
+    /*var uploadForms = document.getElementsByClassName("uploadforms");
     for(var i = 0; i < uploadForms.length; i++){
         uploadForms[i].style.border = "none";
         uploadForms[i].style.padding = "0";
-    }
+    }*/
 }catch(e){}
 try{
     var fileLinkForm = document.getElementById("filelinkform");
@@ -1622,9 +1664,6 @@ function getCookie(cname) {
     return "";
 }
 try{
-    document.getElementById("camerabuttonsdiv").innerHTML = '<button class="buttons" onclick=location.assign("camera") id="camerabutton">                        <svg width="64" height="64" viewBox="0 0 1e3 999" class="icons">                            <g transform="translate(0 999) scale(.1 -.1)">                                <path d="m4690 9479c-1477-105-2788-910-3554-2182-557-926-758-2045-560-3127 177-964 686-1874 1415-2524 472-422 1001-730 1589-926 1130-377 2387-284 3449 255 1281 650 2183 1879 2411 3287 117 721 58 1463-170 2148-316 948-938 1763-1765 2315-206 137-321 204-530 307-699 344-1508 502-2285 447zm732-483c1072-116 2041-646 2714-1482 502-624 800-1367 874-2179 13-142 13-548 0-690-103-1129-652-2141-1538-2833-603-471-1318-754-2102-834-179-18-600-15-787 5-672 75-1254 284-1809 653-1753 1161-2315 3478-1291 5319 80 144 267 419 380 560 483 600 1138 1055 1868 1298 324 108 678 175 1054 201 114 7 500-4 637-18z"/>                                <path d="m4775 8724c-22-2-92-9-155-15-843-79-1662-468-2269-1078-69-70-143-147-163-172l-38-46 35-129c144-525 333-1022 599-1569 97-198 288-560 306-578 4-5 49 54 101 130 427 637 941 1158 1509 1529 264 173 859 490 1252 668 369 167 833 339 1187 440l153 43-117 85c-506 366-1103 596-1750 673-122 15-563 28-650 19z"/>                                <path d="m7355 7824c-539-155-851-267-1286-459-288-128-930-456-928-474 0-3 59-44 130-91 598-388 1146-928 1524-1500 179-270 488-843 666-1235 176-389 373-918 464-1252 16-57 31-103 35-103 7 0 88 112 167 230 314 473 517 1035 589 1630 22 181 25 628 6 800-86 748-340 1367-803 1959-91 116-479 512-501 510-7-1-35-8-63-15z"/>                                <path d="m1952 7157c-264-367-466-804-577-1245-323-1288 50-2639 987-3573 70-70 147-143 171-163l44-36 149 41c464 126 1007 334 1504 575 227 110 630 324 630 333-1 3-33 26-73 51-111 69-347 240-502 365-444 355-792 735-1090 1189-184 279-471 817-661 1234-173 379-368 906-459 1240-16 56-31 102-35 102s-43-51-88-113z"/>                                <path d="m4855 5930c-196-31-381-126-525-270-356-356-373-904-41-1299 103-123 305-247 476-293 119-31 347-31 465 1 225 60 429 201 549 380 260 384 217 882-104 1207-118 119-275 210-440 254-92 24-286 34-380 20z"/>                                <path d="m6815 4728c-187-285-438-598-678-845-456-468-879-762-1692-1173-548-277-1077-489-1584-634l-153-43 117-85c1345-973 3207-922 4513 125 131 105 349 311 454 429l59 67-46 163c-146 521-359 1066-627 1603-106 213-269 515-277 515-3 0-42-55-86-122z"/>                            </g>                        </svg>                        &nbsp;                        <span class="camera">' + getString("camera") + '</span>                    </button>                    <button class="buttons" onclick=window.open("camera")>                        <svg width="64" height="64" viewBox="0 0 512 512" class="icons">                            <g transform="translate(0 512) scale(.1 -.1)">                                <path d="m685 4428c-3-7-4-852-3-1878l3-1865h1875 1875l3 938 2 937h-190-190v-750-750h-1500-1500v1500 1500h750 750v190 190h-935c-739 0-937-3-940-12z"/>                                <path d="m3210 4165 265-265-528-528c-290-290-527-532-527-537 0-6 92-102 205-215l205-205 738 738c174 174 321 317 327 317 5 0 130-120 277-267l268-268v748 747h-747-748l265-265z"/>                            </g>                        </svg>                    </button>';
-}catch(e){}
-try{
     var topDiv = document.getElementById("top");
     var topScrollDiv = document.createElement("div");
     var topScrollDivHeight = topDiv.clientHeight / 2;
@@ -1645,6 +1684,13 @@ try{
     psImg.src = "/images/pedestriansos.svg";
     psImg.style.width = topScrollDivHeight + "px";
     psImg.style.height = topScrollDivHeight + "px";
+    psImg.title = getString("gototop");
+    try{
+        psImg.classList.add("gototop");
+    }catch(e){}
+    try{
+        psImg.className = "gototop";
+    }catch(e){}
     psImg.onclick = function(){
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
@@ -1652,12 +1698,16 @@ try{
     psImg.style.cursor = "pointer";
     topScrollDiv.appendChild(psImg);
     function addTopButton(btnid){
-        var topButton = document.createElement("div");
+        var topButton = document.createElement("button");
         topButton.classList.add("backgrounds");
+        topButton.classList.add(btnid.replace("button", ""));
+        topButton.title = getString(btnid.replace("button", ""));
         topButton.style.width = topScrollDivHeight + "px";
         topButton.style.height = topScrollDivHeight + "px";
         topButton.style.cursor = "pointer";
         topButton.style.borderRadius = "10%";
+        topButton.style.padding = "0";
+        topButton.style.border = "none";
         var btn = document.getElementById(btnid);
         var html = btn.innerHTML;
         topButton.innerHTML = html.substring(html.indexOf("<svg"), html.indexOf("</svg>")+1).replace('width="64" height="64"', 'width="'+topScrollDivHeight+'" height="'+topScrollDivHeight+'"');
@@ -1770,7 +1820,7 @@ try{
     });
     try{
         var pasteElement = document.createElement("div");
-        pasteElement.innerHTML = '<label for="pasteinput"><img width="32" height="32" src="images/photovideo.svg"></label>';
+        pasteElement.innerHTML = '<label for="pasteinput"><img width="32" height="32" src="images/photovideo.svg" alt></label>';
         flexCenter(pasteElement);
         var pasteInput = document.createElement("input");
         pasteInput.type = "text";
@@ -1786,7 +1836,7 @@ try{
         var br = document.createElement("br");
         mainDiv.insertBefore(br, br0);
     }catch(e){}
-    function translateHTML(html){
+    /*function translateHTML(html){
         for(var key in strings) {
             try{
                 html = html.replaceAll("<string>"+key+"</string>", strings[key]);
@@ -1795,7 +1845,7 @@ try{
             }
         }
         return html;
-    }
+    }*/
 }catch(e){}
 function copyString(string, copiedElement){
     navigator.clipboard.writeText(string);
@@ -1936,7 +1986,8 @@ try{
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "?gethtml=settings");
         ajax.onload = function(){
-            settingsContent.innerHTML = translateHTML(this.responseText);
+            //settingsContent.innerHTML = translateHTML(this.responseText);
+            settingsContent.innerHTML = this.responseText;
             if(!settingsSetup){
                 settingsSetup = 1;
                 var settingsStyle = document.createElement("link");
@@ -1944,7 +1995,11 @@ try{
                 settingsStyle.href = "/styles/settings.css";
                 document.head.appendChild(settingsStyle);
                 settingsContent.style.maxHeight = "calc(100% - 9px - "+document.getElementById("settingstop").clientHeight+"px)";
-                settingsWindow.style.height = settingsContent.clientHeight + "px";
+                try{
+                    settingsWindow.style.height = settingsContent.clientHeight + "px";
+                }catch(e){
+                    settingsWindow.style.height = "100%";
+                }
             }
             settingsScript = document.createElement("script");
             settingsScript.src = "scripts/settings.js";
@@ -1976,11 +2031,13 @@ try{
     }
     window.addEventListener("popstate", function(){
         settingsURL();
+        document.title = getString("title");
     });
     settingsButton.addEventListener("click", function(){
         settingsWindowID = Date.now();
         location.hash = "settings" + settingsWindowID;
         openSettingsWindow();
+        document.title = getString("settings") + " | " + getString("title");
     });
     settingsButton.innerHTML = '<svg width="64" height="64" viewBox="0 0 64 64" class="icons"><g transform="translate(0 64) scale(.1 -.1)"><path d="m257 584c-4-4-7-22-7-40 0-23-7-36-26-49-23-15-29-15-64-1l-39 15-64-112 32-26c20-17 31-35 31-51s-11-34-31-51l-32-26 32-56 32-57 36 15c19 8 38 15 42 15 20-1 45-35 50-67l6-38h65 65l6 38c5 32 30 66 50 67 4 0 23-7 42-15l36-15 64 112-32 25c-42 33-42 73 0 106l32 25-32 56-32 55-39-15c-35-14-41-14-64 1-18 12-26 27-28 53l-3 37-60 3c-34 2-64 0-68-4zm128-199c36-35 35-97-1-130-61-57-154-17-154 65 0 56 34 90 90 90 30 0 47-6 65-25z"/></g></svg> <span class="settings"><string>settings</string></span>';
     settingsButton.style.display = "inline-block";
@@ -1991,6 +2048,13 @@ try{
         });
         settingsButton2.innerHTML = '<svg width="64" height="64" viewBox="0 0 512 512" class="icons"><g transform="translate(0 512) scale(.1 -.1)"><path d="m685 4428c-3-7-4-852-3-1878l3-1865h1875 1875l3 938 2 937h-190-190v-750-750h-1500-1500v1500 1500h750 750v190 190h-935c-739 0-937-3-940-12z"/><path d="m3210 4165 265-265-528-528c-290-290-527-532-527-537 0-6 92-102 205-215l205-205 738 738c174 174 321 317 327 317 5 0 130-120 277-267l268-268v748 747h-747-748l265-265z"/></g></svg>';
         settingsButton2.style.display = "inline-block";
+        try{
+            settingsButton2.classList.add("settings", "openinnewtab");
+        }catch(e){}
+        try{
+            settingsButton2.className += "settings openinnewtab";
+        }catch(e){}
+        settingsButton2.title = getString("settings") + " | " + getString("openinnewtab");
     }catch(e){}
 }catch(e){}
 try{
@@ -2012,6 +2076,12 @@ try{
                                         elements[element].placeholder=json[key]+"...";
                                     }else{
                                         elements[element].placeholder=json[key];
+                                    }
+                                }else if(elements[element].tagName == "IMG" || elements[element].tagName == "BUTTON"){
+                                    if(elements[element].title.indexOf("!") == -1){
+                                        elements[element].title+=" | "+json[key];
+                                    }else{
+                                        elements[element].title=json[key];
                                     }
                                 }else{
                                     elements[element].innerText=json[key];

@@ -85,9 +85,9 @@ try{
         try{
             darkMode();
         }catch(e){}
-        try{
+        /*try{
             setLanguage();
-        }catch(e){}
+        }catch(e){}*/
         /*try{
             colorfilter();
         }catch(e){}*/

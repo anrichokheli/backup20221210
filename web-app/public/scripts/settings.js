@@ -23,6 +23,47 @@ defaultTheme.onchange = function(){
 };
 darkmodecheckbox.checked=darkModeEnabled;
 if(localStorage.getItem("darkmode")==null)defaultTheme.checked=1;
+var settingsStrings;
+function setSettingsLanguage(lang,get)  {
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", "/json/languages/settings/" + lang + ".json");
+    ajax.onload = function()    {
+        if(this.status == 200){
+            var json = JSON.parse(this.responseText);
+            settingsStrings = json;
+            for(var key in json) {
+                var elements = document.getElementsByClassName(key);
+                if(elements!=null){
+                    for(var element in elements){
+                        if(elements[element]!=null){
+                            if(elements[element].tagName == "INPUT" || elements[element].tagName == "TEXTAREA"){
+                                if(elements[element].placeholder.includes("...")){
+                                    elements[element].placeholder=json[key]+"...";
+                                }else{
+                                    elements[element].placeholder=json[key];
+                                }
+                            }else{
+                                elements[element].innerText=json[key];
+                            }
+                        };
+                    }
+                }
+            }
+            document.title = getString("settings") + " | " + getString("title");
+        }
+        else{
+            var getlang = (new URL(window.location.href)).searchParams.get("lang");
+            if(getlang != null && get != 1){
+                lang = getlang;
+                setSettingsLanguage(lang,1);
+            }else if(lang != "en"){
+                lang = "en";
+                setSettingsLanguage(lang);
+            }
+        }
+    };
+    ajax.send();
+}
 var defaultLang = document.getElementById("defaultlang");
 if(localStorage.getItem("lang") == null){
     defaultLang.checked = 1;
@@ -34,6 +75,7 @@ defaultLang.onchange = function(){
         setCookie("lang", "");
         lang = navigator.language.substring(0, 2);
         setLanguage(lang);
+        setSettingsLanguage(lang);
         languageSelect.value = lang;
         window.onlanguagechange = function(){onLanguageChange();};
     }else{
@@ -45,6 +87,7 @@ languageSelect.value = lang;
 languageSelect.onchange = function(){
     lang = this.value;
     setLanguage(lang);
+    setSettingsLanguage(lang);
     localStorage.setItem("lang", lang);
     defaultLang.checked = 0;
     window.onlanguagechange = function(){};
@@ -331,7 +374,7 @@ try{
 try{
     var resetSettings = document.getElementById("resetsettings");
     resetSettings.onclick = function(){
-        if(confirm(getString("resetsettings")+"?")){
+        if(confirm(settingsStrings["resetsettings"]+"?")){
             localStorage.removeItem("darkmode");
             localStorage.removeItem("lang");
             localStorage.removeItem("timezone");
@@ -377,3 +420,4 @@ try{
     checkboxSettingSetup(null, cameravideoonlyonclick, "cameravideoonlyonclick");
     checkboxSettingSetup(null, camerablackscreenondblclick, "camerablackscreenondblclick");
 }catch(e){}
+setSettingsLanguage(lang);

@@ -105,7 +105,7 @@ body    {
 .info hr{
     border-top: 1px solid #256aff;
 }
-.uploadforms{
+/* .uploadforms{
     border: 1px solid #256aff;
     margin: 4px;
     padding: 4px;
@@ -120,7 +120,7 @@ body    {
     pointer-events: none;
     opacity: 0.5;
     border-color: #ec0400;
-}
+} */
 .hiddenonload{
     display: none;
 }
@@ -130,4 +130,30 @@ body    {
 .buttongroup{
     border: 1px solid #256aff;
     display: inline-block;
+}
+.uploadforms button[type="button"] {
+    display: inline-block;
+    border: none;
+    border-radius: 8px;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+}
+.uploadbuttondiv,.buttonsDivs .uploadforms{
+    display: inline-block;
+}
+.uploadforms:invalid .uploadbuttondiv{
+    cursor: not-allowed;
+}
+.uploadforms:invalid .uploadbuttondiv>button{
+    pointer-events: none;
+    opacity: 0.5;
+    border-color: #ec0400;
+}
+.uploadforms{
+    margin: 4px;
+}
+.uploadforms input[type="file"]{
+    width: 0;
+    height: 0;
 }

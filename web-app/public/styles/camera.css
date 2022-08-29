@@ -7,6 +7,7 @@
     height: 100vh;
     background-color: #000040;
     position: relative;
+    font-family: sans-serif;
 }
 #video{
     width: 100%;
@@ -90,6 +91,9 @@
     #statusBigBox{
         height: calc(100vh - 124px);
     }
+    #phototakenicon{
+        bottom: 111px;
+    }
     #recordstatus{
         bottom: 73px;
     }
@@ -110,6 +114,9 @@
     }
     #statusBigBox{
         height: calc(100vh - 48px);
+    }
+    #phototakenicon{
+        bottom: 37px;
     }
     #recordstatus{
         bottom: 0;
@@ -223,6 +230,18 @@
     overflow-y: auto;
     z-index: 2;
     color: #ffffff;
+}
+#phototakenicon{
+    display: none;
+    position: absolute;
+    left: calc(50% - 20px);
+    right: calc(50% - 20px);
+    width: 40px;
+    background-color: #256aff40;
+    border-radius: 8px;
+    padding: 2px;
+    justify-content: center;
+    align-items: center;
 }
 #recordstatus{
     display: none;
