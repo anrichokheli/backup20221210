@@ -207,8 +207,8 @@ try{
     if(navigator.geolocation){
         geolocationSupported = true;
         statusLocation.children[0].src = "../images/waitinglocation.svg";
-        statusLocation.children[0].title = getString("notdetecting");
-        statusLocation.children[0].classList.add("notdetecting");
+        statusLocation.children[0].title = getString("locationcoordinates") + " | " + getString("notdetecting");
+        statusLocation.children[0].classList.add("locationcoordinates", "notdetecting");
         try{
             setStorageIfNot("locationhighaccuracymode", true);
             setStorageIfNot("locationcachemode", true);
@@ -217,8 +217,8 @@ try{
     }else{
         statusLocation.style.borderColor = "#ff000080";
         statusLocation.children[0].src = "../images/nolocation.svg";
-        statusLocation.children[0].title = getString("unavailable");
-        statusLocation.children[0].classList.add("unavailable");
+        statusLocation.children[0].title = getString("locationcoordinates") + " | " + getString("unavailable");
+        statusLocation.children[0].classList.add("locationcoordinates", "unavailable");
         statusLocation.children[0].classList.remove("whiteicon");
         locationDetails.style.backgroundColor = "#ec040080";
     }
@@ -247,8 +247,8 @@ function getLocation(continuousUpdate, highAccuracy, cacheData, cacheTimeout)  {
     statusLocation.style.borderColor = "#ffff0080";
     statusLocation.children[0].className = '';
     statusLocation.children[0].src = "../images/detectinglocation.svg";
-    statusLocation.children[0].title = getString("detecting");
-    statusLocation.children[0].classList.add("detecting");
+    statusLocation.children[0].title = getString("locationcoordinates") + " | " + getString("detecting");
+    statusLocation.children[0].classList.add("locationcoordinates", "detecting");
 }
 function getLocation2(){
     getLocation(localStorage.getItem("currentlocationmode") == "true", localStorage.getItem("locationhighaccuracymode") == "true", localStorage.getItem("locationcachemode") == "true", parseInt(localStorage.getItem("locationcachetimeout")));
@@ -278,8 +278,8 @@ function afterLocation(position)  {
     if(!statusLocation.children[0].classList.contains("whiteicon")){
         statusLocation.children[0].src = "../images/location.svg";
         statusLocation.children[0].className = '';
-        statusLocation.children[0].title = getString("detected");
-        statusLocation.children[0].classList.add("detected");
+        statusLocation.children[0].title = getString("locationcoordinates") + " | " + getString("detected");
+        statusLocation.children[0].classList.add("locationcoordinates", "detected");
         statusLocation.children[0].classList.add("whiteicon");
         locationDetails.style.backgroundColor = "#256aff80";
     }
@@ -305,8 +305,8 @@ function locationError(error){
     statusLocation.style.borderColor = "#ff000080";
     statusLocation.children[0].src = "../images/nolocation.svg";
     statusLocation.children[0].className = '';
-    statusLocation.children[0].title = getString("unavailable");
-    statusLocation.children[0].classList.add("unavailable");
+    statusLocation.children[0].title = getString("locationcoordinates") + " | " + getString("unavailable");
+    statusLocation.children[0].classList.add("locationcoordinates", "unavailable");
     // statusLocation.children[0].classList.remove("whiteicon");
     locationDetails.style.backgroundColor = "#ec040080";
     if(!locationErrorDiv){
@@ -1119,7 +1119,11 @@ function setLanguage(lang,get)  {
                 if(elements!=null){
                     for(var element in elements){
                         if(elements[element]!=null){
-                            elements[element].title=strings[key];
+                            if(elements[element].title && elements[element].title.indexOf("!") == -1){
+                                elements[element].title+=" | "+strings[key];
+                            }else{
+                                elements[element].title=strings[key];
+                            }
                         };
                     }
                 }

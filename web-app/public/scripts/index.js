@@ -175,16 +175,21 @@ try{
             locationModeStatusSetup("locationhighaccuracy", "locationhighaccuracymode");
             locationModeStatusSetup("initialization", "locationinitializationmode");
             locationModeStatusSetup("cache", "locationcachemode");*/
-            locationModeStatusSetup("currentlocation", "currentlocation", "currentlocationmode");
-            locationModeStatusSetup("locationhighaccuracy", "locationhighaccuracy", "locationhighaccuracymode");
-            locationModeStatusSetup("initialization", "initiallocation", "locationinitializationmode");
-            locationModeStatusSetup("cache", "locationcache", "locationcachemode");
-            //var locationCacheValue = document.getElementById("cachetimeoutval");
             try{
                 setStorageIfNot("locationhighaccuracymode", true);
                 setStorageIfNot("locationcachemode", true);
                 setStorageIfNot("locationcachetimeout", 1000);
             }catch(e){}
+            locationModeStatusSetup("currentlocation", "currentlocation", "currentlocationmode");
+            locationModeStatusSetup("locationhighaccuracy", "locationhighaccuracy", "locationhighaccuracymode");
+            locationModeStatusSetup("initialization", "initiallocation", "locationinitializationmode");
+            locationModeStatusSetup("cache", "locationcache", "locationcachemode");
+            //var locationCacheValue = document.getElementById("cachetimeoutval");
+            /*try{
+                setStorageIfNot("locationhighaccuracymode", true);
+                setStorageIfNot("locationcachemode", true);
+                setStorageIfNot("locationcachetimeout", 1000);
+            }catch(e){}*/
         }else{
             locationTbody.innerHTML = "<tr><th>Geolocation not supported by this browser.</th></tr>";
             locationDiv.style.backgroundColor = "#ff000080";
@@ -2078,7 +2083,7 @@ try{
                                         elements[element].placeholder=json[key];
                                     }
                                 }else if(elements[element].tagName == "IMG" || elements[element].tagName == "BUTTON"){
-                                    if(elements[element].title.indexOf("!") == -1){
+                                    if(elements[element].title && elements[element].title.indexOf("!") == -1){
                                         elements[element].title+=" | "+json[key];
                                     }else{
                                         elements[element].title=json[key];

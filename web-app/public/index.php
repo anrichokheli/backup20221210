@@ -42,15 +42,28 @@
     function getLangOptions(){
         $langOptions = '';
         $jsonLangFiles = array_slice(scandir(jsonLanguagesPath/* . "main/"*/), 2);
-        foreach($jsonLangFiles as $file){
-            $file = jsonLanguagesPath/* . "main/"*/ . $file;
-            $langOptions .= '<option value="' . pathinfo($file, PATHINFO_FILENAME) . '">' . json_decode(file_get_contents($file), TRUE)["langname"] . '</option>';
+        if(defined("asciionly")){
+            foreach($jsonLangFiles as $file){
+                $file = jsonLanguagesPath . $file;
+                $langOptions .= toAscii('<option value="' . pathinfo($file, PATHINFO_FILENAME) . '">' . json_decode(file_get_contents($file), TRUE)["langname"] . '</option>');
+            }
+        }else{
+            foreach($jsonLangFiles as $file){
+                $file = jsonLanguagesPath/* . "main/"*/ . $file;
+                $langOptions .= '<option value="' . pathinfo($file, PATHINFO_FILENAME) . '">' . json_decode(file_get_contents($file), TRUE)["langname"] . '</option>';
+            }
         }
         return $langOptions;
     }
     function setLanguage($html/*, $json*/) {
-        foreach(/*$json*/$GLOBALS["langJSON"] as $key => $val)   {
-            $html = str_replace("<string>" . $key . "</string>", $val, $html);
+        if(defined("asciionly")){
+            foreach($GLOBALS["langJSON"] as $key => $val)   {
+                $html = str_replace("<string>" . $key . "</string>", toAscii($val), $html);
+            }
+        }else{
+            foreach(/*$json*/$GLOBALS["langJSON"] as $key => $val)   {
+                $html = str_replace("<string>" . $key . "</string>", $val, $html);
+            }
         }
         return $html;
     }
