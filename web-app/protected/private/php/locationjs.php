@@ -1,16 +1,27 @@
+<?php
+    if(!function_exists("echoString")){
+        function echoString($key){
+            echo $GLOBALS["langJSON"][$key];
+        }
+    }
+    if(!defined("imgext")){
+        define("imgext", "svg");
+    }
+?>
 <div style="border:2px solid #0000ff;padding:2px;">
-    <img id="locationimg" width="16" height="16"> <?php echo $langJSON["mylocation"]; ?>:
+    <span id="locationstatus"></span>
+    <img id="locationimg" width="16" height="16"> <?php echoString("mylocation"); ?>:
     <div id="currentlocation"></div>
     <input type="checkbox" id="continuousupdate">
     <label for="continuousupdate">
-        <img width="16" height="16" src="/images/currentlocation.svg">&nbsp;<span><?php echo $langJSON["currentlocation"]; ?></span>
+        <img width="16" height="16" src="/images/currentlocation.<?php echo imgext; ?>">&nbsp;<span><?php echoString("currentlocation"); ?></span>
     </label>
     <input type="checkbox" id="highaccuracy" checked>
     <label for="highaccuracy">
-        <img width="16" height="16" src="/images/locationhighaccuracy.svg">&nbsp;<span><?php echo $langJSON["locationhighaccuracy"]; ?></span>
+        <img width="16" height="16" src="/images/locationhighaccuracy.<?php echo imgext; ?>">&nbsp;<span><?php echoString("locationhighaccuracy"); ?></span>
     </label>
     <div id="locationerrordiv" style="display:none;border:2px solid #ff0000"></div>
-    <button disabled onclick="uploadLocation0()" id="uploadlocation"><img width="16" height="16" src="/images/uploadicon.svg"> <?php echo $langJSON["upload"]; ?></button>
+    <button disabled onclick="uploadLocation0()" id="uploadlocation"><img width="16" height="16" src="/images/uploadicon.<?php echo imgext; ?>"> <?php echoString("upload"); ?></button>
     <div id="locationuploadstatus0"></div>
 </div>
 <script>
@@ -22,6 +33,7 @@
         var uploadLocationButton = document.getElementById("uploadlocation");
         var locationUploadStatus0 = document.getElementById("locationuploadstatus0");
         var locationImage = document.getElementById("locationimg");
+        var locationStatus = document.getElementById("locationstatus");
     }catch(e){}
     var latitude;
     var longitude;
@@ -38,7 +50,8 @@
     ?>
     function locationGot(coordinates){
         try{
-            locationImage.src = "/images/location.svg";
+            locationStatus.innerHTML = "<?php echoString("detected") ?>";
+            locationImage.src = "/images/location.<?php echo imgext; ?>";
         }catch(e){}
         latitude = coordinates.coords.latitude;
         longitude = coordinates.coords.longitude;
@@ -56,7 +69,8 @@
     }
     function locationError(error)    {
         try{
-            locationImage.src = "/images/nolocation.svg";
+            locationStatus.innerHTML = "<?php echoString("unavailable") ?>";
+            locationImage.src = "/images/nolocation.<?php echo imgext; ?>";
         }catch(e){}
         var errorHTML = 'ERROR!<br>';
         switch(error.code)   {
@@ -75,7 +89,7 @@
         }
         locationErrorDiv.appendChild(document.createElement("br"));
         var button = document.createElement("button");
-        button.innerHTML = '<img width="16" height="16" src="/images/retry.svg">&nbsp;<span><?php echo $langJSON["retry"]; ?></span>';
+        button.innerHTML = '<img width="16" height="16" src="/images/retry.<?php echo imgext; ?>">&nbsp;<span><?php echoString("retry"); ?></span>';
         button.addEventListener("click", function(){
             getLocation(continuousUpdateCheckbox.checked, highAccuracyCheckbox.checked);
         });
@@ -102,17 +116,17 @@
         var accuracy0 = accuracy;
         var altitudeAccuracy0 = altitudeAccuracy;
         var locationString = latitude0 + ", " + longitude0 + "; " + altitude0 + "; " + accuracy0 + "; " + altitudeAccuracy0;
-        addLocationUploadDiv("#ffff00", locationString, "<?php echo $langJSON["uploading"]; ?>");
+        addLocationUploadDiv("#ffff00", locationString, "<?php echoString("uploading"); ?>");
         var ajax = new XMLHttpRequest();
         ajax.onload = function(){
             if(this.responseText == "1"){
-                addLocationUploadDiv("#00ff00", locationString, "<?php echo $langJSON["uploadcompleted"]; ?>");
+                addLocationUploadDiv("#00ff00", locationString, "<?php echoString("uploadcompleted"); ?>");
             }else{
-                addLocationUploadDiv("#ff0000", locationString, "<?php echo $langJSON["uploadfailed"]; ?>");
+                addLocationUploadDiv("#ff0000", locationString, "<?php echoString("uploadfailed"); ?>");
             }
         };
         ajax.onerror = function(){
-            addLocationUploadDiv("#ff0000", locationString, "<?php echo $langJSON["uploaderror"]; ?>");
+            addLocationUploadDiv("#ff0000", locationString, "<?php echoString("uploaderror"); ?>");
         };
         ajax.open("POST", "/");
         ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -130,7 +144,8 @@
                 navigator.geolocation.getCurrentPosition(locationGot, locationError, {enableHighAccuracy: highAccuracy});
             }
             try{
-                locationImage.src = "/images/detectinglocation.svg";
+                locationStatus.innerHTML = "<?php echoString("detecting") ?>";
+                locationImage.src = "/images/detectinglocation.<?php echo imgext; ?>";
             }catch(e){}
             locationErrorDiv.style.display = "none";
         }
@@ -138,7 +153,8 @@
             locationErrorDiv.innerText = "Geolocation not supported by this browser.";
             locationErrorDiv.style.display = "block";
             try{
-                locationImage.src = "/images/nolocation.svg";
+                locationStatus.innerHTML = "<?php echoString("unavailable") ?>";
+                locationImage.src = "/images/nolocation.<?php echo imgext; ?>";
             }catch(e){}
         }
     }

@@ -263,12 +263,18 @@
                         include(phpPath . "locationjs.php");
                         $locationHTML = ob_get_clean();
                         if(isset($_POST["ps"]))    {
-                            $psContent = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
-                            echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1>" . $errorHTML . "<div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?view&n=" . $GLOBALS["filesName"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
+                            //$psContent = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
+                            //echo(str_replace("}label", "}label,.buttons", str_replace("</h1>", "</h1>" . $errorHTML . "<div style=\"border:2px solid #00ff00;\">upload completed<br><a href=\"../?view&n=" . $GLOBALS["filesName"] . "\">view upload</a></div>", substr($psContent, strpos($psContent, "<!DOCTYPE html>")))));
                             $filesHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $filesHTML);
                             $descriptionHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $descriptionHTML);
                             $voiceHTML = str_replace("</form>", "<input type=\"hidden\" name=\"ps\"></form>", $voiceHTML);
-                            echo '<div>' . setLanguage($filesHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . setLanguage($descriptionHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . setLanguage($voiceHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . $locationHTML . '</div>';
+                            $filesHTML = str_replace(".svg", ".png", $filesHTML);
+                            $descriptionHTML = str_replace(".svg", ".png", $descriptionHTML);
+                            $voiceHTML = str_replace(".svg", ".png", $voiceHTML);
+                            //echo '<div>' . setLanguage($filesHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . setLanguage($descriptionHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . setLanguage($voiceHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . $locationHTML . '</div>';
+                            $topHtml = $errorHTML . "<div style=\"border:2px solid #00ff00;\">" . getString("uploadcompleted") . "<br><a href=\"../?view&n=" . $GLOBALS["filesName"] . "\">" . getString("viewupload") . "</a></div>";
+                            $bottomHtml = '<div>' . setLanguage($filesHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . setLanguage($descriptionHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . setLanguage($voiceHTML/*, $GLOBALS["langJSON"]*/) . '<br>' . $locationHTML . '</div>';
+                            include($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
                         }else{
                             if($GLOBALS["lang"] != defaultLang)    {
                                 $langget = "&lang=" . $GLOBALS["lang"];
@@ -311,7 +317,26 @@
                 }
             }
         }
-        if(($GLOBALS["correct"] && $GLOBALS["uploaded"]) || !$GLOBALS["htmlMode"]){
+        if($GLOBALS["htmlMode"] && !empty($errorHTML) && !$GLOBALS["uploaded"] && !isset($_POST["0"])){
+            if(isset($_POST["ps"])){
+                $topHtml = $errorHTML;
+                include($_SERVER["DOCUMENT_ROOT"] . "/ps/index.php");
+                exit;
+            }else{
+                if(isset($_POST["submit"])){
+                    $noscript = "noscript";
+                }else{
+                    $noscript = "";
+                }
+                if($GLOBALS["lang"] != defaultLang)    {
+                    $langget = "&lang=" . $GLOBALS["lang"];
+                }else{
+                    $langget = "";
+                }
+                exit(str_replace("<!--UPLOAD_RESPONSE-->", $errorHTML, str_replace("<php>LANG</php>", $langget, str_replace("<php>langoptions</php>", getLangOptions(), str_replace("<htmllang>lang</htmllang>", $GLOBALS["lang"], (setLanguage(file_get_contents(htmlPath . "index" . $noscript . ".html"))))))));
+            }
+        }
+        else if(($GLOBALS["correct"] && $GLOBALS["uploaded"]) || !$GLOBALS["htmlMode"]){
             exit;
         }
     }
