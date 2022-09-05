@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #video{
+            width: 90vw;
+            height: 90vh;
+        }
+    </style>
+</head>
+<body>
+    <video id="video" controls></video>
+    <script>
+        var video = document.getElementById("video");
+        var videoData;
+        function loadVideo(){
+            var ajax = new XMLHttpRequest();
+            ajax.onload = function(){
+                console.log(this.response)
+                var fileReader = new FileReader();
+                fileReader.onload = function(){
+                    video.src = this.result;
+                    loadLastChunk();
+                };
+                fileReader.readAsDataURL(this.response);
+                fileReader = new FileReader();
+                fileReader.onload = function(){
+                    videoData = this.result;
+                };
+                fileReader.readAsText(this.response);
+            };
+            ajax.responseType = "blob";
+            ajax.open("GET", "../?view&v=uploads/livevideos/" + (new URL(window.location.href)).searchParams.get("n") + ".webm");
+            ajax.send();
+        }
+        function loadLastChunk(){
+            var ajax = new XMLHttpRequest();
+            ajax.onload = function(){
+                console.log(this.response)
+                var fileReader = new FileReader();
+                fileReader.onload = function(){
+                    var fileReader = new FileReader();
+                    fileReader.onload = function(){
+                        video.src = this.result;
+                    };
+                    fileReader.readAsDataURL(new Blob([videoData + this.response]));
+                };
+                fileReader.readAsText(this.response);
+            };
+            ajax.responseType = "blob";
+            ajax.open("GET", "../?view&v=uploads/livevideos/" + (new URL(window.location.href)).searchParams.get("n") + "lastlivechunk");
+            ajax.send();
+        }
+        loadVideo();
+    </script>
+</body>
+</html>

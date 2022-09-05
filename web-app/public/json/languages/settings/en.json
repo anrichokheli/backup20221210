@@ -1,0 +1,21 @@
+{
+    "darkmode": "Dark mode",
+    "devicedefault": "Device default",
+    "savemyuploadsinthisbrowser": "Save my uploads in this browser",
+    "resetsettings": "Reset Settings",
+    "lightcolor": "Light colour",
+    "lightbackgroundcolor": "Light background colour",
+    "darkcolor": "Dark colour",
+    "darkbackgroundcolor": "Dark background colour",
+    "colorfilter": "Colour filter",
+    "loadnewcontentwhenscroll": "Load new content when scroll",
+    "timezone": "Time zone",
+    "camerafullscreenonclick": "Open full screen after clicked on web page",
+    "cameravideoonlyonclick": "Show video only after clicked on video",
+    "camerablackscreenondblclick": "Show black screen after double-clicked on video",
+    "cachetimeout": "Cache timeout",
+    "currentlocationdescription": "Constantly get new location data when available, even if you do not upload anything. This will increase detection speed and accuracy, but increases energy consumption.",
+    "locationhighaccuracydescription": "Get location coordinates with high accuracy. However, detection time and energy will be increased.",
+    "locationinitializationdescription": "Start location detection when web page opened. If not enabled, location detection will be started after file upload starts.",
+    "locationcachedescription": "Location coordinates will be updated only after entered time, even if coordinates will be changed. Time unit is second."
+}
