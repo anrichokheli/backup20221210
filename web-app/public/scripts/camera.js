@@ -5,6 +5,10 @@ if(!cameraFacing){
     cameraFacing = "environment";
 }
 var flashLightState = false;
+var loadSetup = 1;
+try{
+    var urlParams = (new URL(window.location.href)).searchParams;
+}catch(e){}
 function cameraSetup(stream){
     video.srcObject = stream;
     var track = stream.getVideoTracks()[0];
@@ -51,7 +55,6 @@ function cameraStop(){
     });
     video.srcObject = null;
 }
-cameraStart();
 var videoRecording;
 var recorder;
 var data;
@@ -521,6 +524,12 @@ function uploadFile(file, cameraMode, id0){
             viewButton.href = "../view2?n=" + n;
             viewButton.target = "_blank";
             viewButton.title = getString("viewupload");
+            viewButton.onclick = function(e){
+                if(emergencyModeEnabled){
+                    e.preventDefault();
+                    this.classList.add("disabled");
+                }
+            };
             addStatus(imageName, imageName, "00ff00", "#" + n, viewButton);
             try{
                 if(localStorage.getItem("saveuploads") == "true"){
@@ -530,7 +539,7 @@ function uploadFile(file, cameraMode, id0){
                     }else{
                         uploadsStorage = [];
                     }
-                    uploadsStorage.push([n, id, key, true, true]);
+                    uploadsStorage.push([n, id, key/*, true, true*/]);
                     localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
                 }
             }catch(e){}
@@ -580,6 +589,7 @@ var photoTakenIcon = document.getElementById("phototakenicon");
 var photoTakenIconCount = 0;
 var photoTakenIconTimeout;
 function takePhoto(){
+    unloadWarning++;
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
@@ -599,6 +609,7 @@ function takePhoto(){
     }
     canvas.toBlob(function(blob){
         uploadFile(blob, "takephoto");
+        unloadWarning--;
         /*if(!--photoTakenIconCount){
             photoTakenIconTimeout = setTimeout(function(){
                 photoTakenIcon.style.display = "none";
@@ -639,6 +650,7 @@ function onVideoStop(live){
             }
         }else{
             uploadFile(recordedBlob, "recordvideo");
+            unloadWarning--;
         }
     }
     clearInterval(recordDurationInterval);
@@ -683,12 +695,12 @@ function startRecording(stream, live){
     takePhotoDraggable.disabled = 0;
     if(!live){
         recordVideoButton.disabled = 0;
-    }else{
+    }else if(!emergencyModeEnabled){
         liveButton.disabled = 0;
     }
 }
-recordVideoButton.addEventListener("click", function(){
-    this.disabled = 1;
+function recordVideo(){
+    recordVideoButton.disabled = 1;
     liveButton.disabled = 1;
     rotate.disabled = 1;
     flashLight.disabled = 1;
@@ -700,6 +712,7 @@ recordVideoButton.addEventListener("click", function(){
     takePhotoButton.disabled = 1;
     cameraStop();
     if(!videoRecording){
+        unloadWarning++;
         videoRecording = 1;
         videoSetup();
         recordIcon.src = "../images/record_video.svg";
@@ -710,6 +723,9 @@ recordVideoButton.addEventListener("click", function(){
     }else{
         videoRecording = 0;
     }
+}
+recordVideoButton.addEventListener("click", function(){
+    recordVideo();
 });
 try{
     if(geolocationSupported){
@@ -796,6 +812,7 @@ window.addEventListener("offline", function(){
             recordStatus.style.backgroundColor = "#256aff40";
             recordStatus.style.opacity = "1";
             // recorder.resume();
+            uploadFile(new Blob(data, {type: "video/webm"}), "recordvideo");
         }
     });
 });
@@ -981,7 +998,18 @@ try{
             videoSetup(true);
             var liveChunksStatus = document.createElement("div");
             liveChunksStatus.innerHTML = '<div style="background-color:#256aff80;"><span style="background-color:#00ff0080;" id="liveuploadedchunks'+liveN+'">0</span> / <span style="background-color:#0000ff80;" id="livetotalchunks'+liveN+'">0</span><br><span style="background-color:#ff000080;" id="liveerrorchunks'+liveN+'">0</span></div>';
-            addStatus("live", "livestream", "00ff00", "#" + liveN, liveChunksStatus);
+            var downloadButton = document.createElement("a");
+            downloadButton.innerHTML = '<img class="whiteicon" width="32" height="32" src="../images/download.svg" alt>';
+            downloadButton.classList.add("buttons");
+            downloadButton.onclick = function(){
+                this.href = URL.createObjectURL(new Blob(data, {type: "video/webm"}));
+            };
+            downloadButton.download = (new Date()).getTime() + "";
+            downloadButton.title = getString("download");
+            var div = document.createElement("div");
+            div.appendChild(liveChunksStatus);
+            div.appendChild(downloadButton);
+            addStatus("live", "livestream", "00ff00", "#" + liveN, div);
             liveUploadedChunks = document.getElementById("liveuploadedchunks"+liveN);
             liveTotalChunks = document.getElementById("livetotalchunks"+liveN);
             liveErrorChunks = document.getElementById("liveerrorchunks"+liveN);
@@ -1020,8 +1048,8 @@ try{
         liveTotalChunks.innerText = parseInt(liveTotalChunks.innerText) + 1;
         ajax("POST", "../?live=1", sendLiveChunkAjaxOnload, sendLiveChunkAjaxOnerror, formData);
     }
-    liveButton.onclick = function(){
-        this.disabled = 1;
+    function liveStream(){
+        liveButton.disabled = 1;
         recordVideoButton.disabled = 1;
         rotate.disabled = 1;
         flashLight.disabled = 1;
@@ -1044,8 +1072,59 @@ try{
             liveStreaming = false;
             cameraStart();
         }
+    }
+    liveButton.onclick = function(){
+        liveStream();
     };
 }catch(e){}
+var emergencyModeEnabled;
+function emergencyMode(){
+    emergencyModeEnabled = 1;
+    if(!liveStreaming){
+        liveStream();
+    }
+    liveButton.disabled = 1;
+    recordVideoButton.disabled = 1;
+    // psbutton.onclick = function(e){
+    //     e.preventDefault();
+    // };
+    psbutton.classList.add("disabled");
+    emergencyModeButton.disabled = 1;
+    emergencyModeButton.style.opacity = "1";
+    setInterval(function(){
+        if(emergencyModeButton.style.display != "none"){
+            emergencyModeButton.style.display = "none";
+        }else{
+            emergencyModeButton.style.display = "flex";
+        }
+    },500);
+
+}
+try{
+    var emergencyModeButton = document.getElementById("emergencymode");
+    if(localStorage.getItem("cameraemergencymode") == "true"){
+        emergencyModeButton.onclick = function(){
+            emergencyMode();
+        };
+        emergencyModeButton.style.display = "flex";
+    }
+    window.addEventListener("storage", function(){
+        if(localStorage.getItem("cameraemergencymode") == "true"){
+            emergencyModeButton.style.display = "flex";
+        }else{
+            emergencyModeButton.style.display = "none";
+        }
+    });
+}catch(e){}
+if(localStorage.getItem("directrecordvideo") == "true" && urlParams.get("recordvideo") == 1){
+    // recordVideoButton.click();
+    recordVideo();
+}else if(localStorage.getItem("directlivestream") == "true" && urlParams.get("livestream") == 1){
+    // liveButton.click();
+    liveStream();
+}else{
+    cameraStart();
+}
 try{
     document.documentElement.onclick = function(){
         if(localStorage.getItem("camerafullscreenonclick") == "true"){
@@ -1128,6 +1207,14 @@ function setLanguage(lang,get)  {
                     }
                 }
             }
+            if(urlParams.get("recordvideo") == 1){
+                var directName = "recordvideo";
+            }else if(urlParams.get("livestream") == 1){
+                var directName = "livestream";
+            }
+            if(directName){
+                document.title = getString(directName) + " | " + getString("camera") + " | " + getString("title");
+            }
         }
         else{
             var getlang = (new URL(window.location.href)).searchParams.get("lang");
@@ -1148,3 +1235,24 @@ if(lang == null){
     lang = lang.substring(0, 2);
 }
 setLanguage(lang);
+try{
+    if(urlParams.get("recordvideo") == 1){
+        var directImage = "/images/recordvideops.svg";
+    }else if(urlParams.get("livestream") == 1){
+        var directImage = "/images/livestreamps.svg";
+    }
+    if(directImage){
+        document.getElementById("favicon").href = directImage;
+    }
+}catch(e){}
+try{
+    /*if(!localStorage.getItem("mobilewebappmodecamera")){
+        localStorage.setItem("mobilewebappmodecamera", true);
+    }*/
+    if(localStorage.getItem("mobilewebappmodecamera") == "true"){
+        var metaApp = document.createElement("meta");
+        metaApp.name = "mobile-web-app-capable";
+        metaApp.content = "yes";
+        document.head.appendChild(metaApp);
+    }
+}catch(e){}

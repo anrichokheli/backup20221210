@@ -50,6 +50,9 @@ function setSettingsLanguage(lang,get)  {
                 }
             }
             document.title = getString("settings") + " | " + getString("title");
+            try{
+                consoleWarning(strings["warning"],strings["consolewarning"]);
+            }catch(e){}
         }
         else{
             var getlang = (new URL(window.location.href)).searchParams.get("lang");
@@ -125,13 +128,22 @@ try{
     };
     
 }catch(e){}
-function checkboxSettingSetup(id, checkbox, storagename){
+function checkboxSettingSetup(id, checkbox, storagename/*, checkeddefault*/){
     if(!checkbox){
         var checkbox = document.getElementById(id);
     }
     if(!storagename){
-        storagename = id;
+        if(id){
+            storagename = id;
+        }else{
+            storagename = checkbox.id;
+        }
     }
+    /*if(checkeddefault){
+        if(!localStorage.getItem(storagename)){
+            localStorage.setItem(storagename, true);
+        }
+    }*/
     if(localStorage.getItem(storagename) == "true"){
         checkbox.checked = 1;
     }else{
@@ -142,6 +154,27 @@ function checkboxSettingSetup(id, checkbox, storagename){
         try{
             setLocationSettingDiv(storagename, null, true);
         }catch(e){}
+    };
+}
+function inputSettingSetup(id, input, storagename, defaultval){
+    if(!input){
+        var input = document.getElementById(id);
+    }
+    if(!storagename){
+        if(id){
+            storagename = id;
+        }else{
+            storagename = input.id;
+        }
+    }
+    if(defaultval){
+        if(!localStorage.getItem(storagename)){
+            localStorage.setItem(storagename, defaultval);
+        }
+    }
+    input.value = localStorage.getItem(storagename);
+    input.oninput = function(){
+        localStorage.setItem(storagename, this.value);
     };
 }
 try{
@@ -294,6 +327,23 @@ try{
     var camerablackscreenondblclick = document.getElementById("camerablackscreenondblclick");
 }catch(e){}
 try{
+    var cameraemergencymode = document.getElementById("cameraemergencymode");
+    var directrecordvideo = document.getElementById("directrecordvideo");
+    var directlivestream = document.getElementById("directlivestream");
+}catch(e){}
+try{
+    var mobilewebappmodemainapppage = document.getElementById("mobilewebappmodemainapppage");
+    var mobilewebappmodecamera = document.getElementById("mobilewebappmodecamera");
+    var mobilewebappmodehiddencamera = document.getElementById("mobilewebappmodehiddencamera");
+}catch(e){}
+try{
+    var takephotohiddencamera = document.getElementById("takephotohiddencamera");
+    var recordvideohiddencamera = document.getElementById("recordvideohiddencamera");
+    var livestreamhiddencamera = document.getElementById("livestreamhiddencamera");
+    var hiddencameracolorfulindicator = document.getElementById("hiddencameracolorfulindicator");
+    var hiddencameravibration = document.getElementById("hiddencameravibration");
+}catch(e){}
+try{
     function setCheckboxOnstorage(checkbox, storageid){
         try{
             if(localStorage.getItem(storageid) == "true"){
@@ -350,6 +400,20 @@ try{
         setCheckboxOnstorage(camerafullscreenonclick, "camerafullscreenonclick");
         setCheckboxOnstorage(cameravideoonlyonclick, "cameravideoonlyonclick");
         setCheckboxOnstorage(camerablackscreenondblclick, "camerablackscreenondblclick");
+        setCheckboxOnstorage(cameraemergencymode, "cameraemergencymode");
+        setCheckboxOnstorage(directrecordvideo, "directrecordvideo");
+        setCheckboxOnstorage(directlivestream, "directlivestream");
+        setCheckboxOnstorage(mobilewebappmodemainapppage, "mobilewebappmodemainapppage");
+        setCheckboxOnstorage(mobilewebappmodecamera, "mobilewebappmodecamera");
+        setCheckboxOnstorage(mobilewebappmodehiddencamera, "mobilewebappmodehiddencamera");
+        setCheckboxOnstorage(takephotohiddencamera, "takephotohiddencamera");
+        setCheckboxOnstorage(recordvideohiddencamera, "recordvideohiddencamera");
+        setCheckboxOnstorage(livestreamhiddencamera, "livestreamhiddencamera");
+        setCheckboxOnstorage(hiddencameracolorfulindicator, "hiddencameracolorfulindicator");
+        setCheckboxOnstorage(hiddencameravibration, "hiddencameravibration");
+        try{
+            setSettingsLanguage(lang);
+        }catch(e){}
     });
 }catch(e){}
 try{
@@ -406,6 +470,50 @@ try{
             localStorage.removeItem("camerafullscreenonclick");
             localStorage.removeItem("cameravideoonlyonclick");
             localStorage.removeItem("camerablackscreenondblclick");
+            localStorage.removeItem("cameraemergencymode");
+            localStorage.removeItem("directrecordvideo");
+            localStorage.removeItem("directlivestream");
+            // localStorage.setItem("mobilewebappmodemainapppage", true);
+            // localStorage.setItem("mobilewebappmodecamera", true);
+            localStorage.removeItem("mobilewebappmodemainapppage");
+            localStorage.removeItem("mobilewebappmodecamera");
+            localStorage.removeItem("mobilewebappmodehiddencamera");
+            localStorage.removeItem("takephotohiddencamera");
+            localStorage.removeItem("recordvideohiddencamera");
+            localStorage.removeItem("livestreamhiddencamera");
+            localStorage.removeItem("hiddencameracolorfulindicator");
+            localStorage.removeItem("hiddencameravibration");
+            localStorage.removeItem("hiddencameratitletakephoto");
+            localStorage.removeItem("hiddencameratitlerecordvideo");
+            localStorage.removeItem("hiddencameratitlelivestream");
+            localStorage.removeItem("hiddencameraicontakephoto");
+            localStorage.removeItem("hiddencameraiconrecordvideo");
+            localStorage.removeItem("hiddencameraiconlivestream");
+            localStorage.removeItem("hiddencameraopenfullscreenonclick");
+            localStorage.removeItem("hiddencamerafullscreenbutton");
+            localStorage.removeItem("hiddencameracolorfulindicatorsize");
+            localStorage.removeItem("hiddencameracamerareadycolor");
+            localStorage.removeItem("hiddencameracameranotreadycolor");
+            localStorage.removeItem("hiddencameracameranotworkcolor");
+            localStorage.removeItem("hiddencameracolorfulindicatorrecordingstarted");
+            localStorage.removeItem("hiddencameracolorfulindicatoruploading");
+            localStorage.removeItem("hiddencameracolorfulindicatoruploaded");
+            localStorage.removeItem("hiddencameracolorfulindicatorerror");
+            localStorage.removeItem("hiddencameravibrationrecordingstarted");
+            localStorage.removeItem("hiddencameravibrationuploading");
+            localStorage.removeItem("hiddencameravibrationuploaded");
+            localStorage.removeItem("hiddencameravibrationerror");
+            localStorage.removeItem("hiddencameradirectrecordvideo");
+            localStorage.removeItem("hiddencameradirectlivestream");
+            localStorage.removeItem("hiddencamerabackgroundimage");
+            localStorage.removeItem("hiddencamerabackgroundimagecameraready");
+            localStorage.removeItem("hiddencamerabackgroundimagecameranotready");
+            localStorage.removeItem("hiddencamerabackgroundimagecameranotwork");
+            localStorage.removeItem("hiddencamerabackgroundimagerecordingstarted");
+            localStorage.removeItem("hiddencamerabackgroundimageuploading");
+            localStorage.removeItem("hiddencamerabackgroundimageuploaded");
+            localStorage.removeItem("hiddencamerabackgroundimageerror");
+            localStorage.removeItem("hiddencamerafacingmode");
             try{
                 setSettingsWindow(true);
             }catch(e){
@@ -415,9 +523,135 @@ try{
     };
 }catch(e){}
 try{
-    checkboxSettingSetup(null, cameramoveabletakephotobutton, "cameramoveabletakephotobutton");
-    checkboxSettingSetup(null, camerafullscreenonclick, "camerafullscreenonclick");
-    checkboxSettingSetup(null, cameravideoonlyonclick, "cameravideoonlyonclick");
-    checkboxSettingSetup(null, camerablackscreenondblclick, "camerablackscreenondblclick");
+    checkboxSettingSetup(null, cameramoveabletakephotobutton/*, "cameramoveabletakephotobutton"*/);
+    checkboxSettingSetup(null, camerafullscreenonclick/*, "camerafullscreenonclick"*/);
+    checkboxSettingSetup(null, cameravideoonlyonclick/*, "cameravideoonlyonclick"*/);
+    checkboxSettingSetup(null, camerablackscreenondblclick/*, "camerablackscreenondblclick"*/);
+    checkboxSettingSetup(null, cameraemergencymode);
+    checkboxSettingSetup(null, directrecordvideo/*, "directrecordvideo"*/);
+    checkboxSettingSetup(null, directlivestream/*, "directlivestream"*/);
+    checkboxSettingSetup(null, mobilewebappmodemainapppage/*, "mobilewebappmodemainapppage"*//*, 1*/);
+    checkboxSettingSetup(null, mobilewebappmodecamera/*, "mobilewebappmodecamera"*//*, 1*/);
+    checkboxSettingSetup(null, mobilewebappmodehiddencamera/*, "mobilewebappmodehiddencamera"*/);
+    checkboxSettingSetup(null, takephotohiddencamera/*, "takephotohiddencamera"*/);
+    checkboxSettingSetup(null, recordvideohiddencamera/*, "recordvideohiddencamera"*/);
+    checkboxSettingSetup(null, livestreamhiddencamera/*, "livestreamhiddencamera"*/);
+    checkboxSettingSetup(null, hiddencameracolorfulindicator/*, "hiddencameracolorfulindicator"*/);
+    checkboxSettingSetup(null, hiddencameravibration/*, "hiddencameravibration"*/);
+    checkboxSettingSetup("hiddencameraopenfullscreenonclick");
+    checkboxSettingSetup("hiddencamerafullscreenbutton");
+    checkboxSettingSetup("hiddencameradirectrecordvideo");
+    checkboxSettingSetup("hiddencameradirectlivestream");
+}catch(e){}
+try{
+    inputSettingSetup("hiddencameratitletakephoto", null, null, ".");
+    inputSettingSetup("hiddencameratitlerecordvideo", null, null, "..");
+    inputSettingSetup("hiddencameratitlelivestream", null, null, "...");
+}catch(e){}
+function getBase64(file, onloadFunc){
+    if(!file){
+        return;
+    }
+    var fileReader = new FileReader();
+    fileReader.onload = function(){
+        onloadFunc(this.result);
+    };
+    fileReader.readAsDataURL(file);
+}
+function previewButtonSetup(button, id){
+    button.onclick = function(){
+        window.open().document.body.innerHTML = '<img src="' + localStorage.getItem(id) + '" style="width: 100%;height: 100%;object-fit: contain;">';
+    };
+    button.disabled = 0;
+}
+function clearButtonSetup(id, preview, buttonmode){
+    var button = document.getElementById(id+"clear");
+    button.onclick = function(){
+        localStorage.removeItem(id);
+        button.disabled = 1;
+        if(buttonmode){
+            preview.disabled = 1;
+        }else{
+            preview.src = "";
+        }
+    };
+    button.disabled = 0;
+}
+function setImageSettingSetup(id, buttonmode){
+    var input = document.getElementById(id);
+    var preview = document.getElementById(id + "preview");
+    if(localStorage.getItem(id)){
+        if(buttonmode){
+            previewButtonSetup(preview, id);
+        }else{
+            preview.src = localStorage.getItem(id);
+        }
+        clearButtonSetup(id, preview, buttonmode);
+    }
+    input.oninput = function(){
+        getBase64(this.files[0], function(result){
+            localStorage.setItem(id, result);
+            if(buttonmode){
+                previewButtonSetup(preview, id);
+            }else{
+                preview.src = localStorage.getItem(id);
+            }
+            clearButtonSetup(id, preview, buttonmode);
+        });
+    };
+}
+try{
+    setImageSettingSetup("hiddencameraicontakephoto");
+    setImageSettingSetup("hiddencameraiconrecordvideo");
+    setImageSettingSetup("hiddencameraiconlivestream");
+    setImageSettingSetup("hiddencamerabackgroundimage", true);
+    setImageSettingSetup("hiddencamerabackgroundimagecameraready", true);
+    setImageSettingSetup("hiddencamerabackgroundimagecameranotready", true);
+    setImageSettingSetup("hiddencamerabackgroundimagecameranotwork", true);
+    setImageSettingSetup("hiddencamerabackgroundimagerecordingstarted", true);
+    setImageSettingSetup("hiddencamerabackgroundimageuploading", true);
+    setImageSettingSetup("hiddencamerabackgroundimageuploaded", true);
+    setImageSettingSetup("hiddencamerabackgroundimageerror", true);
+}catch(e){}
+try{
+    inputSettingSetup("hiddencameracolorfulindicatorsize", null, null, 1);
+    colorInputSetup("hiddencameracolorfulindicatorrecordingstarted", "#000040");
+    colorInputSetup("hiddencameracolorfulindicatoruploading", "#404000");
+    colorInputSetup("hiddencameracolorfulindicatoruploaded", "#004000");
+    colorInputSetup("hiddencameracolorfulindicatorerror", "#400000");
+}catch(e){}
+try{
+    inputSettingSetup("hiddencameravibrationrecordingstarted", null, null, 50);
+    inputSettingSetup("hiddencameravibrationuploading", null, null, 50);
+    inputSettingSetup("hiddencameravibrationuploaded", null, null, 100);
+    inputSettingSetup("hiddencameravibrationerror", null, null, 150);
+}catch(e){}
+try{
+    colorInputSetup("hiddencameracamerareadycolor", "#000000");
+    colorInputSetup("hiddencameracameranotreadycolor", "#808080");
+    colorInputSetup("hiddencameracameranotworkcolor", "#ff0000");
 }catch(e){}
 setSettingsLanguage(lang);
+try{
+    document.getElementById("opendirectrecordvideopage").onclick = function(){
+        window.open("/camera?recordvideo=1");
+    };
+    document.getElementById("opendirectlivestreampage").onclick = function(){
+        window.open("/camera?livestream=1");
+    };
+    document.getElementById("openhiddencameratakephotopage").onclick = function(){
+        window.open("/hiddencamera?mode=takephoto");
+    };
+    document.getElementById("openhiddencamerarecordvideopage").onclick = function(){
+        window.open("/hiddencamera?mode=recordvideo");
+    };
+    document.getElementById("openhiddencameralivestreampage").onclick = function(){
+        window.open("/hiddencamera?mode=livestream");
+    };
+}catch(e){}
+try{
+    inputSettingSetup("hiddencamerafacingmode", null, null, "environment");
+}catch(e){}
+try{
+    function consoleWarning(a,b){for(var i=0;i<3;i++){console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");console.log("%c"+a+"!","color:#ff0000;font-size:32px;font-weight:bold;");console.log("%c"+b,"font-size:25px");console.log("%c!!!!!!!!!!","color:#ff0000;font-size:64px;font-weight:bold;");}}
+}catch(e){}

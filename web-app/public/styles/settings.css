@@ -113,3 +113,6 @@ input:checked + .slider:before, input:checked + .slider img {
     margin-top: 4px;
     border-top: 1px solid #256aff80;
 }
+.settingsbox table{
+    width: 100%;
+}

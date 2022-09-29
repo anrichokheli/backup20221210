@@ -43,7 +43,7 @@
             <a href="/">
                 <img width="64" height="64" src="/images/pedestriansos.svg">
                 <h1>
-                    <span class="pedestrian"><?php echo $langJSON["pedestrian"]; ?></span>&nbsp;<span class="sos">SOS!</span>
+                    <span class="pedestrian"><?php echo $langJSON["pedestrian"]; ?></span>&#160;<span class="sos">SOS!</span>
                 </h1>
             </a>
         </div>
@@ -61,6 +61,9 @@
                 URL: "<?php echo htmlspecialchars($_SERVER["REQUEST_URI"]); ?>"
             </div>
         </div>
+        <a href="/">
+            <img alt width="32" height="32" src="/images/homepage.svg">&#160;<span><?php echo $langJSON["gomainpage"]; ?></span>
+        </a>
     </div>
     <?php echoConsoleWarningScript(); ?>
 </body>

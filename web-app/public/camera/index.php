@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="../styles/camera.css">
         <meta name="title" content="<?php echo $langJSON["pedestrian"]; ?> SOS!">
         <meta name="description" content="<?php echo $langJSON["camera"]; ?>">
-        <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png">
+        <!-- <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-icon-60x60.png">
         <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-icon-72x72.png">
         <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-icon-76x76.png">
@@ -24,7 +24,9 @@
         <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
-        <meta name="msapplication-TileImage" content="/images/favicons/ms-icon-144x144.png">
+        <meta name="msapplication-TileImage" content="/images/favicons/ms-icon-144x144.png"> -->
+        <link rel="icon" type="image/svg" href="/images/pedestriansos.svg" id="favicon">
+        <!-- <meta name="mobile-web-app-capable" content="yes"> -->
     </head>
     <body>
         <div id="camera">
@@ -34,6 +36,7 @@
                 <button id="takephoto" class="buttons" disabled title="<?php echo $langJSON["takephoto"]; ?>"><div><div></div></div></button>
                 <button id="live" class="buttons" disabled title="<?php echo $langJSON["livestream"]; ?>"><img alt width="54" height="54" src="../images/live.svg"></button>
             </div>
+            <button id="emergencymode" class="buttons singlebuttons" title="<?php echo $langJSON["emergencymode"]; ?>"><img alt width="54" height="54" src="/images/emergency.svg"></button>
             <button id="takephotodraggable" class="buttons" disabled title="<?php echo $langJSON["cameramoveabletakephotobutton"]; ?>"><div><div></div></div></button>
             <button id="rotate" class="buttons singlebuttons" disabled title="<?php echo $langJSON["rotate"]; ?>"><img alt width="32" height="32" src="../images/rotate.svg"></button>
             <button id="flashlight" class="buttons singlebuttons" disabled title="<?php echo $langJSON["flashlight"]; ?>"><img alt width="32" height="32" src="../images/flashlight0.svg"></button>
