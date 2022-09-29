@@ -438,7 +438,7 @@
                             $moreTextIndex = textLengthDisplay;
                         }
                         if(isset($moreTextIndex)){
-                            $descriptionData[$i] = substr_replace($descriptionData[$i], "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;vertical-align:initial;\">", $moreTextIndex, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore\" style=\"display:none;\">...>></button>";
+                            $descriptionData[$i] = substr_replace($descriptionData[$i], "<span id=\"moretext" . $n . "\" class=\"moretext\" style=\"display:inline;vertical-align:initial;\">", $moreTextIndex, 0) . "</span><button id=\"seemore" . $n . "\" class=\"seemore\" style=\"display:none;\">...&#62;&#62;</button>";
                         }
                     }
                 }
@@ -703,13 +703,15 @@
                         echo '<div id="newcontent"></div><div class="loader" id="loader"></div><br><div id="loaderror"></div>';
                     //}
                     if($page){
-                        echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\"><<</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+                        echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">&#60;&#60;</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
                     }
                     if($nextAvailable){
-                        echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">>></span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
+                        echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">&#62;&#62;</span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
                     }
                     if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
-                        echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
+                        // echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
+                        $path = photovideotimes . $_GET["t"];
+                        echo '<br>' . getT(file_get_contents($path . "/" . scandir($path)[2]));
                         echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest">' . $langJSON["viewnewest"] . '</span></a>';
                     }
                 }
