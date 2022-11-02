@@ -148,6 +148,10 @@
                 return;
             }
         }
+        $emergencyModePath = uploadstrings . "emergencymodes/" . $n . ".txt";
+        if(file_exists($emergencyModePath)){
+            $emergencyMode = file_get_contents($emergencyModePath);
+        }
         if($rawData)    {
             $dataArray = [$n];
         }
@@ -157,6 +161,18 @@
             $html = setValue("LINK", $n . $GLOBALS["langget"], $html);
             //$html = setValue("FULLLINK", getMainWebAddress() . "/?" . $n, $html);
             $html = setValue("FULLLINK", getMainWebAddress() . "/?view&n=" . $n, $html);
+            $emergencyModeHtml = '';
+            if(isset($emergencyMode)){
+                $emergencyModeHtml = '
+                    <div class="boxs">
+                        <img width="16" height="16" src="/images/emergency.svg"><span class="emergencymode"><string>emergencymode</string></span>
+                        <div>
+                            ' . getT($emergencyMode) . '
+                        </div>
+                    </div>
+                ';
+            }
+            $html = setValue("EMERGENCYMODE", $emergencyModeHtml, $html);
         }
         //$path = glob(photovideos . $n . ".*")[0];
         $dirpath = photovideos . $n;
@@ -170,9 +186,16 @@
                 $timeDatas = array();
                 $fileTypes = [];
                 for($i = 0; $i < $dirFilesQuantity; $i++){
-                    array_push($filePaths, $dirPublicPath . $dirFiles[$i]);
+                    $type = explode("/", mime_content_type($dirpath . "/" . $dirFiles[$i]))[0];
+                    if($type != "image" && $type != "video"){
+                        $type = "live";
+                        $path = "?view&v=uploads/livevideos/" . $dirFiles[$i] . ".webm";
+                    }else{
+                        $path = $dirPublicPath . $dirFiles[$i];
+                    }
+                    array_push($filePaths, $path);
                     array_push($timeDatas, file_get_contents(photovideotimes . $n . "/" . $timeFiles[$i]));
-                    array_push($fileTypes, explode("/", mime_content_type($dirpath . "/" . $dirFiles[$i]))[0]);
+                    array_push($fileTypes, $type);
                 }
                 array_push($dataArray, $filePaths, $timeDatas, $fileTypes);
             }else{
@@ -230,10 +253,15 @@
                         $attributes = "";
                         $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/photo.svg\"><span class=\"photo\"><string>photo</string></span>";
                     }
-                    else   {
+                    else if($fileType == "video")   {
                         $tagName = "video";
                         $attributes = " controls";
                         $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/video.svg\"><span class=\"video\"><string>video</string></span>";
+                    }else{
+                        $tagName = "video";
+                        $attributes = " controls";
+                        $fileTypeTag = "<img width=\"16\" height=\"16\" src=\"images/live.svg\"><span class=\"livestream\"><string>livestream</string></span>";
+                        $path = "?view&v=uploads/livevideos/" . $dirFiles[$i] . ".webm";
                     }
                     $photovideoTag = "<" . $tagName . $attributes . " src=\"" . $path . "\"></" . $tagName . ">";
                     if($allFile || $i == 0){

@@ -7,6 +7,12 @@
         define("liveSecretsPath", secretPath . "live/");
         define("liveIdsPath", liveSecretsPath . "ids/");
         define("liveKeysPath", liveSecretsPath . "keys/");
+        define("uploadstrings", upload . "strings/");
+        define("photovideos", uploadfiles . "photovideos/");
+        define("photovideotimes", uploadstrings . "photovideotimes/");
+        define("uploadSecretsPath", secretPath . "uploads/");
+        define("idsPath", uploadSecretsPath . "ids/");
+        define("keysPath", uploadSecretsPath . "keys/");
         if(isset($_GET["setup"]) && $_GET["setup"] == "1"){
             function getID(){
                 $t = microtime();
@@ -27,14 +33,28 @@
                 }
                 return $key;
             }
+            $live_n = getID();
+            $live_id = getKey(32);
+            $live_key = getKey(1000);
+            file_put_contents(livevideos . $live_n . ".webm", "");
+            file_put_contents(liveIdsPath . $live_id, $live_n);
+            file_put_contents(liveKeysPath . $live_id, password_hash($live_key, PASSWORD_DEFAULT));
             $n = getID();
             $id = getKey(32);
             $key = getKey(1000);
-            file_put_contents(livevideos . $n . ".webm", "");
-            file_put_contents(liveIdsPath . $id, $n);
-            file_put_contents(liveKeysPath . $id, password_hash($key, PASSWORD_DEFAULT));
-            if(file_exists(livevideos . $n . ".webm") && file_exists(liveIdsPath . $id) && file_exists(liveKeysPath . $id)){
-                echo "#" . $n . "|" . $id . "|" . $key;
+            $dirPath = photovideos . $n . "/";
+            mkdir($dirPath);
+            file_put_contents($dirPath . $live_n, "");
+            $t = time();
+            $dirPath = photovideotimes . $n . '/';
+            if(!file_exists($dirPath)){
+                mkdir($dirPath);
+            }
+            file_put_contents($dirPath . getID() . ".txt", $t);
+            file_put_contents(idsPath . $id, $n);
+            file_put_contents(keysPath . $id, password_hash($key, PASSWORD_DEFAULT));
+            if(file_exists(livevideos . $live_n . ".webm") && file_exists(liveIdsPath . $live_id) && file_exists(liveKeysPath . $live_id)){
+                echo "#" . $live_n . "|" . $live_id . "|" . $live_key . "|" . $n . "|" . $id . "|" . $key;
             }else{
                 echo "0";
             }

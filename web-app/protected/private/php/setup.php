@@ -21,6 +21,7 @@ define("livevideos", upload . "livevideos/");
 define("liveSecretsPath", secretPath . "live/");
 define("liveIdsPath", liveSecretsPath . "ids/");
 define("liveKeysPath", liveSecretsPath . "keys/");
+define("emergencymodes", uploadstrings . "emergencymodes/");
 function createDirectoryIfNotExists($path)    {
     if(!file_exists($path))
         mkdir($path, 0777, true);
@@ -45,5 +46,6 @@ createDirectoryIfNotExists(livevideos);
 createDirectoryIfNotExists(liveSecretsPath);
 createDirectoryIfNotExists(liveIdsPath);
 createDirectoryIfNotExists(liveKeysPath);
+createDirectoryIfNotExists(emergencymodes);
 rename(phpPath . "setup.php", phpPath . "setup.php.txt");
 ?>
