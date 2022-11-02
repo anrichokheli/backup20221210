@@ -2,9 +2,16 @@
     margin: 0;
     padding: 0;
 }
+#main{
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+}
 #camera{
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background-color: #000040;
     position: relative;
     font-family: sans-serif;
@@ -107,6 +114,10 @@
     #recordstatus{
         bottom: 73px;
     }
+    #microphone{
+        top: 64px;
+        left: 0;
+    }
 }
 @media(orientation: landscape){
     #bottombuttons{
@@ -130,6 +141,10 @@
     }
     #recordstatus{
         bottom: 0;
+    }
+    #microphone{
+        bottom: 0;
+        left: 64px;
     }
 }
 #canvas{
@@ -253,7 +268,7 @@
     justify-content: center;
     align-items: center;
 }
-#recordstatus{
+.statusValueBoxes{
     display: none;
     position: absolute;
     left: 40%;
@@ -265,10 +280,16 @@
     justify-content: space-evenly;
     align-items: center;
 }
-#recordduration{
+.statusValueSpan{
     color: #ffffff;
     font-size: 22px;
 }
 .whiteicon{
     filter: brightness(0) invert(1);
+}
+#livechunkstatus{
+    left: 25%;
+    right: 25%;
+    width: 50%;
+    top: 44px;
 }

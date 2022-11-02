@@ -4,9 +4,7 @@
     define("protectedPrivatePath", protectedPath . "private/");
     define("htmlPath", protectedPublicPath . "html/");
     define("phpPath", protectedPrivatePath . "php/");
-    define("defaultLang", "en");
     //define("jsonLanguagesPath", $_SERVER["DOCUMENT_ROOT"] . "/json/languages/");
-    define("jsonLanguagesPath", $_SERVER["DOCUMENT_ROOT"] . "/json/languages/main/");
     if(file_exists(phpPath . "setup.php")){
         require_once(phpPath . "setup.php");
     }
@@ -18,74 +16,7 @@
         }
         return $protocol . "://" . $_SERVER["HTTP_HOST"];
     }
-    if(!empty($_GET["lang"])){
-        $lang = $_GET["lang"];
-    }
-    else if(!empty($_COOKIE["lang"])){
-        $lang = $_COOKIE["lang"];
-    }
-    else if(!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])){
-        $lang = explode(",", $_SERVER['HTTP_ACCEPT_LANGUAGE'])[0];
-    }
-    else{
-        $lang = defaultLang;
-    }
-    $lang = substr($lang, 0, 2);
-    if(!file_exists(jsonLanguagesPath/* . "main/"*/ . $lang . ".json")){
-        $lang = defaultLang;
-    }
-    /*function getJSON($path){
-        return json_decode(file_get_contents(jsonLanguagesPath . $path . $GLOBALS["lang"] . ".json"), 1);
-    }*/
-    //$langJSON = getJSON("main/");
-    $langJSON = json_decode(file_get_contents(jsonLanguagesPath . $lang . ".json"), 1);
-    function getLangOptions($asciionly = ""){
-        if($asciionly == ""){
-            $asciionly = defined("asciionly");
-        }
-        $langOptions = '';
-        $jsonLangFiles = array_slice(scandir(jsonLanguagesPath/* . "main/"*/), 2);
-        if($asciionly){
-            foreach($jsonLangFiles as $file){
-                $file = jsonLanguagesPath . $file;
-                $langOptions .= toAscii('<option value="' . pathinfo($file, PATHINFO_FILENAME) . '">' . json_decode(file_get_contents($file), TRUE)["langname"] . '</option>');
-            }
-        }else{
-            foreach($jsonLangFiles as $file){
-                $file = jsonLanguagesPath/* . "main/"*/ . $file;
-                $langOptions .= '<option value="' . pathinfo($file, PATHINFO_FILENAME) . '">' . json_decode(file_get_contents($file), TRUE)["langname"] . '</option>';
-            }
-        }
-        return $langOptions;
-    }
-    function setLanguage($html/*, $json*/) {
-        if(defined("asciionly")){
-            foreach($GLOBALS["langJSON"] as $key => $val)   {
-                $html = str_replace("<string>" . $key . "</string>", toAscii($val), $html);
-            }
-        }else{
-            foreach(/*$json*/$GLOBALS["langJSON"] as $key => $val)   {
-                $html = str_replace("<string>" . $key . "</string>", $val, $html);
-            }
-        }
-        return $html;
-    }
-    function toAscii($string){
-        return transliterator_transliterate("Any", $string);
-    }
-    if(isset($_GET["asciionly"]) && $_GET["asciionly"] == 1){
-        define("asciionly", "");
-        function getString($key){
-            return toAscii($GLOBALS["langJSON"][$key]);
-        }
-    }else{
-        function getString($key){
-            return $GLOBALS["langJSON"][$key];
-        }
-    }
-    function echoString($key){
-        echo getString($key);
-    }
+    include(phpPath . "language.php");
     if(isset($_GET["gethtml"]) && $_GET["gethtml"] == "settings"){
         //exit(str_replace("<php>langoptions</php>", getLangOptions(), file_get_contents(htmlPath . "settings.html")));
         exit(/*setLanguage(*/setLanguage(str_replace("<php>langoptions</php>", getLangOptions(), file_get_contents(htmlPath . "settings.html"))/*, $GLOBALS["langJSON"]*/)/*, getJSON("settings/"))*/);
@@ -115,12 +46,14 @@
     if(!empty($_GET["download"])){
         include(phpPath . "download.php");
     }
-    header("X-Frame-Options: DENY");
+    // header("X-Frame-Options: DENY");
+    header("X-Frame-Options: SAMEORIGIN");
     // require(phpPath . "security.php");
     include(phpPath . "uploadphotovideo.php");
     include(phpPath . "uploadstring.php");
     include(phpPath . "uploadvoice.php");
     include(phpPath . "live.php");
+    include(phpPath . "emergencymode.php");
     /*if(!defined("notmain")){
         if(isset($_GET["noscript"])){
             $indexHTML = file_get_contents(htmlPath . "indexnoscript.html");

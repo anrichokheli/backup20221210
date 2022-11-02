@@ -56,8 +56,16 @@ if(!cameraReadyColor){
     cameraReadyColor = "#000";
 }
 var onplaySetup;
+var afterCameraPrepare;
 video.onplay = function(){
     cameraReady = 1;
+    if(afterCameraPrepare == "recordvideo"){
+        afterCameraPrepare = null;
+        videoSetup();
+    }else if(afterCameraPrepare == "livestream"){
+        afterCameraPrepare = null;
+        videoSetup(true);
+    }
     if(!onplaySetup){
         onplaySetup = 1;
         screenDiv.style.backgroundColor = cameraReadyColor;
@@ -73,7 +81,8 @@ if(cameraFacingStorage){
 }
 function cameraStart(){
     navigator.mediaDevices.getUserMedia({
-        audio: false,
+        // audio: false,
+        audio: true,
         video: {
             width: {ideal: 1920},
             height: {ideal: 1080},
@@ -98,7 +107,7 @@ function takePhoto(){
     canvas.height = video.videoHeight;
     canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
     canvas.toBlob(function(blob){
-        uploadFile(blob);
+        uploadFile(blob, "takephoto");
         beforeUnloadWarning--;
     });
 }
@@ -107,20 +116,27 @@ var recorder;
 var data;
 function onVideoStop(live){
     var recordedBlob = new Blob(data, {type: "video/webm"});
-    if(!live){
-        if(recordedBlob == ""){
-            cameraStop();
-        }
-        cameraStart();
-    }
+    // if(!live){
+    //     /*if(recordedBlob == ""){
+    //         cameraStop();
+    //     }
+    //     cameraStart();*/
+    // }
     if(recordedBlob != ""){
         if(live){
             if(liveErrorChunks > 0){
-                uploadFile(recordedBlob, "recordvideo");
+                uploadFile(recordedBlob, "recordvideo", liveID_2, liveKey_2);
             }
+            automaticDownload(recordedBlob, "livestream");
         }else{
             uploadFile(recordedBlob, "recordvideo");
             beforeUnloadWarning--;
+        }
+    }
+    if(live){
+        if(localStorage.getItem("currentlocationmode") != "true" && watchPositionID){
+            navigator.geolocation.clearWatch(watchPositionID);
+            watchPositionID = null;
         }
     }
 }
@@ -209,7 +225,7 @@ function startRecording(stream, live){
     backgroundImageFunc("recordingstarted");
 }
 function videoSetup(live){
-    navigator.mediaDevices.getUserMedia({
+    /*navigator.mediaDevices.getUserMedia({
         audio: true,
         video: {
             width: {ideal: 1920},
@@ -218,17 +234,27 @@ function videoSetup(live){
         }
     })
     .then(function(stream){cameraSetup(stream);})
-    .then(function(){startRecording(video.captureStream(), live);});
+    .then(function(){startRecording(video.captureStream(), live);});*/
+    if(!cameraReady){
+        if(live){
+            afterCameraPrepare = "livestream";
+        }else{
+            afterCameraPrepare = "recordvideo";
+        }
+        return;
+    }
+    startRecording(video.captureStream(), live);
 }
 function recordVideo(){
-    cameraReady = 0;
-    cameraStop();
+    // cameraReady = 0;
+    // cameraStop();
     if(!videoRecording){
         beforeUnloadWarning++;
         videoRecording = 1;
         videoSetup();
     }else{
         videoRecording = 0;
+        recorder.stop();
     }
 }
 function ajax(method, url, onload, onerror, formdata){
@@ -246,20 +272,41 @@ var liveStreaming = false;
 var liveN;
 var liveID;
 var liveKey;
+var liveN_2;
+var liveID_2;
+var liveKey_2;
 function liveSetupAjaxOnload(ajax){
     if(ajax.response.charAt(0) == '#'){
         var responseArray = ajax.responseText.substring(1).split('|');
         liveN = responseArray[0];
         liveID = responseArray[1];
         liveKey = responseArray[2];
+        liveN_2 = responseArray[3];
+        liveID_2 = responseArray[4];
+        liveKey_2 = responseArray[5];
         videoSetup(true);
+        var locationEnabledVal = localStorage.getItem("hiddencameralivestreamlocationattach");
+        if((locationEnabledVal == "true") || !locationEnabledVal){
+            if(latitude != null && longitude != null && localStorage.getItem("currentlocationmode") == "true")    {
+                uploadLocation(liveN_2, liveID_2, liveKey_2, [latitude, longitude, altitude, accuracy, altitudeAccuracy]);
+            }else{
+                if(!watchPositionID && !detectingLocation){
+                    getLocation2();
+                }
+            }
+        }
+        var liveLocationEnabledVal = localStorage.getItem("hiddencameralivestreamconstantlylocationattach");
+        if((liveLocationEnabledVal == "true") || !liveLocationEnabledVal){
+            getLocation2(1);
+        }
     }else{
         liveSetupAjaxOnerror(ajax);
     }
 }
 function liveSetupAjaxOnerror(ajax){
     liveStreaming = false;
-    cameraStart();
+    // cameraStart();
+    errorIndicator();
 }
 function liveSetup(){
     ajax("GET", "../?live=1&setup=1", liveSetupAjaxOnload, liveSetupAjaxOnerror);
@@ -271,9 +318,7 @@ function sendLiveChunkAjaxOnload(ajax){
     if(ajax.response == "1"){
         liveUploadedChunks++;
         if(!liveStreaming && liveUploadedChunks == liveTotalChunks){
-            colorfulIndicatorFunc(colorfulindicator_uploaded);
-            vibrationFunc(vibration_uploaded);
-            backgroundImageFunc("uploaded");
+            uploadedIndicator();
         }
     }else{
         sendLiveChunkAjaxOnerror(ajax);
@@ -281,6 +326,7 @@ function sendLiveChunkAjaxOnload(ajax){
 }
 function sendLiveChunkAjaxOnerror(ajax){
     liveErrorChunks++;
+    errorIndicator();
 }
 function sendLiveChunk(chunk){
     var formData = new FormData();
@@ -291,7 +337,7 @@ function sendLiveChunk(chunk){
     ajax("POST", "../?live=1", sendLiveChunkAjaxOnload, sendLiveChunkAjaxOnerror, formData);
 }
 function liveStream(){
-    cameraStop();
+    // cameraStop();
     if(!liveStreaming){
         liveStreaming = true;
         liveUploadedChunks = 0;
@@ -300,7 +346,8 @@ function liveStream(){
         liveSetup();
     }else{
         liveStreaming = false;
-        cameraStart();
+        recorder.stop();
+        // cameraStart();
     }
 }
 function liveChunksUploaded(){
@@ -310,9 +357,155 @@ function liveChunksUploaded(){
         return true;
     }
 }
+function addOnlineFunction(onlineCallbackFunction){
+    var onlineFunc = function(){
+        window.removeEventListener("online", onlineFunc);
+        uploadingIndicator();
+        onlineCallbackFunction();
+    };
+    window.addEventListener("online", onlineFunc);
+}
 var beforeUnloadWarning = 0;
-function uploadFile(file){
-    beforeUnloadWarning++;
+var latitude;
+var longitude;
+var altitude;
+var accuracy;
+var altitudeAccuracy;
+// var locationTime;
+var geolocationSupported;
+try{
+    function setStorageIfNot(local_name, local_value){
+        if(!localStorage.getItem(local_name)){
+            localStorage.setItem(local_name, local_value);
+        }
+    }
+    if(navigator.geolocation){
+        geolocationSupported = true;
+        try{
+            setStorageIfNot("locationhighaccuracymode", true);
+            setStorageIfNot("locationcachemode", true);
+            setStorageIfNot("locationcachetimeout", 1000);
+        }catch(e){}
+    }else{
+        
+    }
+}catch(e){}
+var watchPositionID;
+var detectingLocation;
+function getLocation(continuousUpdate, highAccuracy, cacheData, cacheTimeout)  {
+    detectingLocation = true;
+    if(watchPositionID){
+        navigator.geolocation.clearWatch(watchPositionID);
+        watchPositionID = null;
+    }
+    if(continuousUpdate){
+        if(cacheData){
+            watchPositionID = navigator.geolocation.watchPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy, maximumAge: cacheTimeout});
+        }else{
+            watchPositionID = navigator.geolocation.watchPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy});
+        }
+    }else{
+        if(cacheData){
+            navigator.geolocation.getCurrentPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy, maximumAge: cacheTimeout});
+        }else{
+            navigator.geolocation.getCurrentPosition(afterLocation, locationError, {enableHighAccuracy: highAccuracy});
+        }
+    }
+}
+function getLocation2(liveLocation){
+    getLocation((localStorage.getItem("currentlocationmode") == "true") || liveLocation, localStorage.getItem("locationhighaccuracymode") == "true", localStorage.getItem("locationcachemode") == "true", parseInt(localStorage.getItem("locationcachetimeout")));
+}
+function afterLocation(position)  {
+    detectingLocation = false;
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+    altitude = position.coords.altitude;
+    accuracy = position.coords.accuracy;
+    altitudeAccuracy = position.coords.altitudeAccuracy;
+    // locationTime = position.timestamp;
+    var locationCoordinatesArray = [latitude, longitude, altitude, accuracy, altitudeAccuracy];
+    if(locationUploadArray.length > 0){
+        for(var key in locationUploadArray){
+            uploadLocation(locationUploadArray[key][0], locationUploadArray[key][1], locationUploadArray[key][2], locationCoordinatesArray);
+            locationUploadArray.shift();
+        }
+    }
+    if(locationPreUploadElements.length > 0){
+        for(var key in locationPreUploadElements){
+            preUpload(locationCoordinates, locationPreUploadElements[key][0], locationCoordinatesArray, locationPreUploadElements[key][1]);
+            locationPreUploadElements.shift();
+        }
+    }
+    try{
+        localStorage.setItem("locationallowed", "true");
+    }catch(e){}
+    var locationEnabledVal = localStorage.getItem("cameralivestreamlocationattach");
+    var liveLocationEnabledVal = localStorage.getItem("cameralivestreamconstantlylocationattach");
+    if((((locationEnabledVal == "true") || !locationEnabledVal) || ((liveLocationEnabledVal == "true") || !liveLocationEnabledVal)) && liveStreaming && liveN_2){
+        uploadLocation(liveN_2, liveID_2, liveKey_2, locationCoordinatesArray);
+    }
+}
+function locationError(error){
+    detectingLocation = false;
+    try{
+        if((error.code != error.PERMISSION_DENIED) || (localStorage.getItem("locationallowed") == "true")){
+            setTimeout(getLocation, 250);
+        }
+    }catch(e){
+        setTimeout(getLocation, 250);
+    }
+}
+var lastUploadID = 0;
+var locationCoordinates = [];
+var locationPreUploadElements = [];
+function preUpload(array, id, value){
+    array[id] = value;
+}
+var locationUploadArray = [];
+function uploadLocation(n, id, key, coordinates, previouslyError){
+    if(!previouslyError){
+        beforeUnloadWarning++;
+    }
+    uploadingIndicator();
+    var ajax = new XMLHttpRequest();
+    ajax.open("POST", "../");
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    ajax.onload = function(){
+        if(ajax.responseText === "1"){
+            uploadedIndicator();
+            beforeUnloadWarning--;
+        }else{
+            errorIndicator();
+        }
+    };
+    ajax.onerror = function(){
+        addOnlineFunction(function(){uploadLocation(n, id, key, coordinates, true);});
+        errorIndicator();
+    };
+    ajax.send("id="+encodeURIComponent(id)+"&key="+encodeURIComponent(key)+"&latitude="+encodeURIComponent(coordinates[0])+"&longitude="+encodeURIComponent(coordinates[1])+"&altitude="+encodeURIComponent(coordinates[2])+"&accuracy="+encodeURIComponent(coordinates[3])+"&altitudeaccuracy="+encodeURIComponent(coordinates[4]));
+}
+function uploadFile(file, cameraMode, id, key, id0){
+    if(!id0){
+        beforeUnloadWarning++;
+        automaticDownload(file, cameraMode);
+    }
+    var currentUploadID = ++lastUploadID;
+    var locationEnabledVal = localStorage.getItem("hiddencamera" + cameraMode + "locationattach");
+    var locationUploadEnabled = ((locationEnabledVal == "true") || !locationEnabledVal);
+    if(id0){
+        if(locationCoordinates[id0]){
+            preUpload(locationCoordinates, currentUploadID, locationCoordinates[id0]);
+        }
+    }else if(locationUploadEnabled){
+        if(latitude != null && longitude != null && localStorage.getItem("currentlocationmode") == "true")    {
+            preUpload(locationCoordinates, currentUploadID, [latitude, longitude, altitude, accuracy, altitudeAccuracy]);
+        }else{
+            if(!watchPositionID && !detectingLocation){
+                getLocation2();
+            }
+            locationPreUploadElements.push(currentUploadID);
+        }
+    }
     var ajax = new XMLHttpRequest();
     ajax.onload = function(){
         if(this.responseText.charAt(0) == '#'){
@@ -320,6 +513,14 @@ function uploadFile(file){
             var n = responseArray[0];
             var id = responseArray[1];
             var key = responseArray[2];
+            if(locationCoordinates[currentUploadID]){
+                uploadLocation(n, id, key, locationCoordinates[currentUploadID]);
+            }else{
+                if(!watchPositionID && !detectingLocation){
+                    getLocation2();
+                }
+                locationUploadArray.push([n, id, key]);
+            }
             try{
                 if(localStorage.getItem("saveuploads") == "true"){
                     var uploadsStorage = localStorage.getItem("uploads");
@@ -332,43 +533,79 @@ function uploadFile(file){
                     localStorage.setItem("uploads", JSON.stringify(uploadsStorage));
                 }
             }catch(e){}
-            colorfulIndicatorFunc(colorfulindicator_uploaded);
-            vibrationFunc(vibration_uploaded);
-            backgroundImageFunc("uploaded");
+            uploadedIndicator();
+            beforeUnloadWarning--;
         }else{
-            colorfulIndicatorFunc(colorfulindicator_error);
-            vibrationFunc(vibration_error);
-            backgroundImageFunc("error");
+            uploadFileOnerror(file, cameraMode, id, key, currentUploadID);
         }
-        beforeUnloadWarning--;
     };
     ajax.onerror = function(){
-        colorfulIndicatorFunc(colorfulindicator_error);
-        vibrationFunc(vibration_error);
-        backgroundImageFunc("error");
-        beforeUnloadWarning--;
+        uploadFileOnerror(file, cameraMode, id, key, currentUploadID);
     };
     ajax.open("POST", "/");
     var formData = new FormData();
     formData.append("photovideo", file);
+    if(id && key){
+        formData.append("id", id);
+        formData.append("key", key);
+    }
     ajax.send(formData);
 }
+function uploadFileOnerror(file, cameraMode, id, key, id0){
+    errorIndicator();
+    addOnlineFunction(function(){uploadFile(file, cameraMode, id, key, id0);});
+}
+try{
+    if(geolocationSupported)    {
+        if(localStorage.getItem("locationinitializationmode") == "true"){
+            getLocation2();
+        }
+    }
+}catch(e){}
+window.addEventListener("online", function(){
+    if(liveStreaming && data){
+        uploadingIndicator();
+        uploadFile(new Blob(data, {type: "video/webm"}), "recordvideo", liveID_2, liveKey_2);
+    }
+});
 window.addEventListener("beforeunload", function(e){
-    if(beforeUnloadWarning || liveStreaming || !liveChunksUploaded()){
+    if(beforeUnloadWarning || videoRecording || liveStreaming || !liveChunksUploaded() || locationPreUploadElements.length || locationUploadArray.length){
         e.preventDefault();
         e.returnValue = '';
     }
 });
-function onclickIndicator(){
+function uploadingIndicator(){
     colorfulIndicatorFunc(colorfulindicator_uploading);
     vibrationFunc(vibration_uploading);
     backgroundImageFunc("uploading");
+}
+function uploadedIndicator(){
+    colorfulIndicatorFunc(colorfulindicator_uploaded);
+    vibrationFunc(vibration_uploaded);
+    backgroundImageFunc("uploaded");
+}
+function errorIndicator(){
+
+}
+function automaticDownload(file, cameraMode){
+    try{
+        var automaticdownloadEnabledVal = localStorage.getItem("hiddencamera" + cameraMode + "automaticdownload");
+        if((automaticdownloadEnabledVal == "true") || !automaticdownloadEnabledVal){
+            var downloadButton = document.createElement("a");
+            if(file){
+                downloadButton.href = URL.createObjectURL(file);
+            }
+            downloadButton.download = (new Date()).getTime();
+            downloadButton.click();
+        }
+    }catch(e){}
 }
 if(enabled){
     screenDiv.onclick = function(){
         if(!cameraReady){
             return;
         }
+        uploadingIndicator();
         if(mode == "takephoto"){
             takePhoto();
         }else if(mode == "recordvideo"){
@@ -379,16 +616,14 @@ if(enabled){
         if(localStorage.getItem("hiddencameraopenfullscreenonclick") == "true"){
             document.documentElement.requestFullscreen();
         }
-        onclickIndicator();
     };
+    cameraStart();
     if(localStorage.getItem("hiddencameradirectrecordvideo") == "true" && mode == "recordvideo"){
+        uploadingIndicator();
         recordVideo();
-        onclickIndicator();
     }else if(localStorage.getItem("hiddencameradirectlivestream") == "true" && mode == "livestream"){
+        uploadingIndicator();
         liveStream();
-        onclickIndicator();
-    }else{
-        cameraStart();
     }
 }else{
     var cameraNotWorkingColor = localStorage.getItem("hiddencameracameranotworkcolor");

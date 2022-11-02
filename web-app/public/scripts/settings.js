@@ -188,7 +188,53 @@ try{
     checkboxSettingSetup(null, saveUploads, "saveuploads");
 }catch(e){}
 try{
-    var locationSettingsNames = ["currentlocationmode", "locationhighaccuracymode", "locationinitializationmode", "locationcachemode"];
+    var checkboxSettings = [
+        ["currentlocationmode", false],
+        ["locationhighaccuracymode", true],
+        ["locationinitializationmode", false],
+        ["locationcachemode", true],
+        ["takephotoautomaticdownload", true],
+        ["recordvideoautomaticdownload", true],
+        ["cameratakephotoautomaticdownload", true],
+        ["camerarecordvideoautomaticdownload", true],
+        ["cameralivestreamautomaticdownload", true],
+        ["hiddencameratakephotoautomaticdownload", true],
+        ["hiddencamerarecordvideoautomaticdownload", true],
+        ["hiddencameralivestreamautomaticdownload", true],
+        ["hiddencameracolorfulindicator", true],
+        ["camerawindowonfocusactions", false],
+        ["takephotolocationattach", true],
+        ["recordvideolocationattach", true],
+        ["choosephotoslocationattach", false],
+        ["choosevideoslocationattach", false],
+        ["choosefileslocationattach", false],
+        ["enterlinklocationattach", false],
+        ["cameratakephotolocationattach", true],
+        ["camerarecordvideolocationattach", true],
+        ["cameralivestreamlocationattach", true],
+        ["cameralivestreamconstantlylocationattach", true],
+        ["hiddencameratakephotolocationattach", true],
+        ["hiddencamerarecordvideolocationattach", true],
+        ["hiddencameralivestreamlocationattach", true],
+        ["hiddencameralivestreamconstantlylocationattach", true]
+    ];
+    function setCheckboxSettings(){
+        for(var i = 0; i < checkboxSettings.length; i++){
+            checkboxSettingSetup(checkboxSettings[i][0]);
+        }
+    }
+    function resetCheckboxSettings(){
+        for(var i = 0; i < checkboxSettings.length; i++){
+            localStorage.setItem(checkboxSettings[i][0], checkboxSettings[i][1]);
+        }
+    }
+    if(!localStorage.getItem(checkboxSettings[0][0])){
+        resetCheckboxSettings();
+    }
+    setCheckboxSettings();
+}catch(e){}
+try{
+    /*var locationSettingsNames = ["currentlocationmode", "locationhighaccuracymode", "locationinitializationmode", "locationcachemode"];
     var locationSettingsValues = [false, true, false, true];
     function setLocationSettings(){
         for(var i = 0; i < locationSettingsNames.length; i++){
@@ -203,7 +249,7 @@ try{
     if(!localStorage.getItem(locationSettingsNames[0])){
         resetLocationSettings();
     }
-    setLocationSettings();
+    setLocationSettings();*/
     var locationCacheTimeout = document.getElementById("locationcachetimeout");
     locationCacheTimeout.oninput = function(){
         localStorage.setItem(this.id, this.value * 1000);
@@ -217,9 +263,31 @@ try{
     }
     locationCacheTimeoutInputSetup();
 }catch(e){}
-try{
-    var locationAttachSettingsNames = ["takephotolocationattach", "recordvideolocationattach", "choosephotoslocationattach", "choosevideoslocationattach", "choosefileslocationattach", "enterlinklocationattach", "cameratakephotolocationattach", "camerarecordvideolocationattach"];
-    var locationAttachSettingsValues = [true, true, false, false, false, false, true, true];
+/*try{
+    var locationAttachSettingsNames = [
+        "takephotolocationattach",
+        "recordvideolocationattach",
+        "choosephotoslocationattach",
+        "choosevideoslocationattach",
+        "choosefileslocationattach",
+        "enterlinklocationattach",
+        "cameratakephotolocationattach",
+        "camerarecordvideolocationattach",
+        "cameralivestreamlocationattach",
+        "cameralivestreamconstantlylocationattach"
+    ];
+    var locationAttachSettingsValues = [
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true
+    ];
     function setLocationAttachSettings(){
         for(var i = 0; i < locationAttachSettingsNames.length; i++){
             checkboxSettingSetup(locationAttachSettingsNames[i]);
@@ -234,7 +302,7 @@ try{
         resetLocationAttachSettings();
     }
     setLocationAttachSettings();
-}catch(e){}
+}catch(e){}*/
 /*try{
     var reopenSettingsNames = ["takephotoreopen", "recordvideoreopen", "choosephotosreopen", "choosevideosreopen", "choosefilesreopen"];
     var reopenSettingsValues = [false, false, false, false, false, false];
@@ -330,6 +398,7 @@ try{
     var cameraemergencymode = document.getElementById("cameraemergencymode");
     var directrecordvideo = document.getElementById("directrecordvideo");
     var directlivestream = document.getElementById("directlivestream");
+    var directemergencymode = document.getElementById("directemergencymode");
 }catch(e){}
 try{
     var mobilewebappmodemainapppage = document.getElementById("mobilewebappmodemainapppage");
@@ -340,7 +409,7 @@ try{
     var takephotohiddencamera = document.getElementById("takephotohiddencamera");
     var recordvideohiddencamera = document.getElementById("recordvideohiddencamera");
     var livestreamhiddencamera = document.getElementById("livestreamhiddencamera");
-    var hiddencameracolorfulindicator = document.getElementById("hiddencameracolorfulindicator");
+    // var hiddencameracolorfulindicator = document.getElementById("hiddencameracolorfulindicator");
     var hiddencameravibration = document.getElementById("hiddencameravibration");
 }catch(e){}
 try{
@@ -376,14 +445,15 @@ try{
         }catch(e){}
         setCheckboxOnstorage(saveUploads, "saveuploads");
         try{
-            setLocationSettings();
+            // setLocationSettings();
+            setCheckboxSettings();
         }catch(e){}
         try{
             locationCacheTimeoutInputSetup();
         }catch(e){}
-        try{
+        /*try{
             setLocationAttachSettings();
-        }catch(e){}
+        }catch(e){}*/
         /*try{
             startupSettingSetup();
         }catch(e){}*/
@@ -403,13 +473,14 @@ try{
         setCheckboxOnstorage(cameraemergencymode, "cameraemergencymode");
         setCheckboxOnstorage(directrecordvideo, "directrecordvideo");
         setCheckboxOnstorage(directlivestream, "directlivestream");
+        setCheckboxOnstorage(directemergencymode, "directemergencymode");
         setCheckboxOnstorage(mobilewebappmodemainapppage, "mobilewebappmodemainapppage");
         setCheckboxOnstorage(mobilewebappmodecamera, "mobilewebappmodecamera");
         setCheckboxOnstorage(mobilewebappmodehiddencamera, "mobilewebappmodehiddencamera");
         setCheckboxOnstorage(takephotohiddencamera, "takephotohiddencamera");
         setCheckboxOnstorage(recordvideohiddencamera, "recordvideohiddencamera");
         setCheckboxOnstorage(livestreamhiddencamera, "livestreamhiddencamera");
-        setCheckboxOnstorage(hiddencameracolorfulindicator, "hiddencameracolorfulindicator");
+        // setCheckboxOnstorage(hiddencameracolorfulindicator, "hiddencameracolorfulindicator");
         setCheckboxOnstorage(hiddencameravibration, "hiddencameravibration");
         try{
             setSettingsLanguage(lang);
@@ -446,14 +517,15 @@ try{
             setCookie("settingstimezone", "");
             // localStorage.setItem("saveuploads", true);
             localStorage.removeItem("saveuploads");
-            resetLocationSettings();
+            // resetLocationSettings();
+            resetCheckboxSettings();
             try{
-                for(var i = 0; i < locationSettingsNames.length; i++){
-                    setLocationSettingDiv(locationSettingsNames[i], null, true);
+                for(var i = 0; i < 4; i++){
+                    setLocationSettingDiv(checkboxSettings[i][0], null, true);
                 }
             }catch(e){}
             localStorage.removeItem("locationcachetimeout");
-            resetLocationAttachSettings();
+            // resetLocationAttachSettings();
             //resetReopenSettings();
             //localStorage.removeItem("startupmode");
             //localStorage.removeItem("colorfilterenabled");
@@ -473,6 +545,7 @@ try{
             localStorage.removeItem("cameraemergencymode");
             localStorage.removeItem("directrecordvideo");
             localStorage.removeItem("directlivestream");
+            localStorage.removeItem("directemergencymode");
             // localStorage.setItem("mobilewebappmodemainapppage", true);
             // localStorage.setItem("mobilewebappmodecamera", true);
             localStorage.removeItem("mobilewebappmodemainapppage");
@@ -481,7 +554,7 @@ try{
             localStorage.removeItem("takephotohiddencamera");
             localStorage.removeItem("recordvideohiddencamera");
             localStorage.removeItem("livestreamhiddencamera");
-            localStorage.removeItem("hiddencameracolorfulindicator");
+            // localStorage.removeItem("hiddencameracolorfulindicator");
             localStorage.removeItem("hiddencameravibration");
             localStorage.removeItem("hiddencameratitletakephoto");
             localStorage.removeItem("hiddencameratitlerecordvideo");
@@ -514,6 +587,9 @@ try{
             localStorage.removeItem("hiddencamerabackgroundimageuploaded");
             localStorage.removeItem("hiddencamerabackgroundimageerror");
             localStorage.removeItem("hiddencamerafacingmode");
+            localStorage.removeItem("camerawindowonfocusbuttonrecord_video");
+            localStorage.removeItem("camerawindowonfocusbuttonlive");
+            localStorage.removeItem("camerawindowonfocusbuttonemergency");
             try{
                 setSettingsWindow(true);
             }catch(e){
@@ -530,13 +606,14 @@ try{
     checkboxSettingSetup(null, cameraemergencymode);
     checkboxSettingSetup(null, directrecordvideo/*, "directrecordvideo"*/);
     checkboxSettingSetup(null, directlivestream/*, "directlivestream"*/);
+    checkboxSettingSetup(null, directemergencymode);
     checkboxSettingSetup(null, mobilewebappmodemainapppage/*, "mobilewebappmodemainapppage"*//*, 1*/);
     checkboxSettingSetup(null, mobilewebappmodecamera/*, "mobilewebappmodecamera"*//*, 1*/);
     checkboxSettingSetup(null, mobilewebappmodehiddencamera/*, "mobilewebappmodehiddencamera"*/);
     checkboxSettingSetup(null, takephotohiddencamera/*, "takephotohiddencamera"*/);
     checkboxSettingSetup(null, recordvideohiddencamera/*, "recordvideohiddencamera"*/);
     checkboxSettingSetup(null, livestreamhiddencamera/*, "livestreamhiddencamera"*/);
-    checkboxSettingSetup(null, hiddencameracolorfulindicator/*, "hiddencameracolorfulindicator"*/);
+    // checkboxSettingSetup(null, hiddencameracolorfulindicator/*, "hiddencameracolorfulindicator"*/);
     checkboxSettingSetup(null, hiddencameravibration/*, "hiddencameravibration"*/);
     checkboxSettingSetup("hiddencameraopenfullscreenonclick");
     checkboxSettingSetup("hiddencamerafullscreenbutton");
@@ -638,6 +715,9 @@ try{
     };
     document.getElementById("opendirectlivestreampage").onclick = function(){
         window.open("/camera?livestream=1");
+    };
+    document.getElementById("opendirectemergencymodepage").onclick = function(){
+        window.open("/camera?emergencymode=1");
     };
     document.getElementById("openhiddencameratakephotopage").onclick = function(){
         window.open("/hiddencamera?mode=takephoto");

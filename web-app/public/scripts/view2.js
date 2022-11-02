@@ -158,6 +158,8 @@ function addContent(array){
         imageName = "photo";
     }else if(array[3][0] == "video"){
         imageName = "video";
+    }else if(array[3][0] == "live"){
+        imageName = "live";
     }
     oneDiv.innerHTML = getHTML(array) + '<div class="contenticon"><img width="32" height="32" src="../images/' + imageName + '.svg"></div>';
     oneDiv.onclick = function(){

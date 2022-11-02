@@ -485,6 +485,11 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
             //         localStorage.setItem("uploads", JSON.stringify(uploadsArray));
             //     }
             // }catch(e){}
+            try{
+                if(mapsUploadStatusFullscreen){
+                    mapsUploadStatusFullscreen.style.backgroundColor = "#00ff00";
+                }
+            }catch(e){}
         }
         else    {
             try{
@@ -503,6 +508,11 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
             div2.style.border = borderStyle + color;
             div.appendChild(div2);
             addRetryButton(function(){uploadString(n, key, post, location, automaticLocation, value, element, input, button);}, element);
+            try{
+                if(mapsUploadStatusFullscreen){
+                    mapsUploadStatusFullscreen.style.backgroundColor = "#ff0000";
+                }
+            }catch(e){}
         }
         try{
             div.style.borderColor = color;
@@ -532,6 +542,11 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
         div.appendChild(div2);
         element.insertBefore(div, element.childNodes[0]);
         addRetryButton(function(){uploadString(n, key, post, location, automaticLocation, value, element, input, button);}, element);
+        try{
+            if(mapsUploadStatusFullscreen){
+                mapsUploadStatusFullscreen.style.backgroundColor = "#ff0000";
+            }
+        }catch(e){}
     };
     try{
         uploadProgressSetup(ajax, div);
@@ -541,7 +556,7 @@ function uploadString(n, key, post, location, automaticLocation, value, element,
     ajax.send("id="+encodeURIComponent(n)+"&key="+encodeURIComponent(key)+post);
 }
 function getLocationString(data){
-    if(data){
+    if(data || (data === 0)){
         return data;
     }else{
         return "-";
@@ -1046,9 +1061,9 @@ function uploadProgressSetup(ajax, div, currentUploadID){
         }catch(e){}
     };
 }
-function uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, status){
+function uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, status, coordinates){
     //if((latitude != null && longitude != null) && currentLocationCheckbox.checked)    {
-    if(latitude != null && longitude != null && localStorage.getItem("currentlocationmode") == "true")    {
+    if((latitude != null && longitude != null && localStorage.getItem("currentlocationmode") == "true") || coordinates)    {
         var n;
         var id;
         var key;
@@ -1057,10 +1072,13 @@ function uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, statu
             id = n_key[currentUploadID][1];
             key = n_key[currentUploadID][2];
         }catch(e){}
+        if(!coordinates){
+            coordinates = [latitude, longitude, altitude, accuracy, altitudeAccuracy];
+        }
         if(n && id && key){
-            uploadLocation(id, key, document.getElementById('q'+n), automaticLocation, [latitude, longitude, altitude, accuracy, altitudeAccuracy]);
+            uploadLocation(id, key, document.getElementById('q'+n), automaticLocation, coordinates);
         }else{
-            locationPreUpload(currentUploadID, [latitude, longitude, altitude, accuracy, altitudeAccuracy], statusDiv);
+            locationPreUpload(currentUploadID, coordinates, statusDiv);
         }
     }else{
         locationUploadArray.push([currentUploadID, automaticLocation, statusDiv]);
@@ -1082,6 +1100,142 @@ function uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, statu
         div.innerHTML = '<img width="16" height="16" src="/images/location.svg"><img width="16" height="16" src="/images/uploadicon.svg"> <span class="locationattachafterdetect">' + getString("locationattachafterdetect") + '</span>';
         status.insertBefore(div, status.childNodes[0]);
     }
+}
+function getFullscreenButton(element){
+    var btn = document.createElement("button");
+    btn.innerHTML = '<img width="32" height="32" src="/images/fullscreen.svg">';
+    element.onfullscreenchange = function(){
+        if(!document.fullscreenElement){
+            // document.exitFullscreen();
+            try{
+                element.style.backgroundColor = "initial";
+            }catch(e){}
+            try{
+                element.style.display = "block";
+                element.children[1].style.height = "75vh";
+            }catch(e){}
+            try{
+                btn.innerHTML = '<img width="32" height="32" src="/images/fullscreen.svg">';
+            }catch(e){}
+            try{
+                if(mapsUploadStatusFullscreen){
+                    mapsUploadStatusFullscreen.style.display = "none";
+                }
+            }catch(e){}
+        }else{
+            // element.requestFullscreen();
+            try{
+                if(darkModeEnabled){
+                    element.style.backgroundColor = "#000";
+                }else{
+                    element.style.backgroundColor = "#fff";
+                }
+            }catch(e){}
+            try{
+                element.style.display = "flex";
+                element.style.flexDirection = "column";
+                element.children[1].style.height = "100%";
+            }catch(e){}
+            try{
+                btn.innerHTML = '<span style="color:#ec0400;font-size:32px;width:32px;height:32px;display:inline-block;">&times;</span>';
+            }catch(e){}
+            try{
+                mapsUploadStatusFullscreen = document.fullscreenElement.children[2].children[1];
+                mapsUploadStatusFullscreen.style.visibility = "hidden";
+                mapsUploadStatusFullscreen.style.display = "inline-block";
+            }catch(e){}
+        }
+    };
+    btn.onclick = function(){
+        if(document.fullscreenElement){
+            document.exitFullscreen();
+            // try{
+            //     element.style.backgroundColor = "initial";
+            // }catch(e){}
+            // try{
+            //     element.style.display = "block";
+            //     element.children[1].style.height = "75vh";
+            // }catch(e){}
+        }else{
+            element.requestFullscreen();
+            // try{
+            //     if(darkModeEnabled){
+            //         element.style.backgroundColor = "#000";
+            //     }else{
+            //         element.style.backgroundColor = "#fff";
+            //     }
+            // }catch(e){}
+            // try{
+            //     element.style.display = "flex";
+            //     element.style.flexDirection = "column";
+            //     element.children[1].style.height = "100%";
+            // }catch(e){}
+        }
+    };
+    try{
+        btn.classList.add("buttons", "afteruploadbuttons");
+    }catch(e){}
+    try{
+        btn.className = "buttons afteruploadbuttons";
+    }catch(e){}
+    btn.style.display = "none";
+    return btn;
+}
+var mapsUploadStatusFullscreen;
+function mapsButton(btn){
+    var fullscreen = btn.nextElementSibling;
+    var iframe = fullscreen.parentNode.nextElementSibling;
+    var upload = iframe.nextElementSibling.children[0];
+    var uploadStatus = upload.nextElementSibling;
+    if(iframe.style.display != "block"){
+        iframe.style.display = "block";
+        upload.onclick = function(){
+            // uploadLocation(id, key, document.getElementById('q'+n), iframe.document.getElementById("coordinates").innerText.split(", "));
+            // locationPreUpload(currentUploadID, iframe.document.getElementById("coordinates").innerText.split(", "), statusDiv);
+            // console.log(iframe.contentWindow.document.getElementById("coordinates").innerText.split(", "));
+            // locationPreUpload(btn.getAttribute("currentUploadID"), iframe.contentWindow.coordinates, document.getElementById("statusDiv"+btn.getAttribute("currentUploadID")));
+            if(btn.getAttribute("currentUploadID")){
+                uploadLocationFunc(btn.getAttribute("currentUploadID"), null, document.getElementById("statusDiv"+btn.getAttribute("currentUploadID")), document.getElementById("status"+btn.getAttribute("currentUploadID")), iframe.contentWindow.coordinates);
+            }else{
+                uploadLocation(btn.getAttribute("id"), btn.getAttribute("key"), document.getElementById("statusDiv"+btn.getAttribute("id")), null, iframe.contentWindow.coordinates);
+            }
+            if(document.fullscreenElement){
+                uploadStatus.style.backgroundColor = "#ffff00";
+                uploadStatus.style.visibility = "visible";
+            }
+        };
+        upload.style.display = "inline-block";
+        fullscreen.style.display = "inline-block";
+        iframe.src = "/maps";
+        unloadWarning++;
+    }else{
+        iframe.style.display = "none";
+        upload.style.display = "none";
+        fullscreen.style.display = "none";
+        unloadWarning--;
+        if(document.fullscreenElement){
+            document.exitFullscreen();
+        }
+    }
+}
+function getMapsDiv(currentUploadID, statusDiv, status, id, key){
+    var maps = document.createElement("div");
+    // maps.innerHTML = '<button class="buttons afteruploadbuttons" onclick=mapsButton(this, "'+currentUploadID+'", '+statusDiv+')><img width="32" height="32" src="/images/maps.svg"> <span class="maps">'+getString("maps")+'</span></button><iframe style="display: none;width: 100%;height: 75vh;"></iframe><button style="display:none;" class="buttons afteruploadbuttons"><img width="32" height="32" src="/images/uploadicon.svg"> <span class="upload">'+getString("upload")+'</span></button>';
+    if(currentUploadID){
+        statusDiv.id = "statusDiv"+currentUploadID;
+        var attributes = 'currentUploadID="'+currentUploadID+'"';
+    }else{
+        statusDiv.id = "statusDiv"+id;
+        var attributes = 'id="'+id+'" key="'+key+'"';
+    }
+    if(status){
+        status.id = "status"+currentUploadID;
+    }
+    maps.innerHTML = '<div><button class="buttons afteruploadbuttons" onclick="mapsButton(this)" '+attributes+'><img width="32" height="32" src="/images/maps.svg"> <span class="maps">'+getString("maps")+'</span></button></div><iframe style="display: none;width: 100%;height: 75vh;background-color:#fff;"></iframe><div><button style="display:none;" class="buttons afteruploadbuttons"><img width="32" height="32" src="/images/uploadicon.svg"> <span class="upload">'+getString("upload")+'</span></button><div style="display:none;visibility:hidden;padding:4px;border-radius:8px;"><img style="vertical-align:middle;" width="32" height="32" src="/images/uploadicon.svg">&#160;<img style="vertical-align:middle;" width="32" height="32" src="/images/location.svg"></div></div>';
+    try{
+        maps.children[0].appendChild(getFullscreenButton(maps));
+    }catch(e){}
+    return maps;
 }
 function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0, typeString0, attachFiles0, locationCoordinates0, descriptionTexts0, voiceFiles0){
     var currentUploadID = ++lastUploadID;
@@ -1224,6 +1378,9 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
         if(!locationCoordinates0 && automaticLocation){
             uploadLocationFunc(currentUploadID, automaticLocation, statusDiv, status);
         }
+        try{
+            after0.appendChild(getMapsDiv(currentUploadID, statusDiv, status));
+        }catch(e){}
         after.appendChild(after0);
         subbox.insertBefore(after, subbox.childNodes[0]);
         var filesInput = document.getElementById("f"+currentUploadID);
@@ -1332,6 +1489,17 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
             downloadButton.download = (new Date()).getTime();
             status.appendChild(downloadButton);
             try{
+                try{
+                    if((localStorage.getItem(inputMode + "automaticdownload") == "true") || ((!localStorage.getItem(inputMode + "automaticdownload")) && (inputMode == "takephoto" || inputMode == "recordvideo"))){
+                        downloadButton.click();
+                    }
+                }catch(e){
+                    if(inputMode == "takephoto" || inputMode == "recordvideo"){
+                        downloadButton.click();
+                    }
+                }
+            }catch(e){}
+            try{
                 var previewDiv = document.createElement("div");
                 previewDiv.style.border = "1px dotted #256aff";
                 previewDiv.style.margin = "1px";
@@ -1402,11 +1570,12 @@ function filesUpload(files, fileInput, inputMode, filelink, formData0, typeImg0,
                 n_key[currentUploadID] = [n, id, key];
             }catch(e){}
             try{
-                var fullLink = window.location.href+"?view&n="+n;
+                // var fullLink = window.location.href+"?view&n="+n;
+                var fullLink = location.origin+"?view&n="+n;
                 html = "<div class=\"boxs boxs2\"><span class=\"uploadedid\">" + getString("uploadedid") + "</span>: #" + n + "</div>";
                 html += '<div class="boxs boxs2"><label for="link'+n+'"><img width="16" height="16" src="/images/link.svg"><span class="link title">' + getString("link") + '</span></label><input type="text" readonly value="' + fullLink + '" id="link'+n+'"><button class="buttons afteruploadbuttons" onclick="copyString(this.previousElementSibling.value, this.nextElementSibling)"><img width="32" height="32" src="/images/copy.svg"> <span class="copy">'+getString("copy")+'</span></button><span style="padding:1px;border:1px solid #00ff00;display:none;"></span></div>';
-                html += "<button onclick=location.assign(\"?view&n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span></button>";
-                html += "<button onclick=window.open(\"?view&n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"/images/newtab.svg\"></button>";
+                html += "<button onclick=location.assign(\"/?view&n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"/images/viewicon.svg\">&nbsp;<span class=\"viewupload\">"+getString("viewupload")+"</span></button>";
+                html += "<button onclick=window.open(\"/?view&n=" + n + "\") class=\"texts buttons afteruploadbuttons\"><img width=\"32\" height=\"32\" src=\"/images/newtab.svg\"></button>";
                 html += "<br><br><div id=\"q"+n+"\" class=\"boxs boxs2\"></div>";
                 var after2 = document.createElement("div");
                 after2.innerHTML = html;
@@ -2318,7 +2487,8 @@ try{
         myUploadDownload.download = "";
         myUploadDownload.href = "?download=" + uploadsData[i][0];
         myUploadBox.appendChild(myUploadDownload);
-        addShareButton(myUploadBox, window.location.href.replace(window.location.hash, "")+"?view&n="+uploadsData[i][0]);
+        // addShareButton(myUploadBox, window.location.href.replace(window.location.hash, "")+"?view&n="+uploadsData[i][0]);
+        addShareButton(myUploadBox, location.origin+"?view&n="+uploadsData[i][0]);
         var element = document.createElement("div");
         element.id = 'i'+i;
         myUploadBox.appendChild(element);
@@ -2383,6 +2553,7 @@ try{
             }
             myUploadBox.insertBefore(voiceUpload, element);
         // }
+        myUploadBox.insertBefore(getMapsDiv(null, element, null, uploadsData[i][1], uploadsData[i][2]), element);
         var clearSingleUpload = document.createElement("button");
         clearSingleUpload.innerHTML = '<span style="color:#ec0400;font-size:32px;">&times;</span> <span class="clear">'+getString("clear")+'</span>';
         clearSingleUpload.classList.add("buttons", "afteruploadbuttons");
@@ -2419,6 +2590,17 @@ try{
     var nextButton;
     var currentPageIndex;
     var totalPageQuantity;
+    function addSavingUploadsDisabled(){
+        if(localStorage.getItem("saveuploads") != "true"){
+            var savingUploadsDisabled = document.createElement("div");
+            savingUploadsDisabled.style.border = "2px solid #ff0000";
+            savingUploadsDisabled.style.margin = "2px";
+            savingUploadsDisabled.style.padding = "2px";
+            savingUploadsDisabled.classList.add("savinguploadsdisabledinfo");
+            savingUploadsDisabled.innerText = getString("savinguploadsdisabledinfo");
+            myUploadsContent.insertBefore(savingUploadsDisabled, myUploadsContent.childNodes[0]);
+        }
+    }
     function loadMyUploads(){
         uploadsData = localStorage.getItem("uploads");
         if(uploadsData){
@@ -2482,6 +2664,7 @@ try{
                 if(confirm(getString("clearall")+"?")){
                     localStorage.removeItem("uploads");
                     myUploadsContent.innerText = getString("nodata");
+                    addSavingUploadsDisabled();
                 }
             };
             div.appendChild(clearMyUploads);
@@ -2498,15 +2681,7 @@ try{
         }else{
             myUploadsContent.innerText = getString("nodata");
         }
-        if(localStorage.getItem("saveuploads") != "true"){
-            var savingUploadsDisabled = document.createElement("div");
-            savingUploadsDisabled.style.border = "2px solid #ff0000";
-            savingUploadsDisabled.style.margin = "2px";
-            savingUploadsDisabled.style.padding = "2px";
-            savingUploadsDisabled.classList.add("savinguploadsdisabledinfo");
-            savingUploadsDisabled.innerText = getString("savinguploadsdisabledinfo");
-            myUploadsContent.insertBefore(savingUploadsDisabled, myUploadsContent.childNodes[0]);
-        }
+        addSavingUploadsDisabled();
         myUploadsWindow.style.height = myUploadsTop.clientHeight + 1 + myUploadsContent.clientHeight + "px";
         myUploadsContent.style.maxHeight = "calc(100% - 1px - "+myUploadsTop.clientHeight+"px)";
     }

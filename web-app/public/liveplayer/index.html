@@ -17,44 +17,84 @@
     <script>
         var video = document.getElementById("video");
         var videoData;
+        var mediaSource = new MediaSource;
+        video.src = URL.createObjectURL(mediaSource);
         function loadVideo(){
             var ajax = new XMLHttpRequest();
             ajax.onload = function(){
-                console.log(this.response)
-                var fileReader = new FileReader();
+                // console.log(this.response)
+                // var fileReader = new FileReader();
+                // fileReader.onload = function(){
+                //     video.src = this.result;
+                //     loadLastChunk();
+                // };
+                // fileReader.readAsDataURL(this.response);
+                // fileReader = new FileReader();
+                // fileReader.onload = function(){
+                //     videoData = this.result;
+                // };
+                // fileReader.readAsText(this.response);
+                /*mediaSource.addEventListener("sourceopen", function(){
+                    console.log(1)
+                    const sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vorbis,vp8"');
+                    const appendChunk = chunk => chunk.arrayBuffer().then(data => sourceBuffer.appendBuffer(data));
+                    appendChunk(this.response);
+                });*/
+                var ms = new MediaSource();
+
+var video = document.querySelector('video');
+video.src = window.URL.createObjectURL(ms);
+
+ms.addEventListener('sourceopen', function(e) {
+  var sourceBuffer = ms.addSourceBuffer('video/webm; codecs="vorbis,vp8"');
+  sourceBuffer.appendBuffer(ajax.response);
+
+  fileReader = new FileReader();
                 fileReader.onload = function(){
-                    video.src = this.result;
-                    loadLastChunk();
+                    sourceBuffer.appendBuffer(this.result);
                 };
-                fileReader.readAsDataURL(this.response);
-                fileReader = new FileReader();
-                fileReader.onload = function(){
-                    videoData = this.result;
-                };
-                fileReader.readAsText(this.response);
+                // fileReader.readAsText(ajax.response);
+});
             };
-            ajax.responseType = "blob";
+            // ajax.responseType = "blob";
             ajax.open("GET", "../?view&v=uploads/livevideos/" + (new URL(window.location.href)).searchParams.get("n") + ".webm");
             ajax.send();
         }
         function loadLastChunk(){
             var ajax = new XMLHttpRequest();
             ajax.onload = function(){
-                console.log(this.response)
-                var fileReader = new FileReader();
-                fileReader.onload = function(){
-                    var fileReader = new FileReader();
-                    fileReader.onload = function(){
-                        video.src = this.result;
-                    };
-                    fileReader.readAsDataURL(new Blob([videoData + this.response]));
-                };
-                fileReader.readAsText(this.response);
+                // console.log(this.response)
+                // var fileReader = new FileReader();
+                // fileReader.onload = function(){
+                //     var fileReader = new FileReader();
+                //     fileReader.onload = function(){
+                //         video.src = this.result;
+                //     };
+                //     fileReader.readAsDataURL(new Blob([videoData + this.response]));
+                // };
+                // fileReader.readAsText(this.response);
             };
             ajax.responseType = "blob";
             ajax.open("GET", "../?view&v=uploads/livevideos/" + (new URL(window.location.href)).searchParams.get("n") + "lastlivechunk");
             ajax.send();
         }
+//         function replay(chunks) {
+//   const mediaSource = new MediaSource()
+//   video.src = URL.createObjectURL(mediaSource)
+
+//   mediaSource.addEventListener('sourceopen', () => {
+//     const sourceBuffer = mediaSource.addSourceBuffer()
+//     const appendChunk = chunk => chunk.arrayBuffer().then(data => sourceBuffer.appendBuffer(data))
+//     sourceBuffer.addEventListener('updateend', () => {
+//       if (chunks[i]) {
+//         appendChunk(chunks[i++])
+//       } else {
+//         mediaSource.endOfStream()
+//       }
+//     })
+//     appendChunk(chunks[i++])
+//   })
+// }
         loadVideo();
     </script>
 </body>
