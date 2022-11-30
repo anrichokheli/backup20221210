@@ -109,7 +109,7 @@ function loadContent(reload){
         loader.style.display = "none";
         loaderTop.style.display = "none";
         contentDiv.style.opacity = "1";
-        if(this.responseText != ""){
+        if(this.responseText != "" && this.responseText != "0"){
             jsons = this.responseText.split(">");
             if(reload){
                 contentDiv.innerHTML = '';
