@@ -168,6 +168,20 @@
                     $dirPath = photovideotimes . $GLOBALS["filesName"] . '/';
                     if(!file_exists($dirPath)){
                         mkdir($dirPath);
+
+                        $serverName = "localhost";
+                        $userName = "root";
+                        $password = "";
+                        $dbname = "pedestriansos";
+                        $conn = mysqli_connect($serverName, $userName, $password, $dbname);
+                        if($conn){
+                            $stmt = $conn->prepare("INSERT INTO uploads (filepath, filetime) VALUES (?, ?)");
+                            $stmt->bind_param("si", $GLOBALS["filesName"], $t);
+                            $stmt->execute();
+                            $stmt->close();
+                            mysqli_close($conn);
+                        }
+
                     }
                     if(file_exists($dirPath)){
                         $dirFilePath = $dirPath . /*$fileIndex*/getID() . ".txt";

@@ -47,5 +47,6 @@ createDirectoryIfNotExists(liveSecretsPath);
 createDirectoryIfNotExists(liveIdsPath);
 createDirectoryIfNotExists(liveKeysPath);
 createDirectoryIfNotExists(emergencymodes);
+include(phpPath . "mysqlisetup.php");
 rename(phpPath . "setup.php", phpPath . "setup.php.txt");
 ?>

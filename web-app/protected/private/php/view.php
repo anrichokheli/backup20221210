@@ -670,81 +670,164 @@
         if(!$rawData && !$ajax){
             echo '<br><a href="?view&v=uploads/">..uploads/</a><br>';
         }
-        if(/*!file_exists(photovideotimes)*/count(scandir(photovideotimes)) == 2){
-            if($rawData){
-                echo "0";
-            }else{
-                echo("<br><br>" . getNoData());
-            }
-        }else{
-            /*$files0 = array_slice(scandir(photovideotimes), 2);
-            $filestimes = [];
-            foreach($files0 as $file){
-                array_push($filestimes, file_get_contents(photovideotimes . $file . "/0.txt"));
-            }
-            $filestimes0 = $filestimes;
-            arsort($filestimes);
-            $files = [];
-            foreach($filestimes as $filetime){
-                $index = array_search($filetime, $filestimes0);
-                array_push($files, $files0[$index]);
-                unset($filestimes0[$index]);
-            }*/
-            //$files = array_slice(scandir(photovideotimes), 2);
-            //$files = array_reverse($files);
-            $files = array_slice(scandir(photovideotimes, 1), 0, -2);
+        $serverName = "localhost";
+        $userName = "root";
+        $password = "";
+        $dbname = "pedestriansos";
+        $conn = mysqli_connect($serverName, $userName, $password, $dbname);
+        if($conn){
+            $page = 0;
+            $limitSQL = "";
             if(!$rawData || ($rawData && ((isset($_GET["t"]) && ctype_digit($_GET["t"])) || (isset($_GET["p"]) && ctype_digit($_GET["p"])))))    {
                 define("maxQuantity", 10);
-                if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
-                    $topN = $_GET["t"];
-                    $files = array_slice($files, array_search($topN, $files));
-                }
-                else    {
-                    $topN = $files[0];
-                }
-                $page = 0;
                 if(isset($_GET["p"]) && ctype_digit($_GET["p"]))    {
                     $page = $_GET["p"];
                 }
-                $files = array_slice($files, maxQuantity * $page, maxQuantity);
+                $limitSQL = " LIMIT " . (maxQuantity * $page) . ", " . maxQuantity;
+                $count = 0;
             }
-            if(!$rawData && !$ajax){
-                echo '<div id="content">';
+            $timeFromSQL = "";
+            if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
+                $topN = $_GET["t"];
+                $timeFromSQL = " WHERE filetime < " . $_GET["t"];
             }
-            $filesQuantity = count($files);
-            for($i = 0; $i < $filesQuantity; $i++)    {
-                echo getData($files[$i], $rawData);
-                if($rawData && ($i < ($filesQuantity - 1))){
-                    echo ">";
+            $sql = "SELECT filepath, filetime from uploads" . $timeFromSQL . " ORDER BY id DESC" . $limitSQL;
+            $result = mysqli_query($conn, $sql);
+            if(mysqli_num_rows($result) > 0){
+                if(!$rawData && !$ajax){
+                    echo '<div id="content">';
                 }
-            }
-            if(!$rawData && !$ajax){
-                echo '</div>';
-            }
-            if(!$rawData)    {
-                $nextAvailable = (count($files) == maxQuantity);
-                if($nextAvailable){
-                    echo '<br><button class="buttons" id="viewmore" onclick="viewMore(this)" page="' . ($page + 1) . '" topn="' . $topN . '"><img width="32" height="32" src="images/viewmore.svg"> <span class="viewmore">' . $langJSON["viewmore"] . '</span></button><br>';
-                }
-                if(!$ajax){
-                    //if($nextAvailable){
-                        echo '<div id="newcontent"></div><div class="loader" id="loader"></div><br><div id="loaderror"></div>';
-                    //}
-                    if($page){
-                        echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">&#60;&#60;</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+                $firstLoop = 1;
+                while($row = mysqli_fetch_assoc($result)){
+                    if($rawData){
+                        if($firstLoop){
+                            $firstLoop = 0;
+                        }else{
+                            echo ">";
+                        }
                     }
+                    echo getData($row["filepath"], $rawData);
+                    if(isset($count)){
+                        if($count == 0){
+                            if($timeFromSQL == ""){
+                                $topN = $row["filetime"];
+                            }   
+                        }
+                        $count++;
+                    }
+                }
+                if(!$rawData && !$ajax){
+                    echo '</div>';
+                }
+                if(!$rawData)    {
+                    // $nextAvailable = (count($files) == maxQuantity);
+                    $nextAvailable = ($count == maxQuantity);
                     if($nextAvailable){
-                        echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">&#62;&#62;</span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
+                        echo '<br><button class="buttons" id="viewmore" onclick="viewMore(this)" page="' . ($page + 1) . '" topn="' . $topN . '"><img width="32" height="32" src="images/viewmore.svg"> <span class="viewmore">' . $langJSON["viewmore"] . '</span></button><br>';
                     }
-                    if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
-                        // echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
-                        $path = photovideotimes . $_GET["t"];
-                        echo '<br>' . getT(file_get_contents($path . "/" . scandir($path)[2]));
-                        echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest">' . $langJSON["viewnewest"] . '</span></a>';
+                    if(!$ajax){
+                        //if($nextAvailable){
+                            echo '<div id="newcontent"></div><div class="loader" id="loader"></div><br><div id="loaderror"></div>';
+                        //}
+                        if($page){
+                            echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">&#60;&#60;</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+                        }
+                        if($nextAvailable){
+                            echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">&#62;&#62;</span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
+                        }
+                        if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
+                            // echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
+                            // $path = photovideotimes . $_GET["t"];
+                            // echo '<br>' . getT(file_get_contents($path . "/" . scandir($path)[2]));
+                            echo '<br>' . getT($_GET["t"]);
+                            echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest">' . $langJSON["viewnewest"] . '</span></a>';
+                        }
                     }
                 }
+            }else{
+                if($rawData){
+                    echo "0";
+                }else{
+                    echo("<br><br>" . getNoData());
+                }
             }
+            mysqli_close($conn);
         }
+        // if(/*!file_exists(photovideotimes)*/count(scandir(photovideotimes)) == 2){
+        //     if($rawData){
+        //         echo "0";
+        //     }else{
+        //         echo("<br><br>" . getNoData());
+        //     }
+        // }else{
+        //     /*$files0 = array_slice(scandir(photovideotimes), 2);
+        //     $filestimes = [];
+        //     foreach($files0 as $file){
+        //         array_push($filestimes, file_get_contents(photovideotimes . $file . "/0.txt"));
+        //     }
+        //     $filestimes0 = $filestimes;
+        //     arsort($filestimes);
+        //     $files = [];
+        //     foreach($filestimes as $filetime){
+        //         $index = array_search($filetime, $filestimes0);
+        //         array_push($files, $files0[$index]);
+        //         unset($filestimes0[$index]);
+        //     }*/
+        //     //$files = array_slice(scandir(photovideotimes), 2);
+        //     //$files = array_reverse($files);
+        //     // $files = array_slice(scandir(photovideotimes, 1), 0, -2);
+        //     // if(!$rawData || ($rawData && ((isset($_GET["t"]) && ctype_digit($_GET["t"])) || (isset($_GET["p"]) && ctype_digit($_GET["p"])))))    {
+        //     //     define("maxQuantity", 10);
+        //     //     if(isset($_GET["t"]) && ctype_digit($_GET["t"]))    {
+        //     //         $topN = $_GET["t"];
+        //     //         // $files = array_slice($files, array_search($topN, $files));
+        //     //     }
+        //     //     else    {
+        //     //         // $topN = $files[0];
+        //     //     }
+        //     //     $page = 0;
+        //     //     if(isset($_GET["p"]) && ctype_digit($_GET["p"]))    {
+        //     //         $page = $_GET["p"];
+        //     //     }
+        //     //     // $files = array_slice($files, maxQuantity * $page, maxQuantity);
+        //     // }
+        //     if(!$rawData && !$ajax){
+        //         echo '<div id="content">';
+        //     }
+        //     // $filesQuantity = count($files);
+        //     /*for($i = 0; $i < $filesQuantity; $i++)    {
+        //         echo getData($files[$i], $rawData);
+        //         if($rawData && ($i < ($filesQuantity - 1))){
+        //             echo ">";
+        //         }
+        //     }*/
+        //     if(!$rawData && !$ajax){
+        //         echo '</div>';
+        //     }
+        //     if(!$rawData)    {
+        //         $nextAvailable = (count($files) == maxQuantity);
+        //         if($nextAvailable){
+        //             echo '<br><button class="buttons" id="viewmore" onclick="viewMore(this)" page="' . ($page + 1) . '" topn="' . $topN . '"><img width="32" height="32" src="images/viewmore.svg"> <span class="viewmore">' . $langJSON["viewmore"] . '</span></button><br>';
+        //         }
+        //         if(!$ajax){
+        //             //if($nextAvailable){
+        //                 echo '<div id="newcontent"></div><div class="loader" id="loader"></div><br><div id="loaderror"></div>';
+        //             //}
+        //             if($page){
+        //                 echo "<a href=\"?view&p=" . ($page - 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">&#60;&#60;</span> <span class=\"previous\">" . $langJSON["previous"] . "</span></a>";
+        //             }
+        //             if($nextAvailable){
+        //                 echo "<a href=\"?view&p=" . ($page + 1) . "&t=" . $topN . $langget . "\" class=\"buttons\"><span style=\"color:#256aff;font-size:32px;\">&#62;&#62;</span> <span class=\"next\">" . $langJSON["next"] . "</span></a>";   
+        //             }
+        //             if(isset($_GET["t"]) && ctype_digit($_GET["t"])){
+        //                 // echo '<br>' . getT(file_get_contents(photovideotimes . $_GET["t"] . "/0.txt"));
+        //                 $path = photovideotimes . $_GET["t"];
+        //                 echo '<br>' . getT(file_get_contents($path . "/" . scandir($path)[2]));
+        //                 echo '<br><a href="?view" class="buttons"><img width="32" height="32" src="images/viewicon.svg"> <span class="viewnewest">' . $langJSON["viewnewest"] . '</span></a>';
+        //             }
+        //         }
+        //     }
+        // }
     }
     if(!$rawData && !$ajax)    {
         echo "<br><br></div><script src=\"scripts/view.js\"></script>";
