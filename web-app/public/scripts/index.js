@@ -1194,10 +1194,10 @@ function mapsButton(btn){
             // locationPreUpload(currentUploadID, iframe.document.getElementById("coordinates").innerText.split(", "), statusDiv);
             // console.log(iframe.contentWindow.document.getElementById("coordinates").innerText.split(", "));
             // locationPreUpload(btn.getAttribute("currentUploadID"), iframe.contentWindow.coordinates, document.getElementById("statusDiv"+btn.getAttribute("currentUploadID")));
-            if(btn.getAttribute("currentUploadID")){
-                uploadLocationFunc(btn.getAttribute("currentUploadID"), null, document.getElementById("statusDiv"+btn.getAttribute("currentUploadID")), document.getElementById("status"+btn.getAttribute("currentUploadID")), iframe.contentWindow.coordinates);
+            if(btn.getAttribute("maps_btn_currentUploadID")){
+                uploadLocationFunc(btn.getAttribute("maps_btn_currentUploadID"), null, document.querySelector('[maps_div_currentUploadID="'+btn.getAttribute("maps_btn_currentUploadID")+'"]'), document.querySelector('[maps_div2_currentUploadID="'+btn.getAttribute("maps_btn_currentUploadID")+'"]'), iframe.contentWindow.coordinates);
             }else{
-                uploadLocation(btn.getAttribute("id"), btn.getAttribute("key"), document.getElementById("statusDiv"+btn.getAttribute("id")), null, iframe.contentWindow.coordinates);
+                uploadLocation(btn.getAttribute("maps_id"), btn.getAttribute("maps_key"), document.querySelector('[maps_div_currentUploadID="'+btn.getAttribute("maps_id")+'"]'), null, iframe.contentWindow.coordinates);
             }
             if(document.fullscreenElement){
                 uploadStatus.style.backgroundColor = "#ffff00";
@@ -1222,14 +1222,14 @@ function getMapsDiv(currentUploadID, statusDiv, status, id, key){
     var maps = document.createElement("div");
     // maps.innerHTML = '<button class="buttons afteruploadbuttons" onclick=mapsButton(this, "'+currentUploadID+'", '+statusDiv+')><img width="32" height="32" src="/images/maps.svg"> <span class="maps">'+getString("maps")+'</span></button><iframe style="display: none;width: 100%;height: 75vh;"></iframe><button style="display:none;" class="buttons afteruploadbuttons"><img width="32" height="32" src="/images/uploadicon.svg"> <span class="upload">'+getString("upload")+'</span></button>';
     if(currentUploadID){
-        statusDiv.id = "statusDiv"+currentUploadID;
-        var attributes = 'currentUploadID="'+currentUploadID+'"';
+        statusDiv.setAttribute("maps_div_currentUploadID", currentUploadID);
+        var attributes = 'maps_btn_currentUploadID="'+currentUploadID+'"';
     }else{
-        statusDiv.id = "statusDiv"+id;
-        var attributes = 'id="'+id+'" key="'+key+'"';
+        statusDiv.setAttribute("maps_div_currentUploadID", id);
+        var attributes = 'maps_id="'+id+'" maps_key="'+key+'"';
     }
     if(status){
-        status.id = "status"+currentUploadID;
+        status.setAttribute("maps_div2_currentUploadID", currentUploadID);
     }
     maps.innerHTML = '<div><button class="buttons afteruploadbuttons" onclick="mapsButton(this)" '+attributes+'><img width="32" height="32" src="/images/maps.svg"> <span class="maps">'+getString("maps")+'</span></button></div><iframe style="display: none;width: 100%;height: 75vh;background-color:#fff;"></iframe><div><button style="display:none;" class="buttons afteruploadbuttons"><img width="32" height="32" src="/images/uploadicon.svg"> <span class="upload">'+getString("upload")+'</span></button><div style="display:none;visibility:hidden;padding:4px;border-radius:8px;"><img style="vertical-align:middle;" width="32" height="32" src="/images/uploadicon.svg">&#160;<img style="vertical-align:middle;" width="32" height="32" src="/images/location.svg"></div></div>';
     try{
