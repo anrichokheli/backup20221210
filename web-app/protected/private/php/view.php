@@ -670,10 +670,11 @@
         if(!$rawData && !$ajax){
             echo '<br><a href="?view&v=uploads/">..uploads/</a><br>';
         }
-        $serverName = "localhost";
-        $userName = "root";
-        $password = "";
-        $dbname = "pedestriansos";
+        $mysqliConn = parse_ini_file(protectedPrivatePath . "mysqliconn.ini");
+        $serverName = $mysqliConn["serverName"];
+        $userName = $mysqliConn["userName"];
+        $password = $mysqliConn["password"];
+        $dbname = $mysqliConn["dbname"];
         $conn = mysqli_connect($serverName, $userName, $password, $dbname);
         if($conn){
             $page = 0;

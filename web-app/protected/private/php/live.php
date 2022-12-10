@@ -43,9 +43,24 @@
             $id = getKey(32);
             $key = getKey(1000);
             $dirPath = photovideos . $n . "/";
-            mkdir($dirPath);
-            file_put_contents($dirPath . $live_n, "");
             $t = time();
+            if(mkdir($dirPath)){
+                $mysqliConn = parse_ini_file(protectedPrivatePath . "mysqliconn.ini");
+                $serverName = $mysqliConn["serverName"];
+                $userName = $mysqliConn["userName"];
+                $password = $mysqliConn["password"];
+                $dbname = $mysqliConn["dbname"];
+                $conn = mysqli_connect($serverName, $userName, $password, $dbname);
+                if($conn){
+                    $stmt = $conn->prepare("INSERT INTO uploads (filepath, filetime) VALUES (?, ?)");
+                    $stmt->bind_param("si", $n, $t);
+                    $stmt->execute();
+                    $stmt->close();
+                    mysqli_close($conn);
+                } 
+            }
+            file_put_contents($dirPath . $live_n, "");
+            // $t = time();
             $dirPath = photovideotimes . $n . '/';
             if(!file_exists($dirPath)){
                 mkdir($dirPath);
